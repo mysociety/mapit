@@ -1,0 +1,3 @@
+*.pyc
+/conf/general
+/conf/general.deployed

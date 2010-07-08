@@ -1,3 +1,18 @@
+import os
+import sys
+
+package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
+paths = (
+    os.path.normpath(package_dir + "/../../pylib"),
+    os.path.normpath(package_dir + "/../../commonlib/pylib"),
+)
+for path in paths:
+    if path not in sys.path:
+        sys.path.append(path)
+
+import mysociety.config
+mysociety.config.set_file(os.path.abspath(package_dir + "/../../conf/general"))
+
 # Django settings for mapit project.
 
 DEBUG = True

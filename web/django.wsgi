@@ -3,8 +3,7 @@
 import os, sys
 
 file_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-
-path = file_dir + "/../pylib"
+path = os.path.normpath(file_dir + "/../pylib")
 if path not in sys.path:
     sys.path.append(path)
 
