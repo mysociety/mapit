@@ -1,0 +1,4 @@
+python-simplejson
+python-django
+libapache2-mod-wsgi
+python-psycopg2 
