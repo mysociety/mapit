@@ -13,8 +13,8 @@ class Area(models.Model):
         ('S', 'Scotland'),
         ('N', 'Northern Ireland'),
     ))
-    generation_low = models.ForeignKey(Generation)
-    generation_high = models.ForeignKey(Generation)
+    generation_low = models.ForeignKey(Generation, related_name='new_areas')
+    generation_high = models.ForeignKey(Generation, related_name='final_areas')
     polygon = models.MultiPolygonField(srid=27700, null=True)
 
     objects = models.GeoManager()
