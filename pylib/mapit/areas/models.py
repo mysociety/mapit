@@ -23,7 +23,7 @@ class Area(models.Model):
         return self.names.get(type='F')
 
     def __unicode__(self):
-        return '%s' self.name()
+        return '%s' % self.name()
 
     #def save(self, *args, **kwargs):
     #    super(Area, self).save(*args, **kwargs)
