@@ -8,8 +8,8 @@ class Postcode(models.Model):
     objects = models.GeoManager()
 
     def __unicode__(self):
-        return self.get_name_display()
+        return self.get_postcode_display()
 
-    def get_name_display(self):
-        return re.sub('(...)$', r' \1', self.name)
+    def get_postcode_display(self):
+        return re.sub('(...)$', r' \1', self.postcode)
 
