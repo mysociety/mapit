@@ -1,5 +1,8 @@
 from django.contrib.gis import admin
 from models import Postcode
 
-admin.site.register(Postcode, admin.OSMGeoAdmin)
+class PostcodeAdmin(admin.OSMGeoAdmin):
+    search_fields = ['postcode']
+
+admin.site.register(Postcode, PostcodeAdmin)
 

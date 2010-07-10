@@ -7,6 +7,9 @@ class Postcode(models.Model):
 
     objects = models.GeoManager()
 
+    class Meta:
+        ordering = ('postcode',)
+
     def __unicode__(self):
         return self.get_postcode_display()
 
