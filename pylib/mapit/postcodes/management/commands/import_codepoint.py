@@ -8,13 +8,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         count = 0
         for row in csv.reader(sys.stdin):
-            args = {
-                'postcode': row[0].strip().replace(' ', ''),
-                'location': Point(map(float, row[10:12])),
-            }
-            if not Postcode.objects.filter(postcode=args['postcode']).update(location=args['location']):
-                Postcode.objects.create(**args)
-
+            postcode = row[0].strip().replace(' ', '')
+            location = Point(map(float, row[10:12]))
+            if not Postcode.objects.filter(postcode=postcode).update(location=location):
+                Postcode.objects.create(postcode=postcode, location=location)
             count += 1
             if count % 10000 == 0:
                 print "Imported %d" % count

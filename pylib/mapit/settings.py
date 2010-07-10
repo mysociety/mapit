@@ -15,7 +15,7 @@ mysociety.config.set_file(os.path.abspath(package_dir + "/../../conf/general"))
 
 # Django settings for mapit project.
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
