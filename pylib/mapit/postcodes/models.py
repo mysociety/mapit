@@ -1,3 +1,4 @@
+import re
 from django.contrib.gis.db import models
 
 class Postcode(models.Model):
