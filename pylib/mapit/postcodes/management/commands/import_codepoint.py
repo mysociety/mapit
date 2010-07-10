@@ -9,7 +9,7 @@ class Command(BaseCommand):
         count = 0
         for row in csv.reader(sys.stdin):
             postcode = row[0].strip().replace(' ', '')
-            location = Point(map(float, row[10:12]))
+            location = Point(map(float, row[10:12]), srid=27700)
             if not Postcode.objects.filter(postcode=postcode).update(location=location):
                 Postcode.objects.create(postcode=postcode, location=location)
             count += 1
