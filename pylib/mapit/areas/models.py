@@ -4,6 +4,9 @@ class Generation(models.Model):
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")
+
 class Area(models.Model):
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
