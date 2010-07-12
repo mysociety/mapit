@@ -64,7 +64,7 @@ class Command(BaseCommand):
                 electoral_area = Area.objects.get_or_create(country='N', type='LGE', names__type='S', names__name='')
                 ward.parent_area = electoral_area
                 # Fetch council name and code from ward code or name
-                council = Area.objects.get_or_create(country='N', type='LGD', codes__type='ons', codes__code='', names__type='S' names__name='')
+                council = Area.objects.get_or_create(country='N', type='LGD', codes__type='ons', codes__code='', names__type='S', names__name='')
                 electoral_area.parent_area = council
 
             # Fetch Assembly constituency name from OLD SNAC
