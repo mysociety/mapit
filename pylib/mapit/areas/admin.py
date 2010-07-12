@@ -1,5 +1,17 @@
 from django.contrib.gis import admin
-from models import Area
+from models import Area, Code, Name, Generation
 
-admin.site.register(Area, admin.OSMGeoAdmin)
+class NameInline(admin.TabularInline):
+    model = Name
 
+class CodeInline(admin.TabularInline):
+    model = Code
+
+class AreaAdmin(admin.OSMGeoAdmin):
+    inlines = [
+        NameInline,
+        CodeInline,
+    ]
+
+admin.site.register(Area, AreaAdmin)
+admin.site.register(Generation, admin.OSMGeoAdmin)
