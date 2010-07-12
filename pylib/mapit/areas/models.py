@@ -10,31 +10,35 @@ class Generation(models.Model):
 class Area(models.Model):
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
-        ('COI', 'Scilly Isles'),
-        ('COP', 'Scilly Isles "ward"'),
-        ('CPC', 'Civil Parish'),
-        ('CTY', 'County council'),
-        ('CED', 'County council ward'),
-        ('DIS', 'District council'),
-        ('DIW', 'District council ward'),
         ('EUR', 'Euro region'),
-        ('GLA', 'Greater London Authority'),
-        ('LAC', 'London Assembly Constituency'),
-        ('LBO', 'London Borough'),
-        ('LBW', 'London Borough Ward'),
-        ('LGD', 'NI Council'),
-        ('LGE', 'NI Council Ward'),
-        ('MTD', 'Metropolitan District'),
-        ('MTW', 'Metropolitan District Ward'),
-        ('NIE', 'Northern Ireland Assembly Constituency'),
-        ('SPC', 'Scottish Parliament Constituency'),
-        ('SPE', 'Scottish Parliament Region'),
+        ('WMC', 'UK Parliament constituency'),
+        ('Northern Ireland', (
+            ('NIE', 'Northern Ireland Assembly constituency'),
+            ('LGD', 'Council'),
+            ('LGE', 'Council ward'),
+        )),
+        ('England', (
+            ('CTY', 'County council'),
+            ('CED', 'County council ward'),
+            ('DIS', 'District council'),
+            ('DIW', 'District council ward'),
+            ('GLA', 'Greater London Authority'),
+            ('LAC', 'London Assembly constituency'),
+            ('LBO', 'London borough'),
+            ('LBW', 'London borough ward'),
+            ('MTD', 'Metropolitan district'),
+            ('MTW', 'Metropolitan district ward'),
+            ('COI', 'Scilly Isles'),
+            ('COP', 'Scilly Isles "ward"'),
+        )),
+        ('SPC', 'Scottish Parliament constituency'),
+        ('SPE', 'Scottish Parliament region'),
+        ('WAC', 'Welsh Assembly constituency'),
+        ('WAE', 'Welsh Assembly region'),
         ('UTA', 'Unitary Authority'),
-        ('UTE', 'Unitary Authority Ward (UTE)'),
-        ('UTW', 'Unitary Authority Ward (UTW)'),
-        ('WAC', 'Welsh Assembly Constituency'),
-        ('WAE', 'Welsh Assembly Region'),
-        ('WMC', 'UK Parliament'),
+        ('UTE', 'Unitary Authority ward (UTE)'),
+        ('UTW', 'Unitary Authority ward (UTW)'),
+        ('CPC', 'Civil Parish'),
     ))
     country = models.CharField(max_length=1, choices=(
         ('E', 'England'),
@@ -76,7 +80,7 @@ class Name(models.Model):
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
     type = models.CharField(max_length=10, choices=(
-        ('ons_code', 'SNAC'),
+        ('ons', 'SNAC'),
         ('gss', 'GSS (SNAC replacement)'),
         ('unit_id', 'Boundary-Line (OS Admin Area ID)')
     ))
