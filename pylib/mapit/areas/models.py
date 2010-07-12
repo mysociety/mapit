@@ -1,8 +1,19 @@
 from django.contrib.gis.db import models
 
+class GenerationManager(models.Manager):
+    def current(self):
+        return self.get_query_set().filter(active=True).order_by('-id')[0]
+
+    def new(self):
+        g = self.get_query_set().order_by('-id')[0]
+        if g.active: return None
+        return g
+        
 class Generation(models.Model):
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+
+    objects = GenerationManager()
 
     def __unicode__(self):
         return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")

@@ -22,15 +22,22 @@ import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import BaseCommand
 from mapit.postcodes.models import Postcode
-from mapit.areas.models import Area
+from mapit.areas.models import Area, Generation
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        count = 0
+        current_generation = Generation.objects.current()
+        new_generation = Generation.objects.new()
+        if not new_generation:
+            raise Exception, "No new generation to be used for import!"
 
-        euro_area = Area.objects.get_or_create(country='N', type='EUR')
+        euro_area = Area.objects.get_or_create(country='N', type='EUR',
+            generation_low__lte=current_generation, generation_high__gte=current_generation,
+            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+        )
         euro_area.names.create(type='S', name='Northern Ireland')
 
+        count = 0
         for row in csv.reader(sys.stdin):
             if row[4]: continue # Terminated postcode
             postcode = row[0].strip().replace(' ', '')
