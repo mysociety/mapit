@@ -18,6 +18,37 @@ class Generation(models.Model):
     def __unicode__(self):
         return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")
 
+class AreaManager(models.GeoManager):
+    def get_or_create_with_name(self, country='', type='', name_type='', name=''):
+        current_generation = Generation.objects.current()
+        new_generation = Generation.objects.new()
+        area, created = Area.objects.get_or_create(country=country, type=type,
+            generation_low__lte=current_generation, generation_high__gte=current_generation,
+            names__type=name_type, names__name=name,
+            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+        )
+        if created:
+            area.names.get_or_create(type=type, name=name)
+        else:
+            area.generation_high = new_generation
+            area.save()
+        return area
+
+    def get_or_create_with_code(self, country='', type='', code_type='', code=''):
+        current_generation = Generation.objects.current()
+        new_generation = Generation.objects.new()
+        area, created = Area.objects.get_or_create(country=country, type=type,
+            generation_low__lte=current_generation, generation_high__gte=current_generation,
+            codes__type=code_type, codes__code=code,
+            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+        )
+        if created:
+            area.codes.get_or_create(type=type, code=code)
+        else:
+            area.generation_high = new_generation
+            area.save()
+        return area
+
 class Area(models.Model):
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
@@ -61,7 +92,7 @@ class Area(models.Model):
     generation_high = models.ForeignKey(Generation, related_name='final_areas')
     polygon = models.MultiPolygonField(srid=27700, null=True, blank=True)
 
-    objects = models.GeoManager()
+    objects = AreaManager()
 
     def name(self):
         for type in ('F', 'M', 'O', 'S'):
