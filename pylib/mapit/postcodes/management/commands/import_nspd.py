@@ -31,7 +31,7 @@ class Command(BaseCommand):
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
-        euro_area = Area.objects.get_or_create(country='N', type='EUR',
+        euro_area, created = Area.objects.get_or_create(country='N', type='EUR',
             generation_low__lte=current_generation, generation_high__gte=current_generation,
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
@@ -68,16 +68,16 @@ class Command(BaseCommand):
                 # Fetch ward name from ONS code
                 ward.names.create(type='S', name='')
                 # Fetch EA name from ward code or name
-                electoral_area = Area.objects.get_or_create(country='N', type='LGE', names__type='S', names__name='')
+                electoral_area, created = Area.objects.get_or_create(country='N', type='LGE', names__type='S', names__name='')
                 ward.parent_area = electoral_area
                 # Fetch council name and code from ward code or name
-                council = Area.objects.get_or_create(country='N', type='LGD', codes__type='ons', codes__code='', names__type='S', names__name='')
+                council, created = Area.objects.get_or_create(country='N', type='LGD', codes__type='ons', codes__code='', names__type='S', names__name='')
                 electoral_area.parent_area = council
 
             # Fetch Assembly constituency name from OLD SNAC
-            assembly = Area.objects.get_or_create(country='N', type='NIE', names__type='S', name='')
+            assembly, created = Area.objects.get_or_create(country='N', type='NIE', names__type='S', name='')
             # Fetch Parliamentary constituency code and name from NEW SNAC
-            parliament = Area.objects.get_or_create(country='N', type='WMC', codes__type='ons', codes__code='', names__type='S', name='')
+            parliament, created = Area.objects.get_or_create(country='N', type='WMC', codes__type='ons', codes__code='', names__type='S', name='')
 
             # Associate all these geometry-less areas with this postcode
             pc.areas.add(ward, electoral_area, council, assembly, parliament, euro_area)
