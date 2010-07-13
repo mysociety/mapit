@@ -31,7 +31,7 @@ class AreaManager(models.GeoManager):
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
         if created:
-            area.names.get_or_create(type=type, name=name)
+            area.names.get_or_create(type=name_type, name=name)
         else:
             area.generation_high = new_generation
             area.save()
@@ -46,7 +46,7 @@ class AreaManager(models.GeoManager):
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
         if created:
-            area.codes.get_or_create(type=type, code=code)
+            area.codes.get_or_create(type=code_type, code=code)
         else:
             area.generation_high = new_generation
             area.save()
@@ -59,8 +59,9 @@ class Area(models.Model):
         ('WMC', 'UK Parliament constituency'),
         ('Northern Ireland', (
             ('NIE', 'Northern Ireland Assembly constituency'),
-            ('LGD', 'Council'),
-            ('LGE', 'Council ward'),
+            ('LGD', 'NI Council'),
+            ('LGE', 'NI Council electoral area'),
+            ('LGW', 'NI Council ward'),
         )),
         ('England', (
             ('CTY', 'County council'),
