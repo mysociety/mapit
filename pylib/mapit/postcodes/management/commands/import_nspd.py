@@ -102,6 +102,7 @@ class Command(BaseCommand):
         snac.next()
         ward_to_assembly = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
+            ward_code = ward_code.replace(' ', '')
             if 'NIE' + parl_code not in code_to_area:
                 nia_area = Area.objects.get_or_create_with_name(
                     country='N', type='NIE', name_type='S', name=parl_name,
