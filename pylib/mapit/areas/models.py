@@ -8,9 +8,9 @@ class GenerationManager(models.Manager):
 
     def new(self):
         latest = self.get_query_set().order_by('-id')
-        if not latest or latest.active:
+        if not latest or latest[0].active:
             return None
-        return latest
+        return latest[0]
         
 class Generation(models.Model):
     active = models.BooleanField(default=False)
