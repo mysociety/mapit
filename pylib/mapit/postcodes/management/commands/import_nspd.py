@@ -79,9 +79,11 @@ class Command(BaseCommand):
                 ward_area = Area.objects.get_or_create_with_code(
                     country='N', type='LGW', code_type='ons', code=ward_code
                 )
-                ward.names.get_or_create(type='S', name=ward_name)
+                ward_area.names.get_or_create(type='S', name=ward_name)
                 ward_area.parent_area = ward_to_electoral_area[district_name][ward_name]
+                ward_area.save()
                 ward_area.parent_area.parent_area = code_to_area[district_code]
+                ward_area.parent_area.save()
                 code_to_area[ward_code] = ward_area
 
             if parl_code not in code_to_area:
