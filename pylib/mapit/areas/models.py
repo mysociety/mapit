@@ -83,7 +83,7 @@ class Name(models.Model):
         ('O', 'Ordnance Survey'),
         ('S', 'ONS (SNAC/GSS)'),
         ('F', 'Display name'),
-        ('M', 'mySociety override'),
+        ('M', 'mySociety name'),
     ))
     name = models.CharField(max_length=100)
 
