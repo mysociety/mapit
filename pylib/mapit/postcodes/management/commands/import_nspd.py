@@ -37,35 +37,35 @@ class Command(BaseCommand):
         )
         euro_area.generation_high = new_generation
         euro_area.save()
-        euro_area.names.create(type='S', name='Northern Ireland')
+        euro_area.names.get_or_create(type='S', name='Northern Ireland')
 
         count = 0
         for row in csv.reader(sys.stdin):
             if row[4]: continue # Terminated postcode
+            if row[11] == '9': continue # PO Box etc.
+
             postcode = row[0].strip().replace(' ', '')
             if postcode[0:2] != 'BT': continue # Only importing NI from NSPD
-
-            ons_code = '%s%s%s' % tuple(row[5:8])
-            print postcode, ons_code, row[9:12]
-            continue
 
             # Create/update the postcode
             location = Point(map(float, row[9:11]), srid=27700)
             try:
                 pc = Postcode.objects.get(postcode=postcode)
-                pc.location = location
-                pc.save()
+                if pc.location != location:
+                    pc.location = location
+                    pc.save()
             except Postcode.DoesNotExist:
                 pc = Postcode.objects.create(postcode=postcode, location=location)
 
             # Create/update the areas
+            ons_code = '%s%s%s' % tuple(row[5:8])
             parliament = row[16]
             try:
                 ward = Area.objects.get(codes__type='ons', codes__code=ons_code)
                 electoral_area = ward.parent_area
                 council = electoral_area.parent_area
             except Area.DoesNotExist:
-                ward = Area.objects.create(country='N', type='LGW')
+                ward = Area.objects.create(country='N', type='LGW', generation_low=new_generation, generation_high=new_generation)
                 ward.codes.create(type='ons', code=ons_code)
                 # Fetch ward name from ONS code
                 ward.names.create(type='S', name='')
