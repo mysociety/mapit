@@ -64,7 +64,12 @@ class Area(models.Model):
     objects = models.GeoManager()
 
     def name(self):
-        return self.names.get(type='F')
+        for type in ('F', 'M', 'O', 'S'):
+            try:
+                return self.names.get(type=type)
+            except:
+                pass
+        return '(Unknown)'
 
     def __unicode__(self):
         return '%s' % self.name()

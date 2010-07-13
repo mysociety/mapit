@@ -35,6 +35,8 @@ class Command(BaseCommand):
             generation_low__lte=current_generation, generation_high__gte=current_generation,
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
+        euro_area.generation_high = new_generation
+        euro_area.save()
         euro_area.names.create(type='S', name='Northern Ireland')
 
         count = 0
