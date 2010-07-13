@@ -41,7 +41,7 @@ class Command(BaseCommand):
         ni_eas = csv.reader(open('../../data/ni-electoral-areas.csv'))
         ward_to_electoral_area = {}
         e = {}
-        for district, electoral_area, ward in ni_eas:
+        for district, electoral_area, ward, dummy in ni_eas:
             if not district:
                 district = last_district
             if not electoral_area:
