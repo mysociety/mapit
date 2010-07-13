@@ -59,6 +59,7 @@ class Command(BaseCommand):
         snac = csv.reader(open('../../data/snac-2009-ni-cons2ward.csv'))
         snac.next()
         code_to_area = {}
+        name_to_area = {}
         ward_to_parl = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             if district_name not in ward_to_electoral_area:
