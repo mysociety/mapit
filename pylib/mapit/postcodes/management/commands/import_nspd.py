@@ -87,6 +87,8 @@ class Command(BaseCommand):
                 ward_area.parent_area.save()
                 code_to_area[ward_code] = ward_area
 
+            if ward_code == '95S24': continue # Derryaghy
+
             if parl_code not in code_to_area:
                 parl_area = Area.objects.get_or_create_with_code(
                     country='N', type='WMC', code_type='ons', code=parl_code,
@@ -140,9 +142,10 @@ class Command(BaseCommand):
             electoral_area = ward.parent_area
             council = electoral_area.parent_area
             nia_area = ward_to_assembly[ons_code]
-            parl_area = ward_to_parl[ons_code]
             if postcode in derryaghy_fix:
                 parl_area = derryaghy_fix[postcode]
+            else:
+                parl_area = ward_to_parl[ons_code]
             pc.areas.add(ward, electoral_area, council, nia_area, parl_area, euro_area)
 
             count += 1
