@@ -2,12 +2,15 @@ from django.contrib.gis.db import models
 
 class GenerationManager(models.Manager):
     def current(self):
-        return self.get_query_set().filter(active=True).order_by('-id')[0]
+        latest_on = self.get_query_set().filter(active=True).order_by('-id')
+        if latest_on: return latest_on[0]
+        return None
 
     def new(self):
-        g = self.get_query_set().order_by('-id')[0]
-        if g.active: return None
-        return g
+        latest = self.get_query_set().order_by('-id')
+        if not latest or latest.active:
+            return None
+        return latest
         
 class Generation(models.Model):
     active = models.BooleanField(default=False)
