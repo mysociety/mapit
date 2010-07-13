@@ -107,7 +107,7 @@ class Area(models.Model):
         return '(Unknown)'
 
     def __unicode__(self):
-        return '%s' % self.name()
+        return '%s %s' % (self.type, self.name())
 
     #def save(self, *args, **kwargs):
     #    super(Area, self).save(*args, **kwargs)
