@@ -8,7 +8,7 @@ class CodeInline(admin.TabularInline):
     model = Code
 
 class AreaAdmin(admin.OSMGeoAdmin):
-    list_filter = ('type', 'country', 'parent_area')
+    list_filter = ('type', 'country')
     list_display = ('name', 'type', 'country', 'generation_low', 'generation_high', 'parent_area')
     search_fields = ('names__name',)
     raw_id_fields = ('parent_area',)
