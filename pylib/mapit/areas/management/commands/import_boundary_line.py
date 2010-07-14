@@ -29,7 +29,7 @@ class Command(LabelCommand):
             g.add(feat.geom)
 
             ons_code = feat['CODE'].value if feat['CODE'].value != '999999' else None
-            unit_id = feat['UNIT_ID'].value
+            unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
             
             try:
