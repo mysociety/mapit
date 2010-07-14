@@ -23,7 +23,7 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
-            name = unicode(feat['NAME'], 'iso-8859-1')
+            name = unicode(feat['NAME'].value, 'iso-8859-1')
             print "  ", name
             g = OGRGeometry(OGRGeomType('MultiPolygon'))
             g.add(feat.geom)
