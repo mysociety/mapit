@@ -37,6 +37,8 @@ class Command(LabelCommand):
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
             
+            if area_code == 'NCP': continue # Ignore Non Parished Areas
+
             if ons_code in ons_code_to_shape:
                 m = ons_code_to_shape[ons_code]
                 m_name = m.names.get(type='O').name
@@ -84,9 +86,11 @@ class Command(LabelCommand):
                     country = 'S'
                 elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (ons_code and ons_code[0:3] in ('00N', '00P')):
                     country = 'W'
-                # That leaves CPC, WMC, and I think all English UTA/UTE/UTW
-                # Can't do the above ons_code with new GSS codes, will have to do more PinP checks
-                # Do parents, remaining countries in separate PinP code after this is done.
+                elif area_code in ('EUR', 'UTA', 'UTE', 'UTW', 'CPC'):
+                    country = 'E'
+                # That leaves WMC
+                # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
+                # Do parents and WMC countries in separate PinP code after this is done.
                 m = Area(
                     type = area_code,
                     country = country,
