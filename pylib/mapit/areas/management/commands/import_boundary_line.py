@@ -44,7 +44,9 @@ class Command(LabelCommand):
                     raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
                 # Otherwise, combine the two shapes for one area
                 print "    Adding subsequent shape to ONS code %s" % ons_code
-                m.polygon = MultiPolygon(m.polygon, feat.geom.geos)
+                new_poly = [ shape for shape in m.polygon ]
+                new_poly.append(feat.geom.geos)
+                m.polygon = MultiPolygon(new_poly)
                 m.save()
                 continue
 
@@ -55,7 +57,9 @@ class Command(LabelCommand):
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
                 # Otherwise, combine the two shapes for one area
                 print "    Adding subsequent shape to unit ID %s" % unit_id
-                m.polygon = MultiPolygon(m.polygon, feat.geom.geos)
+                new_poly = [ shape for shape in m.polygon ]
+                new_poly.append(feat.geom.geos)
+                m.polygon = MultiPolygon(new_poly)
                 m.save()
                 continue
 
