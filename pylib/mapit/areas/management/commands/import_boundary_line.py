@@ -77,7 +77,7 @@ class Command(LabelCommand):
             except Area.DoesNotExist:
                 g = OGRGeometry(OGRGeomType('MultiPolygon'))
                 g.add(feat.geom)
-                country = None
+                country = ''
                 if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                     country = 'E'
                 elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
