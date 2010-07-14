@@ -1,4 +1,5 @@
 from django.contrib.gis.db import models
+from mapit.managers import Manager
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -121,6 +122,7 @@ class Name(models.Model):
         ('M', 'mySociety name'),
     ))
     name = models.CharField(max_length=100)
+    objects = Manager()
 
     class Meta:
         unique_together = ('area', 'type')
@@ -136,6 +138,7 @@ class Code(models.Model):
         ('unit_id', 'Boundary-Line (OS Admin Area ID)')
     ))
     code = models.CharField(max_length=10, unique=True)
+    objects = Manager()
 
     class Meta:
         unique_together = ('area', 'type')

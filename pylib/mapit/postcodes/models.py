@@ -1,4 +1,5 @@
 import re
+from mapit.managers import GeoManager
 from django.contrib.gis.db import models
 from mapit.areas.models import Area
 
@@ -8,7 +9,7 @@ class Postcode(models.Model):
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes')
 
-    objects = models.GeoManager()
+    objects = GeoManager()
 
     class Meta:
         ordering = ('postcode',)

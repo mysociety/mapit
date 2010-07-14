@@ -1,18 +1,34 @@
-import sys
+# This script is used to import Great Britain postcode information from
+# Code-Point Open, released by the Ordnance Survey. Compared to the
+# scripts we had in 2003, and that the data is free, I'm in heaven.
+# 
+# The fields of Code-Point Open CSV file are:
+#   Postcode, Quality, 8 blanked out fields, Easting Northing, Country,
+#   NHS region, NHS health authority, County, District, Ward, blanked field
+
+import glob
 import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import BaseCommand
-from postcodes.models import Postcode
+from mapit.postcodes.models import Postcode
 
 class Command(BaseCommand):
-    def handle(self, *args, **options):
-        count = 0
-        for row in csv.reader(sys.stdin):
+    help = 'Imports OS Code-Point Open postcodes'
+    args = '<path to directory of Code-Point CSV files>'
+    
+    count = 0
+
+    def handle(self, dirname):
+        for file in glob.glob(dirname + '/*.csv'):
+            self.import_csv(file)
+
+    def import_csv(self, file):
+        for row in csv.reader(open(file)):
+            if row[1] == '90': continue # Bad postcode
             postcode = row[0].strip().replace(' ', '')
             location = Point(map(float, row[10:12]), srid=27700)
-            if not Postcode.objects.filter(postcode=postcode).update(location=location):
-                Postcode.objects.create(postcode=postcode, location=location)
-            count += 1
-            if count % 10000 == 0:
-                print "Imported %d" % count
+            Postcode.objects.update_or_create({ 'postcode': postcode }, { 'location': location })
+            self.count += 1
+            if self.count % 10000 == 0:
+                print "Imported %d" % self.count
 

@@ -41,14 +41,11 @@ class Command(LabelCommand):
                 )
                 m.save()
 
-            if not m.names.filter(type='O').update(name=name):
-                m.names.create(type='O', name=name)
+            m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
-                if not m.codes.filter(type='ons').update(code=ons_code):
-                    m.codes.create(type='ons', code=ons_code)
+                m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
             if unit_id:
-                if not m.codes.filter(type='unit_id').update(code=unit_id):
-                    m.codes.create(type='unit_id', code=unit_id)
+                m.codes.update_or_create({' type': 'unit_id' }, { 'code': unit_id })
 
             # Increase/set generation numbers
 
