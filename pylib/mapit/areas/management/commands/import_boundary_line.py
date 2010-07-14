@@ -10,11 +10,21 @@ from django.contrib.gis.gdal import *
 from areas.models import Area
 
 class Command(LabelCommand):
+    help = 'Import OS Boundary-Line'
+    args = '<Boundary-Line SHP files>'
+
     def handle_label(self,  filename, **options):
+        print filename
+        current_generation = Generation.objects.current()
+        new_generation = Generation.objects.new()
+        if not new_generation:
+            raise Exception, "No new generation to be used for import!"
+
         ds = DataSource(filename)
         layer = self.ds[0]
         for feat in layer:
             name = unicode(feat['NAME'], 'iso-8859-1')
+            print "  ", name
             g = OGRGeometry(OGRGeomType('MultiPolygon'))
             g.add(feat.geom)
 
@@ -27,25 +37,28 @@ class Command(LabelCommand):
                 elif unit_id:
                     m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
                 else:
-                    # UK Parliamentary Constituencies (although they will have a code in GSS, looks like)
-                    # Let us assume we're importing them only when new for now.
-                    m = Area(
-                        type = feat['AREA_CODE'],
-                        polygon = g.wkt,
-                    )
-                    m.save()
+                    # UK Parliamentary Constituencies don't have any code in Boundary-Line
+                    # (although they will have a code in GSS, looks like).
+                    # Let us assume if there's one with the right name, we'll use that.
+                    assert feat['AREA_CODE'] == 'WMC'
+                    m = Area.objects.get(type=feat['AREA_CODE'], names__type='O', names__name=name)
             except Area.DoesNotExist:
                 m = Area(
                     type = feat['AREA_CODE'],
                     polygon = g.wkt,
+                    generation_low = new_generation,
+                    generation_high = new_generation,
                 )
                 m.save()
+
+            if m.generation_high and m.generation_high < current_generation:
+                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+            m.generation_high = new_generation
+            m.save()
 
             m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
                 m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
             if unit_id:
                 m.codes.update_or_create({' type': 'unit_id' }, { 'code': unit_id })
-
-            # Increase/set generation numbers
 

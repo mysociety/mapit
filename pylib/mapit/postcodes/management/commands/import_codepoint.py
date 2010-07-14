@@ -6,23 +6,16 @@
 #   Postcode, Quality, 8 blanked out fields, Easting Northing, Country,
 #   NHS region, NHS health authority, County, District, Ward, blanked field
 
-import glob
 import csv
 from django.contrib.gis.geos import Point
-from django.core.management.base import BaseCommand
+from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
 
-class Command(BaseCommand):
-    help = 'Imports OS Code-Point Open postcodes'
+class Command(LabelCommand):
+    help = 'Import OS Code-Point Open postcodes'
     args = '<Code-Point CSV files>'
-    
     count = 0
-
-    def handle(self, *args, **options):
-        for file in args:
-            self.import_csv(file)
-
-    def import_csv(self, file):
+    def handle_label(self, file, **options):
         for row in csv.reader(open(file)):
             if row[1] == '90': continue # Bad postcode
             postcode = row[0].strip().replace(' ', '')

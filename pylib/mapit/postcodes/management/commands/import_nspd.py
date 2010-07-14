@@ -13,17 +13,17 @@
 #   (Middle), Urban/rural, Urban/rural, Urban/rural, Intermediate, SOA (NI), OA
 #   classification, Pre October 2006 PCO
 
-import sys
 import csv
 from django.contrib.gis.geos import Point
-from django.core.management.base import BaseCommand
+from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
 from mapit.areas.models import Area, Generation
 
-class Command(BaseCommand):
+class Command(LabelCommand):
     help = 'Imports Northern Ireland postcodes from the NSPD, creates the areas if need be'
+    args = '<NSPD CSV file>'
 
-    def handle(self, *args, **options):
+    def handle_label(self, file, **options):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
@@ -119,7 +119,7 @@ class Command(BaseCommand):
             derryaghy_fix[postcode] = name_to_area[parl_name]
 
         count = 0
-        for row in csv.reader(sys.stdin):
+        for row in csv.reader(open(file)):
             if row[4]: continue # Terminated postcode
             if row[11] == '9': continue # PO Box etc.
 
