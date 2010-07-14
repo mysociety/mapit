@@ -40,30 +40,23 @@ class Command(LabelCommand):
             if area_code == 'NCP': continue # Ignore Non Parished Areas
 
             if ons_code in ons_code_to_shape:
-                m = ons_code_to_shape[ons_code]
+                m, poly = ons_code_to_shape[ons_code]
                 m_name = m.names.get(type='O').name
                 if name != m_name:
                     raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
                 # Otherwise, combine the two shapes for one area
                 print "    Adding subsequent shape to ONS code %s" % ons_code
-                new_poly = [ shape for shape in m.polygon ]
-                new_poly.append(feat.geom.geos)
-                m.polygon = MultiPolygon(new_poly)
-                m.save()
+                poly.append(feat.geom)
                 continue
 
             if unit_id in unit_id_to_shape:
-                m = unit_id_to_shape[unit_id]
+                m, poly = unit_id_to_shape[unit_id]
                 m_name = m.names.get(type='O').name
                 if name != m_name:
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
                 # Otherwise, combine the two shapes for one area
                 print "    Adding subsequent shape to unit ID %s" % unit_id
-                new_poly = [ shape for shape in m.polygon ]
-                new_poly.append(feat.geom.geos)
-                m.polygon = MultiPolygon(new_poly)
-                if unit_id != 41429:
-                    m.save()
+                poly.append(feat.geom)
                 continue
 
             try:
@@ -78,8 +71,6 @@ class Command(LabelCommand):
                     assert area_code == 'WMC'
                     m = Area.objects.get(type=area_code, names__type='O', names__name=name)
             except Area.DoesNotExist:
-                g = OGRGeometry(OGRGeomType('MultiPolygon'))
-                g.add(feat.geom)
                 country = ''
                 if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                     country = 'E'
@@ -95,27 +86,33 @@ class Command(LabelCommand):
                 m = Area(
                     type = area_code,
                     country = country,
-                    polygon = g.wkt,
                     generation_low = new_generation,
                     generation_high = new_generation,
                 )
-                m.save()
 
             if m.generation_high and m.generation_high < current_generation:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
-            if m.generation_high < new_generation:
-                m.generation_high = new_generation
-                m.save()
+            m.generation_high = new_generation
+            m.save()
+
+            poly = [ feat.geom ]
 
             m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
-                ons_code_to_shape[ons_code] = m
+                ons_code_to_shape[ons_code] = (m, poly)
                 m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
             if unit_id:
-                unit_id_to_shape[unit_id] = m
+                unit_id_to_shape[unit_id] = (m, poly)
                 m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
 
-        # So many shapes, leave the save until the end
-        if 41429 in unit_id_to_shape:
-            unit_id_to_shape[41429].save()
+        def save_polygons(lookup):
+            for shape in lookup.values():
+                m, poly = shape
+                g = OGRGeometry(OGRGeomType('MultiPolygon'))
+                for p in poly:
+                    g.add(p)
+                m.polygon = g.wkt
+                m.save()
+        save_polygons(unit_id_to_shape)
+        save_polygons(ons_code_to_shape)
 
