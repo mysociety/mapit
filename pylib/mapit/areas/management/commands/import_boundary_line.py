@@ -3,6 +3,7 @@
 # Great Britain. Northern Ireland is handled separately, during the
 # postcode import phase.
 
+import re
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
