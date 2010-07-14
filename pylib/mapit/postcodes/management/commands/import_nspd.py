@@ -127,7 +127,7 @@ class Command(BaseCommand):
             if postcode[0:2] != 'BT': continue # Only importing NI from NSPD
 
             # Create/update the postcode
-            location = Point(map(float, row[9:11]), srid=27700)
+            location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
             try:
                 pc = Postcode.objects.get(postcode=postcode)
                 if pc.location != location:
