@@ -138,11 +138,18 @@ class Command(BaseCommand):
 
             # Create/update the areas
             ons_code = ''.join(row[5:8])
+            output_area = row[33]
+            super_output_area = row[44]
             ward = Area.objects.get(codes__type='ons', codes__code=ons_code)
             electoral_area = ward.parent_area
             council = electoral_area.parent_area
             nia_area = ward_to_assembly[ons_code]
-            if postcode in derryaghy_fix:
+            # Derryaghy
+            if super_output_area == '95SS07S2':
+                parl_area = name_to_area['Belfast West']
+            elif super_output_area == '95SS07S3' or output_area in ('95SS070008', '95SS070013', '95SS070014'):
+                parl_area = name_to_area['Lagan Valley']
+            elif postcode in derryaghy_fix:
                 parl_area = derryaghy_fix[postcode]
             else:
                 parl_area = ward_to_parl[ons_code]
