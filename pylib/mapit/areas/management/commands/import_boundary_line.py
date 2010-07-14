@@ -49,7 +49,6 @@ class Command(LabelCommand):
                 new_poly = [ shape for shape in m.polygon ]
                 new_poly.append(feat.geom.geos)
                 m.polygon = MultiPolygon(new_poly)
-                m.save()
                 continue
 
             if unit_id in unit_id_to_shape:
@@ -62,7 +61,6 @@ class Command(LabelCommand):
                 new_poly = [ shape for shape in m.polygon ]
                 new_poly.append(feat.geom.geos)
                 m.polygon = MultiPolygon(new_poly)
-                m.save()
                 continue
 
             try:
@@ -102,8 +100,9 @@ class Command(LabelCommand):
 
             if m.generation_high and m.generation_high < current_generation:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
-            m.generation_high = new_generation
-            m.save()
+            if m.generation_high < new_generation:
+                m.generation_high = new_generation
+                m.save()
 
             m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
