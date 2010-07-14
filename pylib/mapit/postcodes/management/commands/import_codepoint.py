@@ -14,12 +14,12 @@ from mapit.postcodes.models import Postcode
 
 class Command(BaseCommand):
     help = 'Imports OS Code-Point Open postcodes'
-    args = '<path to directory of Code-Point CSV files>'
+    args = '<Code-Point CSV files>'
     
     count = 0
 
-    def handle(self, dirname, *args, **options):
-        for file in glob.glob(dirname + '/*.csv'):
+    def handle(self, *args, **options):
+        for file in args:
             self.import_csv(file)
 
     def import_csv(self, file):
