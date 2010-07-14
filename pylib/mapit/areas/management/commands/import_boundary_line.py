@@ -49,6 +49,7 @@ class Command(LabelCommand):
                 new_poly = [ shape for shape in m.polygon ]
                 new_poly.append(feat.geom.geos)
                 m.polygon = MultiPolygon(new_poly)
+                m.save()
                 continue
 
             if unit_id in unit_id_to_shape:
@@ -61,6 +62,8 @@ class Command(LabelCommand):
                 new_poly = [ shape for shape in m.polygon ]
                 new_poly.append(feat.geom.geos)
                 m.polygon = MultiPolygon(new_poly)
+                if unit_id != 41429:
+                    m.save()
                 continue
 
             try:
@@ -111,4 +114,8 @@ class Command(LabelCommand):
             if unit_id:
                 unit_id_to_shape[unit_id] = m
                 m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
+
+        # So many shapes, leave the save until the end
+        if 41429 in unit_id_to_shape:
+            unit_id_to_shape[41429].save()
 
