@@ -72,8 +72,19 @@ class Command(LabelCommand):
             except Area.DoesNotExist:
                 g = OGRGeometry(OGRGeomType('MultiPolygon'))
                 g.add(feat.geom)
+                country = None
+                if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
+                    country = 'E'
+                elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
+                    country = 'S'
+                elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (ons_code and ons_code[0:3] in ('00N', '00P')):
+                    country = 'W'
+                # That leaves CPC, WMC, and I think all English UTA/UTE/UTW
+                # Can't do the above ons_code with new GSS codes, will have to do more PinP checks
+                # Do parents, remaining countries in separate PinP code after this is done.
                 m = Area(
                     type = area_code,
+                    country = country,
                     polygon = g.wkt,
                     generation_low = new_generation,
                     generation_high = new_generation,
