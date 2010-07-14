@@ -18,7 +18,7 @@ class Command(BaseCommand):
     
     count = 0
 
-    def handle(self, dirname):
+    def handle(self, dirname, *args, **options):
         for file in glob.glob(dirname + '/*.csv'):
             self.import_csv(file)
 
