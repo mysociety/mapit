@@ -21,7 +21,7 @@ class Command(LabelCommand):
             raise Exception, "No new generation to be used for import!"
 
         ds = DataSource(filename)
-        layer = self.ds[0]
+        layer = ds[0]
         for feat in layer:
             name = unicode(feat['NAME'], 'iso-8859-1')
             print "  ", name
