@@ -28,8 +28,9 @@ class Command(LabelCommand):
             g = OGRGeometry(OGRGeomType('MultiPolygon'))
             g.add(feat.geom)
 
-            ons_code = feat['CODE'] if feat['CODE'] != '999999' else None
-            unit_id = feat['UNIT_ID']
+            ons_code = feat['CODE'].value if feat['CODE'].value != '999999' else None
+            unit_id = feat['UNIT_ID'].value
+            area_code = feat['AREA_CODE'].value
             
             try:
                 if ons_code:
@@ -40,11 +41,11 @@ class Command(LabelCommand):
                     # UK Parliamentary Constituencies don't have any code in Boundary-Line
                     # (although they will have a code in GSS, looks like).
                     # Let us assume if there's one with the right name, we'll use that.
-                    assert feat['AREA_CODE'] == 'WMC'
-                    m = Area.objects.get(type=feat['AREA_CODE'], names__type='O', names__name=name)
+                    assert area_code == 'WMC'
+                    m = Area.objects.get(type=area_code, names__type='O', names__name=name)
             except Area.DoesNotExist:
                 m = Area(
-                    type = feat['AREA_CODE'],
+                    type = area_code,
                     polygon = g.wkt,
                     generation_low = new_generation,
                     generation_high = new_generation,
