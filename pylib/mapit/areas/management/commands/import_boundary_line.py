@@ -7,7 +7,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from areas.models import Area
+from mapit.areas.models import Area, Generation
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
