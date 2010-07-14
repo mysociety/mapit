@@ -61,5 +61,5 @@ class Command(LabelCommand):
             if ons_code:
                 m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
             if unit_id:
-                m.codes.update_or_create({' type': 'unit_id' }, { 'code': unit_id })
+                m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
 
