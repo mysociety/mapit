@@ -137,11 +137,11 @@ class Code(models.Model):
         ('gss', 'GSS (SNAC replacement)'),
         ('unit_id', 'Boundary-Line (OS Admin Area ID)')
     ))
-    code = models.CharField(max_length=10, unique=True)
+    code = models.CharField(max_length=10)
     objects = Manager()
 
     class Meta:
-        unique_together = ('area', 'type')
+        unique_together = ( ('area', 'type'), ('type', 'code') )
 
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.code, self.type, self.area.id)
