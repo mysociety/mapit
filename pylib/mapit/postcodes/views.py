@@ -11,7 +11,7 @@ def postcode(request, postcode, format='html'):
     postcode = get_object_or_404(Postcode, postcode=postcode)
     postcode_within = itertools.chain(
         Area.objects.filter(polygon__contains=postcode.location),
-        postcode.areas
+        postcode.areas.all()
     )
 
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
