@@ -1,4 +1,5 @@
 import re
+import itertools
 from mapit.postcodes.models import Postcode
 from mapit.areas.models import Area
 from django.shortcuts import get_object_or_404
@@ -8,8 +9,10 @@ from django.http import HttpResponse
 def postcode(request, postcode, format='html'):
     postcode = re.sub('\s+', '', postcode.upper())
     postcode = get_object_or_404(Postcode, postcode=postcode)
-    postcode_within = Area.objects.filter(polygon__contains=postcode.location)
-    postcode_within.extend(postcode.areas)
+    postcode_within = itertools.chain(
+        Area.objects.filter(polygon__contains=postcode.location),
+        postcode.areas
+    )
 
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
 
