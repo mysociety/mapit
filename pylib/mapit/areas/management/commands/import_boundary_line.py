@@ -4,6 +4,7 @@
 # postcode import phase.
 
 import re
+import sys
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
@@ -107,7 +108,8 @@ class Command(LabelCommand):
 
         def save_polygons(lookup):
             for shape in lookup.values():
-                print ".",
+                sys.stdout.write(".")
+                sys.stdout.flush()
                 m, poly = shape
                 g = OGRGeometry(OGRGeomType('MultiPolygon'))
                 for p in poly:
