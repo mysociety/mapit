@@ -34,6 +34,6 @@ def postcode(request, postcode, format='html'):
         })
 
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(areas, HttpResponse, ensure_ascii=False)
+    simplejson.dump(areas, response, ensure_ascii=False)
     return response
     
