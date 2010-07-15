@@ -107,12 +107,14 @@ class Command(LabelCommand):
 
         def save_polygons(lookup):
             for shape in lookup.values():
+                print ".",
                 m, poly = shape
                 g = OGRGeometry(OGRGeomType('MultiPolygon'))
                 for p in poly:
                     g.add(p)
                 m.polygon = g.wkt
                 m.save()
+            print ""
         save_polygons(unit_id_to_shape)
         save_polygons(ons_code_to_shape)
 

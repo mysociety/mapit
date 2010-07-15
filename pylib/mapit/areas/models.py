@@ -99,6 +99,7 @@ class Area(models.Model):
 
     objects = AreaManager()
 
+    @property
     def name(self):
         for type in ('F', 'M', 'O', 'S'):
             try:
@@ -106,6 +107,13 @@ class Area(models.Model):
             except:
                 pass
         return '(Unknown)'
+
+    @property
+    def codes(self):
+        codes = {}
+        for code in self.codes.all():
+            codes[code.type] = code.code
+        return codes
 
     def __unicode__(self):
         return '%s %s' % (self.type, self.name())
