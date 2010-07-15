@@ -36,6 +36,6 @@ def postcode(request, postcode, format='html'):
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
 
     json = serializers.get_serializer('json')()
-    json.serialize(postcode_within, ensure_ascii=False, stream=response)
+    json.serialize(areas, ensure_ascii=False, stream=response)
     return response
     
