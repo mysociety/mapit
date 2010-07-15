@@ -1,4 +1,5 @@
-from postcodes.models import Postcode
+from mapit.postcodes.models import Postcode
+from mapit.areas.models import Area
 from django.shortcuts import get_object_or_404
 from django.core import serializers
 from django.http import HttpResponse
