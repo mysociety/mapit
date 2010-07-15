@@ -99,7 +99,6 @@ class Area(models.Model):
 
     objects = AreaManager()
 
-    @property
     def name(self):
         for type in ('F', 'M', 'O', 'S'):
             try:
