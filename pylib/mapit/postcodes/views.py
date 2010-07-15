@@ -30,7 +30,7 @@ def postcode(request, postcode, format='html'):
             'generation_low': area.generation_low,
             'generation_high': area.generation_high,
             'name': area.name,
-            'codes': area.codes,
+            'codes': area.all_codes,
         })
 
     response = HttpResponse(content_type='application/javascript; charset=utf-8')

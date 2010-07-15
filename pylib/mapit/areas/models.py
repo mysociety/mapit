@@ -109,7 +109,7 @@ class Area(models.Model):
         return '(Unknown)'
 
     @property
-    def codes(self):
+    def all_codes(self):
         codes = {}
         for code in self.codes.all():
             codes[code.type] = code.code
