@@ -26,7 +26,7 @@ class Command(LabelCommand):
             '00HFME': 'Tresco',
         }
         ward = {}
-        for ward_code, ward_name in wards:
+        for ward_code, ward_name in wards.items():
             area = Area.objects.get_or_create_with_code(
                 country='E', type='COP', code_type='ons', code=ward_code
             )
