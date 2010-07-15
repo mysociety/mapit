@@ -3,7 +3,7 @@ import itertools
 from mapit.postcodes.models import Postcode
 from mapit.areas.models import Area, Generation
 from django.shortcuts import get_object_or_404
-from django.core import serializers
+from django.utils import simplejson
 from django.http import HttpResponse
 
 def postcode(request, postcode, format='html'):
@@ -34,8 +34,6 @@ def postcode(request, postcode, format='html'):
         })
 
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
-
-    json = serializers.get_serializer('json')()
-    json.serialize(areas, ensure_ascii=False, stream=response)
+    simplejson.dump(areas, HttpResponse, ensure_ascii=False)
     return response
     
