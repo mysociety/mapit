@@ -100,12 +100,10 @@ class Area(models.Model):
     objects = AreaManager()
 
     def name(self):
-        for type in ('F', 'M', 'O', 'S'):
-            try:
-                return self.names.get(type=type)
-            except:
-                pass
-        return '(Unknown)'
+        try:
+            return self.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0]
+        except:
+            return '(Unknown)'
 
     @property
     def all_codes(self):
