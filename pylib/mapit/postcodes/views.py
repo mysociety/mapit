@@ -29,7 +29,7 @@ def postcode(request, postcode, format='html'):
             'country': area.country,
             'generation_low': area.generation_low.id,
             'generation_high': area.generation_high.id,
-            'name': area.name().name,
+            'name': area.name,
             'codes': area.all_codes,
         })
 

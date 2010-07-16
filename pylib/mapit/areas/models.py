@@ -54,6 +54,7 @@ class AreaManager(models.GeoManager):
         return area
 
 class Area(models.Model):
+    name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
         ('EUR', 'Euro region'),
@@ -99,12 +100,6 @@ class Area(models.Model):
 
     objects = AreaManager()
 
-    def name(self):
-        try:
-            return self.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0]
-        except:
-            return '(Unknown)'
-
     @property
     def all_codes(self):
         codes = {}
@@ -113,10 +108,8 @@ class Area(models.Model):
         return codes
 
     def __unicode__(self):
-        return '%s %s' % (self.type, self.name())
-
-    #def save(self, *args, **kwargs):
-    #    super(Area, self).save(*args, **kwargs)
+        name = self.name or '(unknown)'
+        return '%s %s' % (self.type, name)
 
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
@@ -134,6 +127,15 @@ class Name(models.Model):
 
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.name, self.type, self.area.id)
+
+    def save(self, *args, **kwargs):
+        super(Name, self).save(*args, **kwargs)
+        try:
+            name = self.area.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0]
+            self.area.name = name
+            self.area.save()
+        except:
+            pass
 
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')

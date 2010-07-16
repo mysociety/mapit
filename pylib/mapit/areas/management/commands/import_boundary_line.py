@@ -16,6 +16,9 @@ class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
     args = '<Boundary-Line SHP files>'
 
+    ons_code_to_shape = {}
+    unit_id_to_shape = {}
+
     def handle_label(self,  filename, **options):
         print filename
         current_generation = Generation.objects.current()
@@ -25,8 +28,6 @@ class Command(LabelCommand):
 
         ds = DataSource(filename)
         layer = ds[0]
-        ons_code_to_shape = {}
-        unit_id_to_shape = {}
         for feat in layer:
             name = unicode(feat['NAME'].value, 'iso-8859-1')
             print " ", name
@@ -40,8 +41,8 @@ class Command(LabelCommand):
             
             if area_code == 'NCP': continue # Ignore Non Parished Areas
 
-            if ons_code in ons_code_to_shape:
-                m, poly = ons_code_to_shape[ons_code]
+            if ons_code in self.ons_code_to_shape:
+                m, poly = self.ons_code_to_shape[ons_code]
                 m_name = m.names.get(type='O').name
                 if name != m_name:
                     raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
@@ -50,8 +51,8 @@ class Command(LabelCommand):
                 poly.append(feat.geom)
                 continue
 
-            if unit_id in unit_id_to_shape:
-                m, poly = unit_id_to_shape[unit_id]
+            if unit_id in self.unit_id_to_shape:
+                m, poly = self.unit_id_to_shape[unit_id]
                 m_name = m.names.get(type='O').name
                 if name != m_name:
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
@@ -100,26 +101,27 @@ class Command(LabelCommand):
 
             m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
-                ons_code_to_shape[ons_code] = (m, poly)
+                self.ons_code_to_shape[ons_code] = (m, poly)
                 m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
             if unit_id:
-                unit_id_to_shape[unit_id] = (m, poly)
+                self.unit_id_to_shape[unit_id] = (m, poly)
                 m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
 
-        def save_polygons(lookup):
-            for shape in lookup.values():
-                m, poly = shape
-                if not poly:
-                    continue
-                sys.stdout.write(".")
-                sys.stdout.flush()
-                g = OGRGeometry(OGRGeomType('MultiPolygon'))
-                for p in poly:
-                    g.add(p)
-                m.polygon = g.wkt
-                m.save()
-                poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-            print ""
-        save_polygons(unit_id_to_shape)
-        save_polygons(ons_code_to_shape)
+        self.save_polygons(self.unit_id_to_shape)
+        self.save_polygons(self.ons_code_to_shape)
+
+    def save_polygons(lookup):
+        for shape in lookup.values():
+            m, poly = shape
+            if not poly:
+                continue
+            sys.stdout.write(".")
+            sys.stdout.flush()
+            g = OGRGeometry(OGRGeomType('MultiPolygon'))
+            for p in poly:
+                g.add(p)
+            m.polygon = g.wkt
+            m.save()
+            poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
+        print ""
 
