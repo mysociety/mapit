@@ -5,7 +5,7 @@ class GenerationManager(models.Manager):
     def current(self):
         latest_on = self.get_query_set().filter(active=True).order_by('-id')
         if latest_on: return latest_on[0]
-        return None
+        return 0
 
     def new(self):
         latest = self.get_query_set().order_by('-id')
