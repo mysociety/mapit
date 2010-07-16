@@ -116,10 +116,14 @@ class Command(LabelCommand):
                 continue
             sys.stdout.write(".")
             sys.stdout.flush()
-            g = OGRGeometry(OGRGeomType('MultiPolygon'))
+            #g = OGRGeometry(OGRGeomType('MultiPolygon'))
             m.polygons.all().delete()
             for p in poly:
-                g.add(p)
+                if p.geom_name == 'POLYGON':
+                    g = OGRGeometry(OGRGeomType('MultiPolygon'))
+                    g.add(p)
+                else:
+                    g = p
                 m.polygons.create(polygon=g.wkt)
             #m.polygon = g.wkt
             #m.save()
