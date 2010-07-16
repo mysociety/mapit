@@ -9,7 +9,6 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from django.contrib.gis.geos import MultiPolygon
 from mapit.areas.models import Area, Generation
 
 class Command(LabelCommand):
@@ -117,11 +116,13 @@ class Command(LabelCommand):
                 continue
             sys.stdout.write(".")
             sys.stdout.flush()
-            g = OGRGeometry(OGRGeomType('MultiPolygon'))
+            #g = OGRGeometry(OGRGeomType('MultiPolygon'))
+            m.polygons.clear()
             for p in poly:
-                g.add(p)
-            m.polygon = g.wkt
-            m.save()
+                #g.add(p)
+                m.polygons.create(polygon=p)
+            #m.polygon = g.wkt
+            #m.save()
             poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
         print ""
 

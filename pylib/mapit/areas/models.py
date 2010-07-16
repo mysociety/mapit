@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from mapit.managers import Manager
+from mapit.managers import Manager, GeoManager
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -96,7 +96,6 @@ class Area(models.Model):
     ))
     generation_low = models.ForeignKey(Generation, related_name='new_areas')
     generation_high = models.ForeignKey(Generation, related_name='final_areas')
-    polygon = models.MultiPolygonField(srid=27700, null=True, blank=True)
 
     objects = AreaManager()
 
@@ -110,6 +109,14 @@ class Area(models.Model):
     def __unicode__(self):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type, name)
+
+class Geometry(models.Model):
+    area = models.ForeignKey(Area, related_name='polygons')
+    polygon = models.PolygonField(srid=27700, null=True, blank=True)
+    objects = GeoManager()
+
+    def __unicode__(self):
+        return '%s, polygon %d' % (self.area, self.id)
 
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
@@ -148,7 +155,7 @@ class Code(models.Model):
     objects = Manager()
 
     class Meta:
-        unique_together = ( ('area', 'type'), ('type', 'code') )
+        unique_together = ( ('area', 'type'), ) # ('type', 'code') )
 
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.code, self.type, self.area.id)
