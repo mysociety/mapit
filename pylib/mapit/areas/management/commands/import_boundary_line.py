@@ -109,7 +109,7 @@ class Command(LabelCommand):
         self.save_polygons(self.unit_id_to_shape)
         self.save_polygons(self.ons_code_to_shape)
 
-    def save_polygons(lookup):
+    def save_polygons(self, lookup):
         for shape in lookup.values():
             m, poly = shape
             if not poly:
