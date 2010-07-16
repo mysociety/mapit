@@ -138,7 +138,7 @@ class Name(models.Model):
     def save(self, *args, **kwargs):
         super(Name, self).save(*args, **kwargs)
         try:
-            name = self.area.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0]
+            name = self.area.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0].name
             self.area.name = name
             self.area.save()
         except:
