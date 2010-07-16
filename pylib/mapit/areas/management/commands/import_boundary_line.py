@@ -117,7 +117,7 @@ class Command(LabelCommand):
             sys.stdout.write(".")
             sys.stdout.flush()
             #g = OGRGeometry(OGRGeomType('MultiPolygon'))
-            m.polygons.clear()
+            m.polygons.all().delete()
             for p in poly:
                 #g.add(p)
                 m.polygons.create(polygon=p)
