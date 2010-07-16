@@ -112,7 +112,7 @@ class Area(models.Model):
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
-    polygon = models.MultiPolygonField(srid=27700)
+    polygon = models.PolygonField(srid=27700)
     objects = GeoManager()
 
     def __unicode__(self):

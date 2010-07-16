@@ -120,11 +120,11 @@ class Command(LabelCommand):
             m.polygons.all().delete()
             for p in poly:
                 if p.geom_name == 'POLYGON':
-                    g = OGRGeometry(OGRGeomType('MultiPolygon'))
-                    g.add(p)
+                    shapes = [ p ]
                 else:
-                    g = p
-                m.polygons.create(polygon=g.wkt)
+                    shapes = p
+                for g in shapes:
+                    m.polygons.create(polygon=g.wkt)
             #m.polygon = g.wkt
             #m.save()
             poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
