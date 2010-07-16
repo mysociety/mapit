@@ -112,7 +112,7 @@ class Area(models.Model):
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
-    polygon = models.PolygonField(srid=27700, null=True, blank=True)
+    polygon = models.MultiPolygonField(srid=27700)
     objects = GeoManager()
 
     def __unicode__(self):
@@ -155,7 +155,7 @@ class Code(models.Model):
     objects = Manager()
 
     class Meta:
-        unique_together = ( ('area', 'type'), ) # ('type', 'code') )
+        unique_together = ( ('area', 'type'), ('type', 'code') )
 
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.code, self.type, self.area.id)
