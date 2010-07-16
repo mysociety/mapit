@@ -18,7 +18,7 @@ class AreaAdmin(admin.OSMGeoAdmin):
     ]
 
 class GeometryAdmin(admin.OSMGeoAdmin):
-    raw_id_fields = ('area')
+    raw_id_fields = ('area',)
 
 admin.site.register(Area, AreaAdmin)
 admin.site.register(Geometry, GeometryAdmin)
