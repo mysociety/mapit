@@ -14,7 +14,7 @@ from mapit.areas.models import Area, Generation
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<Boundary-Line SHP files (county before its wards, Euro before Westminster>'
+    args = '<Boundary-Line SHP files (wards before Westminster>'
     option_list = LabelCommand.option_list + (
         make_option('--control', action='store', dest='control', help='Refer to a Python module that can tell us what has changed'),
     )
@@ -41,7 +41,7 @@ class Command(LabelCommand):
             print " ", name
 
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
-            #name = re.sub('\s*\(B\)$', '', name)
+            name = re.sub('\s+', ' ', name)
 
             ons_code = feat['CODE'].value if feat['CODE'].value != '999999' else None
             unit_id = str(feat['UNIT_ID'].value)
