@@ -46,7 +46,7 @@ class Command(NoArgsCommand):
                 print "Parent for %s [%d] (%s) is %s [%d] (%s)" % (area.name, area.id, area.type, parent.name, parent.id, parent.type)
             except Area.DoesNotExist:
                 raise Exception, "Area %s [%d] (%s) does not have a parent?" % (area.name, area.id, area.type)
-            if area.parent != parent:
-                area.parent = parent
+            if area.parent_area != parent:
+                area.parent_area = parent
                 area.save()
 
