@@ -30,6 +30,9 @@ class Command(LabelCommand):
                 country='E', type='COP', code_type='ons', code=ward_code
             )
             area.names.get_or_create(type='S', name=ward_name)
+            if area.parent_area != council:
+                area.parent_area = council
+                area.save()
             ward[ward_code] = area
 
         for row in csv.reader(open(file)):
