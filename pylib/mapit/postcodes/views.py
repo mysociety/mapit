@@ -24,12 +24,12 @@ def postcode(request, postcode, format='html'):
     ):
         areas.append({
             'id': area.id,
+            'name': area.name,
             'parent_area': area.parent_area.id if area.parent_area else None,
-            'type': area.type,
-            'country': area.country,
+            'type': (area.type, area.get_type_display()),
+            'country': (area.country, area.get_country_display()),
             'generation_low': area.generation_low.id,
             'generation_high': area.generation_high.id,
-            'name': area.name,
             'codes': area.all_codes,
         })
 
