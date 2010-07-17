@@ -81,8 +81,8 @@ class Command(LabelCommand):
                 country = 'E'
             else: # WMC
                 # Euro regions should be loaded before Westminster...
-                euro = Area.objects.get(type='EUR', polygons__polygon__contains=feat.geom.geos)
-                country = euro.country
+                area_within = Area.objects.filter(type__in=('UTW','UTE','MTW','COP','LBW','DIW'), polygons__polygon__contained=feat.geom.geos)[0]
+                country = area_within.country
             # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
             # Do parents in separate P-in-P code after this is done.
 
