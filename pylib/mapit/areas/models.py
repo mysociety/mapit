@@ -149,7 +149,7 @@ class Name(models.Model):
         n = re.sub(' Assembly Const$', '', n) # WAC
         n = re.sub(' Assembly ER$', '', n) # WAE
         n = re.sub(' GL Assembly Const$', '', n) # LAC
-        n = re.sub(' London Boro$', ' Borough Council', n) # LBO
+        n = re.sub(' London Boro$', ' Borough', n) # LBO
         if self.area.country == 'W': n = re.sub('^.*? - ', '', n) # UTA
         n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
         n = re.sub(' District \(B\)$', ' Borough', n) # DIS
