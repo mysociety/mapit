@@ -25,28 +25,28 @@ class Command(NoArgsCommand):
             'UTW': 'UTA',
             'SPC': 'SPE',
             'WAC': 'WAE',
-            'CPC': ('DIS', 'UTA', 'MTD', 'LBO'),
+            'CPC': ('DIS', 'UTA', 'MTD', 'LBO', 'COI'),
         }
         for area in Area.objects.filter(
             type__in=parentmap.keys(),
             generation_low__lte=new_generation, generation_high__gte=new_generation,
         ):
-            for polygon in area.polygons.all():
-                try:
-                    args = {
-                        'polygons__polygon__contains': polygon.polygon,
-                        'generation_low__lte': new_generation,
-                        'generation_high__gte': new_generation,
-                    }
-                    if isinstance(parentmap[area.type], str):
-                        args['type'] = parentmap[area.type]
-                    else:
-                        args['type__in'] = parentmap[area.type]
-                    parent = Area.objects.get(**args)
-                    print "Parent for %s [%d] (%s) is %s [%d] (%s)" % (area.name, area.id, area.type, parent.name, parent.id, parent.type)
-                    break
-                except Area.DoesNotExist:
-                    raise Exception, "Area %s [%d] (%s) does not have a parent?" % (area.name, area.id, area.type)
-            #area.parent = parent
-            #area.save()
+            polygon = area.polygons.all()[0]
+            try:
+                args = {
+                    'polygons__polygon__contains': polygon.polygon.point_on_surface,
+                    'generation_low__lte': new_generation,
+                    'generation_high__gte': new_generation,
+                }
+                if isinstance(parentmap[area.type], str):
+                    args['type'] = parentmap[area.type]
+                else:
+                    args['type__in'] = parentmap[area.type]
+                parent = Area.objects.get(**args)
+                print "Parent for %s [%d] (%s) is %s [%d] (%s)" % (area.name, area.id, area.type, parent.name, parent.id, parent.type)
+            except Area.DoesNotExist:
+                raise Exception, "Area %s [%d] (%s) does not have a parent?" % (area.name, area.id, area.type)
+            if area.parent != parent:
+                area.parent = parent
+                area.save()
 
