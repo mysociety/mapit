@@ -124,8 +124,7 @@ class Name(models.Model):
     type = models.CharField(max_length=1, choices=(
         ('O', 'Ordnance Survey'),
         ('S', 'ONS (SNAC/GSS)'),
-        ('F', 'Display name'),
-        ('M', 'mySociety name'),
+        ('M', 'Override name'),
     ))
     name = models.CharField(max_length=100)
     objects = Manager()
