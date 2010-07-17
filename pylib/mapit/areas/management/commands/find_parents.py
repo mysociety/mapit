@@ -10,7 +10,6 @@ class Command(NoArgsCommand):
     help = 'Find parents for shapes'
 
     def handle_noargs(self, **options):
-        current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
             raise Exception, "No new generation to be used for import!"

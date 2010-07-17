@@ -14,12 +14,12 @@ def postcode(request, postcode, format='html'):
     for area in itertools.chain(
         Area.objects.filter(
             polygons__polygon__contains=postcode.location,
-            #generation_low__lte=current_generation,
-            #generation_high__gte=current_generation
+            generation_low__lte=current_generation,
+            generation_high__gte=current_generation
         ),
         postcode.areas.filter(
-            #generation_low__lte=current_generation,
-            #generation_high__gte=current_generation
+            generation_low__lte=current_generation,
+            generation_high__gte=current_generation
         )
     ):
         areas.append({
