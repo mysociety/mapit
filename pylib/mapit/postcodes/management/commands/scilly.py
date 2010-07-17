@@ -36,6 +36,7 @@ class Command(LabelCommand):
             if row[1] == '90': continue
             postcode = row[0].strip().replace(' ', '')
             ons_code = ''.join(row[15:18])
+            if ons_code[0:4] != '00HF': continue
             pc = Postcode.objects.get(postcode=postcode)
             pc.areas.add(ward[ons_code])
 
