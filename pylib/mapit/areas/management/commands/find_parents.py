@@ -33,11 +33,16 @@ class Command(NoArgsCommand):
         ):
             for polygon in area.polygons.all():
                 try:
-                    parent = Area.objects.get(
-                        type__in=parentmap[area.type],
-                        polygons__polygon__contains=polygon.polygon,
-                        generation_low__lte=new_generation, generation_high__gte=new_generation,
-                    )
+                    args = {
+                        'polygons__polygon__contains': polygon.polygon,
+                        'generation_low__lte': new_generation,
+                        'generation_high__gte': new_generation,
+                    }
+                    if isinstance(parentmap[area.type], str):
+                        args['type'] = parentmap[area.type]
+                    else:
+                        args['type__in'] = parentmap[area.type]
+                    parent = Area.objects.get(**args)
                     print "Parent for %s [%d] (%s) is %s [%d] (%s)" % (area.name, area.id, area.type, parent.name, parent.id, parent.type)
                     break
                 except Area.DoesNotExist:
