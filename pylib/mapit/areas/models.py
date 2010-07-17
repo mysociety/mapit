@@ -1,3 +1,4 @@
+import re
 from django.contrib.gis.db import models
 from mapit.managers import Manager, GeoManager
 
@@ -135,11 +136,34 @@ class Name(models.Model):
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.name, self.type, self.area.id)
 
+    def make_friendly_name(self, name):
+        n = re.sub('\s+', ' ', name.name.strip())
+        n = n.replace('St. ', 'St ')
+        if name.type == 'M': return n
+        if name.type == 'S': return n
+        # Type must be 'O' here
+        n = re.sub(' Euro Region$', '', n) # EUR
+        n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
+        n = re.sub(' (Islands )?P Const$', '', n) # SPC
+        n = re.sub(' PER$', '', n) # SPE
+        n = re.sub(' Assembly Const$', '', n) # WAC
+        n = re.sub(' Assembly ER$', '', n) # WAE
+        n = re.sub(' GL Assembly Const$', '', n) # LAC
+        n = re.sub(' London Boro$', ' Borough Council', n) # LBO
+        if self.area.country == 'W': n = re.sub('^.*? - ', '', n) # UTA
+        n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
+        n = re.sub(' District \(B\)$', ' Borough', n) # DIS
+        n = re.sub(' \(B\)$', ' Borough', n) # DIS
+        if self.area.type in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'): n += ' Council'
+        n = re.sub(' (ED|CP)$', '', n) # CPC, CED, UTE
+        n = re.sub(' Ward$', '', n) # DIW, LBW, MTW, UTW
+        return n
+
     def save(self, *args, **kwargs):
         super(Name, self).save(*args, **kwargs)
         try:
-            name = self.area.names.filter(type__in=('F', 'M', 'O', 'S')).order_by('type')[0].name
-            self.area.name = name
+            name = self.area.names.filter(type__in=('M', 'O', 'S')).order_by('type')[0]
+            self.area.name = self.make_friendly_name(name)
             self.area.save()
         except:
             pass
