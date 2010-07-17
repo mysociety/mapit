@@ -80,8 +80,8 @@ class Command(LabelCommand):
             elif area_code in ('EUR', 'UTA', 'UTE', 'UTW', 'CPC'):
                 country = 'E'
             else: # WMC
-                # Euro regions should be loaded before Westminster...
-                area_within = Area.objects.filter(type__in=('UTW','UTE','MTW','COP','LBW','DIW'), polygons__polygon__contained=feat.geom.geos)[0]
+                # Make sure WMC are loaded after all wards...
+                area_within = Area.objects.filter(type__in=('UTW','UTE','MTW','COP','LBW','DIW'), polygons__polygon__contains=feat.geom.geos.point_on_surface)[0]
                 country = area_within.country
             # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
             # Do parents in separate P-in-P code after this is done.
