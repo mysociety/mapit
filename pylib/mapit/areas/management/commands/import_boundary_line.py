@@ -5,6 +5,7 @@
 
 import re
 import sys
+from optparse import make_option
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
@@ -13,12 +14,19 @@ from mapit.areas.models import Area, Generation
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<Boundary-Line SHP files>'
+    args = '<Boundary-Line SHP files (county before its wards, Euro before Westminster>'
+    option_list = LabelCommand.option_list + (
+        make_option('--control', action='store', dest='control', help='Refer to a Python module that can tell us what has changed'),
+    )
 
     ons_code_to_shape = {}
     unit_id_to_shape = {}
 
     def handle_label(self,  filename, **options):
+        if not options.control:
+            raise Exception, "You must specify a control file"
+        control = sys.modules[__import__(options.control)]
+
         print filename
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
@@ -62,30 +70,34 @@ class Command(LabelCommand):
                 poly.append(feat.geom)
                 continue
 
+            if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
+                country = 'E'
+            elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
+                country = 'S'
+            elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (ons_code and ons_code[0:3] in ('00N', '00P')):
+                country = 'W'
+            elif area_code in ('EUR', 'UTA', 'UTE', 'UTW', 'CPC'):
+                country = 'E'
+            else: # WMC
+                # Euro regions should be loaded before Westminster...
+                euro = Area.objects.get(type='EUR', polygons__polygon__contains=feat.geom.geos)
+                country = euro.country
+            # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
+            # Do parents in separate P-in-P code after this is done.
+
             try:
+                if control.check(name, area_code, country):
+                    raise Area.DoesNotExist
                 if ons_code:
                     m = Area.objects.get(codes__type='ons', codes__code=ons_code)
                 elif unit_id:
                     m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
+                    m_name = m.names.get(type='O').name
+                    if name != m_name:
+                        raise Exception, "Unit ID code %s is %s in DB but %s in SHP file" % (unit_id, m_name, name)
                 else:
-                    # UK Parliamentary Constituencies don't have any code in Boundary-Line
-                    # (although they will have a code in GSS, looks like).
-                    # Let us assume if there's one with the right name, we'll use that.
-                    assert area_code == 'WMC'
-                    m = Area.objects.get(type=area_code, names__type='O', names__name=name)
+                    raise Exception, 'Area "%s" (%s) has neither ONS code nor unit ID' % (name, area_code)
             except Area.DoesNotExist:
-                country = ''
-                if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
-                    country = 'E'
-                elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
-                    country = 'S'
-                elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (ons_code and ons_code[0:3] in ('00N', '00P')):
-                    country = 'W'
-                elif area_code in ('EUR', 'UTA', 'UTE', 'UTW', 'CPC'):
-                    country = 'E'
-                # That leaves WMC
-                # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
-                # Do parents and WMC countries in separate PinP code after this is done.
                 m = Area(
                     type = area_code,
                     country = country,
