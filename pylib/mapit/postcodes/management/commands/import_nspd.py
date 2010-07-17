@@ -39,6 +39,7 @@ class Command(LabelCommand):
 
         # Read in ward name -> electoral area name/area
         ni_eas = csv.reader(open('../../data/ni-electoral-areas.csv'))
+        ni_eas.next()
         ward_to_electoral_area = {}
         e = {}
         for district, electoral_area, ward, dummy in ni_eas:
