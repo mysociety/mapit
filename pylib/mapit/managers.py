@@ -1,31 +1,25 @@
 from django.contrib.gis.db import models
+from django.core.exceptions import ObjectDoesNotExist
+
+def update_or_create(self, filter_attrs, attrs):
+    try:
+        obj = self.get(**filter_attrs)
+        changed = False
+        for k, v in attrs.items():
+            if obj.__dict__[k] != v:
+                changed = True
+                obj.__dict__[k] = v
+        if changed:
+            obj.save()
+    except ObjectDoesNotExist:
+        attrs.update(filter_attrs)
+        self.create(**attrs)
 
 class GeoManager(models.GeoManager):
     def update_or_create(self, filter_attrs, attrs):
-        if not self.filter(**filter_attrs).update(**attrs):
-            attrs.update(filter_attrs)
-            self.create(**attrs)
+        update_or_create(self, filter_attrs, attrs)
 
 class Manager(models.Manager):
     def update_or_create(self, filter_attrs, attrs):
-        if not self.filter(**filter_attrs).update(**attrs):
-            attrs.update(filter_attrs)
-            self.create(**attrs)
+        update_or_create(self, filter_attrs, attrs)
 
-# Other possibilities for update_or_create include things like:
-#
-# try:
-#     all = attrs.copy()
-#     all.update(filter_attrs)
-#     self.create(**all)
-# except django.db.IntegrityError:
-#     self.filter(**filter_attrs).update(**attrs)
-
-# OR
-
-# already = self.filter(**filter_attrs):
-# if already:
-#     already.update(**attrs)
-# else:
-#     attrs.update(filter_attrs)
-#     self.create(**attrs)

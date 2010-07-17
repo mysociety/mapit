@@ -37,6 +37,8 @@ class Command(LabelCommand):
             ons_code = feat['CODE'].value if feat['CODE'].value != '999999' else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
+            if self.patch_boundary_line(ons_code, area_code):
+                ons_code = None
             
             if area_code == 'NCP': continue # Ignore Non Parished Areas
 
@@ -108,6 +110,12 @@ class Command(LabelCommand):
 
         self.save_polygons(self.unit_id_to_shape)
         self.save_polygons(self.ons_code_to_shape)
+
+    def patch_boundary_line(self, ons_code, area_code):
+        """Fix mistakes in Boundary-Line"""
+        if area_code == 'WMC' and ons_code == '42UH012':
+            return True
+        return False
 
     def save_polygons(self, lookup):
         for shape in lookup.values():
