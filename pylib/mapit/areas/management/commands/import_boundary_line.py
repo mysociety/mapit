@@ -23,9 +23,9 @@ class Command(LabelCommand):
     unit_id_to_shape = {}
 
     def handle_label(self,  filename, **options):
-        if not options.control:
+        if not options['control']:
             raise Exception, "You must specify a control file"
-        control = sys.modules[__import__(options.control)]
+        control = sys.modules[__import__(options['control'])]
 
         print filename
         current_generation = Generation.objects.current()
