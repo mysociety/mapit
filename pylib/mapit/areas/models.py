@@ -179,7 +179,7 @@ class Code(models.Model):
     objects = Manager()
 
     class Meta:
-        unique_together = ( ('area', 'type'), ('type', 'code') )
+        unique_together = ('area', 'type')
 
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.code, self.type, self.area.id)
