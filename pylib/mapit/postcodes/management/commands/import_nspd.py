@@ -141,7 +141,7 @@ class Command(LabelCommand):
             ons_code = ''.join(row[5:8])
             output_area = row[33]
             super_output_area = row[44]
-            ward = Area.objects.get(codes__type='ons', codes__code=ons_code)
+            ward = code_to_area[ons_code]
             electoral_area = ward.parent_area
             council = electoral_area.parent_area
             nia_area = ward_to_assembly[ons_code]
