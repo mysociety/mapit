@@ -116,6 +116,9 @@ class Geometry(models.Model):
     polygon = models.PolygonField(srid=27700)
     objects = GeoManager()
 
+    class Meta:
+        verbose_name_plural = 'geometries'
+
     def __unicode__(self):
         return '%s, polygon %d' % (self.area, self.id)
 
