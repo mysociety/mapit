@@ -145,9 +145,9 @@ class Name(models.Model):
         n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
         n = re.sub(' (Islands )?P Const$', '', n) # SPC
         n = re.sub(' PER$', '', n) # SPE
+        n = re.sub(' GL Assembly Const$', '', n) # LAC
         n = re.sub(' Assembly Const$', '', n) # WAC
         n = re.sub(' Assembly ER$', '', n) # WAE
-        n = re.sub(' GL Assembly Const$', '', n) # LAC
         n = re.sub(' London Boro$', ' Borough', n) # LBO
         if self.area.country == 'W': n = re.sub('^.*? - ', '', n) # UTA
         n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
