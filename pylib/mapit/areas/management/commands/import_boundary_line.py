@@ -87,7 +87,7 @@ class Command(LabelCommand):
             # Do parents in separate P-in-P code after this is done.
 
             try:
-                if control.check(name, area_code, country):
+                if control.check(name, area_code, country, feat.geom):
                     raise Area.DoesNotExist
                 if ons_code:
                     m = Area.objects.get(codes__type='ons', codes__code=ons_code)

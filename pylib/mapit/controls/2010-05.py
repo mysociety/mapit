@@ -6,9 +6,9 @@
 # 
 # For May 2010, England and Wales WMC are all new. I think that's it!
 
-def check(name, area_code, country):
+def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""
-    if area_code == 'WMC' and country in ('E', 'W'):
+    if type == 'WMC' and country in ('E', 'W'):
         return True
     return False
 
