@@ -51,7 +51,7 @@ def postcode(request, postcode, format='html'):
         lookup = _postcode(request, postcode)
     except Http400:
         return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
-    areas = {}
+    areas = []
     for area in lookup:
         areas.append({
             'id': area.id,
@@ -114,7 +114,7 @@ def get_location(request):
             postcode = re.sub('\d[A-Z]{2}$', '', postcode)
         if not is_valid_partial_postcode(postcode):
             return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
-        loc = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid()
+        loc = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
     else:
         if not is_valid_postcode(postcode):
             return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
