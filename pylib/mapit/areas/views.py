@@ -330,7 +330,13 @@ def get_voting_area_children(request, area_id):
     out = [ child.id for child in children ]
     return output_json(out)
 
-def get_areas_by_type(request, type, min_generation=0):
+def get_areas_by_type(request, type):
+    generation = Generation.objects.current()
+    try:
+        min_generation = int(request.REQUEST['min_generation'])
+    except:
+        min_generation = generation
+
     args = {}
     if ',' in type:
         args['type__in'] = type.split(',')
@@ -343,8 +349,6 @@ def get_areas_by_type(request, type, min_generation=0):
     elif min_generation == -1:
         out = Area.objects.filter(**args)
     else:
-        generation = Generation.objects.current()
-        if not min_generation: min_generation = generation
         args['generation_low__lte'] = generation
         args['generation_high__gte'] = min_generation
         out = Area.objects.filter(**args)
