@@ -241,13 +241,13 @@ def _get_voting_area_info(area_id):
         area = get_object_or_404(Area, id=int(area_id))
 
     try:
-        os_name = area.names.get(type='O')
+        os_name = area.names.get(type='O').name
     except:
-        os_name = ''
+        os_name = None
     try:
-        ons_code = area.codes.get(type='ons')
+        ons_code = area.codes.get(type='ons').code
     except:
-        ons_code = ''
+        ons_code = None
 
     out = {
         'area_id': area.id,
@@ -259,7 +259,7 @@ def _get_voting_area_info(area_id):
         'ons_code': ons_code,
         'generation_low': area.generation_low_id,
         'generation_high': area.generation_high_id,
-        'generation': Generation.objects.current(),
+        'generation': Generation.objects.current().id,
     }
 
     for item in ('type_name', 'attend_prep', 'general_prep', 'rep_name', 'rep_name_plural',
