@@ -75,7 +75,8 @@ class Area(models.Model):
     name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
-        ('EUR', 'Euro region'),
+        ('EUP', 'European Parliament'),
+        ('EUR', 'European region'),
         ('HOL', 'House of Lords'),
         ('HOC', 'House of Lords constituency'),
         ('WMP', 'UK Parliament'),
@@ -119,7 +120,7 @@ class Area(models.Model):
         ('W', 'Wales'),
         ('S', 'Scotland'),
         ('N', 'Northern Ireland'),
-        ('', 'None'),
+        ('', '-'),
     ))
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)

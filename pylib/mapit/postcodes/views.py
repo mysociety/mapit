@@ -74,8 +74,8 @@ def postcode(request, postcode):
         srid = 27700
     postcode.location.transform(srid)
     out['srid'] = srid
-    out['easting'] = round(postcode.location[0])
-    out['northing'] = round(postcode.location[1])
+    out['easting'] = int(round(postcode.location[0]))
+    out['northing'] = int(round(postcode.location[1]))
 
     return output_json(out)
     
@@ -132,7 +132,7 @@ def get_location(request, postcode, partial):
     else:
         loc.transform(27700)
         result['coordsyst'] = 'G'
-    result['easting'] = round(loc[0])
-    result['northing'] = round(loc[1])
+    result['easting'] = int(round(loc[0]))
+    result['northing'] = int(round(loc[1]))
 
     return output_json(result)
