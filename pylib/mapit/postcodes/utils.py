@@ -7,18 +7,18 @@ def is_valid_postcode(pc):
     if pc in ('ZZ99ZZ', 'ZZ99ZY'): return True
     
     # See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
-    inward  = 'ABDEFGHJLNPQRSTUWXYZ'
+    inward = 'ABDEFGHJLNPQRSTUWXYZ'
     fst = 'ABCDEFGHIJKLMNOPRSTUWYZ'
     sec = 'ABCDEFGHJKLMNOPQRSTUVWXY'
     thd = 'ABCDEFGHJKSTUW'
     fth = 'ABEHMNPRVWXY'
 
-    if re.match('[$fst][1-9]\d[$in][$in]$', pc) or \
-        re.match('[$fst][1-9]\d\d[$in][$in]$', pc) or \
-        re.match('[$fst][$sec]\d\d[$in][$in]$', pc) or \
-        re.match('[$fst][$sec][1-9]\d\d[$in][$in]$', pc) or \
-        re.match('[$fst][1-9][$thd]\d[$in][$in]$', pc) or \
-        re.match('[$fst][$sec][1-9][$fth]\d[$in][$in]$', pc):
+    if re.match('[%s][1-9]\d[%s][%s]$' % (fst, inward, inward), pc) or \
+        re.match('[%s][1-9]\d\d[%s][%s]$' % (fst, inward, inward), pc) or \
+        re.match('[%s][%s]\d\d[%s][%s]$' % (fst, sec, inward, inward), pc) or \
+        re.match('[%s][%s][1-9]\d\d[%s][%s]$' % (fst, sec, inward, inward), pc) or \
+        re.match('[%s][1-9][%s]\d[%s][%s]$' % (fst, thd, inward, inward), pc) or \
+        re.match('[%s][%s][1-9][%s]\d[%s][%s]$' % (fst, sec, fth, inward, inward), pc):
         return True
 
     return False
@@ -35,12 +35,12 @@ def is_valid_partial_postcode(pc):
     thd = 'ABCDEFGHJKSTUW'
     fth = 'ABEHMNPRVWXY'
   
-    if re.match('[$fst][1-9]$', pc) or \
-        re.match('[$fst][1-9]\d$', pc) or \
-        re.match('[$fst][$sec]\d$', pc) or \
-        re.match('[$fst][$sec][1-9]\d$', pc) or \
-        re.match('[$fst][1-9][$thd]$', pc) or \
-        re.match('[$fst][$sec][1-9][$fth]$', pc):
+    if re.match('[%s][1-9]$' % fst(), pc) or \
+        re.match('[%s][1-9]\d$' % (fst), pc) or \
+        re.match('[%s][%s]\d$' % (fst, sec), pc) or \
+        re.match('[%s][%s][1-9]\d$' % (fst, sec), pc) or \
+        re.match('[%s][1-9][%s]$' % (fst, thd), pc) or \
+        re.match('[%s][%s][1-9][%s]$' % (fst, sec, fth), pc):
         return True
 
     return False

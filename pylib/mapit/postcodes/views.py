@@ -90,9 +90,15 @@ def get_example_postcode(request, area_id):
     return HttpResponse(pc)
 
 def get_location(request):
-    postcode = re.sub('\s+', '', request.REQUEST['postcode']).upper()
-    partial = request.REQUEST['partial']
+    postcode = re.sub('\s+', '', request.REQUEST.get('postcode', '')).upper()
+    try:
+        partial = int(request.REQUEST['partial'])
+    except:
+        partial = 0
     irish = (postcode[0:2] == 'BT')
+
+    if not postcode:
+        return HttpResponseBadRequest("Postcode must be given.")
 
     result = {}
     if re.match('ZZ9', postcode): return result
