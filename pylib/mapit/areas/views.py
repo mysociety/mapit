@@ -293,12 +293,11 @@ def get_voting_areas_by_location(request, coordsyst, x, y, method):
 
     return output_json(out)
 
-def get_voting_area_geometry(request, area_id):
-    area = _get_voting_area_geometry(area_id)
+def get_voting_area_geometry(request, area_id, polygon):
+    area = _get_voting_area_geometry(area_id, polygon)
     return output_json(area)
 
-def _get_voting_area_geometry(area_id):
-    polygon_type = request.REQUEST.get('polygon_type')
+def _get_voting_area_geometry(area_id, polygon):
     area = get_object_or_404(Area, id=area_id)
     all_areas = area.polygons.all().collect()
     out = {
@@ -313,13 +312,13 @@ def _get_voting_area_geometry(area_id):
     #all_areas.centroid.transform(4326)
     out['centre_lon'] = all_areas.centroid[0]
     out['centre_lat'] = all_areas.centroid[1]
-    if polygon_type:
+    if polygon:
         out['polygon'] = all_areas.json
-    return output_json(out)
+    return out
 
-def get_voting_areas_geometry(request, area_ids):
+def get_voting_areas_geometry(request, area_ids, polygon):
     area_ids = area_ids.split(',')
-    out = dict( (id, _get_voting_area_geometry(id)) for id in area_ids )
+    out = dict( (id, _get_voting_area_geometry(id, polygon)) for id in area_ids )
     return output_json(out)
 
 def get_voting_area_children(request, area_id):
@@ -362,7 +361,7 @@ def get_voting_area_by_name(request, name):
     type = request.REQUEST.get('type', '')
 
     args = {
-        'name__icontains': name,
+        'name__istartswith': name,
         'generation_low__lte': generation,
         'generation_high__gte': min_generation,
     }
