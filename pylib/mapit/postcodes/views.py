@@ -44,11 +44,11 @@ def _postcode(request, postcode):
             extra.extend(enclosing_areas[area.type])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
-    return areas
+    return areas, postcode
     
 def postcode(request, postcode):
     try:
-        lookup = _postcode(request, postcode)
+        lookup, postcode = _postcode(request, postcode)
     except Http400:
         return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
     areas = []
@@ -63,13 +63,27 @@ def postcode(request, postcode):
             'generation_high': area.generation_high_id,
             'codes': area.all_codes,
         })
-    return output_json(areas)
+    out = {
+        'longitude': postcode.location[0]
+        'latitude': postcode.location[1]
+        'areas': areas,
+    }
+    if postcode.postcode[0:2] == 'BT':
+        postcode.location.transform(29902)
+        out['coordsyst'] = 'I'
+    else:
+        loc.transform(27700)
+        out['coordsyst'] = 'G'
+    out['easting'] = postcode.location[0]
+    out['northing'] = postcode.location[1]
+
+    return output_json(out)
     
 # OLD VIEWS
 
 def get_voting_areas(request, postcode):
     try:
-        lookup = _postcode(request, postcode)
+        lookup, postcode = _postcode(request, postcode)
     except Http400:
         return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
     areas = {}
