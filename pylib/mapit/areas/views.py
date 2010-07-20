@@ -3,7 +3,6 @@ from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseBadRequest
 
 voting_area = {
     'type_name': {
@@ -223,11 +222,7 @@ def area(request, area_id):
 
 # OLD VIEWS
 
-def get_voting_area_info(request):
-    try:
-        area_id = request.REQUEST['id']
-    except:
-        return HttpResponseBadRequest("Bad area ID given")
+def get_voting_area_info(request, area_id):
     area = _get_voting_area_info(area_id)
     return output_json(area)
 
@@ -265,36 +260,19 @@ def _get_voting_area_info(area_id):
 
     return out
 
-def get_voting_areas_info(request):
-    try:
-        area_ids = request.REQUEST['ids'].split(',')
-    except:
-        return HttpResponseBadRequest("Bad area ID given")
-
+def get_voting_areas_info(request, area_ids):
+    area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
     return output_json(out)
 
-def get_voting_areas_by_location(request):
-    try:
-        method = request.REQUEST['method']
-        assert method in ('box', 'polygon')
-    except:
-        return HttpResponseBadRequest("Method must be given, and be box or polygon")
-
+def get_voting_areas_by_location(request, coordsyst, x, y, method):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
 
-    try:
-        easting = request.REQUEST['e']
-        northing = request.REQUEST['n']
-        location = Point(float(easting), float(northing), srid=27700)
-    except:
-        try:
-            lat = request.REQUEST['lat']
-            lon = request.REQUEST['lon']
-            location = Point(float(lon), float(lat), srid=4326)
-        except:
-            return HttpResponseBadRequest("Co-ordinates must be supplied")
+    if coordsyst == 'osgb':
+        location = Point(float(x), float(y), srid=27700)
+    elif coordsyst == 'wgs84':
+        location = Point(float(x), float(y), srid=4326)
 
     args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
 
@@ -315,11 +293,7 @@ def get_voting_areas_by_location(request):
 
     return output_json(out)
 
-def get_voting_area_geometry(request):
-    try:
-        area_id = request.REQUEST['id']
-    except:
-        return HttpResponseBadRequest("Bad area ID given")
+def get_voting_area_geometry(request, area_id):
     area = _get_voting_area_geometry(area_id)
     return output_json(area)
 
@@ -343,20 +317,12 @@ def _get_voting_area_geometry(area_id):
         out['polygon'] = all_areas.json
     return output_json(out)
 
-def get_voting_areas_geometry(request):
-    try:
-        area_ids = request.REQUEST['ids'].split(',')
-    except:
-        return HttpResponseBadRequest("Bad area IDs given")
-
+def get_voting_areas_geometry(request, area_ids):
+    area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_geometry(id)) for id in area_ids )
     return output_json(out)
 
-def get_voting_area_children(request):
-    try:
-        area_id = request.REQUEST['id']
-    except:
-        return HttpResponseBadRequest("Bad area ID given")
+def get_voting_area_children(request, area_id):
     area = get_object_or_404(Area, id=area_id)
     generation = Generation.objects.current()
     children = Area.objects.filter(parent_area=area,
@@ -365,16 +331,7 @@ def get_voting_area_children(request):
     out = [ child.id for child in children ]
     return output_json(out)
 
-def get_areas_by_type(request):
-    try:
-        min_generation = int(request.REQUEST['min_generation'])
-    except:
-        min_generation = 0
-
-    type = request.REQUEST.get('type', '')
-    if not type:
-        return HttpResponseBadRequest('Please specify type')
-
+def get_areas_by_type(request, type, min_generation=0):
     args = {}
     if ',' in type:
         args['type__in'] = type.split(',')
@@ -388,23 +345,19 @@ def get_areas_by_type(request):
         out = Area.objects.filter(**args)
     else:
         generation = Generation.objects.current()
-        if not generation: min_generation = generation
+        if not min_generation: min_generation = generation
         args['generation_low__lte'] = generation
         args['generation_high__gte'] = min_generation
         out = Area.objects.filter(**args)
     out = [ a.id for a in out ]
     return output_json(out)
 
-def get_voting_area_by_name(request):
+def get_voting_area_by_name(request, name):
+    generation = Generation.objects.current()
     try:
         min_generation = int(request.REQUEST['min_generation'])
     except:
-        min_generation = 0
-    generation = Generation.objects.current()
-
-    name = request.REQUEST.get('name')
-    if not name:
-        return HttpResponseBadRequest('Please specify name')
+        min_generation = generation
 
     type = request.REQUEST.get('type', '')
 
