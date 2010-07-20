@@ -64,8 +64,8 @@ def postcode(request, postcode):
             'codes': area.all_codes,
         })
     out = {
-        'longitude': postcode.location[0]
-        'latitude': postcode.location[1]
+        'longitude': postcode.location[0],
+        'latitude': postcode.location[1],
         'areas': areas,
     }
     if postcode.postcode[0:2] == 'BT':
