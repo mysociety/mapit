@@ -20,3 +20,18 @@ class Postcode(models.Model):
     def get_postcode_display(self):
         return re.sub('(...)$', r' \1', self.postcode)
 
+    def as_dict(self):
+        loc = self.location
+        result = {}
+        result['wgs84_lon'] = loc[0]
+        result['wgs84_lat'] = loc[1]
+        if self.postcode[0:2] == 'BT':
+            loc.transform(29902)
+            result['coordsyst'] = 'I'
+        else:
+            loc.transform(27700)
+            result['coordsyst'] = 'G'
+        result['easting'] = int(round(loc[0]))
+        result['northing'] = int(round(loc[1]))
+        return result
+

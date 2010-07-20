@@ -5,7 +5,7 @@ from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -63,19 +63,8 @@ def postcode(request, postcode):
             'generation_high': area.generation_high_id,
             'codes': area.all_codes,
         })
-    out = {
-        'longitude': postcode.location[0],
-        'latitude': postcode.location[1],
-        'areas': areas,
-    }
-    if postcode.postcode[0:2] == 'BT':
-        srid = 29902
-    else:
-        srid = 27700
-    postcode.location.transform(srid)
-    out['srid'] = srid
-    out['easting'] = int(round(postcode.location[0]))
-    out['northing'] = int(round(postcode.location[1]))
+    out = postcode.as_dict()
+    out['areas'] = areas
 
     return output_json(out)
     
@@ -100,11 +89,10 @@ def get_example_postcode(request, area_id):
             pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
         except:
             pc = None
-    return HttpResponse(pc)
+    return output_json(pc)
 
 def get_location(request, postcode, partial):
     postcode = re.sub('\s+', '', postcode.upper())
-    irish = (postcode[0:2] == 'BT')
 
     if partial:
         if is_valid_postcode(postcode):
@@ -112,27 +100,19 @@ def get_location(request, postcode, partial):
         if not is_valid_partial_postcode(postcode):
             return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
         try:
-            loc = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+            postcode = Postcode(
+                postcode = 'temp',
+                location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+            )
         except:
             raise Http404
     else:
         if not is_valid_postcode(postcode):
             return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
         try:
-            loc = Postcode.objects.get(postcode=postcode).location
+            postcode = Postcode.objects.get(postcode=postcode)
         except Postcode.DoesNotExist:
             raise Http404
 
-    result = {}
-    result['wgs84_lon'] = loc[0]
-    result['wgs84_lat'] = loc[1]
-    if irish:
-        loc.transform(29902)
-        result['coordsyst'] = 'I'
-    else:
-        loc.transform(27700)
-        result['coordsyst'] = 'G'
-    result['easting'] = int(round(loc[0]))
-    result['northing'] = int(round(loc[1]))
+    return output_json(postcode.as_dict())
 
-    return output_json(result)
