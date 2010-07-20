@@ -37,7 +37,7 @@ def _postcode(request, postcode):
     generation = request.REQUEST.get('generation', Generation.objects.current())
     areas = Area.objects.by_postcode(postcode, generation)
 
-    # Add fictional enclosing areas. 
+    # Add manual enclosing areas. 
     extra = []
     for area in areas:
         if area.type in enclosing_areas.keys():
@@ -56,11 +56,11 @@ def postcode(request, postcode, format='html'):
         areas.append({
             'id': area.id,
             'name': area.name,
-            'parent_area': area.parent_area.id if area.parent_area else None,
+            'parent_area': area.parent_area_id,
             'type': (area.type, area.get_type_display()),
             'country': (area.country, area.get_country_display()),
-            'generation_low': area.generation_low.id,
-            'generation_high': area.generation_high.id,
+            'generation_low': area.generation_low_id,
+            'generation_high': area.generation_high_id,
             'codes': area.all_codes,
         })
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
@@ -91,9 +91,13 @@ def get_example_postcode(request):
     except:
         return HttpResponseBadRequest("Bad area ID given.")
     area = get_object_or_404(Area, id=area_id)
-    pc = Postcode.objects.filter(areas=area)[0]
-    if not pc:
-        pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
+    try:
+        pc = Postcode.objects.filter(areas=area)[0]
+    except:
+        try:
+            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
+        except:
+            pc = None
     return HttpResponse(pc)
 
 def get_location(request):

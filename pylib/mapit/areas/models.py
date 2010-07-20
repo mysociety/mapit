@@ -34,12 +34,12 @@ class AreaManager(models.GeoManager):
 
     def by_postcode(self, postcode, generation=None):
         if generation is None: generation = Generation.objects.current()
-        return itertools.chain(
+        return list(itertools.chain(
             self.by_location(postcode.location, generation),
             postcode.areas.filter(
                 generation_low__lte=generation, generation_high__gte=generation
             )
-        )
+        ))
 
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
         current_generation = Generation.objects.current()
