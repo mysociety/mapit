@@ -2,7 +2,7 @@ import re
 import itertools
 from django.contrib.gis.db import models
 from mapit.managers import Manager, GeoManager
-from postcodes.models import Postcode
+from mapit.postcodes.models import Postcode
 
 class GenerationManager(models.Manager):
     def current(self):
