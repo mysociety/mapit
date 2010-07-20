@@ -323,3 +323,46 @@ def get_voting_areas_by_location(request):
     simplejson.dump(out, response, ensure_ascii=False)
     return response
 
+def get_voting_area_geometry(request):
+    try:
+        area_id = request.REQUEST['id']
+    except:
+        return HttpResponseBadRequest("Bad area ID given")
+    area = _get_voting_area_geometry(area_id)
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(area, response, ensure_ascii=False)
+    return response
+
+def _get_voting_area_geometry(area_id):
+    polygon_type = request.REQUEST.get('polygon_type')
+    area = get_object_or_404(Area, id=area_id)
+    all_areas = area.polygons.all().collect()
+    out = {
+        'area': all_areas.area,
+        'parts': all_areas.num_geom,
+        'centre_e': all_areas.centroid[0],
+        'centre_n': all_areas.centroid[1],
+    }
+    out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+    all_areas.transform(4326)
+    out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+    #all_areas.centroid.transform(4326)
+    out['centre_lon'] = all_areas.centroid[0]
+    out['centre_lat'] = all_areas.centroid[1]
+    if polygon_type:
+        out['polygon'] = all_areas.json
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
+def get_voting_areas_geometry(request):
+    try:
+        area_ids = request.REQUEST['ids'].split(',')
+    except:
+        return HttpResponseBadRequest("Bad area IDs given")
+
+    out = dict( (id, _get_voting_area_geometry(id)) for id in area_ids )
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
