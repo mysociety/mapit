@@ -46,7 +46,7 @@ def _postcode(request, postcode):
  
     return areas
     
-def postcode(request, postcode, format='html'):
+def postcode(request, postcode):
     try:
         lookup = _postcode(request, postcode)
     except Http400:
@@ -69,11 +69,7 @@ def postcode(request, postcode, format='html'):
     
 # OLD VIEWS
 
-def get_voting_areas(request):
-    try:
-        postcode = request.REQUEST['postcode']
-    except:
-        return HttpResponseBadRequest("Postcode must be given.")
+def get_voting_areas(request, postcode):
     try:
         lookup = _postcode(request, postcode)
     except Http400:
@@ -85,11 +81,7 @@ def get_voting_areas(request):
     simplejson.dump(areas, response, ensure_ascii=False)
     return response
 
-def get_example_postcode(request):
-    try:
-        area_id = int(request.REQUEST['id'])
-    except:
-        return HttpResponseBadRequest("Bad area ID given.")
+def get_example_postcode(request, area_id):
     area = get_object_or_404(Area, id=area_id)
     try:
         pc = Postcode.objects.filter(areas=area)[0]
@@ -100,34 +92,28 @@ def get_example_postcode(request):
             pc = None
     return HttpResponse(pc)
 
-def get_location(request):
-    postcode = re.sub('\s+', '', request.REQUEST.get('postcode', '')).upper()
-    try:
-        partial = int(request.REQUEST['partial'])
-    except:
-        partial = 0
+def get_location(request, postcode, partial):
+    postcode = re.sub('\s+', '', postcode.upper())
     irish = (postcode[0:2] == 'BT')
 
-    if not postcode:
-        return HttpResponseBadRequest("Postcode must be given.")
-
-    result = {}
-    if re.match('ZZ9', postcode): return result
     if partial:
         if is_valid_postcode(postcode):
             postcode = re.sub('\d[A-Z]{2}$', '', postcode)
         if not is_valid_partial_postcode(postcode):
             return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
-        loc = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+        try:
+            loc = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+        except:
+            raise Http404
     else:
         if not is_valid_postcode(postcode):
             return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
         try:
-            postcode = Postcode.objects.get(postcode=postcode)
+            loc = Postcode.objects.get(postcode=postcode).location
         except Postcode.DoesNotExist:
             raise Http404
-        loc = postcode.location
 
+    result = {}
     result['wgs84_lon'] = loc[0]
     result['wgs84_lat'] = loc[1]
     if irish:

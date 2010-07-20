@@ -207,7 +207,7 @@ voting_area = {
     }
 }
 
-def area(request, area_id, format='html'):
+def area(request, area_id):
     area = get_object_or_404(Area, id=area_id)
     out = {
         'id': area.id,
