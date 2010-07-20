@@ -10,8 +10,8 @@ urlpatterns = patterns('',
 
     # Old style calls
     (r'^get_voting_areas$', 'mapit.postcodes.views.get_voting_areas'),
-#    (r'^get_voting_area_info$', 'mapit.areas.views.get_voting_area_info'),
-#    (r'^get_voting_areas_info$', 'mapit.areas.views.get_voting_areas_info'),
+    (r'^get_voting_area_info$', 'mapit.areas.views.get_voting_area_info'),
+    (r'^get_voting_areas_info$', 'mapit.areas.views.get_voting_areas_info'),
 #    (r'^get_voting_area_by_name$', 'mapit.areas.views.get_voting_area_by_name'),
 #    (r'^get_areas_by_type$', 'mapit.areas.views.get_areas_by_type'),
 #    (r'^get_voting_area_geometry$', 'mapit.areas.views.get_voting_area_geometry'),
