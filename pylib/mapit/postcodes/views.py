@@ -70,7 +70,10 @@ def postcode(request, postcode, format='html'):
 # OLD VIEWS
 
 def get_voting_areas(request):
-    postcode = request.REQUEST['postcode']
+    try:
+        postcode = request.REQUEST['postcode']
+    except:
+        return HttpResponseBadRequest("Postcode must be given.")
     try:
         lookup = _postcode(request, postcode)
     except Http400:
@@ -82,7 +85,11 @@ def get_voting_areas(request):
     simplejson.dump(areas, response, ensure_ascii=False)
     return response
 
-def get_example_postcode(request, area_id):
+def get_example_postcode(request):
+    try:
+        area_id = int(request.REQUEST['id'])
+    except:
+        return HttpResponseBadRequest("Bad area ID given.")
     area = get_object_or_404(Area, id=area_id)
     pc = Postcode.objects.filter(areas=area)[0]
     if not pc:

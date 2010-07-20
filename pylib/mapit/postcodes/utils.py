@@ -35,7 +35,7 @@ def is_valid_partial_postcode(pc):
     thd = 'ABCDEFGHJKSTUW'
     fth = 'ABEHMNPRVWXY'
   
-    if re.match('[%s][1-9]$' % fst(), pc) or \
+    if re.match('[%s][1-9]$' % (fst), pc) or \
         re.match('[%s][1-9]\d$' % (fst), pc) or \
         re.match('[%s][%s]\d$' % (fst, sec), pc) or \
         re.match('[%s][%s][1-9]\d$' % (fst, sec), pc) or \
