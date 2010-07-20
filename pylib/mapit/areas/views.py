@@ -264,7 +264,7 @@ def _get_voting_area_info(area_id):
 
     for item in ('type_name', 'attend_prep', 'general_prep', 'rep_name', 'rep_name_plural',
                  'rep_name_long', 'rep_name_long_plural', 'rep_suffix', 'rep_prefix'):
-        out[item] = voting_area[item][area.type]
+        out[item] = voting_area[item].get(area.type)
 
     return out
 
