@@ -1,5 +1,6 @@
 import re
 from mapit.areas.models import Area, Generation
+from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -211,11 +212,11 @@ def area(request, area_id, format='html'):
     out = {
         'id': area.id,
         'name': area.name,
-        'parent_area': area.parent_area.id if area.parent_area else None,
+        'parent_area': area.parent_area_id,
         'type': (area.type, area.get_type_display()),
         'country': (area.country, area.get_country_display()),
-        'generation_low': area.generation_low.id,
-        'generation_high': area.generation_high.id,
+        'generation_low': area.generation_low_id,
+        'generation_high': area.generation_high_id,
         'codes': area.all_codes,
     }
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
@@ -275,6 +276,49 @@ def get_voting_areas_info(request):
         return HttpResponseBadRequest("Bad area ID given")
 
     out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
+def get_voting_areas_by_location(request):
+    try:
+        method = request.REQUEST['method']
+        assert method in ('box', 'polygon')
+    except:
+        return HttpResponseBadRequest("Method must be given, and be box or polygon")
+
+    type = request.REQUEST.get('type', '')
+    generation = request.REQUEST.get('generation', Generation.objects.current())
+
+    try:
+        easting = request.REQUEST['e']
+        northing = request.REQUEST['n']
+        location = Point(easting, northing, srid=27700)
+    except:
+        try:
+            lat = request.REQUEST['lat']
+            lon = request.REQUEST['lon']
+            location = Point(lon, lat, srid=4326)
+        except:
+            return HttpResponseBadRequest("Co-ordinates must be supplied")
+
+    args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
+
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    if method == 'box':
+        args['polygons__polygon__bbcontains'] = location
+    else:
+        args['polygons__polygon__contains'] = location
+
+    areas = Area.objects.filter(**args)
+    out = {}
+    for area in areas:
+        out[area.id] = area.type
+
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
     simplejson.dump(out, response, ensure_ascii=False)
     return response
