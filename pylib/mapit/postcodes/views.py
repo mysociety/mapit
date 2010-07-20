@@ -69,13 +69,13 @@ def postcode(request, postcode):
         'areas': areas,
     }
     if postcode.postcode[0:2] == 'BT':
-        postcode.location.transform(29902)
-        out['coordsyst'] = 'I'
+        srid = 29902
     else:
-        loc.transform(27700)
-        out['coordsyst'] = 'G'
-    out['easting'] = postcode.location[0]
-    out['northing'] = postcode.location[1]
+        srid = 27700
+    postcode.location.transform(srid)
+    out['srid'] = srid
+    out['easting'] = round(postcode.location[0])
+    out['northing'] = round(postcode.location[1])
 
     return output_json(out)
     
@@ -132,7 +132,7 @@ def get_location(request, postcode, partial):
     else:
         loc.transform(27700)
         result['coordsyst'] = 'G'
-    result['easting'] = loc[0]
-    result['northing'] = loc[1]
+    result['easting'] = round(loc[0])
+    result['northing'] = round(loc[1])
 
     return output_json(result)
