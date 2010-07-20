@@ -3,7 +3,7 @@ from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 voting_area = {
     'type_name': {
@@ -322,7 +322,34 @@ def areas_geometry(request, area_ids):
     out = dict( (id, _area_geometry(id)) for id in area_ids )
     return output_json(out)
 
-# OLD VIEWS
+def areas_by_point(request, srid, x, y, bb=False, legacy=False):
+    type = request.REQUEST.get('type', '')
+    generation = request.REQUEST.get('generation', Generation.objects.current())
+    location = Point(float(x), float(y), srid=srid)
+
+    args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
+
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    if bb and bb != 'polygon':
+        args['polygons__polygon__bbcontains'] = location
+    else:
+        args['polygons__polygon__contains'] = location
+
+    areas = Area.objects.filter(**args)
+    if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
+    return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
+
+def areas_by_point_latlon(request, lat, lon, bb=False):
+    return HttpResponseRedirect("/point/4326/%s,%s%s" % (lon, lat, "/bb" if bb else ''))
+
+def areas_by_point_osgb(request, e, n, bb=False):
+    return HttpResponseRedirect("/point/27700/%s,%s%s" % (e, n, "/bb" if bb else ''))
+
+# Legacy Views from old MaPit. Don't use in future.
 
 def get_voting_area_info(request, area_id):
     area = _get_voting_area_info(area_id)
@@ -365,33 +392,5 @@ def _get_voting_area_info(area_id):
 def get_voting_areas_info(request, area_ids):
     area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
-    return output_json(out)
-
-def get_voting_areas_by_location(request, coordsyst, x, y, method):
-    type = request.REQUEST.get('type', '')
-    generation = request.REQUEST.get('generation', Generation.objects.current())
-
-    if coordsyst == 'osgb':
-        location = Point(float(x), float(y), srid=27700)
-    elif coordsyst == 'wgs84':
-        location = Point(float(x), float(y), srid=4326)
-
-    args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
-
-    if ',' in type:
-        args['type__in'] = type.split(',')
-    elif type:
-        args['type'] = type
-
-    if method == 'box':
-        args['polygons__polygon__bbcontains'] = location
-    else:
-        args['polygons__polygon__contains'] = location
-
-    areas = Area.objects.filter(**args)
-    out = {}
-    for area in areas:
-        out[area.id] = area.type
-
     return output_json(out)
 

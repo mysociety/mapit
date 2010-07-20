@@ -80,7 +80,7 @@ def example_postcode_for_area(request, area_id, legacy=False):
             pc = None
     return output_json(pc)
 
-# OLD VIEWS
+# Legacy Views from old MaPit. Don't use in future.
 
 def get_location(request, postcode, partial):
     if partial:
