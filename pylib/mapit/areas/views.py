@@ -1,9 +1,9 @@
 import re
 from mapit.areas.models import Area, Generation
+from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
-from django.utils import simplejson
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseBadRequest
 
 voting_area = {
     'type_name': {
@@ -219,9 +219,7 @@ def area(request, area_id):
         'generation_high': area.generation_high_id,
         'codes': area.all_codes,
     }
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 # OLD VIEWS
 
@@ -231,9 +229,7 @@ def get_voting_area_info(request):
     except:
         return HttpResponseBadRequest("Bad area ID given")
     area = _get_voting_area_info(area_id)
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(area, response, ensure_ascii=False)
-    return response
+    return output_json(area)
 
 def _get_voting_area_info(area_id):
     if re.match('\d\d([a-z][a-z])?([a-z][a-z])?$(?i)', area_id):
@@ -276,9 +272,7 @@ def get_voting_areas_info(request):
         return HttpResponseBadRequest("Bad area ID given")
 
     out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_voting_areas_by_location(request):
     try:
@@ -319,9 +313,7 @@ def get_voting_areas_by_location(request):
     for area in areas:
         out[area.id] = area.type
 
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_voting_area_geometry(request):
     try:
@@ -329,9 +321,7 @@ def get_voting_area_geometry(request):
     except:
         return HttpResponseBadRequest("Bad area ID given")
     area = _get_voting_area_geometry(area_id)
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(area, response, ensure_ascii=False)
-    return response
+    return output_json(area)
 
 def _get_voting_area_geometry(area_id):
     polygon_type = request.REQUEST.get('polygon_type')
@@ -351,9 +341,7 @@ def _get_voting_area_geometry(area_id):
     out['centre_lat'] = all_areas.centroid[1]
     if polygon_type:
         out['polygon'] = all_areas.json
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_voting_areas_geometry(request):
     try:
@@ -362,9 +350,7 @@ def get_voting_areas_geometry(request):
         return HttpResponseBadRequest("Bad area IDs given")
 
     out = dict( (id, _get_voting_area_geometry(id)) for id in area_ids )
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_voting_area_children(request):
     try:
@@ -377,9 +363,7 @@ def get_voting_area_children(request):
         generation_low__lte=generation, generation_high__gte=generation
     )
     out = [ child.id for child in children ]
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_areas_by_type(request):
     try:
@@ -409,9 +393,7 @@ def get_areas_by_type(request):
         args['generation_high__gte'] = min_generation
         out = Area.objects.filter(**args)
     out = [ a.id for a in out ]
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 
 def get_voting_area_by_name(request):
     try:
@@ -446,7 +428,5 @@ def get_voting_area_by_name(request):
             'parent_area_id': area.parent_area_id,
         }
 
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(out, response, ensure_ascii=False)
-    return response
+    return output_json(out)
 

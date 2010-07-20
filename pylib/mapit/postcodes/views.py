@@ -3,8 +3,8 @@ import itertools
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
+from mapit.shortcuts import output_json
 from django.shortcuts import get_object_or_404
-from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseBadRequest
 
 # Stupid fixed IDs from old MaPit
@@ -63,9 +63,7 @@ def postcode(request, postcode):
             'generation_high': area.generation_high_id,
             'codes': area.all_codes,
         })
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(areas, response, ensure_ascii=False)
-    return response
+    return output_json(areas)
     
 # OLD VIEWS
 
@@ -77,9 +75,7 @@ def get_voting_areas(request, postcode):
     areas = {}
     for area in lookup:
         areas[area.type] = area.id
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(areas, response, ensure_ascii=False)
-    return response
+    return output_json(areas)
 
 def get_example_postcode(request, area_id):
     area = get_object_or_404(Area, id=area_id)
@@ -125,6 +121,4 @@ def get_location(request, postcode, partial):
     result['easting'] = loc[0]
     result['northing'] = loc[1]
 
-    response = HttpResponse(content_type='application/javascript; charset=utf-8')
-    simplejson.dump(result, response, ensure_ascii=False)
-    return response
+    return output_json(result)
