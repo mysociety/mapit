@@ -45,7 +45,7 @@ voting_area = {
         'EUR':  "Region",
     },
     'attend_prep': {
-        'LBO':  "on the",
+        'LBO':  "on",
         'LAS':  "on the",
         'CTY':  "on",
         'DIS':  "on",
@@ -163,7 +163,6 @@ voting_area = {
     },
     'rep_suffix': {
         'LBW': '',
-
         'GLA': '',
         'LAC': 'AM',
         'LAE': 'AM',
@@ -210,6 +209,15 @@ def area(request, area_id):
     area = get_object_or_404(Area, id=area_id)
     out = area.as_dict()
     return output_json(out)
+
+def area_children(request, area_id, legacy=False):
+    area = get_object_or_404(Area, id=area_id)
+    generation = Generation.objects.current()
+    children = Area.objects.filter(parent_area=area,
+        generation_low__lte=generation, generation_high__gte=generation
+    )
+    if legacy: return output_json( [ child.id for child in children ] )
+    return output_json( [ child.as_dict() for child in children ] )
 
 # OLD VIEWS
 
@@ -310,15 +318,6 @@ def _get_voting_area_geometry(area_id, polygon):
 def get_voting_areas_geometry(request, area_ids, polygon):
     area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_geometry(id, polygon)) for id in area_ids )
-    return output_json(out)
-
-def get_voting_area_children(request, area_id):
-    area = get_object_or_404(Area, id=area_id)
-    generation = Generation.objects.current()
-    children = Area.objects.filter(parent_area=area,
-        generation_low__lte=generation, generation_high__gte=generation
-    )
-    out = [ child.id for child in children ]
     return output_json(out)
 
 def get_areas_by_type(request, type):

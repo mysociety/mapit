@@ -5,7 +5,7 @@ from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, Http404
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -56,9 +56,34 @@ def postcode(request, postcode):
         areas.append(area.as_dict())
     out = postcode.as_dict()
     out['areas'] = areas
-
     return output_json(out)
     
+def partial_postcode(request, postcode):
+    postcode = re.sub('\s+', '', postcode.upper())
+    if is_valid_postcode(postcode):
+        postcode = re.sub('\d[A-Z]{2}$', '', postcode)
+    if not is_valid_partial_postcode(postcode):
+        return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
+    try:
+        postcode = Postcode(
+            postcode = 'temp',
+            location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+        )
+    except:
+        raise Http404
+    return output_json(postcode.as_dict())
+
+def example_postcode_for_area(request, area_id):
+    area = get_object_or_404(Area, id=area_id)
+    try:
+        pc = Postcode.objects.filter(areas=area).order_by('?')[0]
+    except:
+        try:
+            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
+        except:
+            pc = None
+    return output_json(pc)
+
 # OLD VIEWS
 
 def get_voting_areas(request, postcode):
@@ -72,38 +97,16 @@ def get_voting_areas(request, postcode):
     return output_json(areas)
 
 def get_example_postcode(request, area_id):
-    area = get_object_or_404(Area, id=area_id)
-    try:
-        pc = Postcode.objects.filter(areas=area)[0]
-    except:
-        try:
-            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
-        except:
-            pc = None
-    return output_json(pc)
+    return example_postcode_for_area(request, area_id)
 
 def get_location(request, postcode, partial):
     postcode = re.sub('\s+', '', postcode.upper())
-
     if partial:
-        if is_valid_postcode(postcode):
-            postcode = re.sub('\d[A-Z]{2}$', '', postcode)
-        if not is_valid_partial_postcode(postcode):
-            return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
-        try:
-            postcode = Postcode(
-                postcode = 'temp',
-                location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
-            )
-        except:
-            raise Http404
+        return partial_postcode(request, postcode)
     else:
         if not is_valid_postcode(postcode):
             return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
-        try:
-            postcode = Postcode.objects.get(postcode=postcode)
-        except Postcode.DoesNotExist:
-            raise Http404
+        postcode = get_object_or_404(Postcode, postcode=postcode)
 
     return output_json(postcode.as_dict())
 
