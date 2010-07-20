@@ -51,7 +51,7 @@ def postcode(request, postcode, legacy=False):
         return output_json(areas)
 
     out = postcode.as_dict()
-    out['areas'] = [ area.as_dict() for area in areas ]
+    out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
     
 def partial_postcode(request, postcode):

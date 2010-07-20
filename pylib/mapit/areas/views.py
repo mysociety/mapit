@@ -233,12 +233,12 @@ def area_children(request, area_id, legacy=False):
         generation_low__lte=generation, generation_high__gte=generation
     )
     if legacy: return output_json( [ child.id for child in children ] )
-    return output_json( [ child.as_dict() for child in children ] )
+    return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
 def areas(request, area_ids):
     area_ids = area_ids.split(',')
     areas = Area.objects.filter(id__in=area_ids)
-    return output_json( [ area.as_dict() for area in areas ] )
+    return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
 
 def areas_by_type(request, type, legacy=False):
     generation = Generation.objects.current()
@@ -263,7 +263,7 @@ def areas_by_type(request, type, legacy=False):
         args['generation_high__gte'] = min_generation
         areas = Area.objects.filter(**args)
     if legacy: return output_json( [ a.id for a in areas ] )
-    return output_json( [ a.as_dict() for a in areas ] )
+    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 def areas_by_name(request, name, legacy=False):
     generation = Generation.objects.current()
@@ -293,7 +293,7 @@ def areas_by_name(request, name, legacy=False):
             'parent_area_id': area.parent_area_id,
         }) for area in areas )
     else:
-        out = [ area.as_dict() for area in areas ]
+        out = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
 
 def area_geometry(request, area_id):
