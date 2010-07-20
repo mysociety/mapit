@@ -128,4 +128,6 @@ def get_location(request):
     result['easting'] = loc[0]
     result['northing'] = loc[1]
 
-    return result
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(result, response, ensure_ascii=False)
+    return response
