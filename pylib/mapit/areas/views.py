@@ -313,7 +313,7 @@ def _get_voting_area_geometry(area_id, polygon):
     out['centre_lon'] = all_areas.centroid[0]
     out['centre_lat'] = all_areas.centroid[1]
     if polygon:
-        out['polygon'] = all_areas.json
+        out['polygon'] = all_areas
     return out
 
 def get_voting_areas_geometry(request, area_ids, polygon):
