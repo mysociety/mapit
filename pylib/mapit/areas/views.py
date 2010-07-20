@@ -3,6 +3,7 @@ from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 voting_area = {
     'type_name': {
@@ -205,11 +206,26 @@ voting_area = {
     }
 }
 
-def area(request, area_id):
+def area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
+    return _area(area)
+
+def area_by_ons_code(request, ons_code):
+    area = get_object_or_404(Area, code__type='ons', code__code=ons_code)
+    return _area(area)
+
+def _area(area):
     out = area.as_dict()
     return output_json(out)
 
+def area_polygon(request, area_id, format):
+    area = get_object_or_404(Area, id=area_id)
+    all_areas = area.polygons.all().collect()
+    if format=='kml': out = all_areas.kml
+    elif format=='json': out = all_areas.json
+    elif format=='wkt': out = all_areas.wkt
+    return HttpResponse(out)
+    
 def area_children(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     generation = Generation.objects.current()
@@ -218,6 +234,11 @@ def area_children(request, area_id, legacy=False):
     )
     if legacy: return output_json( [ child.id for child in children ] )
     return output_json( [ child.as_dict() for child in children ] )
+
+def areas(request, area_ids):
+    area_ids = area_ids.split(',')
+    areas = Area.objects.filter(id__in=area_ids)
+    return output_json( [ area.as_dict() for area in areas ] )
 
 def areas_by_type(request, type, legacy=False):
     generation = Generation.objects.current()
@@ -273,6 +294,32 @@ def areas_by_name(request, name, legacy=False):
         }) for area in areas )
     else:
         out = [ area.as_dict() for area in areas ]
+    return output_json(out)
+
+def area_geometry(request, area_id):
+    area = _area_geometry(area_id)
+    return output_json(area)
+
+def _area_geometry(area_id):
+    area = get_object_or_404(Area, id=area_id)
+    all_areas = area.polygons.all().collect()
+    out = {
+        'area': all_areas.area,
+        'parts': all_areas.num_geom,
+        'centre_e': all_areas.centroid[0],
+        'centre_n': all_areas.centroid[1],
+    }
+    out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+    all_areas.transform(4326)
+    out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+    #all_areas.centroid.transform(4326)
+    out['centre_lon'] = all_areas.centroid[0]
+    out['centre_lat'] = all_areas.centroid[1]
+    return out
+
+def areas_geometry(request, area_ids):
+    area_ids = area_ids.split(',')
+    out = dict( (id, _area_geometry(id)) for id in area_ids )
     return output_json(out)
 
 # OLD VIEWS
@@ -346,33 +393,5 @@ def get_voting_areas_by_location(request, coordsyst, x, y, method):
     for area in areas:
         out[area.id] = area.type
 
-    return output_json(out)
-
-def get_voting_area_geometry(request, area_id, polygon):
-    area = _get_voting_area_geometry(area_id, polygon)
-    return output_json(area)
-
-def _get_voting_area_geometry(area_id, polygon):
-    area = get_object_or_404(Area, id=area_id)
-    all_areas = area.polygons.all().collect()
-    out = {
-        'area': all_areas.area,
-        'parts': all_areas.num_geom,
-        'centre_e': all_areas.centroid[0],
-        'centre_n': all_areas.centroid[1],
-    }
-    out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
-    all_areas.transform(4326)
-    out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
-    #all_areas.centroid.transform(4326)
-    out['centre_lon'] = all_areas.centroid[0]
-    out['centre_lat'] = all_areas.centroid[1]
-    if polygon:
-        out['polygon'] = all_areas
-    return out
-
-def get_voting_areas_geometry(request, area_ids, polygon):
-    area_ids = area_ids.split(',')
-    out = dict( (id, _get_voting_area_geometry(id, polygon)) for id in area_ids )
     return output_json(out)
 
