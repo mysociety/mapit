@@ -1,6 +1,8 @@
 import re
+import itertools
 from django.contrib.gis.db import models
 from mapit.managers import Manager, GeoManager
+from postcodes.models import Postcode
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -24,6 +26,24 @@ class Generation(models.Model):
         return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")
 
 class AreaManager(models.GeoManager):
+    def by_location(self, location, generation=None):
+        if generation is None: generation = Generation.objects.current()
+        return Area.objects.filter(
+            polygons__polygon__contains=location,
+            generation_low__lte=generation, generation_high__gte=generation
+        )
+
+    def by_postcode(self, postcode, generation=None):
+        if generation is None: generation = Generation.objects.current()
+        postcode = re.sub('\s+', '', postcode.upper())
+        postcode = get_object_or_404(Postcode, postcode=postcode)
+        return itertools.chain(
+            self.by_location(postcode.location, generation),
+            postcode.areas.filter(
+                generation_low__lte=generation, generation_high__gte=generation
+            )
+        )
+
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
@@ -59,12 +79,16 @@ class Area(models.Model):
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.CharField(max_length=3, db_index=True, choices=(
         ('EUR', 'Euro region'),
+        ('HOL', 'House of Lords'),
+        ('HOC', 'House of Lords constituency'),
+        ('WMP', 'UK Parliament'),
         ('WMC', 'UK Parliament constituency'),
         ('Northern Ireland', (
+            ('NIA', 'Northern Ireland Assembly'),
             ('NIE', 'Northern Ireland Assembly constituency'),
-            ('LGD', 'NI Council'),
-            ('LGE', 'NI Council electoral area'),
-            ('LGW', 'NI Council ward'),
+            ('LGD', 'Northern Irish Council'),
+            ('LGE', 'Northern Irish Council electoral area'),
+            ('LGW', 'Northern Irish Council ward'),
         )),
         ('England', (
             ('CTY', 'County council'),
@@ -73,6 +97,8 @@ class Area(models.Model):
             ('DIW', 'District council ward'),
             ('GLA', 'Greater London Authority'),
             ('LAC', 'London Assembly constituency'),
+            ('LAE', 'London Assembly area (shared)'),
+            ('LAS', 'London Assembly area'),
             ('LBO', 'London borough'),
             ('LBW', 'London borough ward'),
             ('MTD', 'Metropolitan district'),
@@ -80,8 +106,10 @@ class Area(models.Model):
             ('COI', 'Scilly Isles'),
             ('COP', 'Scilly Isles "ward"'),
         )),
+        ('SPA', 'Scottish Parliament'),
         ('SPC', 'Scottish Parliament constituency'),
         ('SPE', 'Scottish Parliament region'),
+        ('WAS', 'Welsh Assembly'),
         ('WAC', 'Welsh Assembly constituency'),
         ('WAE', 'Welsh Assembly region'),
         ('UTA', 'Unitary Authority'),
@@ -94,9 +122,10 @@ class Area(models.Model):
         ('W', 'Wales'),
         ('S', 'Scotland'),
         ('N', 'Northern Ireland'),
+        ('', 'None'),
     ))
-    generation_low = models.ForeignKey(Generation, related_name='new_areas')
-    generation_high = models.ForeignKey(Generation, related_name='final_areas')
+    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
+    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
 
     objects = AreaManager()
 
