@@ -213,11 +213,67 @@ def area(request, area_id):
 def area_children(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     generation = Generation.objects.current()
-    children = Area.objects.filter(parent_area=area,
+    children = area.children.filter(
         generation_low__lte=generation, generation_high__gte=generation
     )
     if legacy: return output_json( [ child.id for child in children ] )
     return output_json( [ child.as_dict() for child in children ] )
+
+def areas_by_type(request, type, legacy=False):
+    generation = Generation.objects.current()
+    try:
+        min_generation = int(request.REQUEST['min_generation'])
+    except:
+        min_generation = generation
+
+    args = {}
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    if type == 'HOC':
+        HOC_AREA_ID = 900008
+        areas = [ Area.objects.get(id=HOC_AREA_ID) ]
+    elif min_generation == -1:
+        areas = Area.objects.filter(**args)
+    else:
+        args['generation_low__lte'] = generation
+        args['generation_high__gte'] = min_generation
+        areas = Area.objects.filter(**args)
+    if legacy: return output_json( [ a.id for a in areas ] )
+    return output_json( [ a.as_dict() for a in areas ] )
+
+def areas_by_name(request, name, legacy=False):
+    generation = Generation.objects.current()
+    try:
+        min_generation = int(request.REQUEST['min_generation'])
+    except:
+        min_generation = generation
+
+    type = request.REQUEST.get('type', '')
+
+    args = {
+        'name__istartswith': name,
+        'generation_low__lte': generation,
+        'generation_high__gte': min_generation,
+    }
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    areas = Area.objects.filter(**args)
+    if legacy:
+        out = dict( (area.id, {
+            'area_id': area.id,
+            'name': area.name,
+            'type': area.type,
+            'parent_area_id': area.parent_area_id,
+        }) for area in areas )
+    else:
+        out = [ area.as_dict() for area in areas ]
+    return output_json(out)
 
 # OLD VIEWS
 
@@ -318,61 +374,5 @@ def _get_voting_area_geometry(area_id, polygon):
 def get_voting_areas_geometry(request, area_ids, polygon):
     area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_geometry(id, polygon)) for id in area_ids )
-    return output_json(out)
-
-def get_areas_by_type(request, type):
-    generation = Generation.objects.current()
-    try:
-        min_generation = int(request.REQUEST['min_generation'])
-    except:
-        min_generation = generation
-
-    args = {}
-    if ',' in type:
-        args['type__in'] = type.split(',')
-    elif type:
-        args['type'] = type
-
-    if type == 'HOC':
-        HOC_AREA_ID = 900008
-        out = [ Area.objects.get(id=HOC_AREA_ID) ]
-    elif min_generation == -1:
-        out = Area.objects.filter(**args)
-    else:
-        args['generation_low__lte'] = generation
-        args['generation_high__gte'] = min_generation
-        out = Area.objects.filter(**args)
-    out = [ a.id for a in out ]
-    return output_json(out)
-
-def get_voting_area_by_name(request, name):
-    generation = Generation.objects.current()
-    try:
-        min_generation = int(request.REQUEST['min_generation'])
-    except:
-        min_generation = generation
-
-    type = request.REQUEST.get('type', '')
-
-    args = {
-        'name__istartswith': name,
-        'generation_low__lte': generation,
-        'generation_high__gte': min_generation,
-    }
-    if ',' in type:
-        args['type__in'] = type.split(',')
-    elif type:
-        args['type'] = type
-
-    areas = Area.objects.filter(**args)
-    out = {}
-    for area in areas:
-        out[area.id] = {
-            'area_id': area.id,
-            'name': area.name,
-            'type': area.type,
-            'parent_area_id': area.parent_area_id,
-        }
-
     return output_json(out)
 

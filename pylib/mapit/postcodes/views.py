@@ -26,14 +26,16 @@ enclosing_areas = {
     'EUR': [ EUP_AREA_ID ],
 }
 
-class Http400(Exception):
-    pass
-
-def _postcode(request, postcode):
+def check_postcode(postcode):
     postcode = re.sub('\s+', '', postcode.upper())
     if not is_valid_postcode(postcode):
-        raise Http400
+        return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
     postcode = get_object_or_404(Postcode, postcode=postcode)
+    return postcode
+
+def postcode(request, postcode, legacy=False):
+    postcode = check_postcode(postcode)
+    if isinstance(postcode, HttpResponseBadRequest): return postcode
     generation = request.REQUEST.get('generation', Generation.objects.current())
     areas = Area.objects.by_postcode(postcode, generation)
 
@@ -44,18 +46,12 @@ def _postcode(request, postcode):
             extra.extend(enclosing_areas[area.type])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
-    return areas, postcode
-    
-def postcode(request, postcode):
-    try:
-        lookup, postcode = _postcode(request, postcode)
-    except Http400:
-        return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
-    areas = []
-    for area in lookup:
-        areas.append(area.as_dict())
+    if legacy:
+        areas = dict( (area.type, area.id) for area in areas )
+        return output_json(areas)
+
     out = postcode.as_dict()
-    out['areas'] = areas
+    out['areas'] = [ area.as_dict() for area in areas ]
     return output_json(out)
     
 def partial_postcode(request, postcode):
@@ -73,7 +69,7 @@ def partial_postcode(request, postcode):
         raise Http404
     return output_json(postcode.as_dict())
 
-def example_postcode_for_area(request, area_id):
+def example_postcode_for_area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     try:
         pc = Postcode.objects.filter(areas=area).order_by('?')[0]
@@ -86,27 +82,10 @@ def example_postcode_for_area(request, area_id):
 
 # OLD VIEWS
 
-def get_voting_areas(request, postcode):
-    try:
-        lookup, postcode = _postcode(request, postcode)
-    except Http400:
-        return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
-    areas = {}
-    for area in lookup:
-        areas[area.type] = area.id
-    return output_json(areas)
-
-def get_example_postcode(request, area_id):
-    return example_postcode_for_area(request, area_id)
-
 def get_location(request, postcode, partial):
-    postcode = re.sub('\s+', '', postcode.upper())
     if partial:
         return partial_postcode(request, postcode)
-    else:
-        if not is_valid_postcode(postcode):
-            return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
-        postcode = get_object_or_404(Postcode, postcode=postcode)
-
+    postcode = check_postcode(postcode)
+    if isinstance(postcode, HttpResponseBadRequest): return postcode
     return output_json(postcode.as_dict())
 
