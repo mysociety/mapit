@@ -1,5 +1,5 @@
 import re
-from mapit.areas.models import Area
+from mapit.areas.models import Area, Generation
 from django.shortcuts import get_object_or_404
 from django.utils import simplejson
 from django.http import HttpResponse, HttpResponseBadRequest
