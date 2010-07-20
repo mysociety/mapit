@@ -366,3 +366,87 @@ def get_voting_areas_geometry(request):
     simplejson.dump(out, response, ensure_ascii=False)
     return response
 
+def get_voting_area_children(request):
+    try:
+        area_id = request.REQUEST['id']
+    except:
+        return HttpResponseBadRequest("Bad area ID given")
+    area = get_object_or_404(Area, id=area_id)
+    generation = Generation.objects.current()
+    children = Area.objects.filter(parent_area=area,
+        generation_low__lte=generation, generation_high__gte=generation
+    )
+    out = [ child.id for child in children ]
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
+def get_areas_by_type(request):
+    try:
+        min_generation = int(request.REQUEST['min_generation'])
+    except:
+        min_generation = 0
+
+    type = request.REQUEST.get('type', '')
+    if not type:
+        return HttpResponseBadRequest('Please specify type')
+
+    args = {}
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    if type == 'HOC':
+        HOC_AREA_ID = 900008
+        out = [ Area.objects.get(id=HOC_AREA_ID) ]
+    elif min_generation == -1:
+        out = Area.objects.filter(**args)
+    else:
+        generation = Generation.objects.current()
+        if not generation: min_generation = generation
+        args['generation_low__lte'] = generation
+        args['generation_high__gte'] = min_generation
+        out = Area.objects.filter(**args)
+    out = [ a.id for a in out ]
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
+def get_voting_area_by_name(request):
+    try:
+        min_generation = int(request.REQUEST['min_generation'])
+    except:
+        min_generation = 0
+    generation = Generation.objects.current()
+
+    name = request.REQUEST.get('name')
+    if not name:
+        return HttpResponseBadRequest('Please specify name')
+
+    type = request.REQUEST.get('type', '')
+
+    args = {
+        'name__icontains': name,
+        'generation_low__lte': generation,
+        'generation_high__gte': min_generation,
+    }
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    areas = Area.objects.filter(**args)
+    out = {}
+    for area in areas:
+        out[area.id] = {
+            'area_id': area.id,
+            'name': area.name,
+            'type': area.type,
+            'parent_area_id': area.parent_area_id,
+        }
+
+    response = HttpResponse(content_type='application/javascript; charset=utf-8')
+    simplejson.dump(out, response, ensure_ascii=False)
+    return response
+
