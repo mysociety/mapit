@@ -293,12 +293,12 @@ def get_voting_areas_by_location(request):
     try:
         easting = request.REQUEST['e']
         northing = request.REQUEST['n']
-        location = Point(easting, northing, srid=27700)
+        location = Point(float(easting), float(northing), srid=27700)
     except:
         try:
             lat = request.REQUEST['lat']
             lon = request.REQUEST['lon']
-            location = Point(lon, lat, srid=4326)
+            location = Point(float(lon), float(lat), srid=4326)
         except:
             return HttpResponseBadRequest("Co-ordinates must be supplied")
 
