@@ -208,16 +208,7 @@ voting_area = {
 
 def area(request, area_id):
     area = get_object_or_404(Area, id=area_id)
-    out = {
-        'id': area.id,
-        'name': area.name,
-        'parent_area': area.parent_area_id,
-        'type': (area.type, area.get_type_display()),
-        'country': (area.country, area.get_country_display()),
-        'generation_low': area.generation_low_id,
-        'generation_high': area.generation_high_id,
-        'codes': area.all_codes,
-    }
+    out = area.as_dict()
     return output_json(out)
 
 # OLD VIEWS

@@ -138,6 +138,18 @@ class Area(models.Model):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type, name)
 
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'parent_area': self.parent_area_id,
+            'type': (self.type, self.get_type_display()),
+            'country': (self.country, self.get_country_display()),
+            'generation_low': self.generation_low_id,
+            'generation_high': self.generation_high_id,
+            'codes': self.all_codes,
+        }
+
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
     polygon = models.PolygonField(srid=27700)

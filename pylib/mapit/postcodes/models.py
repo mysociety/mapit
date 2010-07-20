@@ -23,6 +23,7 @@ class Postcode(models.Model):
     def as_dict(self):
         loc = self.location
         result = {}
+        result['postcode'] = self.get_postcode_display()
         result['wgs84_lon'] = loc[0]
         result['wgs84_lat'] = loc[1]
         if self.postcode[0:2] == 'BT':

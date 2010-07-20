@@ -53,16 +53,7 @@ def postcode(request, postcode):
         return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
     areas = []
     for area in lookup:
-        areas.append({
-            'id': area.id,
-            'name': area.name,
-            'parent_area': area.parent_area_id,
-            'type': (area.type, area.get_type_display()),
-            'country': (area.country, area.get_country_display()),
-            'generation_low': area.generation_low_id,
-            'generation_high': area.generation_high_id,
-            'codes': area.all_codes,
-        })
+        areas.append(area.as_dict())
     out = postcode.as_dict()
     out['areas'] = areas
 
