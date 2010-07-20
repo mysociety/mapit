@@ -42,7 +42,7 @@ def _postcode(request, postcode):
     for area in areas:
         if area.type in enclosing_areas.keys():
             extra.extend(enclosing_areas[area.type])
-    areas = itertools.chain(araes, Area.objects.filter(id__in=extra))
+    areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
     return areas
     
