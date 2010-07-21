@@ -211,7 +211,7 @@ def area(request, area_id, legacy=False):
     return _area(area)
 
 def area_by_ons_code(request, ons_code):
-    area = get_object_or_404(Area, code__type='ons', code__code=ons_code)
+    area = get_object_or_404(Area, codes__type='ons', codes__code=ons_code)
     return _area(area)
 
 def _area(area):
@@ -363,7 +363,7 @@ def get_voting_area_info(request, area_id):
 
 def _get_voting_area_info(area_id):
     if re.match('\d\d([a-z][a-z])?([a-z][a-z])?$(?i)', area_id):
-        area = get_object_or_404(Area, code__type='ons', code__code=area_id)
+        area = get_object_or_404(Area, codes__type='ons', codes__code=area_id)
     else:
         area = get_object_or_404(Area, id=int(area_id))
 
