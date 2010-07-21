@@ -342,7 +342,7 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
         args['type'] = type
 
     if type and method == 'polygon':
-        args = dict( ("area__%s" % k, v) for k, v in args )
+        args = dict( ("area__%s" % k, v) for k, v in args.items() )
         # So this is odd. It doesn't matter if you specify types, PostGIS will
         # do the contains test on all the geometries matching the bounding-box
         # index, even if it could be much quicker to filter some out first
