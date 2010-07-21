@@ -3,7 +3,7 @@ from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 voting_area = {
     'type_name': {
@@ -220,7 +220,13 @@ def _area(area):
 
 def area_polygon(request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
-    all_areas = area.polygons.all().collect()
+    all_areas = area.polygons.all()
+    if len(all_areas) > 1:
+        all_areas = all_areas.collect()
+    elif len(all_areas) == 1:
+        all_areas = all_areas[0]
+    else:
+        raise Http404
     if format=='kml': out = all_areas.kml
     elif format=='json': out = all_areas.json
     elif format=='wkt': out = all_areas.wkt

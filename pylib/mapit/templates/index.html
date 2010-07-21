@@ -41,9 +41,9 @@ to be able to continue to do things like this!</p>
 
 <p>MaPit is our previously internal-only database that maps postcodes and
 points to administrative areas and more. It has been rewritten from the ground
-up in GeoDjango and a PostGIS database, providing us with a large array of
-improvements including speed and ease of maintenance (our old manual boundary
-loading scripts dated from 2003 and were somewhat arcane). The source code is
+up in GeoDjango and PostGIS, providing us with a large array of improvements
+including speed and ease of maintenance (our old manual boundary loading
+scripts dated from 2003 and were somewhat arcane). The source code is
 <a href="http://github.com/mysociety/mapit">available on GitHub</a>.
 
 <p>Another notable benefit is this new version has been filled with only
@@ -128,7 +128,7 @@ particular point. In case the previous call is too slow.
 <li>/areas/<i>[area IDs, separated by commas]</i> &mdash; information on more than one
 area at once, as a dictionary indexed by area ID.
 
-<li>/areas/<i>[area IDs, separated by commas]/geometry &ndash; all the geometry
+<li>/areas/<i>[area IDs, separated by commas]</i>/geometry &ndash; all the geometry
 information you would get from single geometry calls.
 
 <li>/areas/<i>[type OR types]</i> &ndash; all the areas in a specific area type, such
