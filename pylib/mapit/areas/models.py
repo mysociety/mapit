@@ -129,7 +129,7 @@ class Area(models.Model):
 
     @property
     def all_codes(self):
-        if not self.code_list:
+        if not getattr(self, 'code_list', None):
             self.code_list = self.codes.all()
         codes = {}
         for code in self.code_list:
