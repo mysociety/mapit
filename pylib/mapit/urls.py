@@ -12,7 +12,7 @@ urlpatterns = patterns('',
 
     (r'^area/(?P<area_id>[0-9]+)$', 'mapit.areas.views.area'),
     (r'^area/ons/(?P<ons_code>[0-9A-Z]+)$', 'mapit.areas.views.area_by_ons_code'),
-    (r'^area/(?P<area_id>[0-9]+)/example_postcode$', 'mapit.postcode.views.example_postcode_for_area'),
+    (r'^area/(?P<area_id>[0-9]+)/example_postcode$', 'mapit.postcodes.views.example_postcode_for_area'),
     (r'^area/(?P<area_id>[0-9]+)/children$', 'mapit.areas.views.area_children'),
     (r'^area/(?P<area_id>[0-9]+)/geometry$', 'mapit.areas.views.area_geometry'),
     (r'^area/(?P<area_id>[0-9]+)\.(?P<format>kml|json|wkt)$', 'mapit.areas.views.area_polygon'),
