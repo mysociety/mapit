@@ -1,5 +1,5 @@
 import re
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Geometry
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
@@ -332,6 +332,7 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
     location = Point(float(x), float(y), srid=srid)
+    method = 'box' if bb and bb != 'polygon' else 'polygon'
 
     args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
 
@@ -340,12 +341,26 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     elif type:
         args['type'] = type
 
-    if bb and bb != 'polygon':
-        args['polygons__polygon__bbcontains'] = location
+    if type and method == 'polygon':
+        # So this is odd. It doesn't matter if you specify types, PostGIS will
+        # do the contains test on all the geometries matching the bounding-box
+        # index, even if it could be much quicker to filter some out first
+        # (ie. the EUR ones).
+        args['polygon__bbcontains'] = location
+        shapes = Geometry.objects.filter(**args)
+        areas = []
+        for shape in shapes:
+            try:
+                areas.append( Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location) )
+            except:
+                pass
     else:
-        args['polygons__polygon__contains'] = location
+        if method == 'box':
+            args['polygons__polygon__bbcontains'] = location
+        else:
+            args['polygons__polygon__contains'] = location
+        areas = Area.objects.filter(**args)
 
-    areas = Area.objects.filter(**args)
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
 
