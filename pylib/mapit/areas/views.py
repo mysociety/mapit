@@ -235,15 +235,24 @@ def area_polygon(request, area_id, format):
 def area_children(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     generation = Generation.objects.current()
-    children = area.children.filter(
+    children = add_codes(area.children.filter(
         generation_low__lte=generation, generation_high__gte=generation
-    )
+    ))
     if legacy: return output_json( [ child.id for child in children ] )
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
+def add_codes(areas):
+    codes = Code.objects.filter(area__in=areas)
+    lookup = {}
+    for code in codes:
+        lookup.setdefault(code.area_id, []).append(code)
+    for area in areas:
+        area.code_list = lookup[area.id]
+    return areas
+
 def areas(request, area_ids):
     area_ids = area_ids.split(',')
-    areas = Area.objects.filter(id__in=area_ids)
+    areas = add_codes(Area.objects.filter(id__in=area_ids))
     return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
 
 def areas_by_type(request, type, legacy=False):
@@ -263,11 +272,11 @@ def areas_by_type(request, type, legacy=False):
         HOC_AREA_ID = 900008
         areas = [ Area.objects.get(id=HOC_AREA_ID) ]
     elif min_generation == -1:
-        areas = Area.objects.filter(**args)
+        areas = add_codes(Area.objects.filter(**args))
     else:
         args['generation_low__lte'] = generation
         args['generation_high__gte'] = min_generation
-        areas = Area.objects.filter(**args)
+        areas = add_codes(Area.objects.filter(**args))
     if legacy: return output_json( [ a.id for a in areas ] )
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
@@ -290,7 +299,7 @@ def areas_by_name(request, name, legacy=False):
     elif type:
         args['type'] = type
 
-    areas = Area.objects.filter(**args)
+    areas = add_codes(Area.objects.filter(**args))
     if legacy:
         out = dict( (area.id, {
             'area_id': area.id,
@@ -355,12 +364,13 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
                 areas.append( Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location) )
             except:
                 pass
+        areas = add_codes(areas)
     else:
         if method == 'box':
             args['polygons__polygon__bbcontains'] = location
         else:
             args['polygons__polygon__contains'] = location
-        areas = Area.objects.filter(**args)
+        areas = add_codes(Area.objects.filter(**args))
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
