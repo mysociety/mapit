@@ -72,12 +72,13 @@ def partial_postcode(request, postcode):
 def example_postcode_for_area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     try:
-        pc = Postcode.objects.filter(areas=area).order_by('?')[0].postcode
+        pc = Postcode.objects.filter(areas=area).order_by('?')[0]
     except:
         try:
-            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0].postcode
+            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
         except:
             pc = None
+    if pc: pc = pc.get_postcode_display()
     return output_json(pc)
 
 # Legacy Views from old MaPit. Don't use in future.
