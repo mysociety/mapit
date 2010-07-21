@@ -129,8 +129,10 @@ class Area(models.Model):
 
     @property
     def all_codes(self):
+        if not self.code_list:
+            self.code_list = self.codes.all()
         codes = {}
-        for code in self.codes.all():
+        for code in self.code_list:
             codes[code.type] = code.code
         return codes
 

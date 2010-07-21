@@ -247,7 +247,8 @@ def add_codes(areas):
     for code in codes:
         lookup.setdefault(code.area_id, []).append(code)
     for area in areas:
-        area.code_list = lookup[area.id]
+        if area.id in lookup:
+            area.code_list = lookup[area.id]
     return areas
 
 def areas(request, area_ids):
