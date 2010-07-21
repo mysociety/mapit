@@ -4,6 +4,7 @@ from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json
+from django.template import loader
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseBadRequest, Http404
 
@@ -26,10 +27,15 @@ enclosing_areas = {
     'EUR': [ EUP_AREA_ID ],
 }
 
+def bad_request(message):
+    return HttpResponseBadRequest(loader.render_to_string('400.html', {
+        'message': message,
+    }))
+
 def check_postcode(postcode):
     postcode = re.sub('\s+', '', postcode.upper())
     if not is_valid_postcode(postcode):
-        return HttpResponseBadRequest("Postcode '%s' is not valid." % postcode)
+        return bad_request("Postcode '%s' is not valid." % postcode)
     postcode = get_object_or_404(Postcode, postcode=postcode)
     return postcode
 
@@ -59,7 +65,7 @@ def partial_postcode(request, postcode):
     if is_valid_postcode(postcode):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
-        return HttpResponseBadRequest("Partial postcode '%s' is not valid." % postcode)
+        return bad_request("Partial postcode '%s' is not valid." % postcode)
     try:
         postcode = Postcode(
             postcode = 'temp',
