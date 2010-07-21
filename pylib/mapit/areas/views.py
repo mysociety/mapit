@@ -1,5 +1,5 @@
 import re
-from mapit.areas.models import Area, Generation, Geometry
+from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json
 from django.contrib.gis.geos import Point
 from django.shortcuts import get_object_or_404
