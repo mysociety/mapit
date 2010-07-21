@@ -110,7 +110,8 @@ Northern Ireland data may be used under the terms of the <a href="http://www.ons
 
 <h2>API</h2>
 
-<p>By default, calls will return active areas; for some calls you may specify
+<p>All calls below are made to http://mapit.mysociety.org/.
+By default, calls will return active areas; for some calls you may specify
 a previous generation to look up instead. As of writing, we are on generation
 13, for the May 2010 edition of OS Boundary-Line. The main difference in
 generation 12 is that it contains the pre-2010 England and Wales Parliamentary
@@ -149,10 +150,20 @@ area at once, as a dictionary indexed by area ID.
 <li>/areas/<i>[area IDs, separated by commas]</i>/geometry &ndash; all the geometry
 information you would get from single geometry calls.
 
-<li>/areas/<i>[type OR types]</i> &ndash; all the areas in a specific area type, such
-as WMC or DIS, or types (separated by commas). You may specific a minimum
-generation with the min_generation parameter (this is for FixMyStreet, which
-needs to show expired councils on its All Reports page).
+<li>/areas/<i>[type OR types]</i> &ndash; all the areas in a specific area type
+or types (separated by commas). You may specific a minimum generation with the
+min_generation parameter (this is for <a href="http://www.fixmystreet.com/">FixMyStreet</a>,
+which needs to show expired councils on its All Reports page). The current list
+of types is: 
+CTY (county council), CED (county ward), COI (Isles of Scilly), COP (Isles of Scilly parish),
+CPC (civil parish), DIS (district council), DIW (district ward), EUR (Euro region),
+GLA (London Assembly), LAC (London Assembly constituency), LBO (London borough),
+LBW (London ward), LGD (NI council), LGE (NI electoral area), LGW (NI ward),
+MTD (Metropolitan district), MTW (Metropolitan ward), NIE (NI Assembly constituency),
+SPC (Scottish Parliament constituency), SPE (Scottish Parliament region),
+UTA (Unitary authority), UTE (Unitary authority electoral division),
+UTW (Unitary authority ward), WAC (Welsh Assembly constituency),
+WAE (Welsh Assembly region), WMC (UK Parliamentary constituency).
 
 <li>/areas/<i>[name]</i> &ndash; all areas that start with the specified text. You
 may restrict results to a type or types with the type parameter (as always,
