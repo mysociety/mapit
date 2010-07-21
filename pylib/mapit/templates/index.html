@@ -9,6 +9,7 @@ body {
     line-height: 1.5;
     margin: 0;
     padding: 1em;
+    background-image: url("/static/compassS.jpg");
     background-position: 0 0;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -71,8 +72,8 @@ h3 {
 <h1>mapit.mysociety.org</h1>
 
 <p style="clear:both">MaPit is our previously internal-only database and web service that maps
-postcodes and points to administrative areas for the <strong>whole
-United Kingdom</strong>. It has been rewritten from the
+postcodes and points to administrative areas for <strong>all</strong> the
+United Kingdom. It has been rewritten from the
 ground up in GeoDjango and PostGIS, providing us with a large array of
 improvements including speed, a lovely admin interface, and much easier
 updating. The source code is
@@ -113,6 +114,7 @@ generation_high, codes.</p>
 <div id="col1">
 <h3>By postcode</h3>
 
+<img src="/static/englandS.png" align="right" alt="">
 <ul>
 
 <li>/postcode/<i>[postcode]</i> &ndash; information on a particular postcode,
@@ -126,6 +128,7 @@ centroid of a partial postcode.
 </ul>
 
 <h3>Multiple areas</h3>
+<img src="/static/niS.png" align="right" alt="">
 
 <ul>
 
@@ -150,6 +153,7 @@ min_generation parameter.
 <div id="col2">
 <h3>By point</h3>
 
+<img src="/static/scotlandS.png" align="right" alt="">
 <p>A SRID is a unique number referring to a particular co-ordinate system; the
 ones you probably are interested in are 27700 for British National Grid, 4326
 for WGS84 lon/lat, and 29902 for the Irish National Grid. You can restrict
@@ -168,6 +172,7 @@ bounding boxes cover the particular point.
 
 <h3>By area ID</h3>
 
+<img src="/static/walesS.png" align="right" alt="">
 <ul>
 
 <li>/area/<i>[area ID]</i> &amp; /area/ons/<i>[ONS code]</i> &ndash; information on a particular area. 
