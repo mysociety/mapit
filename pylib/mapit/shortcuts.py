@@ -14,8 +14,9 @@ class GEOS_JSONEncoder(simplejson.JSONEncoder):
 def output_json(out):
     response = HttpResponse(content_type='application/javascript; charset=utf-8')
     if settings.DEBUG:
+        if isinstance(out, dict):
+            out['debug_db_queries'] = connection.queries
         simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=4)
-        simplejson.dump(connection.queries, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=4)
     else:
         simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder)
     return response
