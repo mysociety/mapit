@@ -26,9 +26,16 @@ blockquote {
 h1 {
     margin: 0;
 }
+h1 + p {
+    clear: both;
+}
 h3 {
     font-size: 120%;
     line-height: 1.25;
+}
+#logo {
+    float: right;
+    margin: 0 0 1.5em 1.5em;
 }
 #copyright {
     float: left;
@@ -65,7 +72,7 @@ h3 {
 </head>
 <body>
 
-<a href="http://www.mysociety.org/"><img align="right" border=0 src="/static/mysociety_smT.png" alt="mySociety"></a></h1>
+<a href="http://www.mysociety.org/"><img id="logo" border=0 src="/static/mysociety_smT.png" alt="mySociety"></a></h1>
 
 <blockquote>
 &ldquo;Gentlemen, we can rebuild him. We have the technology. We can make him better than he was before. Better. Stronger. Faster.&rdquo;
@@ -73,7 +80,7 @@ h3 {
 
 <h1>mapit.mysociety.org</h1>
 
-<p style="clear:both">MaPit is our previously internal-only database and web service that maps
+<p>MaPit is our previously internal-only database and web service that maps
 postcodes and points to administrative areas for <strong>all</strong> the
 United Kingdom. It has been rewritten from the
 ground up in GeoDjango and PostGIS, providing us with a large array of
