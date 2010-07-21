@@ -148,7 +148,7 @@ class Area(models.Model):
             'type': self.type,
             'type_name': self.get_type_display(),
             'country': self.country,
-            'country_name': self.get_country_display()
+            'country_name': self.get_country_display(),
             'generation_low': self.generation_low_id,
             'generation_high': self.generation_high_id,
             'codes': self.all_codes,
