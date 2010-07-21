@@ -348,7 +348,7 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
         # index, even if it could be much quicker to filter some out first
         # (ie. the EUR ones).
         args['polygon__bbcontains'] = location
-        shapes = Geometry.objects.filter(**args)
+        shapes = Geometry.objects.filter(**args).defer('polygon')
         areas = []
         for shape in shapes:
             try:
