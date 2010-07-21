@@ -224,7 +224,7 @@ def area_polygon(request, area_id, format):
     if len(all_areas) > 1:
         all_areas = all_areas.collect()
     elif len(all_areas) == 1:
-        all_areas = all_areas[0]
+        all_areas = all_areas[0].polygon
     else:
         raise Http404
     if format=='kml': out = all_areas.kml
