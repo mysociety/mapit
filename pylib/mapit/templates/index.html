@@ -1,87 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html lang="en-gb">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>MaPit</title>
-<style type="text/css">
-body {
-    font-family: Tahoma, Geneva, sans-serif;
-    line-height: 1.5;
-    margin: 0;
-    padding: 1em;
-    background-image: url("/static/compassS.jpg");
-    background-position: 0 0;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-}
-li {
-    margin-bottom: 0.5em;
-}
-blockquote {
-    width: 20em;
-    float: right;
-    margin: 0 0 1.5em 1.5em;
-    font-style: italic;
-}
-h1 {
-    margin: 0;
-}
-h1 + p {
-    clear: both;
-}
-h3 {
-    font-size: 120%;
-    line-height: 1.25;
-}
-#logo {
-    float: right;
-    margin: 0 0 1.5em 1.5em;
-}
-#copyright {
-    float: left;
-    width: 20em;
-    margin-right: 1em;
-    border-right: solid 1px #999999;
-    padding-right: 1em;
-    color: #222222;
-}
-#donate {
-    background-image: url("http://www.mysociety.org/wp/wp-content/themes/mysociety/images/piggy.png");
-    background-position: 0 1em;
-    background-repeat: no-repeat;
-    min-height: 56px;
-    padding-left: 52px;
-    float: right;
-    width: 20em;
-    margin-left: 2em;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    border-top: solid 1px #999999;
-    border-bottom: solid 1px #999999;
-}
-#col1 {
-    float: left;
-    width: 49%;
-    clear: both;
-}
-#col2 {
-    float: right;
-    width: 49%;
-}
-#nipic {
-    margin: 0 0 1em 1em;
-}
-</style>
-</head>
-<body>
+{% extends "base.html" %}
 
-<a href="http://www.mysociety.org/"><img id="logo" border=0 src="/static/mysociety_smT.png" alt="mySociety"></a></h1>
-
-<blockquote>
-&ldquo;Gentlemen, we can rebuild him. We have the technology. We can make him better than he was before. Better. Stronger. Faster.&rdquo;
-</blockquote>
-
-<h1>mapit.mysociety.org</h1>
+{% block content %}
 
 <p>MaPit is our previously internal-only database and web service that maps
 postcodes and points to administrative areas for <strong>all</strong> the
@@ -215,6 +134,4 @@ the <a href="http://mapit.mysociety.org/area/2236/children">electoral divisions 
 
 </div>
 
-</body>
-</html>
-
+{% endblock %}

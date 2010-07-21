@@ -1,0 +1,75 @@
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 1em;
+    background-image: url("/static/compassS.jpg");
+    background-position: 0 0;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+li {
+    margin-bottom: 0.5em;
+}
+
+blockquote {
+    width: 20em;
+    float: right;
+    margin: 0 0 1.5em 1.5em;
+    font-style: italic;
+}
+
+h1 {
+    margin: 0;
+}
+h1 + p {
+    clear: both;
+}
+h3 {
+    font-size: 120%;
+    line-height: 1.25;
+}
+
+#logo {
+    float: right;
+    margin: 0 0 1.5em 1.5em;
+}
+
+#copyright {
+    float: left;
+    width: 20em;
+    margin-right: 1em;
+    border-right: solid 1px #999999;
+    padding-right: 1em;
+    color: #222222;
+}
+
+#donate {
+    background-image: url("http://www.mysociety.org/wp/wp-content/themes/mysociety/images/piggy.png");
+    background-position: 0 1em;
+    background-repeat: no-repeat;
+    min-height: 56px;
+    padding-left: 52px;
+    float: right;
+    width: 20em;
+    margin-left: 2em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-top: solid 1px #999999;
+    border-bottom: solid 1px #999999;
+}
+
+#col1 {
+    float: left;
+    width: 49%;
+    clear: both;
+}
+#col2 {
+    float: right;
+    width: 49%;
+}
+
+#nipic {
+    margin: 0 0 1em 1em;
+}
