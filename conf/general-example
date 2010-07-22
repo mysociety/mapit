@@ -23,3 +23,6 @@ define('OPTION_MAPIT_DB_PASS', '');
 define('OPTION_MAPIT_DB_HOST', null);
 define('OPTION_MAPIT_DB_PORT', null); 
 
+define('OPTION_DJANGO_SECRET_KEY', 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4');
+define('OPTION_BUGS_EMAIL', '');
+
