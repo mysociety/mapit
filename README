@@ -1,0 +1,56 @@
+MaPit
+=====
+
+pylib/mapit is a standard GeoDjango project; the rest is mostly to fit within
+mySociety's standard deployment.
+
+Installation
+------------
+
+Our version is running on Debian lenny - to install PostGIS and GeoDjango I
+just followed the instructions (including creating the template) at
+http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
+
+However, not only only is the PostGIS that is installed missing SRID 900913, as
+the GeoDjango docs tell you, but both SRID 27700 (British National Grid) and
+SRID 29902 (Irish National Grid) are incorrect (and they're quite important
+for this application!). After you've installed and got a PostGIS template, log
+in to it and update the proj4text column of SRID 27700 to include
++datum=OSGB36, and update SRID 29902 to have +datum=ire65.
+
+Here's basically what I ran to install the OS OpenData and NSPD Open (raw data
+available at mySociety's mirror, http://parlvid.mysociety.org:81/os/ ) - I had
+a number of extra complications at the end because we had to maintain IDs,
+names and so on from the old version of this service. Make sure DEBUG is False,
+otherwise you'll soon run out of memory as it tries to remember all the SQL
+queries made. You'll also possibly want to turn off escape_string_warning in
+Postgres, unless you want your server to run out of disc space logging all the
+errors, as ours did the first time I imported overnight and didn't realise.
+
+./manage.py syncdb
+# Create an inactive generation through the admin interface.
+./manage.py import_boundary_line --control=controls/2009-10 `ls /home/matthew/mapit/data/Boundary-Line/2009-10/*.shp|grep -v high_water`
+./manage.py import_codepoint /home/matthew/mapit/data/Code-Point-Open-2010-05/*.csv
+./manage.py find_parents
+# Not importing NI here, as that only has the current boundaries.
+./manage.py scilly /home/matthew/mapit/data/Code-Point-Open-2010-05/tr.csv
+# Make the generation active, add another inactive generation.
+./manage.py import_boundary_line --control=controls/2010-05 `ls /home/matthew/mapit/data/Boundary-Line/2010-05/*.shp|grep -v high_water`
+# import_codepoint not needed as it's the same and there's no P-in-P tests!
+./manage.py find_parents
+./manage.py scilly /home/matthew/mapit/data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
+./manage.py import_nspd /home/matthew/mapit/data/NSPD-2010-05.csv
+# Make this generation active.
+
+At this point, I then matched up all IDs and names using the scripts in bin,
+manually inserted some generation 10 areas (in data) for FixMyStreet, and
+manually added our test/fake areas that used to be in code but can now
+happily sit in the database along with everything else.
+
+Improvements / patches
+----------------------
+
+Are welcome :)
+
+ATB,
+Matthew
