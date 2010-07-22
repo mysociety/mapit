@@ -20,6 +20,8 @@ def output_json(out, code=200):
     }
     response_type = types[code] if code in types else http.HttpResponse
     response = response_type(content_type='application/javascript; charset=utf-8')
+    if code != 200:
+        out['code'] = code
     if settings.DEBUG:
         if isinstance(out, dict):
             out['debug_db_queries'] = connection.queries
