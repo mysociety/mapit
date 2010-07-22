@@ -24,6 +24,9 @@ class AreaAdmin(admin.OSMGeoAdmin):
 class GeometryAdmin(admin.OSMGeoAdmin):
     raw_id_fields = ('area',)
 
+class GenerationAdmin(admin.OSMGeoAdmin):
+    list_display = ('id', 'active', 'created', 'description')
+
 admin.site.register(Area, AreaAdmin)
 admin.site.register(Geometry, GeometryAdmin)
-admin.site.register(Generation, admin.OSMGeoAdmin)
+admin.site.register(Generation, GenerationAdmin)

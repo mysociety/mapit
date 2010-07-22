@@ -18,11 +18,20 @@ class GenerationManager(models.Manager):
 class Generation(models.Model):
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
+    description = models.CharField(max_length=255)
 
     objects = GenerationManager()
 
     def __unicode__(self):
         return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'active': self.active,
+            'created': self.created,
+            'description': self.description,
+        }
 
 class AreaManager(models.GeoManager):
     def by_location(self, location, generation=None):

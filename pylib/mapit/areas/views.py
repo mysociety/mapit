@@ -205,6 +205,10 @@ voting_area = {
     }
 }
 
+def generations(request):
+    generations = Generation.objects.all()
+    return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
+
 def area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     return _area(area)

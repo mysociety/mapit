@@ -9,6 +9,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     (r'^$', direct_to_template, { 'template': 'index.html' }),
 
+    (r'^generations$', 'mapit.areas.views.generations'),
+
     (r'^postcode/(?P<postcode>[A-Za-z0-9 ]+)$', 'mapit.postcodes.views.postcode'),
     (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)$', 'mapit.postcodes.views.partial_postcode'),
 
