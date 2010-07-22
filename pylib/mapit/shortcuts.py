@@ -1,5 +1,5 @@
 from django.utils import simplejson
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound, Http404
+from django import http
 from django.db import connection
 from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
@@ -13,12 +13,12 @@ class GEOS_JSONEncoder(simplejson.JSONEncoder):
         return super(GEOS_JSONEncoder, self).default(o)
 
 def output_json(out, code=200):
-    if code == 400:
-        response_type = HttpResponseBadRequest
-    elif code == 404:
-        response_type = HttpResponseNotFound
-    else:
-        response_type = HttpResponse
+    types = {
+        400: http.HttpResponseBadRequest,
+        404: http.HttpResponseNotFound,
+        500: http.HttpResponseServerError,
+    }
+    response_type = types[code] if code in types else http.HttpResponse
     response = response_type(content_type='application/javascript; charset=utf-8')
     if settings.DEBUG:
         if isinstance(out, dict):
@@ -31,7 +31,9 @@ def output_json(out, code=200):
 def get_object_or_404(klass, *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
-    except Http404, e:
+    except http.Http404, e:
         return output_json({ 'error': str(e) }, code=404)
 
+def json_500(request):
+    return output_json({ 'error': "Sorry, something's gone wrong." }, code=500)
 
