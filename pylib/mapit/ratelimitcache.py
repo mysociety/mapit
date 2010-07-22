@@ -34,7 +34,7 @@ class ratelimit(object):
         self.cache_incr(self.current_key(request))
         
         # Have they failed?
-        if sum(counts) >= self.requests:
+        if sum(int(c) for c in counts) >= self.requests:
             return self.disallowed(request)
         
         return fn(request, *args, **kwargs)
