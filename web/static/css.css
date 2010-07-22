@@ -73,3 +73,11 @@ h3 {
 #nipic {
     margin: 0 0 1em 1em;
 }
+
+#footer {
+    clear: both;
+    text-align: center;
+    padding-top: 1em;
+    border-top: solid 1px #999999;
+}
+
