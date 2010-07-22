@@ -3,10 +3,9 @@ import itertools
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
-from mapit.shortcuts import output_json
+from mapit.shortcuts import output_json, get_object_or_404
 from django.template import loader
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseBadRequest, Http404
+from django.http import HttpResponseBadRequest, HttpResponseNotFound
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -28,9 +27,7 @@ enclosing_areas = {
 }
 
 def bad_request(message):
-    return HttpResponseBadRequest(loader.render_to_string('400.html', {
-        'message': message,
-    }))
+    return output_json({ 'error': message }, code=400)
 
 def check_postcode(postcode):
     postcode = re.sub('\s+', '', postcode.upper())
@@ -72,7 +69,7 @@ def partial_postcode(request, postcode):
             location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
         )
     except:
-        raise Http404
+        return output_json({ 'error': 'Postcode not found' }, code=404)
     return output_json(postcode.as_dict())
 
 def example_postcode_for_area(request, area_id, legacy=False):

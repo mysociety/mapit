@@ -1,9 +1,8 @@
 import re
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json
+from mapit.shortcuts import output_json, get_object_or_404
 from django.contrib.gis.geos import Point
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect
 
 voting_area = {
     'type_name': {
@@ -226,7 +225,7 @@ def area_polygon(request, area_id, format):
     elif len(all_areas) == 1:
         all_areas = all_areas[0].polygon
     else:
-        raise Http404
+        return output_json({ 'error': 'No polygons found' }, code=404)
     if format=='kml': out = all_areas.kml
     elif format=='json': out = all_areas.json
     elif format=='wkt': out = all_areas.wkt
