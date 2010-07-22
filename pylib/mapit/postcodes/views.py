@@ -4,6 +4,7 @@ from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json, get_object_or_404
+from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
 
@@ -36,6 +37,7 @@ def check_postcode(postcode):
     postcode = get_object_or_404(Postcode, postcode=postcode)
     return postcode
 
+@ratelimit(minutes=3, requests=100)
 def postcode(request, postcode, legacy=False):
     postcode = check_postcode(postcode)
     if isinstance(postcode, HttpResponse): return postcode
@@ -57,6 +59,7 @@ def postcode(request, postcode, legacy=False):
     out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
     
+@ratelimit(minutes=3, requests=100)
 def partial_postcode(request, postcode):
     postcode = re.sub('\s+', '', postcode.upper())
     if is_valid_postcode(postcode):
@@ -72,6 +75,7 @@ def partial_postcode(request, postcode):
         return output_json({ 'error': 'Postcode not found' }, code=404)
     return output_json(postcode.as_dict())
 
+@ratelimit(minutes=3, requests=100)
 def example_postcode_for_area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     try:
@@ -86,6 +90,7 @@ def example_postcode_for_area(request, area_id, legacy=False):
 
 # Legacy Views from old MaPit. Don't use in future.
 
+@ratelimit(minutes=3, requests=100)
 def get_location(request, postcode, partial):
     if partial:
         return partial_postcode(request, postcode)

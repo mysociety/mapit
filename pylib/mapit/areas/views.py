@@ -1,6 +1,7 @@
 import re
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, get_object_or_404
+from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -209,10 +210,12 @@ def generations(request):
     generations = Generation.objects.all()
     return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
 
+@ratelimit(minutes=3, requests=100)
 def area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     return _area(area)
 
+@ratelimit(minutes=3, requests=100)
 def area_by_ons_code(request, ons_code):
     area = get_object_or_404(Area, codes__type='ons', codes__code=ons_code)
     return _area(area)
@@ -221,6 +224,7 @@ def _area(area):
     out = area.as_dict()
     return output_json(out)
 
+@ratelimit(minutes=3, requests=100)
 def area_polygon(request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
     all_areas = area.polygons.all()
@@ -235,6 +239,7 @@ def area_polygon(request, area_id, format):
     elif format=='wkt': out = all_areas.wkt
     return HttpResponse(out)
     
+@ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
     generation = Generation.objects.current()
@@ -254,11 +259,13 @@ def add_codes(areas):
             area.code_list = lookup[area.id]
     return areas
 
+@ratelimit(minutes=3, requests=100)
 def areas(request, area_ids):
     area_ids = area_ids.split(',')
     areas = add_codes(Area.objects.filter(id__in=area_ids))
     return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
 
+@ratelimit(minutes=3, requests=100)
 def areas_by_type(request, type, legacy=False):
     generation = Generation.objects.current()
     try:
@@ -284,6 +291,7 @@ def areas_by_type(request, type, legacy=False):
     if legacy: return output_json( [ a.id for a in areas ] )
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
+@ratelimit(minutes=3, requests=100)
 def areas_by_name(request, name, legacy=False):
     generation = Generation.objects.current()
     try:
@@ -315,6 +323,7 @@ def areas_by_name(request, name, legacy=False):
         out = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
 
+@ratelimit(minutes=3, requests=100)
 def area_geometry(request, area_id):
     area = _area_geometry(area_id)
     return output_json(area)
@@ -336,11 +345,13 @@ def _area_geometry(area_id):
     out['centre_lat'] = all_areas.centroid[1]
     return out
 
+@ratelimit(minutes=3, requests=100)
 def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
     out = dict( (id, _area_geometry(id)) for id in area_ids )
     return output_json(out)
 
+@ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
@@ -379,14 +390,17 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
 
+@ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False):
     return HttpResponseRedirect("/point/4326/%s,%s%s" % (lon, lat, "/bb" if bb else ''))
 
+@ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False):
     return HttpResponseRedirect("/point/27700/%s,%s%s" % (e, n, "/bb" if bb else ''))
 
 # Legacy Views from old MaPit. Don't use in future.
 
+@ratelimit(minutes=3, requests=100)
 def get_voting_area_info(request, area_id):
     area = _get_voting_area_info(area_id)
     return output_json(area)
@@ -425,6 +439,7 @@ def _get_voting_area_info(area_id):
 
     return out
 
+@ratelimit(minutes=3, requests=100)
 def get_voting_areas_info(request, area_ids):
     area_ids = area_ids.split(',')
     out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
