@@ -8,3 +8,5 @@ postgresql-8.3
 postgresql-8.3-postgis
 postgresql-server-dev-8.3
 
+memcached
+python-memcache

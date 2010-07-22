@@ -81,11 +81,11 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.gzip.GZipMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    'django.middleware.cache.UpdateCacheMiddleware',
+    'mapit.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    'mapit.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'mapit.urls'
