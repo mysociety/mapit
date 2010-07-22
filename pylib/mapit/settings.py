@@ -18,6 +18,7 @@ mysociety.config.set_file(os.path.abspath(package_dir + "/../../conf/general"))
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
+SERVER_EMAIL = mysociety.config.get('BUGS_EMAIL')
 ADMINS = (
     ('mySociety bugs', mysociety.config.get('BUGS_EMAIL')),
 )
