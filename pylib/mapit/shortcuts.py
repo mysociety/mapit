@@ -2,9 +2,10 @@ from django.utils import simplejson
 from django import http
 from django.db import connection
 from django.conf import settings
+from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 
-class GEOS_JSONEncoder(simplejson.JSONEncoder):
+class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
         try:
             return o.json # Will therefore support all the GEOS objects
