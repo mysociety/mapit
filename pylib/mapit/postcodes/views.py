@@ -78,6 +78,7 @@ def partial_postcode(request, postcode):
 @ratelimit(minutes=3, requests=100)
 def example_postcode_for_area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
     try:
         pc = Postcode.objects.filter(areas=area).order_by('?')[0]
     except:

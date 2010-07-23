@@ -213,11 +213,13 @@ def generations(request):
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
     return _area(area)
 
 @ratelimit(minutes=3, requests=100)
 def area_by_ons_code(request, ons_code):
     area = get_object_or_404(Area, codes__type='ons', codes__code=ons_code)
+    if isinstance(area, HttpResponse): return area
     return _area(area)
 
 def _area(area):
@@ -227,6 +229,7 @@ def _area(area):
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
     if len(all_areas) > 1:
         all_areas = all_areas.collect()
@@ -242,6 +245,7 @@ def area_polygon(request, area_id, format):
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, legacy=False):
     area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
     generation = Generation.objects.current()
     children = add_codes(area.children.filter(
         generation_low__lte=generation, generation_high__gte=generation
@@ -330,6 +334,7 @@ def area_geometry(request, area_id):
 
 def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all().collect()
     out = {
         'area': all_areas.area,
@@ -410,6 +415,7 @@ def _get_voting_area_info(area_id):
         area = get_object_or_404(Area, codes__type='ons', codes__code=area_id)
     else:
         area = get_object_or_404(Area, id=int(area_id))
+    if isinstance(area, HttpResponse): return area
 
     try:
         os_name = area.names.get(type='O').name
