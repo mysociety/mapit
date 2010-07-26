@@ -253,6 +253,18 @@ def area_children(request, area_id, legacy=False):
     if legacy: return output_json( [ child.id for child in children ] )
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
+@ratelimit(minutes=3, requests=100)
+def area_touches(request, area_id):
+    area = get_object_or_404(Area, id=area_id)
+    if isinstance(area, HttpResponse): return area
+    all_areas = area.polygons.all()
+    if len(all_areas) > 1:
+        all_areas = all_areas.collect()
+    elif len(all_areas) == 1:
+        all_areas = all_areas[0].polygon
+    areas = Area.objects.filter(polygons__polygon__touches=all_areas)
+    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+
 def add_codes(areas):
     codes = Code.objects.filter(area__in=areas)
     lookup = {}
