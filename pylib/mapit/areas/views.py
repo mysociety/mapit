@@ -4,6 +4,7 @@ from mapit.shortcuts import output_json, get_object_or_404
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core.urlresolvers import resolve
 
 voting_area = {
     'type_name': {
@@ -406,6 +407,16 @@ def areas_by_point_latlon(request, lat, lon, bb=False):
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False):
     return HttpResponseRedirect("/point/27700/%s,%s%s" % (e, n, "/bb" if bb else ''))
+
+# ---
+
+def deal_with_post(request):
+    url = request.POST.get('URL', '')
+    if not url:
+        return output_json({ 'error': 'No content specified' }, code=400)
+    view, args, kwargs = resolve('/areas/%s' % url)
+    kwargs['request'] = request
+    return view(*args, **kwargs)
 
 # Legacy Views from old MaPit. Don't use in future.
 

@@ -29,6 +29,7 @@ urlpatterns = patterns('',
     (r'^areas/(?P<area_ids>[0-9,]+)/geometry$', 'mapit.areas.views.areas_geometry'),
     (r'^areas/(?P<type>[A-Z,]+)$', 'mapit.areas.views.areas_by_type'),
     (r'^areas/(?P<name>.+?)$', 'mapit.areas.views.areas_by_name'),
+    (r'^areas$', 'mapit.areas.views.deal_with_POST'),
 
     (r'^admin/', include(admin.site.urls)),
 
