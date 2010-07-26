@@ -256,6 +256,8 @@ def area_touches(request, area_id):
         all_areas = all_areas.collect()
     elif len(all_areas) == 1:
         all_areas = all_areas[0].polygon
+    else:
+        return output_json({ 'error': 'No polygons found' }, code=404)
     areas = Area.objects.filter(polygons__polygon__touches=all_areas, type=area.type)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
@@ -342,6 +344,8 @@ def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all().collect()
+    if not all_areas:
+        return output_json({ 'error': 'No polygons found' }, code=404)
     out = {
         'area': all_areas.area,
         'parts': all_areas.num_geom,
