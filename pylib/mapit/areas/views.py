@@ -396,13 +396,12 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
                 areas.append( Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location) )
             except:
                 pass
-        areas = add_codes(areas)
     else:
         if method == 'box':
             args['polygons__polygon__bbcontains'] = location
         else:
             args['polygons__polygon__contains'] = location
-        areas = add_codes(Area.objects.filter(**args))
+        areas = Area.objects.filter(**args)
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
