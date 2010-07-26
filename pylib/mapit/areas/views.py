@@ -262,7 +262,7 @@ def area_touches(request, area_id):
         all_areas = all_areas.collect()
     elif len(all_areas) == 1:
         all_areas = all_areas[0].polygon
-    areas = Area.objects.filter(polygons__polygon__touches=all_areas)
+    areas = Area.objects.filter(polygons__polygon__touches=all_areas, type=area.type)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 def add_codes(areas):
