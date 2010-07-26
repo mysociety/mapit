@@ -370,6 +370,7 @@ def areas_geometry(request, area_ids):
 def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
+    if not generation: generation = Generation.objects.current()
     location = Point(float(x), float(y), srid=int(srid))
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
@@ -427,6 +428,7 @@ def deal_with_POST(request):
 @ratelimit(minutes=3, requests=100)
 def get_voting_area_info(request, area_id):
     area = _get_voting_area_info(area_id)
+    if isinstance(area, HttpResponse): return area
     return output_json(area)
 
 def _get_voting_area_info(area_id):
@@ -467,6 +469,10 @@ def _get_voting_area_info(area_id):
 @ratelimit(minutes=3, requests=100)
 def get_voting_areas_info(request, area_ids):
     area_ids = area_ids.split(',')
-    out = dict( (id, _get_voting_area_info(id)) for id in area_ids )
+    out = {}
+    for id in area_ids:
+        area = _get_voting_area_info(id)
+        if isinstance(area, HttpResponse): return area
+        out[id] = area
     return output_json(out)
 

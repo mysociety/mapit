@@ -42,7 +42,7 @@ class AreaManager(models.GeoManager):
         )
 
     def by_postcode(self, postcode, generation=None):
-        if generation is None: generation = Generation.objects.current()
+        if not generation: generation = Generation.objects.current()
         return list(itertools.chain(
             self.by_location(postcode.location, generation),
             postcode.areas.filter(
