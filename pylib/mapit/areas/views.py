@@ -370,7 +370,7 @@ def areas_geometry(request, area_ids):
 def areas_by_point(request, srid, x, y, bb=False, legacy=False):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
-    location = Point(float(x), float(y), srid=srid)
+    location = Point(float(x), float(y), srid=int(srid))
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
     args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
