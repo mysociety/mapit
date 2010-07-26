@@ -212,19 +212,12 @@ def generations(request):
 
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, legacy=False):
-    area = get_object_or_404(Area, id=area_id)
+    if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
+        area = get_object_or_404(Area, codes__type='ons', codes__code=ons_code)
+    else:
+        area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
-    return _area(area)
-
-@ratelimit(minutes=3, requests=100)
-def area_by_ons_code(request, ons_code):
-    area = get_object_or_404(Area, codes__type='ons', codes__code=ons_code)
-    if isinstance(area, HttpResponse): return area
-    return _area(area)
-
-def _area(area):
-    out = area.as_dict()
-    return output_json(out)
+    return output_json( area.as_dict() )
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, area_id, format):
