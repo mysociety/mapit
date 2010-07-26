@@ -410,7 +410,7 @@ def areas_by_point_osgb(request, e, n, bb=False):
 
 # ---
 
-def deal_with_post(request):
+def deal_with_POST(request):
     url = request.POST.get('URL', '')
     if not url:
         return output_json({ 'error': 'No content specified' }, code=400)
