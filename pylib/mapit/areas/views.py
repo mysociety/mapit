@@ -236,10 +236,16 @@ def area_polygon(request, srid, area_id, format):
         return output_json({ 'error': 'No polygons found' }, code=404)
     if srid != 27700:
         all_areas.transform(srid)
-    if format=='kml': out = all_areas.kml
-    elif format=='json': out = all_areas.json
-    elif format=='wkt': out = all_areas.wkt
-    return HttpResponse(out)
+    if format=='kml':
+        out = all_areas.kml
+        content_type = 'application/vnd.google-earth.kml+xml'
+    elif format=='json':
+        out = all_areas.json
+        content_type = 'application/json'
+    elif format=='wkt':
+        out = all_areas.wkt
+        content_type = 'text/plain'
+    return HttpResponse(out, content_type='%s; charset=utf-8' % content_type)
     
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, legacy=False):

@@ -20,7 +20,7 @@ def output_json(out, code=200):
         500: http.HttpResponseServerError,
     }
     response_type = types[code] if code in types else http.HttpResponse
-    response = response_type(content_type='application/javascript; charset=utf-8')
+    response = response_type(content_type='application/json; charset=utf-8')
     if code != 200:
         out['code'] = code
     if settings.DEBUG:
