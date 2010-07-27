@@ -489,7 +489,6 @@ def get_voting_areas_info(request, area_ids):
     out = {}
     for id in area_ids:
         area = _get_voting_area_info(id)
-        if isinstance(area, HttpResponse): return area
-        out[id] = area
+        out[id] = {} if isinstance(area, HttpResponse) else area
     return output_json(out)
 
