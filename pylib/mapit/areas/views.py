@@ -1,6 +1,6 @@
 import re
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, get_object_or_404
+from mapit.shortcuts import output_json, output_html, get_object_or_404
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
