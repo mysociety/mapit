@@ -41,7 +41,10 @@ def check_postcode(postcode):
 def postcode(request, postcode, legacy=False):
     postcode = check_postcode(postcode)
     if isinstance(postcode, HttpResponse): return postcode
-    generation = request.REQUEST.get('generation', Generation.objects.current())
+    try:
+        generation = int(request.REQUEST['generation'])
+    except:
+        generation = Generation.objects.current()
     areas = Area.objects.by_postcode(postcode, generation)
 
     # Add manual enclosing areas. 
