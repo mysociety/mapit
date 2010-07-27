@@ -357,6 +357,7 @@ def areas_by_name(request, name, legacy=False):
 @ratelimit(minutes=3, requests=100)
 def area_geometry(request, area_id):
     area = _area_geometry(area_id)
+    if isinstance(area, HttpResponse): return area
     return output_json(area)
 
 def _area_geometry(area_id):
