@@ -6,6 +6,8 @@ handler500 = 'mapit.shortcuts.json_500'
 from django.contrib import admin
 admin.autodiscover()
 
+format_end = '(?:\.(?P<format>html|json))?'
+
 urlpatterns = patterns('',
     (r'^$', direct_to_template, { 'template': 'index.html' }),
 
@@ -28,7 +30,7 @@ urlpatterns = patterns('',
 
     (r'^areas/(?P<area_ids>[0-9,]+)$', 'mapit.areas.views.areas'),
     (r'^areas/(?P<area_ids>[0-9,]+)/geometry$', 'mapit.areas.views.areas_geometry'),
-    (r'^areas/(?P<type>[A-Z,]+)$', 'mapit.areas.views.areas_by_type'),
+    (r'^areas/(?P<type>[A-Z,]+)%s$' % format_end, 'mapit.areas.views.areas_by_type'),
     (r'^areas/(?P<name>.+?)$', 'mapit.areas.views.areas_by_name'),
     (r'^areas$', 'mapit.areas.views.deal_with_POST'),
 

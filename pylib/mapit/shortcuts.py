@@ -4,6 +4,7 @@ from django.db import connection
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
+from django.shortcuts import render_to_response
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -12,6 +13,9 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
         except:
             pass
         return super(GEOS_JSONEncoder, self).default(o)
+
+def output_html(out):
+    return render_to_response('data.html', { 'data': out })
 
 def output_json(out, code=200):
     types = {
