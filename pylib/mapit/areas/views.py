@@ -221,7 +221,8 @@ def area(request, area_id, legacy=False):
     return output_json( area.as_dict() )
 
 @ratelimit(minutes=3, requests=100)
-def area_polygon(request, area_id, format):
+def area_polygon(request, srid, area_id, format):
+    srid = int(srid)
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
@@ -231,7 +232,8 @@ def area_polygon(request, area_id, format):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
-    all_areas.transform(4326)
+    if srid != 27700:
+        all_areas.transform(srid)
     if format=='kml': out = all_areas.kml
     elif format=='json': out = all_areas.json
     elif format=='wkt': out = all_areas.wkt
