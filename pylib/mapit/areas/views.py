@@ -237,7 +237,13 @@ def area_polygon(request, srid, area_id, format):
     if srid != 27700:
         all_areas.transform(srid)
     if format=='kml':
-        out = all_areas.kml
+        out = '''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+    <Placemark>
+        <name>%s</name>
+        %s
+    </Placemark>
+</kml>''' % (area.name, all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
     elif format=='json':
         out = all_areas.json
