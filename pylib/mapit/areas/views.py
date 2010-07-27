@@ -231,6 +231,7 @@ def area_polygon(request, area_id, format):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
+    all_areas.transform(4326)
     if format=='kml': out = all_areas.kml
     elif format=='json': out = all_areas.json
     elif format=='wkt': out = all_areas.wkt
