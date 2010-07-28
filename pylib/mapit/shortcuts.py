@@ -27,12 +27,12 @@ def output_json(out, code=200):
     response = response_type(content_type='application/json; charset=utf-8')
     if code != 200:
         out['code'] = code
+    indent = None
     if settings.DEBUG:
         if isinstance(out, dict):
             out['debug_db_queries'] = connection.queries
-        simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=4)
-    else:
-        simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder)
+        indent = 4
+    simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
     return response
 
 def get_object_or_404(klass, *args, **kwargs):

@@ -435,11 +435,11 @@ def areas_by_point_osgb(request, e, n, bb=False):
 
 # ---
 
-def deal_with_POST(request):
+def deal_with_POST(request, call='areas'):
     url = request.POST.get('URL', '')
     if not url:
         return output_json({ 'error': 'No content specified' }, code=400)
-    view, args, kwargs = resolve('/areas/%s' % url)
+    view, args, kwargs = resolve('/%s/%s' % (call, url))
     kwargs['request'] = request
     return view(*args, **kwargs)
 
