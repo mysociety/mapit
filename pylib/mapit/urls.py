@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     # Old style MaPit calls
     (r'^get_voting_areas/([A-Za-z0-9 ]+)$', 'mapit.postcodes.views.postcode', { 'legacy': True }),
     (r'^get_voting_area_info/([0-9A-Za-z]+)$', 'mapit.areas.views.get_voting_area_info'),
-    (r'^get_voting_areas_info/([0-9A-Za-z,]+)$', 'mapit.areas.views.get_voting_areas_info'),
+    (r'^get_voting_areas_info/(?P<area_ids>[0-9A-Za-z,]+)$', 'mapit.areas.views.get_voting_areas_info'),
     (r'^get_voting_areas_info$', 'mapit.areas.views.deal_with_POST', { 'call': 'get_voting_areas_info' }),
     (r"^get_voting_area_by_name/(.+?)$", 'mapit.areas.views.areas_by_name', { 'legacy': True }),
     (r'^get_areas_by_type/([A-Z,]+)$', 'mapit.areas.views.areas_by_type', { 'legacy': True }),
