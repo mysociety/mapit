@@ -1,0 +1,76 @@
+#!/usr/bin/perl -w
+#
+# A one-off script to fix the NI WMC IDs, which have gone in new MaPit
+# with gens 1-12 IDs from old MaPit, rather than gen 13. This is causing
+# WriteToThem to get confused. Sorry if anyone is already using these IDs.
+
+use strict;
+use DBI;
+use FindBin;
+use lib "$FindBin::Bin/../commonlib/perllib";
+
+use mySociety::Config;
+mySociety::Config::set_file("$FindBin::Bin/../conf/general");
+
+my $mapit_old = connect_to_mapit_database('mapit', 'cake');
+my $mapit_new = connect_to_mapit_database('mapit-new', 'bitter');
+
+my $sth = $mapit_old->prepare("SELECT id, name
+    FROM area
+        LEFT JOIN area_name ON area.id=area_name.area_id AND name_type='F'
+    WHERE generation_high=13 AND type='WMC' AND country='N'
+    ORDER BY area.id");
+$sth->execute();
+my %lookup;
+while (my @row = $sth->fetchrow_array) {
+    $lookup{$row[1]} = $row[0];
+}
+$mapit_old->disconnect();
+
+$sth = $mapit_new->prepare("SELECT id, name
+    FROM areas_area
+    WHERE generation_high_id=13 AND type='WMC' AND country='N'
+    ORDER BY id");
+$sth->execute();
+my %old_to_new;
+while (my ($id, $name) = $sth->fetchrow_array) {
+    my $old_id = $id;
+    my $new_id = $lookup{$name};
+    $old_to_new{$old_id} = $new_id;
+}
+
+use Data::Dumper;
+print Dumper $old_to_new;
+
+# Okay, so now we have the mapping, let's do it!
+# First, change all the IDs, but add 100,000 so no clashes.
+my $update = [
+    $mapit_new->prepare('UPDATE areas_area SET id=? WHERE id=?'),
+    $mapit_new->prepare('UPDATE areas_area SET parent_area_id=? WHERE parent_area_id=?'),
+    $mapit_new->prepare('UPDATE areas_geometry SET area_id=? WHERE area_id=?'),
+    $mapit_new->prepare('UPDATE areas_name SET area_id=? WHERE area_id=?'),
+    $mapit_new->prepare('UPDATE areas_code SET area_id=? WHERE area_id=?'),
+    $mapit_new->prepare('UPDATE postcodes_postcode_areas SET area_id=? WHERE area_id=?'),
+];
+foreach (sort { $a <=> $b } keys %old_to_new) {
+    foreach my $sql (@$update) {
+        #$sql->execute($old_to_new{$_}, $_);
+    }
+    print "$_\n";
+}
+
+exit;
+
+$mapit_new->commit();
+$mapit_new->disconnect();
+
+# ---
+
+sub connect_to_mapit_database {
+    my ($db, $host) = @_;
+    return DBI->connect("dbi:Pg:dbname=$db;host=$host.int.ukcod.org.uk;port=5434",
+        $db, c(`/data/mysociety/bin/pgpw $db`), { RaiseError => 1, AutoCommit => 0 });
+}
+
+sub c { $_ = shift; chomp; return $_; }
+
