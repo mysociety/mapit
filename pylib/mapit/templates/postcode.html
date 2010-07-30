@@ -5,7 +5,7 @@
 {% block content %}
 
 <ul>
-<li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endif %}
+<li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
 E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <li>WGS84 lat/lon: {{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}
 </ul>
