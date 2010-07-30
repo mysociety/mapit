@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Results for &ldquo;{{ postcode.postcode }}&rdquo;{% endblock title %}
+
+{% block content %}
+
+<ul>
+<li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endif %}
+E/N: {{ postcode.easting }}, {{ postcode.northing }}
+<li>WGS84 lat/lon: {{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}
+</ul>
+
+<h2>Areas</h2>
+
+<ul>
+{% for area in areas %}
+<li>{{ area.name }} &ndash; id {{ area.id }}, type {{ area.get_type_display }}
+    ({{ area.type }}), {{ area.get_country_display }}
+{% empty %}
+<li>No matching areas found.
+{% endfor %}
+</ul>
+
+{% endblock %}

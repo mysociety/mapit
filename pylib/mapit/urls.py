@@ -13,7 +13,7 @@ urlpatterns = patterns('',
 
     (r'^generations$', 'mapit.areas.views.generations'),
 
-    (r'^postcode/(?P<postcode>[A-Za-z0-9 ]+)$', 'mapit.postcodes.views.postcode'),
+    (r'^postcode/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, 'mapit.postcodes.views.postcode'),
     (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)$', 'mapit.postcodes.views.partial_postcode'),
 
     (r'^area/(?P<area_id>[0-9A-Z]+)$', 'mapit.areas.views.area'),

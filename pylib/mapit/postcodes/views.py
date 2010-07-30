@@ -7,6 +7,7 @@ from mapit.shortcuts import output_json, get_object_or_404
 from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -38,7 +39,7 @@ def check_postcode(postcode):
     return postcode
 
 @ratelimit(minutes=3, requests=100)
-def postcode(request, postcode, legacy=False):
+def postcode(request, postcode, legacy=False, format='json'):
     postcode = check_postcode(postcode)
     if isinstance(postcode, HttpResponse): return postcode
     try:
@@ -57,6 +58,12 @@ def postcode(request, postcode, legacy=False):
     if legacy:
         areas = dict( (area.type, area.id) for area in areas )
         return output_json(areas)
+
+    if format == 'html':
+        return render_to_response('postcode.html', {
+            'postcode': postcode.as_dict(),
+            'areas': areas,
+        })
 
     out = postcode.as_dict()
     out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
