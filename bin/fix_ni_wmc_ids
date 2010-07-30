@@ -22,8 +22,9 @@ my $sth = $mapit_old->prepare("SELECT id, name
     ORDER BY area.id");
 $sth->execute();
 my %lookup;
-while (my @row = $sth->fetchrow_array) {
-    $lookup{$row[1]} = $row[0];
+while (my ($id, $name) = $sth->fetchrow_array) {
+    $name =~ s/&/and/;
+    $lookup{$name} = $id;
 }
 $mapit_old->disconnect();
 
@@ -40,7 +41,7 @@ while (my ($id, $name) = $sth->fetchrow_array) {
 }
 
 use Data::Dumper;
-print Dumper %old_to_new;
+print Dumper \%old_to_new;
 
 # Okay, so now we have the mapping, let's do it!
 # First, change all the IDs, but add 100,000 so no clashes.
