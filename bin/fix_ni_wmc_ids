@@ -23,7 +23,6 @@ my $sth = $mapit_old->prepare("SELECT id, name
 $sth->execute();
 my %lookup;
 while (my ($id, $name) = $sth->fetchrow_array) {
-    $name =~ s/&/and/;
     $lookup{$name} = $id;
 }
 $mapit_old->disconnect();
@@ -40,9 +39,6 @@ while (my ($id, $name) = $sth->fetchrow_array) {
     $old_to_new{$old_id} = $new_id;
 }
 
-use Data::Dumper;
-print Dumper \%old_to_new;
-
 # Okay, so now we have the mapping, let's do it!
 # First, change all the IDs, but add 100,000 so no clashes.
 my $update = [
@@ -55,12 +51,10 @@ my $update = [
 ];
 foreach (sort { $a <=> $b } keys %old_to_new) {
     foreach my $sql (@$update) {
-        #$sql->execute($old_to_new{$_}, $_);
+        $sql->execute($old_to_new{$_}, $_);
     }
     print "$_\n";
 }
-
-exit;
 
 $mapit_new->commit();
 $mapit_new->disconnect();
