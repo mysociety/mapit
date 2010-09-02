@@ -262,7 +262,7 @@ def area_children(request, area_id, legacy=False, format='json'):
         generation_low__lte=generation, generation_high__gte=generation
     ))
     if legacy: return output_json( [ child.id for child in children ] )
-    if format == 'html': return output_html( areas )
+    if format == 'html': return output_html( children )
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
 @ratelimit(minutes=3, requests=100)
@@ -352,7 +352,7 @@ def areas_by_name(request, name, legacy=False, format='json'):
         }) for area in areas )
     else:
         out = dict( ( area.id, area.as_dict() ) for area in areas )
-    if format == 'html': return output_html( areas )
+    if format == 'html': return output_html( out )
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
