@@ -10,6 +10,8 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <li>WGS84 lat/lon: {{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}
 </ul>
 
+{% if areas %}
+
 <h2>Areas</h2>
 
 <ul>
@@ -20,5 +22,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <li>No matching areas found.
 {% endfor %}
 </ul>
+
+{% endif %}
 
 {% endblock %}

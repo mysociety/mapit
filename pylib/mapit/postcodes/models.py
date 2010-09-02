@@ -18,7 +18,7 @@ class Postcode(models.Model):
         return self.get_postcode_display()
 
     def get_postcode_display(self):
-        return re.sub('(...)$', r' \1', self.postcode)
+        return re.sub('(...)$', r' \1', self.postcode).strip()
 
     def as_dict(self):
         loc = self.location

@@ -70,7 +70,7 @@ def postcode(request, postcode, legacy=False, format='json'):
     return output_json(out)
     
 @ratelimit(minutes=3, requests=100)
-def partial_postcode(request, postcode):
+def partial_postcode(request, postcode, format='json'):
     postcode = re.sub('\s+', '', postcode.upper())
     if is_valid_postcode(postcode):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
@@ -78,11 +78,17 @@ def partial_postcode(request, postcode):
         return bad_request("Partial postcode '%s' is not valid." % postcode)
     try:
         postcode = Postcode(
-            postcode = 'temp',
+            postcode = postcode,
             location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
         )
     except:
         return output_json({ 'error': 'Postcode not found' }, code=404)
+
+    if format == 'html':
+        return render_to_response('postcode.html', {
+            'postcode': postcode.as_dict(),
+        })
+
     return output_json(postcode.as_dict())
 
 @ratelimit(minutes=3, requests=100)

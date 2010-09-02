@@ -289,9 +289,10 @@ def add_codes(areas):
     return areas
 
 @ratelimit(minutes=3, requests=100)
-def areas(request, area_ids):
+def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
     areas = add_codes(Area.objects.filter(id__in=area_ids))
+    if format == 'html': return output_html( areas )
     return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
 
 @ratelimit(minutes=3, requests=100)
@@ -320,7 +321,7 @@ def areas_by_type(request, type, legacy=False, format='json'):
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_name(request, name, legacy=False):
+def areas_by_name(request, name, legacy=False, format='json'):
     generation = Generation.objects.current()
     try:
         min_generation = int(request.REQUEST['min_generation'])
@@ -349,6 +350,7 @@ def areas_by_name(request, name, legacy=False):
         }) for area in areas )
     else:
         out = dict( ( area.id, area.as_dict() ) for area in areas )
+    if format == 'html': return output_html( areas )
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)

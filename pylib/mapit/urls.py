@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     (r'^generations$', 'mapit.areas.views.generations'),
 
     (r'^postcode/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, 'mapit.postcodes.views.postcode'),
-    (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)$', 'mapit.postcodes.views.partial_postcode'),
+    (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, 'mapit.postcodes.views.partial_postcode'),
 
     (r'^area/(?P<area_id>[0-9A-Z]+)$', 'mapit.areas.views.area'),
     (r'^area/(?P<area_id>[0-9]+)/example_postcode$', 'mapit.postcodes.views.example_postcode_for_area'),
@@ -28,10 +28,10 @@ urlpatterns = patterns('',
     (r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?$', 'mapit.areas.views.areas_by_point_latlon'),
     (r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?$', 'mapit.areas.views.areas_by_point_osgb'),
 
-    (r'^areas/(?P<area_ids>[0-9,]+)$', 'mapit.areas.views.areas'),
+    (r'^areas/(?P<area_ids>[0-9,]+)%s$' % format_end, 'mapit.areas.views.areas'),
     (r'^areas/(?P<area_ids>[0-9,]+)/geometry$', 'mapit.areas.views.areas_geometry'),
     (r'^areas/(?P<type>[A-Z,]+)%s$' % format_end, 'mapit.areas.views.areas_by_type'),
-    (r'^areas/(?P<name>.+?)$', 'mapit.areas.views.areas_by_name'),
+    (r'^areas/(?P<name>.+?)%s$' % format_end, 'mapit.areas.views.areas_by_name'),
     (r'^areas$', 'mapit.areas.views.deal_with_POST', { 'call': 'areas' }),
 
     (r'^admin/', include(admin.site.urls)),
