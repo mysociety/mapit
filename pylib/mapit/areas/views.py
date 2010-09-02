@@ -254,7 +254,7 @@ def area_polygon(request, srid, area_id, format):
     return HttpResponse(out, content_type='%s; charset=utf-8' % content_type)
     
 @ratelimit(minutes=3, requests=100)
-def area_children(request, area_id, legacy=False):
+def area_children(request, area_id, legacy=False, format='json'):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     generation = Generation.objects.current()
@@ -262,10 +262,11 @@ def area_children(request, area_id, legacy=False):
         generation_low__lte=generation, generation_high__gte=generation
     ))
     if legacy: return output_json( [ child.id for child in children ] )
+    if format == 'html': return output_html( areas )
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
 @ratelimit(minutes=3, requests=100)
-def area_touches(request, area_id):
+def area_touches(request, area_id, format='json'):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
@@ -276,6 +277,7 @@ def area_touches(request, area_id):
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
     areas = Area.objects.filter(polygons__polygon__touches=all_areas, type=area.type)
+    if format == 'html': return output_html( areas )
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 def add_codes(areas):
@@ -386,7 +388,7 @@ def areas_geometry(request, area_ids):
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_point(request, srid, x, y, bb=False, legacy=False):
+def areas_by_point(request, srid, x, y, bb=False, legacy=False, format='json'):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
     if not generation: generation = Generation.objects.current()
@@ -422,15 +424,16 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False):
         areas = Area.objects.filter(**args)
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
+    if format == 'html': return output_html( areas )
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_point_latlon(request, lat, lon, bb=False):
-    return HttpResponseRedirect("/point/4326/%s,%s%s" % (lon, lat, "/bb" if bb else ''))
+def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
+    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (lon, lat, "/bb" if bb else '', '.%s' % format if format else ''))
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_point_osgb(request, e, n, bb=False):
-    return HttpResponseRedirect("/point/27700/%s,%s%s" % (e, n, "/bb" if bb else ''))
+def areas_by_point_osgb(request, e, n, bb=False, format=''):
+    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (e, n, "/bb" if bb else '', '.%s' % format if format else ''))
 
 # ---
 
