@@ -467,6 +467,7 @@ def _get_voting_area_info(area_id):
     except:
         ons_code = None
 
+    current = Generation.objects.current().id
     out = {
         'area_id': area.id,
         'name': area.name,
@@ -475,9 +476,9 @@ def _get_voting_area_info(area_id):
         'parent_area_id': area.parent_area_id,
         'type': area.type,
         'ons_code': ons_code,
-        'generation_low': area.generation_low_id,
-        'generation_high': area.generation_high_id,
-        'generation': Generation.objects.current().id,
+        'generation_low': area.generation_low_id if area.generation_low_id else 0,
+        'generation_high': area.generation_high_id if area.generation_high_id else current,
+        'generation': current,
     }
 
     for item in ('type_name', 'attend_prep', 'general_prep', 'rep_name', 'rep_name_plural',

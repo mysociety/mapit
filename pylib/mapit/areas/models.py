@@ -130,7 +130,7 @@ class Area(models.Model):
         ('S', 'Scotland'),
         ('N', 'Northern Ireland'),
         ('', '-'),
-    ))
+    ), blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
 
