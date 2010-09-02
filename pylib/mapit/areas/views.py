@@ -308,10 +308,7 @@ def areas_by_type(request, type, legacy=False, format='json'):
     elif type:
         args['type'] = type
 
-    if type == 'HOC':
-        HOC_AREA_ID = 900008
-        areas = [ Area.objects.get(id=HOC_AREA_ID) ]
-    elif min_generation == -1:
+    if min_generation == -1:
         areas = add_codes(Area.objects.filter(**args))
     else:
         args['generation_low__lte'] = generation

@@ -47,6 +47,13 @@ manually inserted some generation 10 areas (in data) for FixMyStreet, and
 manually added our test/fake areas that used to be in code but can now
 happily sit in the database along with everything else.
 
+Obviously if you don't care about older Boundary-Line, you can just do the one
+Boundary-Line, Code-Point, NSPD imports. When a new Code-Point is released, you
+should just be able to run import_codepoint and scilly; when new NSPD is out,
+import_nspd, when new Boundary-Line, import_boundary_line and find_parents.
+Though I haven't had to do this myself yet, so there's probably some updating
+as opposed to creation niggles to find.
+
 Improvements / patches
 ----------------------
 
