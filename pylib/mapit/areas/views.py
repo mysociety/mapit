@@ -352,7 +352,7 @@ def areas_by_name(request, name, legacy=False, format='json'):
         }) for area in areas )
     else:
         out = dict( ( area.id, area.as_dict() ) for area in areas )
-    if format == 'html': return output_html( out )
+    if format == 'html': return output_html( areas )
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
