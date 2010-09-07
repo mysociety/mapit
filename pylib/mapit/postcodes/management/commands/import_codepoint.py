@@ -14,14 +14,17 @@ from mapit.postcodes.models import Postcode
 class Command(LabelCommand):
     help = 'Import OS Code-Point Open postcodes'
     args = '<Code-Point CSV files>'
-    count = 0
+    count = { 'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0 }
     def handle_label(self, file, **options):
         for row in csv.reader(open(file)):
             if row[1] == '90': continue # Bad postcode
             postcode = row[0].strip().replace(' ', '')
             location = Point(map(float, row[10:12]), srid=27700)
-            Postcode.objects.update_or_create({ 'postcode': postcode }, { 'location': location })
-            self.count += 1
-            if self.count % 10000 == 0:
-                print "Imported %d" % self.count
+            result = Postcode.objects.update_or_create({ 'postcode': postcode }, { 'location': location })
+            count[result] += 1
+            count['total'] += 1
+            if self.count['total'] % 10000 == 0:
+                print "Imported %d (%d new, %d changed, %d same)" % (
+                    self.count['total'], self.count['created'], self.count['updated'], self.count['unchanged']
+                )
 
