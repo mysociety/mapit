@@ -20,8 +20,19 @@ class Command(LabelCommand):
             if row[1] == '90': continue # Bad postcode
             postcode = row[0].strip().replace(' ', '')
             location = Point(map(float, row[10:12]), srid=27700)
-            result = Postcode.objects.update_or_create({ 'postcode': postcode }, { 'location': location })
-            self.count[result] += 1
+            # Want to compare co-ordinates so can't use straightforward update_or_create
+            try:
+                pc = Postcode.objects.get(postcode=postcode)
+                pc.location.transform(27700) # Postcode locations are stored as WGS84
+                if round(pc.location[0]) != location[0] or round(pc.location[1]) != location[1]:
+                    pc.location = location
+                    pc.save()
+                    self.count['updated'] += 1
+                else:
+                    self.count['unchanged'] += 1
+            except ObjectDoesNotExist:
+                Postcode.objects.create(postcode=postcode, location=location)
+                self.count['created'] += 1
             self.count['total'] += 1
             if self.count['total'] % 10000 == 0:
                 print "Imported %d (%d new, %d changed, %d same)" % (
