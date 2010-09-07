@@ -21,8 +21,8 @@ class Command(LabelCommand):
             postcode = row[0].strip().replace(' ', '')
             location = Point(map(float, row[10:12]), srid=27700)
             result = Postcode.objects.update_or_create({ 'postcode': postcode }, { 'location': location })
-            count[result] += 1
-            count['total'] += 1
+            self.count[result] += 1
+            self.count['total'] += 1
             if self.count['total'] % 10000 == 0:
                 print "Imported %d (%d new, %d changed, %d same)" % (
                     self.count['total'], self.count['created'], self.count['updated'], self.count['unchanged']
