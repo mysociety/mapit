@@ -24,9 +24,9 @@ def update_or_create(self, filter_attrs, attrs):
 
 class GeoManager(models.GeoManager):
     def update_or_create(self, filter_attrs, attrs):
-        update_or_create(self, filter_attrs, attrs)
+        return update_or_create(self, filter_attrs, attrs)
 
 class Manager(models.Manager):
     def update_or_create(self, filter_attrs, attrs):
-        update_or_create(self, filter_attrs, attrs)
+        return update_or_create(self, filter_attrs, attrs)
 
