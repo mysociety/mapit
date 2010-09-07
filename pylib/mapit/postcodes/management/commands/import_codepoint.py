@@ -9,6 +9,7 @@
 import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
+from django.core.exceptions import ObjectDoesNotExist
 from mapit.postcodes.models import Postcode
 
 class Command(LabelCommand):
