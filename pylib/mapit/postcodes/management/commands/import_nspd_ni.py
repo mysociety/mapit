@@ -40,13 +40,13 @@ class Command(LabelCommand):
             ward_code = ward_code.replace(' ', '')
             if ward_code not in code_to_area:
                 ward_area = Area.objects.get(
-                    country='N', type='LGW', code_type='ons', code=ward_code
+                    country='N', type='LGW', codes__type='ons', codes__code=ward_code
                 )
                 code_to_area[ward_code] = ward_area
 
             if parl_code not in code_to_area:
                 parl_area = Area.objects.get(
-                    country='N', type='WMC', code_type='ons', code=parl_code,
+                    country='N', type='WMC', codes__type='ons', codes__code=parl_code,
                 )
                 code_to_area[parl_code] = parl_area
 
@@ -58,7 +58,7 @@ class Command(LabelCommand):
             ward_code = ward_code.replace(' ', '')
             if 'NIE' + parl_code not in code_to_area:
                 nia_area = Area.objects.get(
-                    country='N', type='NIE', name_type='S', name=parl_name,
+                    country='N', type='NIE', names__type='S', names__name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
             ward_to_assembly[ward_code] = code_to_area['NIE' + parl_code]
