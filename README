@@ -39,7 +39,7 @@ errors, as ours did the first time I imported overnight and didn't realise.
 # import_codepoint not needed as it's the same and there's no P-in-P tests!
 ./manage.py find_parents
 ./manage.py scilly /home/matthew/mapit/data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
-./manage.py import_nspd /home/matthew/mapit/data/NSPD-2010-05.csv
+./manage.py import_nspd /home/matthew/mapit/data/NSPD-2010-05.csv # This is now split into two scripts, see below.
 # Make this generation active.
 
 At this point, I then matched up all IDs and names using the scripts in bin,
@@ -50,9 +50,11 @@ happily sit in the database along with everything else.
 Obviously if you don't care about older Boundary-Line, you can just do the one
 Boundary-Line, Code-Point, NSPD imports. When a new Code-Point is released, you
 should just be able to run import_codepoint and scilly; when new NSPD is out,
-import_nspd, when new Boundary-Line, import_boundary_line and find_parents.
-Though I haven't had to do this myself yet, so there's probably some updating
-as opposed to creation niggles to find.
+import_nspd_ni if it's only postcodes that have changed, or import_nspd_ni_areas
+first if boundary changes too (this is incomplete, it doesn't use a control
+file like import_boundary_line does); when new Boundary-Line,
+import_boundary_line and find_parents.  Though I haven't had to do this myself
+yet, so there's probably some updating as opposed to creation niggles to find.
 
 Improvements / patches
 ----------------------

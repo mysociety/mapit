@@ -9,7 +9,6 @@
 import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
-from django.core.exceptions import ObjectDoesNotExist
 from mapit.postcodes.models import Postcode
 
 class Command(LabelCommand):
@@ -31,7 +30,7 @@ class Command(LabelCommand):
                     self.count['updated'] += 1
                 else:
                     self.count['unchanged'] += 1
-            except ObjectDoesNotExist:
+            except Postcode.DoesNotExist:
                 Postcode.objects.create(postcode=postcode, location=location)
                 self.count['created'] += 1
             self.count['total'] += 1

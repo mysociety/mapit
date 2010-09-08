@@ -16,89 +16,39 @@
 import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
+from django.db import transaction
 from mapit.postcodes.models import Postcode
 from mapit.areas.models import Area, Generation
 
 class Command(LabelCommand):
-    help = 'Imports Northern Ireland postcodes from the NSPD, creates the areas if need be'
+    help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'
     args = '<NSPD CSV file>'
 
+    @transaction.commit_manually
     def handle_label(self, file, **options):
         current_generation = Generation.objects.current()
-        new_generation = Generation.objects.new()
-        if not new_generation:
-            raise Exception, "No new generation to be used for import!"
 
-        euro_area, created = Area.objects.get_or_create(country='N', type='EUR',
-            generation_low__lte=current_generation, generation_high__gte=current_generation,
-            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+        euro_area = Area.objects.get(country='N', type='EUR',
+            generation_low__lte=current_generation, generation_high__gte=current_generation
         )
-        euro_area.generation_high = new_generation
-        euro_area.save()
-        euro_area.names.get_or_create(type='S', name='Northern Ireland')
 
-        # Read in ward name -> electoral area name/area
-        ni_eas = csv.reader(open('../../data/ni-electoral-areas.csv'))
-        ni_eas.next()
-        ward_to_electoral_area = {}
-        e = {}
-        for district, electoral_area, ward, dummy in ni_eas:
-            if not district:
-                district = last_district
-            if not electoral_area:
-                electoral_area = last_electoral_area
-            last_district = district
-            last_electoral_area = electoral_area
-            if electoral_area not in e:
-                ea = Area.objects.get_or_create_with_name(
-                    country='N', type='LGE', name_type='M', name=electoral_area,
-                )
-                e[electoral_area] = ea
-            ward_to_electoral_area.setdefault(district, {})[ward] = e[electoral_area]
-
-        # Read in new ONS code to names
+        # Read in new ONS code to names, look up existing wards and Parliamentary constituencies
         snac = csv.reader(open('../../data/snac-2009-ni-cons2ward.csv'))
         snac.next()
         code_to_area = {}
-        name_to_area = {}
-        ward_to_parl = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
-            if district_name not in ward_to_electoral_area:
-                raise Exception, "District %s is missing" % district_name
-            if ward_name not in ward_to_electoral_area[district_name]:
-                raise Exception, "Ward %s, district %s is missing" % (ward_name, district_name)
-
             ward_code = ward_code.replace(' ', '')
-
-            if district_code not in code_to_area:
-                district_area = Area.objects.get_or_create_with_code(
-                    country='N', type='LGD', code_type='ons', code=district_code,
-                )
-                district_area.names.get_or_create(type='S', name=district_name)
-                code_to_area[district_code] = district_area
-
             if ward_code not in code_to_area:
-                ward_area = Area.objects.get_or_create_with_code(
+                ward_area = Area.objects.get(
                     country='N', type='LGW', code_type='ons', code=ward_code
                 )
-                ward_area.names.get_or_create(type='S', name=ward_name)
-                ward_area.parent_area = ward_to_electoral_area[district_name][ward_name]
-                ward_area.save()
-                ward_area.parent_area.parent_area = code_to_area[district_code]
-                ward_area.parent_area.save()
                 code_to_area[ward_code] = ward_area
 
-            if ward_code == '95S24': continue # Derryaghy
-
             if parl_code not in code_to_area:
-                parl_area = Area.objects.get_or_create_with_code(
+                parl_area = Area.objects.get(
                     country='N', type='WMC', code_type='ons', code=parl_code,
                 )
-                parl_area.names.get_or_create(type='S', name=parl_name)
                 code_to_area[parl_code] = parl_area
-                name_to_area[parl_name] = parl_area
-                
-            ward_to_parl[ward_code] = code_to_area[parl_code]
 
         # Read in old SNAC for NI Assembly boundaries, still the same until 2011
         snac = csv.reader(open('../../data/snac-2003-ni-cons2ward.csv'))
@@ -107,19 +57,13 @@ class Command(LabelCommand):
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             ward_code = ward_code.replace(' ', '')
             if 'NIE' + parl_code not in code_to_area:
-                nia_area = Area.objects.get_or_create_with_name(
+                nia_area = Area.objects.get(
                     country='N', type='NIE', name_type='S', name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
             ward_to_assembly[ward_code] = code_to_area['NIE' + parl_code]
 
-        # The manual fix for the split ward in the 2010 boundaries
-        derryaghy = csv.reader(open('../../data/Derryaghy-postcodes.csv'))
-        derryaghy_fix = {}
-        for postcode, parl_name in derryaghy:
-            derryaghy_fix[postcode] = name_to_area[parl_name]
-
-        count = 0
+        count = { 'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0 }
         for row in csv.reader(open(file)):
             if row[4]: continue # Terminated postcode
             if row[11] == '9': continue # PO Box etc.
@@ -131,31 +75,36 @@ class Command(LabelCommand):
             location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
             try:
                 pc = Postcode.objects.get(postcode=postcode)
-                if pc.location != location:
+                pc.location.transform(29902) # Postcode locations are stored as WGS84
+                if round(pc.location[0]) != location[0] or round(pc.location[1]) != location[1]:
                     pc.location = location
                     pc.save()
+                    count['updated'] += 1
+                else:
+                    count['unchanged'] += 1
             except Postcode.DoesNotExist:
                 pc = Postcode.objects.create(postcode=postcode, location=location)
+                count['created'] += 1
 
             # Create/update the areas
             ons_code = ''.join(row[5:8])
+            parl_code = row[17].replace('N', '7') # Odd
             output_area = row[33]
             super_output_area = row[44]
+
             ward = code_to_area[ons_code]
             electoral_area = ward.parent_area
             council = electoral_area.parent_area
             nia_area = ward_to_assembly[ons_code]
-            # Derryaghy
-            if super_output_area == '95SS07S2':
-                parl_area = name_to_area['Belfast West']
-            elif super_output_area == '95SS07S3' or output_area in ('95SS070008', '95SS070013', '95SS070014'):
-                parl_area = name_to_area['Lagan Valley']
-            elif postcode in derryaghy_fix:
-                parl_area = derryaghy_fix[postcode]
-            else:
-                parl_area = ward_to_parl[ons_code]
-            pc.areas.add(ward, electoral_area, council, nia_area, parl_area, euro_area)
+            parl_area = code_to_area[parl_code]
 
-            count += 1
-            if count % 10000 == 0:
-                print "Imported %d" % count
+            pc.areas.clear()
+            pc.areas.add(ward, electoral_area, council, nia_area, parl_area, euro_area)
+            transaction.commit()
+
+            count['total'] += 1
+            if count['total'] % 10000 == 0:
+                print "Imported %d (%d new, %d changed, %d same)" % (
+                    count['total'], count['created'], count['updated'], count['unchanged']
+                )
+
