@@ -1,5 +1,6 @@
 import re
 from django.contrib.gis.db import models
+from django.db import connection, transaction
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
 
@@ -28,7 +29,7 @@ class Postcode(models.Model):
             'wgs84_lat': loc[1]
         }
         if self.postcode[0:2] == 'BT':
-            loc.transform(29902)
+            loc = self.as_irish_grid()
             result['coordsyst'] = 'I'
         else:
             loc.transform(27700)
@@ -36,4 +37,11 @@ class Postcode(models.Model):
         result['easting'] = int(round(loc[0]))
         result['northing'] = int(round(loc[1]))
         return result
+
+    def as_irish_grid(self):
+        cursor = connection.cursor()
+        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))
+        row = cursor.fetchone()
+        m = re.match('POINT\((.*?) (.*)\)', row[0])
+        return map(float, m.groups())
 

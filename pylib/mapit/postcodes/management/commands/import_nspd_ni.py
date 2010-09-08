@@ -44,7 +44,7 @@ class Command(LabelCommand):
                 )
                 code_to_area[ward_code] = ward_area
 
-            if parl_code not in code_to_area:
+            if parl_code not in code_to_area and len(parl_code)==3: # Ignore Derryaghy line
                 parl_area = Area.objects.get(
                     country='N', type='WMC', codes__type='ons', codes__code=parl_code,
                 )
@@ -75,8 +75,8 @@ class Command(LabelCommand):
             location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
             try:
                 pc = Postcode.objects.get(postcode=postcode)
-                pc.location.transform(29902) # Postcode locations are stored as WGS84
-                if round(pc.location[0]) != location[0] or round(pc.location[1]) != location[1]:
+                pc_location = pc.as_irish_grid()
+                if round(pc_location[0]) != location[0] or round(pc_location[1]) != location[1]:
                     pc.location = location
                     pc.save()
                     count['updated'] += 1
