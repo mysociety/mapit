@@ -23,8 +23,9 @@ def output_json(out, code=200):
         404: http.HttpResponseNotFound,
         500: http.HttpResponseServerError,
     }
-    response_type = types[code] if code in types else http.HttpResponse
+    response_type = types.get(code, http.HttpResponse)
     response = response_type(content_type='application/json; charset=utf-8')
+    response['Access-Control-Allow-Origin'] = '*'
     if code != 200:
         out['code'] = code
     indent = None
