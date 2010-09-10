@@ -8,7 +8,7 @@ class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
     location = models.PointField()
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
-    areas = models.ManyToManyField(Area, related_name='postcodes')
+    areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
     objects = GeoManager()
 
