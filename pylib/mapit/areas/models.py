@@ -123,6 +123,8 @@ class Area(models.Model):
         ('UTE', 'Unitary Authority ward (UTE)'),
         ('UTW', 'Unitary Authority ward (UTW)'),
         ('CPC', 'Civil Parish'),
+        ('LOA', 'Lower Layer Super Output Area'),
+        ('LOA', 'Middle Layer Super Output Area'),
     ))
     country = models.CharField(max_length=1, choices=(
         ('E', 'England'),
