@@ -36,6 +36,7 @@ class Generation(models.Model):
 class AreaManager(models.GeoManager):
     def by_location(self, location, generation=None):
         if generation is None: generation = Generation.objects.current()
+        if not location: return []
         return Area.objects.filter(
             polygons__polygon__contains=location,
             generation_low__lte=generation, generation_high__gte=generation
