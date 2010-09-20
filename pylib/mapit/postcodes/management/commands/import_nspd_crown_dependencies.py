@@ -14,7 +14,6 @@ class Command(LabelCommand):
         count = { 'total': 0, 'exists': 0, 'created': 0 }
         for row in csv.reader(open(file)):
             if row[4]: continue # Terminated postcode
-            if row[11] == '9': continue # PO Box etc.
 
             postcode = row[0].strip().replace(' ', '')
             if postcode[0:2] not in ('GY', 'JE', 'IM'): continue # Only importing Crown dependencies from NSPD
