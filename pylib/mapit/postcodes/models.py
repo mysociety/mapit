@@ -22,6 +22,10 @@ class Postcode(models.Model):
         return re.sub('(...)$', r' \1', self.postcode).strip()
 
     def as_dict(self):
+        if not self.location:
+            return {
+                'postcode': self.get_postcode_display(),
+            }
         loc = self.location
         result = {
             'postcode': self.get_postcode_display(),
