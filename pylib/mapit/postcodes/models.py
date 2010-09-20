@@ -6,7 +6,7 @@ from mapit.areas.models import Area
 
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
-    location = models.PointField()
+    location = models.PointField(null=True)
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
