@@ -32,7 +32,7 @@ def bad_request(message):
     return output_json({ 'error': message }, code=400)
 
 def check_postcode(postcode):
-    postcode = re.sub('\s+', '', postcode.upper())
+    postcode = re.sub('[^A-Z0-9]', '', postcode.upper())
     if not is_valid_postcode(postcode):
         return bad_request("Postcode '%s' is not valid." % postcode)
     postcode = get_object_or_404(Postcode, postcode=postcode)
