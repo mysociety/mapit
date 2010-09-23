@@ -48,6 +48,19 @@ def postcode(request, postcode, legacy=False, format='json'):
         generation = Generation.objects.current()
     areas = Area.objects.by_postcode(postcode, generation)
 
+    # Shortcuts
+    shortcuts = {}
+    for area in areas:
+        if area.type in ('COP','LBW','LGE','MTW','UTE','UTW'):
+            shortcuts['ward'] = area.id
+            shortcuts['council'] = area.parent_area_id
+        elif area.type == 'CED':
+            shortcuts.setdefault('ward', {})['county'] = area.id
+            shortcuts.setdefault('council', {})['county'] = area.parent_area_id
+        elif area.type == 'DIW':
+            shortcuts.setdefault('ward', {})['district'] = area.id
+            shortcuts.setdefault('council', {})['district'] = area.parent_area_id
+
     # Add manual enclosing areas. 
     extra = []
     for area in areas:
@@ -67,6 +80,7 @@ def postcode(request, postcode, legacy=False, format='json'):
 
     out = postcode.as_dict()
     out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
+    if shortcuts: out['shortcuts'] = shortcuts
     return output_json(out)
     
 @ratelimit(minutes=3, requests=100)
