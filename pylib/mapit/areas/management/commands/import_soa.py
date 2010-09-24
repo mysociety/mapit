@@ -27,20 +27,25 @@ class Command(LabelCommand):
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
-        filename_prefix = filename.split("/")[-1][:4]
+        short_filename = filename.split("/")[-1]
+        filename_prefix = short_filename[:4]
+        filename_suffix = short_filename.split(".")[0][-3:]
 
         # check shapefile type - we handle both LSOA and MSOA
-        # TODO: work out how to handle BFE/BGC types?
         if filename_prefix=="LSOA":
             feat_name = 'LSOA04NM'
             feat_code = 'LSOA04CD'
-            area_type = 'LOA'
-            pass
+            if filename_suffix=='BGC':
+                area_type = 'OLG'
+            else: 
+                area_type = 'OLF'
         elif filename_prefix=="MSOA":
             feat_name = 'MSOA04NM'
             feat_code = 'MSOA04CD'
-            area_type = 'MOA'
-            pass
+            if filename_suffix=='BGC':
+                area_type = 'OMG'
+            else: 
+                area_type = 'OMF'
         else:
             raise Exception, "Sorry, this script only handles LSOA/MSOA shapefiles!"            
     
