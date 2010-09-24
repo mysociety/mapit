@@ -11,7 +11,7 @@ Our version is running on Debian lenny - to install PostGIS and GeoDjango I
 just followed the instructions (including creating the template) at
 http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
 
-However, not only only is the PostGIS that is installed missing SRID 900913, as
+However, not only is the PostGIS that is installed missing SRID 900913, as
 the GeoDjango docs tell you, but both SRID 27700 (British National Grid) and
 SRID 29902 (Irish National Grid) are incorrect (and they're quite important
 for this application!). After you've installed and got a PostGIS template, log
@@ -22,41 +22,28 @@ necessary, depending on your version of PostGIS, but do check.)
 Here are the basic instructions to install OS OpenData and NSPD Open:
 
 1. Make sure DEBUG = False in settings.py, otherwise you'll soon run out of 
-memory as it tries to remember all the SQL queries made.
+   memory as it tries to remember all the SQL queries made.
 2. Optional: turn off escape_string_warning in Postgres (unless you want your 
-server to run out of disc space logging all the errors, as ours did the first 
-time I imported overnight and didn't realise).
-3. Download Code-Point-Open-2010-05, Boundary-Line and NSPD-2010-05.csv 
-from http://parlvid.mysociety.org:81/os/ , and save in /data.   
-4. Create database tables and start the site:
-    ./manage.py syncdb
-    ./manage.py runserver
+   server to run out of disc space logging all the errors, as ours did the first
+   time I imported overnight and didn't realise).
+3. Download the latest Code-Point Open, Boundary-Line and NSPD from
+   <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
+4. Change to the pylib/mapit directory, create database tables and start the site:
+   ./manage.py syncdb
+   ./manage.py runserver
 5. Go to the admin interface and create an inactive generation.
-6. Run the following (altering file paths to data to suit):
-   ./manage.py import_boundary_line --control=controls/2009-10 `ls          /home/matthew/mapit/data/Boundary-Line/2009-10/*.shp|grep -v high_water`
-   ./manage.py import_codepoint /home/matthew/mapit/data/Code-Point-Open-2010-05/*.csv
+6. Run the following:
+   ./manage.py import_boundary_line --control=controls/first `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
    ./manage.py find_parents
-   # Not importing NI here, as that only has the current boundaries.
-   ./manage.py scilly /home/matthew/mapit/data/Code-Point-Open-2010-05/tr.csv
-7. At this point, go back to the admin interface. Make the generation active, 
-   and add another inactive generation. Then run:
-   ./manage.py import_boundary_line --control=controls/2010-05 `ls    /home/matthew/mapit/data/Boundary-Line/2010-05/*.shp|grep -v high_water`
-   # import_codepoint not needed as it's the same and there's no P-in-P tests!
-   ./manage.py find_parents
-   ./manage.py scilly /home/matthew/mapit/data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
-   ./manage.py import_nspd /home/matthew/mapit/data/NSPD-2010-05.csv # This is now split into two scripts, see below.
-7. Go to the admin interface, and make this generation active.
+   ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
+   ./manage.py scilly ../../data/Code-Point-Open/tr.csv
+   ./manage.py import_nspd_ni_areas ../../data/NSPD.csv
+   ./manage.py import_nspd_ni ../../data/NSPD.csv
+   ./manage.py import_nspd_crown_dependencies.py ../../data/NSPD.csv
+7. Go to the admin interface, and make the generation active.
 
-If you want to add all historic data, there are a number of extra complications 
-to maintain IDs, names and so on from the old version of this service....
-
-At this point, I then matched up all IDs and names using the scripts in bin,
-manually inserted some generation 10 areas (in data) for FixMyStreet, and
-manually added our test/fake areas that used to be in code but can now
-happily sit in the database along with everything else.
-
-Obviously if you don't care about older Boundary-Line, you can just do the one
-Boundary-Line, Code-Point, NSPD imports. [Make these default instructions.]
+For notes on what was done to create generations as you can see on
+mapit.mysociety.org, see the end of this file.
 
 Notes on future releases
 ------------------------
@@ -65,10 +52,10 @@ When a new Code-Point is released, you should just be able to run import_codepoi
 and scilly; when new NSPD is out, import_nspd_ni if it's only postcodes that 
 have changed, or import_nspd_ni_areas first if boundary changes too (this is 
 incomplete, it doesn't use a control file like import_boundary_line does); 
-when new Boundary-Line, import_boundary_line and find_parents.  
+when new Boundary-Line, import_boundary_line and find_parents.
 
-Though I haven't had to do this myself yet, so there's probably some updating as 
-opposed to creation niggles to find.
+Haven't had to test a Boundary-Line update yet, but Code-Point/ NSPD appeared
+to go okay.
 
 Improvements / patches
 ----------------------
@@ -77,3 +64,38 @@ Are welcome :)
 
 ATB,
 Matthew
+
+=====================================
+
+Notes on creating what's live
+-----------------------------
+
+When creating what you see at mapit.mysociety.org, to enable it to have
+pre-2010 election boundaries, I ran the above (or rather, what existed at the
+time, which is not identical) twice, once with 2009-10 Boundary-Line and then
+the 2010-05 edition. I had to write the 2010-05 control file you can see, did
+not re-run import_codepoint (as no postcodes had changed), and only ran the NI
+stuff the second generation (as we only had current data). The commands I
+basically ran are below.
+
+Even worse, as I had to maintain IDs between our old and new versions of mapit,
+I then matched up all IDs and names using the scripts in bin, manually inserted
+some generation 10 areas (in data) for FixMyStreet and some generation 12 NI
+WMC areas for WriteToThem, and manually added our test/fake areas that used to
+be in code but can now happily sit in the database along with everything else.
+You probably don't need any of that for your own install.
+
+# Create inactive generation.
+./manage.py import_boundary_line --control=controls/2009-10 `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
+./manage.py import_codepoint ../../data/Code-Point-Open-2010-05/*.csv
+./manage.py find_parents
+# Not importing NI here, as that only has the current boundaries.
+./manage.py scilly ../../data/Code-Point-Open-2010-05/tr.csv
+# Make generation active, add another inactive generation
+./manage.py import_boundary_line --control=controls/2010-05 `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
+# import_codepoint not needed as it's the same and there's no P-in-P tests!
+./manage.py find_parents
+./manage.py scilly ../../data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
+./manage.py import_nspd ../../data/NSPD-2010-05.csv # This is now split into two scripts, see below.
+# Make generation active.
+
