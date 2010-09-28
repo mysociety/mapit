@@ -37,7 +37,8 @@ def output_json(out, code=200, request=None):
     if request and request.GET.get('callback') and re.match('[a-zA-Z0-9_]+$', request.GET.get('callback')):
         response.write(request.GET.get('callback') + '(')
     simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
-    response.write(')')
+    if request and request.GET.get('callback') and re.match('[a-zA-Z0-9_]+$', request.GET.get('callback')):
+        response.write(')')
     return response
 
 def get_object_or_404(klass, *args, **kwargs):
