@@ -81,7 +81,7 @@ def postcode(request, postcode, legacy=False, format='json'):
     out = postcode.as_dict()
     out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
     if shortcuts: out['shortcuts'] = shortcuts
-    return output_json(out, request=request)
+    return output_json(out)
     
 @ratelimit(minutes=3, requests=100)
 def partial_postcode(request, postcode, format='json'):
