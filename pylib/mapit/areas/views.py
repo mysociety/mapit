@@ -222,7 +222,7 @@ def area(request, area_id, format='json'):
         area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     if format == 'html':
-        return render_to_response('area.html', { 'area': area, 'areas': [ area ] })
+        return render_to_response('area.html', { 'area': area })
     return output_json( area.as_dict() )
 
 @ratelimit(minutes=3, requests=100)

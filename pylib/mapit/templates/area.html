@@ -4,18 +4,23 @@
 
 {% block content %}
 
-{% include "areas.html" %}
+<h2>{{ area.name }}</h2>
+
+<p>ID {{ area.id }}, type {{ area.get_type_display }} (<small>{{ area.type }}</small>), {{ area.get_country_display }}
+{% if area.parent_area %}
+<p>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>
+{% endif %}
 
 <p>
 <a href="/area/{{ area.id }}/example_postcode">Example postcode</a>
-{% if area.children %}
+{% if area.children.count %}
 | <a href="/area/{{ area.id }}/children.html">Children</a>
 {% endif %}
 | <a href="/area/{{ area.id }}/geometry">Geometry (JSON)</a>
 | <a href="/area/{{ area.id }}/touches.html">Touching areas</a>
 | <a href="/area/{{ area.id }}.kml">KML</a>
 
-<h2>Codes</h2>
+<h3>Codes</h3>
 
 <ul>
 {% for type, code in area.all_codes.items %}
