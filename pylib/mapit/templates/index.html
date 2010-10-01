@@ -40,7 +40,8 @@ OS/RM/ONS as per their licenses, and please do attribute us too :) For commercia
 high-volume usage, please <a href="http://www.mysociety.org/contact/">contact us</a>
 about using the service, by licensing or by helping you install your own version.</p>
 
-<p>All calls below are made to http://mapit.mysociety.org/. By default, calls
+<p>All calls below are made to http://mapit.mysociety.org/ and return JSON
+(on some calls, stick .html on the end for an HTML version). By default, calls
 will return active areas; for some calls you may specify a previous generation
 to look up instead. The main difference in generation 12 is that it contains
 the pre-2010 England and Wales Parliamentary constituencies &ndash; it doesn't hold
@@ -61,10 +62,11 @@ generation_high, codes.</p>
 <li>/postcode/<i>[postcode]</i> &ndash; information on a particular postcode,
 including its location in both National Grid and WGS84 latitude/longitude, and
 the areas it is contained within. You may specify a previous generation as a
-?generation=N parameter.
+?generation=N parameter. <a href="/postcode/SW1A1AA.html">Example postcode lookup</a>.
 
 <li>/postcode/partial/<i>[partial postcode]</i> &ndash; location information on the
-centroid of a partial postcode.
+centroid of a partial postcode. <a href="/postcode/partial/EH1">Example partial
+postcode lookup</a>.
 
 </ul>
 
@@ -74,7 +76,7 @@ centroid of a partial postcode.
 <ul>
 
 <li>/areas/<i>[area IDs, separated by commas]</i> &mdash; information on more than one
-area at once, as a dictionary indexed by area ID.
+area at once, as a dictionary indexed by area ID. <a href="/areas/2636,2637.html">Example area IDs lookup</a>.
 
 <li>/areas/<i>[area IDs, separated by commas]</i>/geometry &ndash; all the geometry
 information you would get from single geometry calls.
@@ -91,11 +93,13 @@ SPC (Scottish Parliament constituency), SPE (Scottish Parliament region),
 UTA (Unitary authority), UTE (Unitary authority electoral division),
 UTW (Unitary authority ward), WAC (Welsh Assembly constituency),
 WAE (Welsh Assembly region), WMC (UK Parliamentary constituency)</small>.
+<a href="/areas/CTY.html">Example county council (CTY) lookup</a>.
 
 <li>/areas/<i>[name]</i> &ndash; all areas that start with the specified text. You
 may restrict results to a type or types with the type parameter (as always,
 multiple separated by commas), or expand to previous generations with the
-min_generation parameter.
+min_generation parameter. <a href="/areas/Bourn.html">Example lookup of all
+areas starting &ldquo;Bourn&rdquo;</a>.
 
 </ul>
 </div>
@@ -113,6 +117,7 @@ generation parameter. Note that x,y means longitude,latitude.</p>
 <ul>
 
 <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> &ndash; the areas covering the particular point.
+<a href="/point/27700/400000,300000.html">Example of areas around (400000,300000)</a>.
 
 <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box &ndash; the areas whose
 bounding boxes cover the particular point.
@@ -129,11 +134,12 @@ bounding boxes cover the particular point.
 <li>/area/<i>[area ID]</i>/example_postcode &ndash; a random postcode within the area specified.
 
 <li>/area/<i>[area ID]</i>/children &ndash; all the children of a particular area (e.g. all
-the <a href="http://mapit.mysociety.org/area/2236/children">electoral divisions of a county council</a>).
+the <a href="http://mapit.mysociety.org/area/2236/children.html">electoral divisions of a county council</a>).
 
 <li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
 
 <li>/area/<i>[area ID]</i>/touches &ndash; all the areas of the same type that border the selected area.
+<a href="/area/65622/touches.html">Example of all constituencies touching Witney</a>.
 
 <li>/area/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
 
