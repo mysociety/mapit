@@ -14,14 +14,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 
 <h2>Areas</h2>
 
-<ul>
-{% for area in areas %}
-<li>{{ area.name }} &ndash; id {{ area.id }}, type {{ area.get_type_display }}
-    ({{ area.type }}), {{ area.get_country_display }}
-{% empty %}
-<li>No matching areas found.
-{% endfor %}
-</ul>
+{% include "areas.html" %}
 
 {% endif %}
 

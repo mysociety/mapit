@@ -4,13 +4,6 @@
 
 {% block content %}
 
-<ul>
-{% for area in areas %}
-<li>{{ area.name }} &ndash; id {{ area.id }}, type {{ area.get_type_display }}
-    ({{ area.type }}), {{ area.get_country_display }}
-{% empty %}
-<li>No matching areas found.
-{% endfor %}
-</ul>
+{% include "areas.html" %}
 
 {% endblock %}

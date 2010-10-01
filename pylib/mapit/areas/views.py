@@ -5,6 +5,7 @@ from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
+from django.shortcuts import render_to_response
 
 voting_area = {
     'type_name': {
@@ -212,7 +213,7 @@ def generations(request):
     return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
 
 @ratelimit(minutes=3, requests=100)
-def area(request, area_id, legacy=False):
+def area(request, area_id, format='json'):
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
         area = get_object_or_404(Area, codes__type='ons', codes__code=area_id)
     elif not re.match('\d+$', area_id):
@@ -220,6 +221,8 @@ def area(request, area_id, legacy=False):
     else:
         area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
+    if format == 'html':
+        return render_to_response('area.html', { 'area': area, 'areas': [ area ] })
     return output_json( area.as_dict() )
 
 @ratelimit(minutes=3, requests=100)

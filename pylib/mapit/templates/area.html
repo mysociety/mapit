@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Results{% endblock title %}
+
+{% block content %}
+
+{% include "areas.html" %}
+
+<h2>Codes</h2>
+
+<ul>
+{% for code in area.all_codes %}
+<li>{{ code.type }}: {{ code.code }}
+{% empty %}
+<li>No codes found.
+{% endfor %}
+</ul>
+
+{% endblock %}
