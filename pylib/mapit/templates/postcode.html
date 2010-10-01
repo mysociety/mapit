@@ -4,6 +4,8 @@
 
 {% block content %}
 
+<h2>{{ postcode.postcode }}</h2>
+
 <p><a href="{{ json }}{{ postcode.postcode|urlencode }}">JSON</a></p>
 
 <ul>
@@ -14,7 +16,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 
 {% if areas %}
 
-<h2>Areas</h2>
+<h3>Areas</h3>
 
 {% include "areas.html" %}
 
