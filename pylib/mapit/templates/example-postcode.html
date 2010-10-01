@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Example postcode{% endblock title %}
+
+{% block content %}
+
+<p>An example postcode for <a href="/area/{{ area.id }}">{{ area.name }}</a> is <strong>{{ pc }}</strong>.</p>
+
+{% endblock %}

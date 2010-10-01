@@ -106,7 +106,7 @@ def partial_postcode(request, postcode, format='json'):
     return output_json(postcode.as_dict())
 
 @ratelimit(minutes=3, requests=100)
-def example_postcode_for_area(request, area_id, legacy=False):
+def example_postcode_for_area(request, area_id, legacy=False, format='json'):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     try:
@@ -117,6 +117,8 @@ def example_postcode_for_area(request, area_id, legacy=False):
         except:
             pc = None
     if pc: pc = pc.get_postcode_display()
+    if format == 'html':
+        return render_to_response('example-postcode.html', { 'area': area, 'postcode': pc })
     return output_json(pc)
 
 # Legacy Views from old MaPit. Don't use in future.

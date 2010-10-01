@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Results{% endblock title %}
+{% block title %}{{ area.name }} - Results{% endblock title %}
 
 {% block content %}
 
@@ -12,7 +12,7 @@
 {% endif %}
 
 <p>
-<a href="/area/{{ area.id }}/example_postcode">Example postcode</a>
+<a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
 {% if area.children.count %}
 | <a href="/area/{{ area.id }}/children.html">Children</a>
 {% endif %}
