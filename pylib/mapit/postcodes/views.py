@@ -76,6 +76,7 @@ def postcode(request, postcode, legacy=False, format='json'):
         return render_to_response('postcode.html', {
             'postcode': postcode.as_dict(),
             'areas': areas,
+            'json': '/postcode/',
         })
 
     out = postcode.as_dict()
@@ -101,6 +102,7 @@ def partial_postcode(request, postcode, format='json'):
     if format == 'html':
         return render_to_response('postcode.html', {
             'postcode': postcode.as_dict(),
+            'json': '/postcode/partial/',
         })
 
     return output_json(postcode.as_dict())
