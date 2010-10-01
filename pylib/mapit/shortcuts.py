@@ -15,8 +15,9 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
             pass
         return super(GEOS_JSONEncoder, self).default(o)
 
-def output_html(areas):
-    return render_to_response('data.html', { 'areas': areas })
+def output_html(request, areas):
+    json_url = request.path.replace('.html', '')
+    return render_to_response('data.html', { 'areas': areas, 'json': json_url })
 
 def output_json(out, code=200):
     types = {
