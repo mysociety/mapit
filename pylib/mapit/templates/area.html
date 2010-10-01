@@ -1,18 +1,19 @@
 {% extends "base.html" %}
 
-{% block title %}{{ area.name }} - Results{% endblock title %}
+{% block title %}{{ area.name }}{% endblock title %}
 
 {% block content %}
 
 <h2>{{ area.name }}</h2>
+<a href="/area/{{ area.id }}">JSON of this data</a>
 
-<p>ID {{ area.id }}, type {{ area.get_type_display }} (<small>{{ area.type }}</small>), {{ area.get_country_display }}
+<p>ID {{ area.id }}, type {{ area.get_type_display }} (<small>{{ area.type }}</small>), {{ area.get_country_display }}.
 {% if area.parent_area %}
-<p>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>
+A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
 {% endif %}
+</p>
 
 <p>
-<a href="/area/{{ area.id }}">JSON of this data</a>
 {% if area.polygons.count or area.postcodes.count %}
 | <a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
 {% endif %}

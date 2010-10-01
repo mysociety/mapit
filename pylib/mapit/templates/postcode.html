@@ -5,8 +5,7 @@
 {% block content %}
 
 <h2>{{ postcode.postcode }}</h2>
-
-<p><a href="{{ json }}{{ postcode.postcode|urlencode }}">JSON of this data</a></p>
+<a href="{{ json }}{{ postcode.postcode|urlencode }}">JSON of this data</a>
 
 <ul>
 <li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}

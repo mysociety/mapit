@@ -26,6 +26,9 @@ h1 {
 h1 + p {
     clear: both;
 }
+h2 {
+    margin-bottom: 0;
+}
 h3 {
     font-size: 120%;
     line-height: 1.25;
