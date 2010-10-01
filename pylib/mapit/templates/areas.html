@@ -3,7 +3,7 @@
 <li>{{ area.name }} &ndash; id {{ area.id }}, type {{ area.get_type_display }}
     (<small>{{ area.type }}</small>), {{ area.get_country_display }}
 {% if area.parent_area %}
-<br><small>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>
+<br><small>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></small>
 {% endif %}
 {% empty %}
 <li>No matching areas found.
