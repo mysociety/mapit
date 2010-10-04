@@ -10,7 +10,7 @@
 <ul>
 <li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
 E/N: {{ postcode.easting }}, {{ postcode.northing }}
-<li>WGS84 lat/lon: {{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}
+<li>WGS84 lat/lon: <a href="http://maps.google.co.uk/maps?q=loc:{{ postcode.wgs84_lat }},{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
 </ul>
 
 {% if areas %}
