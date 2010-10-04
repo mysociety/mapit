@@ -2,10 +2,7 @@
 # from the ONS's CD-ROM of Super Output Areas for England and Wales.  
 # Information about the CD-ROM here: http://bit.ly/63bX97
 
-# INCOMPLETE: currently only deals with LSOA files, one at a time. Don't
-# try to load MSOA shapefiles.
-
-# Run as: ./manage.py import_soa shapefile_name
+# Run as: ./manage.py import_soa shapefile.shp
 
 import re
 import sys
