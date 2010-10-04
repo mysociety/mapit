@@ -273,6 +273,7 @@ def area_children(request, area_id, legacy=False, format='json'):
 def area_intersect(type, title, request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
+
     all_areas = area.polygons.all()
     if len(all_areas) > 1:
         all_areas = all_areas.collect()
@@ -280,6 +281,7 @@ def area_intersect(type, title, request, area_id, format):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
+
     generation = Generation.objects.current()
     args = {
         'polygons__polygon__%s' % type: all_areas,
@@ -288,7 +290,15 @@ def area_intersect(type, title, request, area_id, format):
     }
     if type == 'touches':
         args['type'] = area.type
+
+    type = request.REQUEST.get('type', '')
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
     areas = Area.objects.exclude(id=area.id).filter(**args).distinct()
+
     if format == 'html': return output_html(request, title % area.name, areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
