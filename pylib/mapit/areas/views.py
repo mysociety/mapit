@@ -270,8 +270,7 @@ def area_children(request, area_id, legacy=False, format='json'):
     if format == 'html': return output_html(request, 'Children of %s' % area.name, children)
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
-@ratelimit(minutes=3, requests=100)
-def area_touches(request, area_id, format='json'):
+def area_intersect(type, title, request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
@@ -281,54 +280,33 @@ def area_touches(request, area_id, format='json'):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
-    areas = Area.objects.filter(polygons__polygon__touches=all_areas, type=area.type)
-    if format == 'html': return output_html(request, 'Areas touching %s' % area.name, areas)
+    generation = Generation.objects.current()
+    args = {
+        'polygons__polygon__%s' % type: all_areas,
+        'generation_low__lte': generation,
+        'generation_high__gte': generation,
+    }
+    if type == 'touches':
+        args['type'] = area.type
+    areas = Area.objects.filter(**args)
+    if format == 'html': return output_html(request, title % area.name, areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+
+@ratelimit(minutes=3, requests=100)
+def area_touches(request, area_id, format='json'):
+    return area_intersect('touches', 'Areas touching %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
 def area_overlaps(request, area_id, format='json'):
-    area = get_object_or_404(Area, id=area_id)
-    if isinstance(area, HttpResponse): return area
-    all_areas = area.polygons.all()
-    if len(all_areas) > 1:
-        all_areas = all_areas.collect()
-    elif len(all_areas) == 1:
-        all_areas = all_areas[0].polygon
-    else:
-        return output_json({ 'error': 'No polygons found' }, code=404)
-    areas = Area.objects.filter(polygons__polygon__overlaps=all_areas)
-    if format == 'html': return output_html(request, 'Areas overlapping %s' % area.name, areas)
-    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+    return area_intersect('overlaps', 'Areas overlapping %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
 def area_covers(request, area_id, format='json'):
-    area = get_object_or_404(Area, id=area_id)
-    if isinstance(area, HttpResponse): return area
-    all_areas = area.polygons.all()
-    if len(all_areas) > 1:
-        all_areas = all_areas.collect()
-    elif len(all_areas) == 1:
-        all_areas = all_areas[0].polygon
-    else:
-        return output_json({ 'error': 'No polygons found' }, code=404)
-    areas = Area.objects.filter(polygons__polygon__coveredby=all_areas)
-    if format == 'html': return output_html(request, 'Areas covered by %s' % area.name, areas)
-    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+    return area_intersect('coveredby', 'Areas covered by %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
 def area_covered(request, area_id, format='json'):
-    area = get_object_or_404(Area, id=area_id)
-    if isinstance(area, HttpResponse): return area
-    all_areas = area.polygons.all()
-    if len(all_areas) > 1:
-        all_areas = all_areas.collect()
-    elif len(all_areas) == 1:
-        all_areas = all_areas[0].polygon
-    else:
-        return output_json({ 'error': 'No polygons found' }, code=404)
-    areas = Area.objects.filter(polygons__polygon__covers=all_areas)
-    if format == 'html': return output_html(request, 'Areas that cover %s' % area.name, areas)
-    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+    return area_intersect('covers', 'Areas that cover %s', request, area_id, format)
 
 def add_codes(areas):
     codes = Code.objects.filter(area__in=areas)
