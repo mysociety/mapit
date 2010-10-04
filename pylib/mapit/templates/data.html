@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<h2>{{ title }}</h2>
+<h2>{{ title|safe }}</h2>
 <a href="{{ json }}">JSON of this data</a>
 
 {% include "areas.html" %}
