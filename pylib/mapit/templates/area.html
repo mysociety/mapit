@@ -23,6 +23,9 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 {% if area.polygons.count %}
 | <a href="/area/{{ area.id }}/geometry">Geometry (JSON)</a>
 | <a href="/area/{{ area.id }}/touches.html">Touching areas</a>
+| <a href="/area/{{ area.id }}/overlaps.html">Overlapping areas</a>
+| <a href="/area/{{ area.id }}/covers.html">Covered areas</a>
+| <a href="/area/{{ area.id }}/covered.html">Covered by areas</a>
 | <a href="/area/{{ area.id }}.kml">KML</a>
 (<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/{{ area.id }}.kml">on a Google Map</a>)
 {% endif %}
