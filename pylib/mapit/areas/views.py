@@ -297,7 +297,7 @@ def area_intersect(type, title, request, area_id, format):
 
     areas = Area.objects.exclude(id=area.id).filter(**args).distinct()
 
-    if format == 'html': return output_html(request, title % area.name, areas)
+    if format == 'html': return output_html(request, '<a href="/area/%d.html">%s</a>' % (area.id, title % area.name), areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)

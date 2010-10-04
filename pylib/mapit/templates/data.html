@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}{{ title }}{% endblock title %}
+{% block title %}{{ title|striptags }}{% endblock title %}
 
 {% block content %}
 
