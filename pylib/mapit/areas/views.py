@@ -288,8 +288,6 @@ def area_intersect(type, title, request, area_id, format):
         'generation_low__lte': generation,
         'generation_high__gte': generation,
     }
-    if type == 'touches':
-        args['type'] = area.type
 
     type = request.REQUEST.get('type', '')
     if ',' in type:
