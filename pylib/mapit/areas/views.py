@@ -264,10 +264,21 @@ def area_polygon(request, srid='', area_id='', format='kml'):
 def area_children(request, area_id, legacy=False, format='json'):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
+
     generation = Generation.objects.current()
-    children = add_codes(area.children.filter(
-        generation_low__lte=generation, generation_high__gte=generation
-    ))
+    args = {
+        'generation_low__lte': generation,
+        'generation_high__gte': generation,
+    }
+
+    type = request.REQUEST.get('type', '')
+    if ',' in type:
+        args['type__in'] = type.split(',')
+    elif type:
+        args['type'] = type
+
+    children = add_codes(area.children.filter(**args))
+
     if legacy: return output_json( [ child.id for child in children ] )
     if format == 'html': return output_html(request, 'Children of %s' % area.name, children)
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )

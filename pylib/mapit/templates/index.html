@@ -102,8 +102,19 @@ min_generation parameter. <a href="/areas/Bourn.html">Example lookup of all
 areas starting &ldquo;Bourn&rdquo;</a>.
 
 </ul>
+
+<h3>Generations</h3>
+
+<ul>
+<li>/generations &ndash; return a list of all generations. Note that only
+generations 12 and 13 actually exist, apart from some council names in
+generation 10 in order for <a href="http://www.fixmystreet.com/">FixMyStreet</a>
+to show expired councils on its All Reports page.
+</ul>
+
 </div>
 <div id="col2">
+
 <h3>By point</h3>
 
 <a href="http://commons.wikimedia.org/wiki/File:ScotlandCountiesNumbered.png"><img src="/static/scotlandS.png" align="right" alt="" border="0"></a>
@@ -135,10 +146,20 @@ bounding boxes cover the particular point.
 <li>/area/<i>[area ID]</i>/example_postcode &ndash; a random postcode within the area specified.
 <a href="/area/2514/example_postcode.html">Example example postcode</a>.
 
+<li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
+
+<li>/area/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
+
+<li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
+
+</ul>
+
+<p>All the following can take a type parameter to restrict results to a type or types:</p>
+
+<ul>
+
 <li>/area/<i>[area ID]</i>/children &ndash; all the children of a particular area.
 <a href="http://mapit.mysociety.org/area/2236/children.html">Example of all electoral divisions of a county council</a>.
-
-<li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
 
 <li>/area/<i>[area ID]</i>/touches &ndash; all the areas that border the selected area.
 <a href="/area/65622/touches.html">Example of all constituencies touching Witney</a>.
@@ -151,21 +172,10 @@ bounding boxes cover the particular point.
 
 <li>/area/<i>[area ID]</i>/covered &ndash; all the areas that cover the selected area.
 <a href="/area/65622/covered.html">Example of all areas covering Witney</a>.
-All these intersection-type queries can take a type parameter to restrict results.
 
-<li>/area/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
+<li>/area/<i>[area ID]</i>/coverlaps &ndash; all the areas covered by or overlapping the selected area.
+<a href="/area/65622/coverlaps.html">Example of all areas covered by or overlapping Witney</a>.
 
-<li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
-
-</ul>
-
-<h3>Generations</h3>
-
-<ul>
-<li>/generations &ndash; return a list of all generations. Note that only
-generations 12 and 13 actually exist, apart from some council names in
-generation 10 in order for <a href="http://www.fixmystreet.com/">FixMyStreet</a>
-to show expired councils on its All Reports page.
 </ul>
 
 </div>
