@@ -6,6 +6,7 @@ from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
 from django.shortcuts import render_to_response
+from django.db.models import Q
 
 voting_area = {
     'type_name': {
@@ -270,7 +271,7 @@ def area_children(request, area_id, legacy=False, format='json'):
     if format == 'html': return output_html(request, 'Children of %s' % area.name, children)
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
-def area_intersect(type, title, request, area_id, format):
+def area_intersect(query_type, title, request, area_id, format):
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
 
@@ -284,7 +285,6 @@ def area_intersect(type, title, request, area_id, format):
 
     generation = Generation.objects.current()
     args = {
-        'polygons__polygon__%s' % type: all_areas,
         'generation_low__lte': generation,
         'generation_high__gte': generation,
     }
@@ -294,8 +294,15 @@ def area_intersect(type, title, request, area_id, format):
         args['type__in'] = type.split(',')
     elif type:
         args['type'] = type
+    areas = Area.objects.exclude(id=area.id).filter(**args)
 
-    areas = Area.objects.exclude(id=area.id).filter(**args).distinct()
+    if isinstance(query_type, list):
+        or_queries = [ Q(**{'polygons__polygon__%s' % t: all_areas}) for t in query_type ]
+        areas = areas.filter(reduce(operator.or_, or_queries))
+    else:
+        areas = areas.filter(**{'polygons__polygon__%s' % query_type : all_areas })
+
+    areas = areas.distinct()
 
     if format == 'html': return output_html(request, title % ('<a href="/area/%d.html">%s</a>' % (area.id, area.name)), areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
@@ -311,6 +318,10 @@ def area_overlaps(request, area_id, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_covers(request, area_id, format='json'):
     return area_intersect('coveredby', 'Areas covered by %s', request, area_id, format)
+
+@ratelimit(minutes=3, requests=100)
+def area_coverlaps(request, area_id, format='json'):
+    return area_intersect(['overlaps', 'coveredby'], 'Areas covered by or overlapping %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
 def area_covered(request, area_id, format='json'):

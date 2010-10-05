@@ -24,6 +24,7 @@ urlpatterns = patterns('',
     (r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % format_end, 'mapit.areas.views.area_overlaps'),
     (r'^area/(?P<area_id>[0-9]+)/covers%s$' % format_end, 'mapit.areas.views.area_covers'),
     (r'^area/(?P<area_id>[0-9]+)/covered%s$' % format_end, 'mapit.areas.views.area_covered'),
+    (r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % format_end, 'mapit.areas.views.area_coverlaps'),
     (r'^area/(?P<area_id>[0-9]+)\.(?P<format>kml|json|wkt)$', 'mapit.areas.views.area_polygon'),
     (r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|wkt)$', 'mapit.areas.views.area_polygon'),
 
