@@ -1,4 +1,5 @@
 import re
+import operator
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, get_object_or_404
 from mapit.ratelimitcache import ratelimit
