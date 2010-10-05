@@ -118,7 +118,7 @@ to show expired councils on its All Reports page.
 <h3>By point</h3>
 
 <a href="http://commons.wikimedia.org/wiki/File:ScotlandCountiesNumbered.png"><img src="/static/scotlandS.png" align="right" alt="" border="0"></a>
-<p>A SRID is a unique number referring to a particular co-ordinate system; the
+<p>An SRID is a unique number referring to a particular co-ordinate system; the
 ones you probably are interested in are 27700 for British National Grid, 4326
 for WGS84 lon/lat, and 29902 for the Irish National Grid. You can restrict
 results to particular area types with a type parameter (multiple types
@@ -149,6 +149,7 @@ bounding boxes cover the particular point.
 <li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
 
 <li>/area/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
+<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/2636.kml">Example KML file on a Google Map</a>.
 
 <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
 
@@ -162,19 +163,19 @@ bounding boxes cover the particular point.
 <a href="http://mapit.mysociety.org/area/2236/children.html">Example of all electoral divisions of a county council</a>.
 
 <li>/area/<i>[area ID]</i>/touches &ndash; all the areas that border the selected area.
-<a href="/area/65622/touches.html">Example of all constituencies touching Witney</a>.
+<a href="/area/65622/touches.html?type=WMC">Example of all constituencies touching Witney</a>.
 
 <li>/area/<i>[area ID]</i>/overlaps &ndash; all the areas that overlap the selected area.
-<a href="/area/65622/overlaps.html">Example of all areas overlapping Witney</a>.
+<a href="/area/2511/overlaps.html">Example of all areas overlapping Barking and Dagenham council</a>.
 
 <li>/area/<i>[area ID]</i>/covers &ndash; all the areas that are covered by the selected area.
-<a href="/area/65622/covers.html">Example of all areas covered by Witney</a>.
+<a href="/area/65622/covers.html?type=CPC">Example of all parish councils covered by Witney</a>.
 
 <li>/area/<i>[area ID]</i>/covered &ndash; all the areas that cover the selected area.
 <a href="/area/65622/covered.html">Example of all areas covering Witney</a>.
 
 <li>/area/<i>[area ID]</i>/coverlaps &ndash; all the areas covered by or overlapping the selected area.
-<a href="/area/65622/coverlaps.html">Example of all areas covered by or overlapping Witney</a>.
+<a href="/area/2511/coverlaps.html?type=WMC">Example of all constituencies covered by or overlapping Barking and Dagenham</a>.
 
 </ul>
 

@@ -7,7 +7,10 @@
 <h2>{{ area.name }}</h2>
 <a href="/area/{{ area.id }}">JSON of this data</a>
 
-<p>ID {{ area.id }}, type {{ area.get_type_display }} (<small>{{ area.type }}</small>), {{ area.get_country_display }}.
+<p>ID {{ area.id }},
+generations {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }},
+type {{ area.get_type_display }} (<small>{{ area.type }}</small>),
+{{ area.get_country_display }}.
 {% if area.parent_area %}
 A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
 {% endif %}
@@ -15,20 +18,22 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 
 <p>
 {% if area.polygons.count or area.postcodes.count %}
-| <a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
+<a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
+{% endif %}
+{% if area.polygons.count %}
+| <a href="/area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
+| <a href="/area/{{ area.id }}.kml">KML</a>
+(<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/{{ area.id }}.kml">on a Google Map</a>)
 {% endif %}
 {% if area.children.count %}
 | <a href="/area/{{ area.id }}/children.html">Children</a>
 {% endif %}
 {% if area.polygons.count %}
-| <a href="/area/{{ area.id }}/geometry">Geometry (JSON)</a>
-| <a href="/area/{{ area.id }}/touches.html">Touching areas</a>
-| <a href="/area/{{ area.id }}/overlaps.html">Overlapping areas</a>
-| <a href="/area/{{ area.id }}/covers.html">Covered areas</a>
-| <a href="/area/{{ area.id }}/covered.html">Covered by areas</a>
-| <a href="/area/{{ area.id }}/coverlaps.html">Covered and overlapped areas</a>
-| <a href="/area/{{ area.id }}.kml">KML</a>
-(<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/{{ area.id }}.kml">on a Google Map</a>)
+<br>Areas: <a href="/area/{{ area.id }}/touches.html">Touching</a>
+| <a href="/area/{{ area.id }}/overlaps.html">Overlapping</a>
+| <a href="/area/{{ area.id }}/covers.html">Covered</a>
+| <a href="/area/{{ area.id }}/covered.html">Covered by</a>
+| <a href="/area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
 {% endif %}
 
 <h3>Codes</h3>
