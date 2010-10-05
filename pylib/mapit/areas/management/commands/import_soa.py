@@ -7,13 +7,10 @@
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from mapit.areas.models import Area, Generation
-from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Creates Super Output Area boundaries from ONS shapefiles'
     args = '<ONS SOA shapefile>'
-
-    lsoa_code_to_shape = {}
 
     def handle_label(self, filename, **options):
         print filename
@@ -51,7 +48,7 @@ class Command(LabelCommand):
             # skip if the SOA already exists in db (SOAs don't change)
             if Area.objects.filter(type=area_type, codes__code=lsoa_code).count():
                 continue
-            print "Adding %s (%s)" % (name, lsoa_code)
+            print "Adding %s (%s) %s" % (name, lsoa_code, feat.geom.geom_name)
             m = Area(
                 type = area_type,
                 country = country,
@@ -59,11 +56,14 @@ class Command(LabelCommand):
                 generation_high = generation,
             )
             m.save()
-            poly = [ feat.geom ]
             m.names.update_or_create({ 'type': 'S' }, { 'name': name })
-            self.lsoa_code_to_shape[lsoa_code] = (m, poly)
             m.codes.update_or_create({ 'type': 'ons' }, { 'code': lsoa_code })
 
-        # save all the polygons once done
-        save_polygons(self.lsoa_code_to_shape)
+            p = feat.geom
+            if p.geom_name == 'POLYGON':
+                shapes = [ p ]
+            else:
+                shapes = p
+            for g in shapes:
+                m.polygons.create(polygon=g.wkt)
 
