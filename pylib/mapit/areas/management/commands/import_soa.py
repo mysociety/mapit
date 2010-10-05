@@ -10,6 +10,7 @@ from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from mapit.areas.models import Area, Generation
+from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Creates Super Output Area boundaries from ONS shapefiles'
@@ -75,26 +76,5 @@ class Command(LabelCommand):
             m.codes.update_or_create({ 'type': 'ons' }, { 'code': lsoa_code })
 
         # save all the polygons once done
-        self.save_polygons(self.lsoa_code_to_shape)
+        save_polygons(self.lsoa_code_to_shape)
 
-    def save_polygons(self, lookup): # copied from import_boundary_line
-        for shape in lookup.values():
-            m, poly = shape
-            if not poly:
-                continue
-            sys.stdout.write(".")
-            sys.stdout.flush()
-            #g = OGRGeometry(OGRGeomType('MultiPolygon'))
-            m.polygons.all().delete()
-            for p in poly:
-                print p.geom_name
-                if p.geom_name == 'POLYGON':
-                    shapes = [ p ]
-                else:
-                    shapes = p
-                for g in shapes:
-                    m.polygons.create(polygon=g.wkt)
-            #m.polygon = g.wkt
-            #m.save()
-            poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-        print ""

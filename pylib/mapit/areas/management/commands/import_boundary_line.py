@@ -11,6 +11,7 @@ from django.core.management.base import LabelCommand
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from mapit.areas.models import Area, Generation
+from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
@@ -121,33 +122,12 @@ class Command(LabelCommand):
                 self.unit_id_to_shape[unit_id] = (m, poly)
                 m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
 
-        self.save_polygons(self.unit_id_to_shape)
-        self.save_polygons(self.ons_code_to_shape)
+        save_polygons(self.unit_id_to_shape)
+        save_polygons(self.ons_code_to_shape)
 
     def patch_boundary_line(self, ons_code, area_code):
         """Fix mistakes in Boundary-Line"""
         if area_code == 'WMC' and ons_code == '42UH012':
             return True
         return False
-
-    def save_polygons(self, lookup):
-        for shape in lookup.values():
-            m, poly = shape
-            if not poly:
-                continue
-            sys.stdout.write(".")
-            sys.stdout.flush()
-            #g = OGRGeometry(OGRGeomType('MultiPolygon'))
-            m.polygons.all().delete()
-            for p in poly:
-                if p.geom_name == 'POLYGON':
-                    shapes = [ p ]
-                else:
-                    shapes = p
-                for g in shapes:
-                    m.polygons.create(polygon=g.wkt)
-            #m.polygon = g.wkt
-            #m.save()
-            poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-        print ""
 
