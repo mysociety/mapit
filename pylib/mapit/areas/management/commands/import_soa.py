@@ -4,9 +4,6 @@
 
 # Run as: ./manage.py import_soa shapefile.shp
 
-import re
-import sys
-from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from mapit.areas.models import Area, Generation
@@ -20,10 +17,7 @@ class Command(LabelCommand):
 
     def handle_label(self, filename, **options):
         print filename
-        current_generation = Generation.objects.current()
-        new_generation = Generation.objects.new()
-        if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+        generation = Generation.objects.current()
 
         short_filename = filename.split("/")[-1]
         filename_prefix = short_filename[:4]
@@ -54,23 +48,18 @@ class Command(LabelCommand):
             name = feat[feat_name].value
             lsoa_code = feat[feat_code].value 
             country = lsoa_code[0]
-            # check if the LOA already exists in db, create it if not
-            try:
-                m = Area.objects.get(codes__type=area_type, codes__code=lsoa_code)
-            except Area.DoesNotExist:
-                m = Area(
-                    type = area_type,
-                    country = country,
-                    generation_low = new_generation,
-                    generation_high = new_generation,
-                )
-            # check the generation
-            if m.generation_high and m.generation_high.id < current_generation:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
-            m.generation_high = new_generation
+            # skip if the SOA already exists in db (SOAs don't change)
+            if Area.objects.filter(type=area_type, codes__code=lsoa_code).count():
+                continue
+            print "Adding %s (%s)" % (name, lsoa_code)
+            m = Area(
+                type = area_type,
+                country = country,
+                generation_low = generation,
+                generation_high = generation,
+            )
             m.save()
             poly = [ feat.geom ]
-            # TODO: check, is this type correct? 
             m.names.update_or_create({ 'type': 'S' }, { 'name': name })
             self.lsoa_code_to_shape[lsoa_code] = (m, poly)
             m.codes.update_or_create({ 'type': 'ons' }, { 'code': lsoa_code })
