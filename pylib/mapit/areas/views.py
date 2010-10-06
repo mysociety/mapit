@@ -217,11 +217,11 @@ def generations(request):
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
-        area = get_object_or_404(Area, codes__type='ons', codes__code=area_id)
+        area = get_object_or_404(Area, format=format, codes__type='ons', codes__code=area_id)
     elif not re.match('\d+$', area_id):
-        return output_json({ 'error': 'Bad area ID specified' }, code=400)
+        return output_error(format, 'Bad area ID specified', 400)
     else:
-        area = get_object_or_404(Area, id=area_id)
+        area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
     if format == 'html':
         return render_to_response('area.html', { 'area': area })
@@ -262,7 +262,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, legacy=False, format='json'):
-    area = get_object_or_404(Area, id=area_id)
+    area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
 
     generation = Generation.objects.current()
@@ -284,7 +284,7 @@ def area_children(request, area_id, legacy=False, format='json'):
     return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
 def area_intersect(query_type, title, request, area_id, format):
-    area = get_object_or_404(Area, id=area_id)
+    area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
 
     all_areas = area.polygons.all()
