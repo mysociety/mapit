@@ -115,7 +115,7 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
         pc = Postcode.objects.filter(areas=area).order_by('?')[0]
     except:
         try:
-            pc = Postcode.objects.filter(location__contained=area.polygons.all().collect()).order_by('?')[0]
+            pc = Postcode.objects.filter(location__coveredby=area.polygons.all().collect()).order_by('?')[0]
         except:
             pc = None
     if pc: pc = pc.get_postcode_display()
