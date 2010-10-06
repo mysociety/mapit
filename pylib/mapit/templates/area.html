@@ -28,7 +28,7 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 {% if area.children.count %}
 | <a href="/area/{{ area.id }}/children.html">Children</a>
 {% endif %}
-{% if area.polygons.count %}
+{% if area.polygons.count and show_geometry %}
 <br>Areas: <a rel="nofollow" href="/area/{{ area.id }}/touches.html">Touching</a>
 | <a rel="nofollow" href="/area/{{ area.id }}/overlaps.html">Overlapping</a>
 | <a rel="nofollow" href="/area/{{ area.id }}/covers.html">Covered</a>
