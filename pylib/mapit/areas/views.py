@@ -306,6 +306,8 @@ def area_intersect(query_type, title, request, area_id, format):
         args['type__in'] = type.split(',')
     elif type:
         args['type'] = type
+    elif area.type in ('EUR'):
+        args['type'] = area.type
     areas = Area.objects.exclude(id=area.id).filter(**args)
 
     if isinstance(query_type, list):
