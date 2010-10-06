@@ -22,16 +22,18 @@ def output_html(request, title, areas, **kwargs):
     kwargs['areas'] = areas
     return render_to_response('data.html', kwargs)
 
-def output_html_error(message, code):
-    types = {
-        400: http.HttpResponseBadRequest,
-        404: http.HttpResponseNotFound,
-        500: http.HttpResponseServerError,
-    }
-    response_type = types.get(code, http.HttpResponse)
-    return response_type(render_to_string('%s.html' % code, {
-        'error': message,
-    }))
+def output_error(format, message, code):
+    if format=='html':
+        types = {
+            400: http.HttpResponseBadRequest,
+            404: http.HttpResponseNotFound,
+            500: http.HttpResponseServerError,
+        }
+        response_type = types.get(code, http.HttpResponse)
+        return response_type(render_to_string('%s.html' % code, {
+            'error': message,
+        }))
+    return output_json({ 'error': message }, code=code)
 
 def output_json(out, code=200):
     types = {
@@ -56,9 +58,7 @@ def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
     except http.Http404, e:
-        if format=='html':
-            return output_html_error(str(e), 404)
-        return output_json({ 'error': str(e) }, code=404)
+        return output_error(format, str(e), 404)
 
 def json_500(request):
     return output_json({ 'error': "Sorry, something's gone wrong." }, code=500)
