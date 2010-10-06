@@ -28,21 +28,21 @@ enclosing_areas = {
     'EUR': [ EUP_AREA_ID ],
 }
 
-def bad_request(message):
+def bad_request(format, message):
     if format=='html':
         return output_html_error(message, 400)
     return output_json({ 'error': message }, code=400)
 
-def check_postcode(postcode):
+def check_postcode(format, postcode):
     postcode = re.sub('[^A-Z0-9]', '', postcode.upper())
     if not is_valid_postcode(postcode):
-        return bad_request("Postcode '%s' is not valid." % postcode)
+        return bad_request(format, "Postcode '%s' is not valid." % postcode)
     postcode = get_object_or_404(Postcode, postcode=postcode)
     return postcode
 
 @ratelimit(minutes=3, requests=100)
 def postcode(request, postcode, legacy=False, format='json'):
-    postcode = check_postcode(postcode)
+    postcode = check_postcode(format, postcode)
     if isinstance(postcode, HttpResponse): return postcode
     try:
         generation = int(request.REQUEST['generation'])
@@ -92,7 +92,7 @@ def partial_postcode(request, postcode, format='json'):
     if is_valid_postcode(postcode):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
-        return bad_request("Partial postcode '%s' is not valid." % postcode)
+        return bad_request(format, "Partial postcode '%s' is not valid." % postcode)
     try:
         postcode = Postcode(
             postcode = postcode,
@@ -133,7 +133,7 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
 def get_location(request, postcode, partial):
     if partial:
         return partial_postcode(request, postcode)
-    postcode = check_postcode(postcode)
+    postcode = check_postcode('json', postcode)
     if isinstance(postcode, HttpResponse): return postcode
     return output_json(postcode.as_dict())
 
