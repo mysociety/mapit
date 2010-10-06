@@ -1,7 +1,7 @@
 import re
 import operator
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, output_html, get_object_or_404
+from mapit.shortcuts import output_json, output_html, get_object_or_404, output_error
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
@@ -293,7 +293,7 @@ def area_intersect(query_type, title, request, area_id, format):
     elif len(all_areas) == 1:
         all_areas = all_areas[0].polygon
     else:
-        return output_json({ 'error': 'No polygons found' }, code=404)
+        return output_error(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
     args = {
