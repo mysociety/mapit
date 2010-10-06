@@ -6,6 +6,7 @@ from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
+from django.template.loader import render_to_string
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -22,6 +23,17 @@ def output_html(request, title, areas):
         'areas': areas,
         'json': json_url
     })
+
+def output_html_error(message, code):
+    types = {
+        400: http.HttpResponseBadRequest,
+        404: http.HttpResponseNotFound,
+        500: http.HttpResponseServerError,
+    }
+    response_type = types.get(code, http.HttpResponse)
+    return response_type(render_to_string('%s.html' % code, {
+        'error': message,
+    }))
 
 def output_json(out, code=200):
     types = {

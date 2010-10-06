@@ -3,7 +3,7 @@ import itertools
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
-from mapit.shortcuts import output_json, get_object_or_404
+from mapit.shortcuts import output_json, get_object_or_404, output_html_error
 from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
@@ -29,6 +29,8 @@ enclosing_areas = {
 }
 
 def bad_request(message):
+    if format=='html':
+        return output_html_error(message, 400)
     return output_json({ 'error': message }, code=400)
 
 def check_postcode(postcode):
@@ -97,6 +99,8 @@ def partial_postcode(request, postcode, format='json'):
             location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
         )
     except:
+        if format == 'html':
+            return output_html_error('Postcode not found', 404)
         return output_json({ 'error': 'Postcode not found' }, code=404)
 
     if format == 'html':
