@@ -52,10 +52,12 @@ def output_json(out, code=200):
     simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
     return response
 
-def get_object_or_404(klass, *args, **kwargs):
+def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
     except http.Http404, e:
+        if format=='html':
+            return output_html_error(str(e), 404)
         return output_json({ 'error': str(e) }, code=404)
 
 def json_500(request):

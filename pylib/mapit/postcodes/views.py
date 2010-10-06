@@ -37,7 +37,7 @@ def check_postcode(format, postcode):
     postcode = re.sub('[^A-Z0-9]', '', postcode.upper())
     if not is_valid_postcode(postcode):
         return bad_request(format, "Postcode '%s' is not valid." % postcode)
-    postcode = get_object_or_404(Postcode, postcode=postcode)
+    postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
     return postcode
 
 @ratelimit(minutes=3, requests=100)
