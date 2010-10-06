@@ -316,7 +316,11 @@ def area_intersect(query_type, title, request, area_id, format):
 
     areas = areas.distinct()
 
-    if format == 'html': return output_html(request, title % ('<a href="/area/%d.html">%s</a>' % (area.id, area.name)), areas)
+    if format == 'html':
+        return output_html(request,
+            title % ('<a href="/area/%d.html">%s</a>' % (area.id, area.name)),
+            areas, norobots=True
+        )
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)

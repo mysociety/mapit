@@ -29,11 +29,11 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 | <a href="/area/{{ area.id }}/children.html">Children</a>
 {% endif %}
 {% if area.polygons.count %}
-<br>Areas: <a href="/area/{{ area.id }}/touches.html">Touching</a>
-| <a href="/area/{{ area.id }}/overlaps.html">Overlapping</a>
-| <a href="/area/{{ area.id }}/covers.html">Covered</a>
-| <a href="/area/{{ area.id }}/covered.html">Covered by</a>
-| <a href="/area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
+<br>Areas: <a rel="nofollow" href="/area/{{ area.id }}/touches.html">Touching</a>
+| <a rel="nofollow" href="/area/{{ area.id }}/overlaps.html">Overlapping</a>
+| <a rel="nofollow" href="/area/{{ area.id }}/covers.html">Covered</a>
+| <a rel="nofollow" href="/area/{{ area.id }}/covered.html">Covered by</a>
+| <a rel="nofollow" href="/area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
 {% endif %}
 
 <h3>Codes</h3>

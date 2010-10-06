@@ -16,13 +16,11 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
             pass
         return super(GEOS_JSONEncoder, self).default(o)
 
-def output_html(request, title, areas):
-    json_url = request.path.replace('.html', '')
-    return render_to_response('data.html', {
-        'title': title,
-        'areas': areas,
-        'json': json_url
-    })
+def output_html(request, title, areas, **kwargs):
+    kwargs['json_url'] = request.path.replace('.html', '')
+    kwargs['title'] = title
+    kwargs['areas'] = areas
+    return render_to_response('data.html', kwargs)
 
 def output_html_error(message, code):
     types = {

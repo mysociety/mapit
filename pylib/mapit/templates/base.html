@@ -4,6 +4,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>{% block fulltitle %}{% block title %}{% endblock %} - MaPit{% endblock %}</title>
 <link type="text/css" href="/static/css.css" rel="stylesheet">
+{% if norobots %}
+<meta name="robots" content="noindex, follow">
+{% endif %}
 </head>
 <body>
 
