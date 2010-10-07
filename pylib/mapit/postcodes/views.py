@@ -1,5 +1,6 @@
 import re
 import itertools
+from psycopg2.extensions import QueryCanceledError
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
