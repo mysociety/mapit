@@ -63,3 +63,8 @@ def get_object_or_404(klass, format='json', *args, **kwargs):
 def json_500(request):
     return output_json({ 'error': "Sorry, something's gone wrong." }, code=500)
 
+def set_timeout(format):
+    cursor = connection.cursor()
+    timeout = 5000 if format == 'html' else 10000
+    cursor.execute('set session statement_timeout=%d' % timeout)
+

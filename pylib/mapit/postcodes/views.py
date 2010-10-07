@@ -3,7 +3,7 @@ import itertools
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.areas.models import Area, Generation
-from mapit.shortcuts import output_json, get_object_or_404, output_error
+from mapit.shortcuts import output_json, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
@@ -114,8 +114,11 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
     try:
         pc = Postcode.objects.filter(areas=area).order_by('?')[0]
     except:
+        set_timeout(format)
         try:
             pc = Postcode.objects.filter(location__coveredby=area.polygons.all().collect()).order_by('?')[0]
+        except QueryCanceledError:
+            return output_error(format, 'That query was taking too long to compute.', 500)
         except:
             pc = None
     if pc: pc = pc.get_postcode_display()

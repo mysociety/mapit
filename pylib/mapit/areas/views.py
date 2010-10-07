@@ -2,14 +2,13 @@ import re
 import operator
 from psycopg2.extensions import QueryCanceledError
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, output_html, get_object_or_404, output_error
+from mapit.shortcuts import output_json, output_html, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
 from django.shortcuts import render_to_response
 from django.db.models import Q
-from django.db import connection
 
 voting_area = {
     'type_name': {
@@ -323,10 +322,7 @@ def area_intersect(query_type, title, request, area_id, format):
 
     areas = areas.distinct()
 
-    cursor = connection.cursor()
-    timeout = 5000 if format == 'html' else 10000
-    cursor.execute('set session statement_timeout=%d' % timeout)
-
+    set_timeout(format)
     try:
         if format == 'html':
             return output_html(request,
