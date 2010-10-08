@@ -65,6 +65,6 @@ def json_500(request):
 
 def set_timeout(format):
     cursor = connection.cursor()
-    timeout = 5000 if format == 'html' else 10000
+    timeout = 10000 if format == 'html' else 10000
     cursor.execute('set session statement_timeout=%d' % timeout)
 
