@@ -51,6 +51,11 @@ class AreaManager(models.GeoManager):
             )
         ))
 
+    def intersect(self, query_type, area):
+        return Area.objects.exclude(id=area.id).extra(where=[
+            'ST_%s(polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type
+        ], params=[area.id])
+
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()

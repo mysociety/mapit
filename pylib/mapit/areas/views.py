@@ -312,12 +312,16 @@ def area_intersect(query_type, title, request, area_id, format):
         args['type'] = type
     elif area.type in ('EUR'):
         args['type'] = area.type
-    areas = Area.objects.exclude(id=area.id).filter(**args)
 
     if isinstance(query_type, list):
         or_queries = [ Q(**{'polygons__polygon__%s' % t: all_areas}) for t in query_type ]
+        areas = Area.objects.exclude(id=area.id).filter(**args)
         areas = areas.filter(reduce(operator.or_, or_queries))
+    elif len(all_areas) == 1:
+        areas = Area.objects.intersect(query_type, area)
+        areas = areas.exclude(id=area.id).filter(**args)
     else:
+        areas = Area.objects.exclude(id=area.id).filter(**args)
         areas = areas.filter(**{'polygons__polygon__%s' % query_type : all_areas })
 
     areas = areas.distinct()
