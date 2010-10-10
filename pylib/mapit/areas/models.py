@@ -148,6 +148,9 @@ class Area(models.Model):
 
     objects = AreaManager()
 
+    class Meta:
+        ordering = ('name', 'type')
+
     @property
     def all_codes(self):
         if not getattr(self, 'code_list', None):
