@@ -31,7 +31,6 @@ class Postcode(models.Model):
             return self.extra(
                 tables = [ 'areas_geometry' ],
                 where = [
-                    'areas_geometry.area_id = areas_area.id',
                     'location && %s' % collect,
                     'ST_CoveredBy(location, %s)' % collect
                 ],
