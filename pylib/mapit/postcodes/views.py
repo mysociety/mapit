@@ -113,11 +113,11 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
     try:
-        pc = Postcode.objects.filter(areas=area)[0]
+        pc = Postcode.objects.filter(areas=area).order_by()[0]
     except:
         set_timeout(format)
         try:
-            pc = Postcode.objects.filter_by_area(area)[0]
+            pc = Postcode.objects.filter_by_area(area).order_by()[0]
         except QueryCanceledError:
             return output_error(format, 'That query was taking too long to compute.', 500)
         except:
