@@ -1,8 +1,15 @@
 import re
 from django.contrib.gis.db import models
 from django.db import connection, transaction
+from django.db.models.query import QuerySet
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
+
+class PostcodeManager(GeoManager):
+    def get_query_set(self):
+        return self.model.QuerySet(self.model)
+    def __getattr__(self, attr, *args):
+        return getattr(self.get_query_set(), attr, *args)
 
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
@@ -10,10 +17,26 @@ class Postcode(models.Model):
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
-    objects = GeoManager()
+    objects = PostcodeManager()
 
     class Meta:
         ordering = ('postcode',)
+
+    class QuerySet(QuerySet):
+        # ST_CoveredBy on its own does not appear to use the index.
+        # Plus this way we can keep the polygons in the database
+        # without pulling out in a giant WKB string
+        def filter_by_area(self, area):
+            collect = 'ST_Transform((select ST_Collect(polygon) from areas_geometry where area_id=%s group by area_id), 4326)'
+            return self.extra(
+                tables = [ 'areas_geometry' ],
+                where = [
+                    'areas_geometry.area_id = areas_area.id',
+                    'location && %s' % collect,
+                    'ST_CoveredBy(location, %s)' % collect
+                ],
+                params = [ area.id, area.id ]
+            )
 
     def __unicode__(self):
         return self.get_postcode_display()

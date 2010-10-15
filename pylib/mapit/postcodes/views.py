@@ -117,7 +117,7 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
     except:
         set_timeout(format)
         try:
-            pc = Postcode.objects.filter(location__coveredby=area.polygons.all().collect()).order_by('?')[0]
+            pc = Postcode.objects.filter_by_area(area).order_by('?')[0]
         except QueryCanceledError:
             return output_error(format, 'That query was taking too long to compute.', 500)
         except:
