@@ -21,7 +21,7 @@ class Postcode(models.Model):
     class Meta:
         ordering = ('postcode',)
 
-    class QuerySet(models.query.QuerySet):
+    class QuerySet(models.query.GeoQuerySet):
         # ST_CoveredBy on its own does not appear to use the index.
         # Plus this way we can keep the polygons in the database
         # without pulling out in a giant WKB string
