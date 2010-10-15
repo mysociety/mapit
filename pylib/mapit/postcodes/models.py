@@ -1,7 +1,6 @@
 import re
 from django.contrib.gis.db import models
 from django.db import connection, transaction
-from django.db.models.query import QuerySet
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
 
@@ -22,7 +21,7 @@ class Postcode(models.Model):
     class Meta:
         ordering = ('postcode',)
 
-    class QuerySet(QuerySet):
+    class QuerySet(models.query.QuerySet):
         # ST_CoveredBy on its own does not appear to use the index.
         # Plus this way we can keep the polygons in the database
         # without pulling out in a giant WKB string
