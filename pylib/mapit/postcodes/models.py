@@ -29,7 +29,6 @@ class Postcode(models.Model):
         def filter_by_area(self, area):
             collect = 'ST_Transform((select ST_Collect(polygon) from areas_geometry where area_id=%s group by area_id), 4326)'
             return self.extra(
-                tables = [ 'areas_geometry' ],
                 where = [
                     'location && %s' % collect,
                     'ST_CoveredBy(location, %s)' % collect
