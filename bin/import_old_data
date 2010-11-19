@@ -1,0 +1,40 @@
+#!/usr/bin/perl -w
+#
+# A one-off script to import the last remaining data from old mapit.
+
+use strict;
+use DBI;
+use FindBin;
+use Text::CSV_XS;
+use lib "$FindBin::Bin/../commonlib/perllib";
+
+use mySociety::Config;
+mySociety::Config::set_file("$FindBin::Bin/../conf/general");
+
+my $mapit = DBI->connect("dbi:Pg:dbname=mapit-new;host=bitter.int.ukcod.org.uk;port=5434",
+    'mapit-new', '', { RaiseError => 1, AutoCommit => 0 });
+
+my $insert = $mapit->prepare('INSERT INTO areas_area
+    (id, name, parent_area_id, type, country, generation_low_id, generation_high_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?)');
+my $insert_code = $mapit->prepare('INSERT INTO areas_code
+    (area_id, type, code) VALUES (?, ?, ?)');
+
+my $csv = new Text::CSV_XS();
+open my $fp, '../data/old-data.csv' or die $!;
+$csv->getline($fp); # header row
+while (my $row = $csv->getline($fp)) {
+    my ($id, $parent, $unit_id, $ons_code, $type, $country, $gl, $gh, $name) = @$row;
+    $parent = undef unless $parent;
+    $insert->execute($id, $name, $parent, $type, $country, $gl, $gh);
+    $insert_code->execute($id, 'unit_id', $unit_id)
+        if $unit_id;
+    $insert_code->execute($id, 'ons', $ons_code)
+        if $ons_code;
+}
+$csv->eof or $csv->error_diag();
+close $fp;
+
+$mapit->commit();
+$mapit->disconnect();
+
