@@ -41,7 +41,7 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
    ./manage.py runserver
 5. Go to the admin interface and create an inactive generation.
 6. Run the following:
-   ./manage.py import_boundary_line --control=controls/first `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   ./manage.py import_boundary_line --control=controls.first `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
    ./manage.py find_parents
    ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
    ./manage.py scilly ../../data/Code-Point-Open/tr.csv
@@ -94,13 +94,13 @@ be in code but can now happily sit in the database along with everything else.
 You probably don't need any of that for your own install.
 
 # Create inactive generation.
-./manage.py import_boundary_line --control=controls/2009-10 `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
+./manage.py import_boundary_line --control=controls.2009-10 `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
 ./manage.py import_codepoint ../../data/Code-Point-Open-2010-05/*.csv
 ./manage.py find_parents
 # Not importing NI here, as that only has the current boundaries.
 ./manage.py scilly ../../data/Code-Point-Open-2010-05/tr.csv
 # Make generation active, add another inactive generation
-./manage.py import_boundary_line --control=controls/2010-05 `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
+./manage.py import_boundary_line --control=controls.2010-05 `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
 # import_codepoint not needed as it's the same and there's no P-in-P tests!
 ./manage.py find_parents
 ./manage.py scilly ../../data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
