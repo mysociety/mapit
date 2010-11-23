@@ -4,6 +4,14 @@ MaPit
 pylib/mapit is a standard GeoDjango project; the rest is mostly to fit within
 mySociety's standard deployment.
 
+Checking out the code
+---------------------
+
+A standard git clone will get you the repository. Some code (used by multiple
+mySociety projects) is kept in a submodule repository called commonlib - to get
+that, simply type "git submodule update --init" in the main repository
+directory and it'll appear.
+
 Installation
 ------------
 
