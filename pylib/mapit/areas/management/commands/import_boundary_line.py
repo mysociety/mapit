@@ -44,7 +44,7 @@ class Command(LabelCommand):
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
 
-            ons_code = feat['CODE'].value if feat['CODE'].value != '999999' else None
+            ons_code = feat['CODE'].value if (feat['CODE'].value != '999999' and feat['CODE'].value != '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
             if self.patch_boundary_line(ons_code, area_code):
@@ -107,7 +107,7 @@ class Command(LabelCommand):
                     generation_high = new_generation,
                 )
 
-            if m.generation_high and m.generation_high.id < current_generation.id:
+            if current_generation and m.generation_high and m.generation_high.id < current_generation.id:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
             m.save()
