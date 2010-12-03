@@ -107,7 +107,7 @@ class Command(LabelCommand):
                     generation_high = new_generation,
                 )
 
-            if m.generation_high and m.generation_high.id < current_generation.id:
+            if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
             m.save()
