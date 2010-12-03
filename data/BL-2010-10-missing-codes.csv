@@ -1,0 +1,250 @@
+Type,New Code,Old Code,Name
+WMC,N06000001,701,Belfast East
+WMC,N06000002,702,Belfast North
+WMC,N06000003,703,Belfast South
+WMC,N06000004,704,Belfast West
+WMC,N06000005,705,East Antrim
+WMC,N06000006,706,East Londonderry
+WMC,N06000007,707,Fermanagh and South Tyrone
+WMC,N06000008,708,Foyle
+WMC,N06000009,709,Lagan Valley
+WMC,N06000010,710,Mid Ulster
+WMC,N06000011,711,Newry and Armagh
+WMC,N06000012,712,North Antrim
+WMC,N06000013,713,North Down
+WMC,N06000014,714,South Antrim
+WMC,N06000015,715,South Down
+WMC,N06000016,716,Strangford
+WMC,N06000017,717,Upper Bann
+WMC,N06000018,718,West Tyrone
+WMC,S14000001,801,Aberdeen North
+WMC,S14000002,802,Aberdeen South
+WMC,S14000003,803,Airdrie and Shotts
+WMC,S14000004,804,Angus
+WMC,S14000005,805,Argyll and Bute
+WMC,S14000006,806,"Ayr, Carrick and Cumnock"
+WMC,S14000007,807,Banff and Buchan
+WMC,S14000008,808,"Berwickshire, Roxburgh and Selkirk"
+WMC,S14000009,809,"Caithness, Sutherland and Easter Ross"
+WMC,S14000010,810,Central Ayrshire
+WMC,S14000011,811,"Coatbridge, Chryston and Bellshill"
+WMC,S14000012,812,"Cumbernauld, Kilsyth and Kirkintilloch East"
+WMC,S14000013,813,Dumfries and Galloway
+WMC,S14000014,814,"Dumfriesshire, Clydesdale and Tweeddale"
+WMC,S14000015,815,Dundee East
+WMC,S14000016,816,Dundee West
+WMC,S14000017,817,Dunfermline and West Fife
+WMC,S14000018,818,East Dunbartonshire
+WMC,S14000019,819,"East Kilbride, Strathaven and Lesmahagow"
+WMC,S14000020,820,East Lothian
+WMC,S14000021,821,East Renfrewshire
+WMC,S14000022,822,Edinburgh East
+WMC,S14000023,823,Edinburgh North and Leith
+WMC,S14000024,824,Edinburgh South
+WMC,S14000025,825,Edinburgh South West
+WMC,S14000026,826,Edinburgh West
+WMC,S14000027,847,Na h-Eileanan an Iar
+WMC,S14000028,827,Falkirk
+WMC,S14000029,828,Glasgow Central
+WMC,S14000030,829,Glasgow East
+WMC,S14000031,830,Glasgow North
+WMC,S14000032,831,Glasgow North East
+WMC,S14000033,832,Glasgow North West
+WMC,S14000034,833,Glasgow South
+WMC,S14000035,834,Glasgow South West
+WMC,S14000036,835,Glenrothes
+WMC,S14000037,836,Gordon
+WMC,S14000038,837,Inverclyde
+WMC,S14000039,838,"Inverness, Nairn, Badenoch and Strathspey"
+WMC,S14000040,839,Kilmarnock and Loudoun
+WMC,S14000041,840,Kirkcaldy and Cowdenbeath
+WMC,S14000042,841,Lanark and Hamilton East
+WMC,S14000043,842,Linlithgow and East Falkirk
+WMC,S14000044,843,Livingston
+WMC,S14000045,844,Midlothian
+WMC,S14000046,845,Moray
+WMC,S14000047,846,Motherwell and Wishaw
+WMC,S14000048,848,North Ayrshire and Arran
+WMC,S14000049,849,North East Fife
+WMC,S14000050,850,Ochil and South Perthshire
+WMC,S14000051,851,Orkney and Shetland
+WMC,S14000052,852,Paisley and Renfrewshire North
+WMC,S14000053,853,Paisley and Renfrewshire South
+WMC,S14000054,854,Perth and North Perthshire
+WMC,S14000055,855,"Ross, Skye and Lochaber"
+WMC,S14000056,856,Rutherglen and Hamilton West
+WMC,S14000057,857,Stirling
+WMC,S14000058,858,West Aberdeenshire and Kincardine
+WMC,S14000059,859,West Dunbartonshire
+SPC,S16000001,1,Aberdeen Central
+SPC,S16000002,2,Aberdeen North
+SPC,S16000003,3,Aberdeen South
+SPC,S16000004,4,Airdrie and Shotts
+SPC,S16000005,5,Angus
+SPC,S16000006,6,Argyll and Bute
+SPC,S16000007,7,Ayr
+SPC,S16000008,8,Banff and Buchan
+SPC,S16000009,9,"Caithness, Sutherland and Easter Ross"
+SPC,S16000010,10,"Carrick, Cumnock and Doon Valley"
+SPC,S16000011,11,Central Fife
+SPC,S16000012,12,Clydebank and Milngavie
+SPC,S16000013,13,Clydesdale
+SPC,S16000014,14,Coatbridge and Chryston
+SPC,S16000015,15,Cumbernauld and Kilsyth
+SPC,S16000016,16,Cunninghame North
+SPC,S16000017,17,Cunninghame South
+SPC,S16000018,18,Dumbarton
+SPC,S16000019,19,Dumfries
+SPC,S16000020,20,Dundee East
+SPC,S16000021,21,Dundee West
+SPC,S16000022,22,Dunfermline East
+SPC,S16000023,23,Dunfermline West
+SPC,S16000024,24,East Kilbride
+SPC,S16000025,25,East Lothian
+SPC,S16000026,26,Eastwood
+SPC,S16000027,27,Edinburgh Central
+SPC,S16000028,28,Edinburgh East and Musselburgh
+SPC,S16000029,29,Edinburgh North and Leith
+SPC,S16000030,30,Edinburgh Pentlands
+SPC,S16000031,31,Edinburgh South
+SPC,S16000032,32,Edinburgh West
+SPC,S16000033,33,Falkirk East
+SPC,S16000034,34,Falkirk West
+SPC,S16000035,35,Galloway and Upper Nithsdale
+SPC,S16000036,36,Glasgow Anniesland
+SPC,S16000037,37,Glasgow Baillieston
+SPC,S16000038,38,Glasgow Cathcart
+SPC,S16000039,39,Glasgow Govan
+SPC,S16000040,40,Glasgow Kelvin
+SPC,S16000041,41,Glasgow Maryhill
+SPC,S16000042,42,Glasgow Pollok
+SPC,S16000043,43,Glasgow Rutherglen
+SPC,S16000044,44,Glasgow Shettleston
+SPC,S16000045,45,Glasgow Springburn
+SPC,S16000046,46,Gordon
+SPC,S16000047,47,Greenock and Inverclyde
+SPC,S16000048,48,Hamilton North and Bellshill
+SPC,S16000049,49,Hamilton South
+SPC,S16000050,50,"Inverness East, Nairn and Lochaber"
+SPC,S16000051,51,Kilmarnock and Loudoun
+SPC,S16000052,52,Kirkcaldy
+SPC,S16000053,53,Linlithgow
+SPC,S16000054,54,Livingston
+SPC,S16000055,55,Midlothian
+SPC,S16000056,56,Moray
+SPC,S16000057,57,Motherwell and Wishaw
+SPC,S16000058,58,North East Fife
+SPC,S16000059,59,North Tayside
+SPC,S16000060,60,Ochil
+SPC,S16000061,61,Orkney
+SPC,S16000062,62,Paisley North
+SPC,S16000063,63,Paisley South
+SPC,S16000064,64,Perth
+SPC,S16000065,65,"Ross, Skye and Inverness West"
+SPC,S16000066,66,Roxburgh and Berwickshire
+SPC,S16000067,67,Shetland
+SPC,S16000068,68,Stirling
+SPC,S16000069,69,Strathkelvin and Bearsden
+SPC,S16000070,70,"Tweeddale, Ettrick and Lauderdale"
+SPC,S16000071,71,West Aberdeenshire and Kincardine
+SPC,S16000072,72,West Renfrewshire
+SPC,S16000073,73,Western Isles
+SPE,S17000001,1,Central Scotland
+SPE,S17000002,2,Glasgow
+SPE,S17000003,3,Highlands and Islands
+SPE,S17000004,4,Lothians
+SPE,S17000005,5,Mid Scotland and Fife
+SPE,S17000006,6,North East Scotland
+SPE,S17000007,7,South of Scotland
+SPE,S17000008,8,West of Scotland
+WAC,W09000001,NAWAC01,Ynys Môn
+WAC,W09000002,NAWAC41,Arfon
+WAC,W09000003,NAWAC42,Aberconwy
+WAC,W09000004,NAWAC43,Clwyd West
+WAC,W09000005,NAWAC44,Vale of Clwyd
+WAC,W09000006,NAWAC06,Delyn
+WAC,W09000007,NAWAC07,Alyn and Deeside
+WAC,W09000008,NAWAC08,Wrexham
+WAC,W09000009,NAWAC46,Clwyd South
+WAC,W09000010,NAWAC45,Dwyfor Meirionnydd
+WAC,W09000011,NAWAC47,Montgomeryshire
+WAC,W09000012,NAWAC48,Ceredigion
+WAC,W09000013,NAWAC52,Brecon and Radnorshire
+WAC,W09000014,NAWAC49,Preseli Pembrokeshire
+WAC,W09000015,NAWAC51,Carmarthen East and Dinefwr
+WAC,W09000016,NAWAC50,Carmarthen West and South Pembrokeshire
+WAC,W09000017,NAWAC17,Llanelli
+WAC,W09000018,NAWAC18,Gower
+WAC,W09000019,NAWAC19,Swansea West
+WAC,W09000020,NAWAC20,Swansea East
+WAC,W09000021,NAWAC53,Neath
+WAC,W09000022,NAWAC22,Aberavon
+WAC,W09000023,NAWAC57,Bridgend
+WAC,W09000024,NAWAC58,Ogmore
+WAC,W09000025,NAWAC31,Rhondda
+WAC,W09000026,NAWAC54,Cynon Valley
+WAC,W09000027,NAWAC59,Pontypridd
+WAC,W09000028,NAWAC62,Vale of Glamorgan
+WAC,W09000029,NAWAC63,Cardiff West
+WAC,W09000030,NAWAC28,Cardiff North
+WAC,W09000031,NAWAC27,Cardiff Central
+WAC,W09000032,NAWAC64,Cardiff South and Penarth
+WAC,W09000033,NAWAC55,Merthyr Tydfil and Rhymney
+WAC,W09000034,NAWAC38,Monmouth
+WAC,W09000035,NAWAC60,Caerphilly
+WAC,W09000036,NAWAC61,Islwyn
+WAC,W09000037,NAWAC37,Torfaen
+WAC,W09000038,NAWAC56,Blaenau Gwent
+WAC,W09000039,NAWAC40,Newport West
+WAC,W09000040,NAWAC39,Newport East
+WAE,W10000001,NAWER06,North Wales
+WAE,W10000002,NAWER07,Mid and West Wales
+WAE,W10000003,NAWER08,South Wales West
+WAE,W10000004,NAWER09,South Wales Central
+WAE,W10000005,NAWER10,South Wales East
+UTA,S12000033,00QA,Aberdeen City
+UTA,S12000034,00QB,Aberdeenshire
+UTA,S12000041,00QC,Angus
+UTA,S12000035,00QD,Argyll & Bute
+UTA,S12000005,00QF,Clackmannanshire
+UTA,S12000006,00QH,Dumfries & Galloway
+UTA,S12000042,00QJ,Dundee City
+UTA,S12000008,00QK,East Ayrshire
+UTA,S12000009,00QL,East Dunbartonshire
+UTA,S12000010,00QM,East Lothian
+UTA,S12000011,00QN,East Renfrewshire
+UTA,S12000036,00QP,"Edinburgh, City of"
+UTA,S12000013,00RJ,Na h-Eileanan an Iar 13
+UTA,S12000014,00QQ,Falkirk
+UTA,S12000015,00QR,Fife
+UTA,S12000043,00QS,Glasgow City
+UTA,S12000017,00QT,Highland
+UTA,S12000018,00QU,Inverclyde
+UTA,S12000019,00QW,Midlothian
+UTA,S12000020,00QX,Moray
+UTA,S12000021,00QY,North Ayrshire
+UTA,S12000044,00QZ,North Lanarkshire
+UTA,S12000023,00RA,Orkney Islands
+UTA,S12000024,00RB,Perth & Kinross
+UTA,S12000038,00RC,Renfrewshire
+UTA,S12000026,00QE,Scottish Borders
+UTA,S12000027,00RD,Shetland Islands
+UTA,S12000028,00RE,South Ayrshire
+UTA,S12000029,00RF,South Lanarkshire
+UTA,S12000030,00RG,Stirling
+UTA,S12000039,00QG,West Dunbartonshire
+UTA,S12000040,00RH,West Lothian
+LAC,E32000001,,Barnet and Camden
+LAC,E32000002,,Bexley and Bromley
+LAC,E32000003,,Brent and Harrow
+LAC,E32000004,,City and East
+LAC,E32000005,,Croydon and Sutton
+LAC,E32000006,,Ealing and Hillingdon
+LAC,E32000007,,Enfield and Haringey
+LAC,E32000008,,Greenwich and Lewisham
+LAC,E32000009,,Havering and Redbridge
+LAC,E32000010,,Lambeth and Southwark
+LAC,E32000011,,Merton and Wandsworth
+LAC,E32000012,,North East
+LAC,E32000013,,South West
+LAC,E32000014,,West Central
