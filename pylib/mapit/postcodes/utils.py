@@ -5,7 +5,22 @@ def is_valid_postcode(pc):
 
     # Our test postcode
     if pc in ('ZZ99ZZ', 'ZZ99ZY'): return True
-    
+
+    if pc in (
+        'ASCN1ZZ', # Ascension Island
+        'BBND1ZZ', # BIOT
+        'BIQQ1ZZ', # British Antarctic Territory
+        'FIQQ1ZZ', # Falkland Islands
+        'PCRN1ZZ', # Pitcairn Islands
+        'SIQQ1ZZ', # South Georgia and the South Sandwich Islands
+        'STHL1ZZ', # St Helena
+        'TDCU1ZZ', # Tristan da Cunha
+        'TKCA1ZZ', # Turks and Caicos Islands
+        'GIR0AA', 'G1R0AA', # Girobank
+        'SANTA1', # Santa Claus
+    ):
+        return True
+
     # See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
     inward = 'ABDEFGHJLNPQRSTUWXYZ'
     fst = 'ABCDEFGHIJKLMNOPRSTUWYZ'
