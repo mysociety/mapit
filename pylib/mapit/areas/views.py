@@ -256,7 +256,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     </Placemark>
 </kml>''' % (area.name, all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
-    elif format=='json':
+    elif format=='geojson':
         out = all_areas.json
         content_type = 'application/json'
     elif format=='wkt':

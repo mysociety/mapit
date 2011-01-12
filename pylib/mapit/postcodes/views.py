@@ -61,6 +61,8 @@ def postcode(request, postcode, legacy=False, format='json'):
         elif area.type == 'DIW':
             shortcuts.setdefault('ward', {})['district'] = area.id
             shortcuts.setdefault('council', {})['district'] = area.parent_area_id
+        elif area.type in ('WMC'): # XXX Also maybe 'EUR', 'NIE', 'SPC', 'SPE', 'WAC', 'WAE', 'OLF', 'OLG', 'OMF', 'OMG'):
+            shortcuts[area.type] = area.id
 
     # Add manual enclosing areas. 
     extra = []
