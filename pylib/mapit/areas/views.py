@@ -234,7 +234,7 @@ def area(request, area_id, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid:
-        srid = 4326 if format in ('kml', 'geojson') else 27700
+        srid = 4326 if format in ('kml', 'json', 'geojson') else 27700
     srid = int(srid)
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
@@ -256,7 +256,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     </Placemark>
 </kml>''' % (area.name, all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
-    elif format=='geojson':
+    elif format in ('json', 'geojson'):
         out = all_areas.json
         content_type = 'application/json'
     elif format=='wkt':
