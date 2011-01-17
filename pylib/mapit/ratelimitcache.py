@@ -30,7 +30,7 @@ class ratelimit(object):
         if not self.should_ratelimit(request):
             return fn(request, *args, **kwargs)
         
-        if request.META.get('REMOTE_ADDR', '') in excluded_ips or \
+        if request.META.get('REMOTE_ADDR', '') in self.excluded_ips or \
             request.META.get('REMOTE_ADDR', '')[0:11] == '82.111.230.':
             return fn(request, *args, **kwargs)
             
