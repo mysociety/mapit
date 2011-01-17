@@ -8,6 +8,11 @@ class ratelimit(object):
     # This class is designed to be sub-classed
     minutes = 2 # The time period
     requests = 20 # Number of allowed requests in that time period
+    # IP addresses that aren't rate limited
+    excluded_ips = [
+        '89.238.145.68', '89.238.145.69', '89.238.145.70', '89.238.145.71',
+        '89.238.145.72', '89.238.145.73', '89.238.145.74', '89.238.145.75',
+    ]
     
     prefix = 'rl-' # Prefix for memcache key
     
@@ -25,7 +30,8 @@ class ratelimit(object):
         if not self.should_ratelimit(request):
             return fn(request, *args, **kwargs)
         
-        if request.META.get('REMOTE_ADDR', '')[0:11] == '82.111.230.':
+        if request.META.get('REMOTE_ADDR', '') in excluded_ips or \
+            request.META.get('REMOTE_ADDR', '')[0:11] == '82.111.230.':
             return fn(request, *args, **kwargs)
             
         counts = self.get_counters(request).values()
