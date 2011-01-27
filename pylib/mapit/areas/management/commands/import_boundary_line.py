@@ -72,7 +72,9 @@ class Command(LabelCommand):
                 poly.append(feat.geom)
                 continue
 
-            if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
+            if control.code_version() == 'gss':
+                country = ons_code[0] # Hooray!
+            elif area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                 country = 'E'
             elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
                 country = 'S'
@@ -91,7 +93,7 @@ class Command(LabelCommand):
                 if control.check(name, area_code, country, feat.geom):
                     raise Area.DoesNotExist
                 if ons_code:
-                    m = Area.objects.get(codes__type='ons', codes__code=ons_code)
+                    m = Area.objects.get(codes__type=control.code_version(), codes__code=ons_code)
                 elif unit_id:
                     m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
                     m_name = m.names.get(type='O').name
@@ -117,7 +119,7 @@ class Command(LabelCommand):
             m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
-                m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
+                m.codes.update_or_create({ 'type': control.code_version() }, { 'code': ons_code })
             if unit_id:
                 self.unit_id_to_shape[unit_id] = (m, poly)
                 m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })

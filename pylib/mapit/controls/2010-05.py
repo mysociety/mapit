@@ -5,6 +5,11 @@
 # Things without ONS codes: CED EUR GLA LAC SPC SPE WAC WAE WMC
 # 
 # For May 2010, England and Wales WMC are all new. I think that's it!
+#
+# This edition of Boundary-Line uses the old SNAC codes
+
+def code_version():
+    return 'ons'
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""

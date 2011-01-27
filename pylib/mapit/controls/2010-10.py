@@ -4,15 +4,14 @@
 #
 # Things without ONS codes: CED EUR GLA LAC SPC SPE WAC WAE WMC
 # 
-# For Oct 2009, it doesn't matter what this returns, as it's
-# the first Open version and the database will/should be empty.
-#
-# This edition of Boundary-Line uses the old SNAC codes
+# This edition of Boundary-Line uses the new SNAC codes
+
+import re
 
 def code_version():
-    return 'ons'
+    return 'gss'
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""
-    return False
 
+    return False

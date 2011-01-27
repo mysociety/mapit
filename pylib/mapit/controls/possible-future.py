@@ -9,8 +9,13 @@
 # will all change at once, but not all CEDs will be changing.
 #
 # In this example, Buckinghamshire County Council has had boundary changes.
+#
+# This edition of Boundary-Line uses the new SNAC codes
 
 import re
+
+def code_version():
+    return 'gss'
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""
