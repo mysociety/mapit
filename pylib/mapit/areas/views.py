@@ -219,6 +219,8 @@ def generations(request):
 def area(request, area_id, format='json'):
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
         area = get_object_or_404(Area, format=format, codes__type='ons', codes__code=area_id)
+    elif re.match('[ENSW]\d{8}$', area_id):
+        area = get_object_or_404(Area, format=format, codes__type='gss', codes__code=area_id)
     elif not re.match('\d+$', area_id):
         return output_error(format, 'Bad area ID specified', 400)
     else:
