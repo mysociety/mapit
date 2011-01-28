@@ -42,10 +42,12 @@ class Command(NoArgsCommand):
                 else:
                     args['type__in'] = parentmap[area.type]
                 parent = Area.objects.get(**args)
-                print "Parent for %s [%d] (%s) is %s [%d] (%s)" % (area.name, area.id, area.type, parent.name, parent.id, parent.type)
             except Area.DoesNotExist:
-                raise Exception, "Area %s [%d] (%s) does not have a parent?" % (area.name, area.id, area.type)
+                raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
             if area.parent_area != parent:
+                print "Parent for %s was %s, is now %s" % (self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent))
                 area.parent_area = parent
                 area.save()
 
+    def pp_area(self, area):
+        return "%s [%d] (%s)" % (area.name, area.id, area.type)

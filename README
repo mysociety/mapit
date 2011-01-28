@@ -41,7 +41,8 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
    ./manage.py runserver
 5. Go to the admin interface and create an inactive generation.
 6. Run the following:
-   ./manage.py import_boundary_line --control=controls.first `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   ./manage.py import_boundary_line --control=controls.first --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   # (You can run without --commit to do a dry run.)
    ./manage.py find_parents
    ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
    ./manage.py scilly ../../data/Code-Point-Open/tr.csv
@@ -62,8 +63,10 @@ have changed, or import_nspd_ni_areas first if boundary changes too (this is
 incomplete, it doesn't use a control file like import_boundary_line does); 
 when new Boundary-Line, import_boundary_line and find_parents.
 
-Haven't had to test a Boundary-Line update yet, but Code-Point/ NSPD appeared
-to go okay.
+You can manually increase the generation_high_id when something is new and
+something else isn't (most commonly, a new Boundary-Line means a new generation
+for Great Britain, and you can then increase the Northern Ireland boundaries
+manually to be in the new generation).
 
 Improvements / patches
 ----------------------
