@@ -499,7 +499,8 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False, format='json'):
         if method == 'box':
             args['polygons__polygon__bbcontains'] = location
         else:
-            args['polygons__polygon__contains'] = location
+            geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
+            args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )

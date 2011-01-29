@@ -83,7 +83,7 @@ class AreaManager(models.GeoManager):
         # At least Like A Prayer is on. XXX
 
         # list() to force evaluation here, we don't want it as a subquery
-        geoms = list(Geometry.objects.filter(polygon__contains=location))
+        geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
         return Area.objects.filter(
             polygons__in=geoms,
             generation_low__lte=generation, generation_high__gte=generation
