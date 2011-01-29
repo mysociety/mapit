@@ -37,8 +37,55 @@ class AreaManager(models.GeoManager):
     def by_location(self, location, generation=None):
         if generation is None: generation = Generation.objects.current()
         if not location: return []
+        #return Area.objects.filter(
+        #    polygons__polygon__contains=location,
+        #    generation_low__lte=generation, generation_high__gte=generation
+        #)
+	# XXX The above is what I would like to use, and have used until now;
+	# However when run with generation 15 (loaded today, which contains
+	# nothing but the 2011 Scottish Parliament boundaries), postgres uses
+	# up all available memory on the machine and cries, which has never
+	# happened before. Here are the two EXPLAINs, first the one that works
+	# fine:
+        # 
+        # mapit=> explain SELECT "areas_area"."id", "areas_area"."name", "areas_area"."parent_area_id", "areas_area"."type", "areas_area"."country", "areas_area"."generation_low_id", "areas_area"."generation_high_id" FROM "areas_area" INNER JOIN "areas_geometry" ON ("areas_area"."id" = "areas_geometry"."area_id") WHERE (ST_Contains("areas_geometry"."polygon", ST_Transform(ST_GeomFromWKB('\\001\\001\\000\\000\\000\\250\\012v\\232\\001\\205\\011\\300F\\365V\\357\\331\\371K@', 4326), 27700)) AND "areas_area"."generation_low_id" <= 14  AND "areas_area"."generation_high_id" >= 14 ) ORDER BY "areas_area"."name" ASC, "areas_area"."type" ASC ;
+        #  Sort  (cost=16.64..16.65 rows=1 width=37)
+        #    Sort Key: areas_area.name, areas_area.type
+        #    ->  Nested Loop  (cost=0.00..16.63 rows=1 width=37)
+        #          ->  Index Scan using areas_geometry_polygon_id on areas_geometry  (cost=0.00..8.31 rows=1 width=4)
+        #                Index Cond: (polygon && '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry)
+        #                Filter: ((polygon && '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry) AND _st_contains(polygon, '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry))
+        #          ->  Index Scan using areas_area_pkey on areas_area  (cost=0.00..8.31 rows=1 width=37)
+        #                Index Cond: (areas_area.id = areas_geometry.area_id)
+        #                Filter: ((areas_area.generation_low_id <= 14) AND (areas_area.generation_high_id >= 14))
+        # (9 rows)
+        # 
+        # And the identical query but with a different generation ID that kills the server:
+        #
+        # mapit=> explain SELECT "areas_area"."id", "areas_area"."name", "areas_area"."parent_area_id", "areas_area"."type", "areas_area"."country", "areas_area"."generation_low_id", "areas_area"."generation_high_id" FROM "areas_area" INNER JOIN "areas_geometry" ON ("areas_area"."id" = "areas_geometry"."area_id") WHERE (ST_Contains("areas_geometry"."polygon", ST_Transform(ST_GeomFromWKB('\\001\\001\\000\\000\\000\\250\\012v\\232\\001\\205\\011\\300F\\365V\\357\\331\\371K@', 4326), 27700)) AND "areas_area"."generation_low_id" <= 15  AND "areas_area"."generation_high_id" >= 15 ) ORDER BY "areas_area"."name" ASC, "areas_area"."type" ASC ;
+        #  Sort  (cost=16.63..16.64 rows=1 width=37)
+        #    Sort Key: areas_area.name, areas_area.type
+        #    ->  Nested Loop  (cost=0.00..16.62 rows=1 width=37)
+        #          Join Filter: (areas_area.id = areas_geometry.area_id)
+        #          ->  Index Scan using areas_area_generation_high_id on areas_area  (cost=0.00..8.30 rows=1 width=37)
+        #                Index Cond: (generation_high_id >= 15)
+        #                Filter: (generation_low_id <= 15)
+        #          ->  Index Scan using areas_geometry_polygon_id on areas_geometry  (cost=0.00..8.31 rows=1 width=4)
+        #                Index Cond: (areas_geometry.polygon && '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry)
+        #                Filter: ((areas_geometry.polygon && '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry) AND _st_contains(areas_geometry.polygon, '0101000020346C0000E85CCE0080E213417E2EF7FF7B902441'::geometry))
+        # (10 rows)
+        #
+	# I have no idea why the latter seems to mean it needs to load the
+	# shapes into memory, but it does, it's 1am on a Saturday, and so I
+	# really don't want to think about it. So instead, let's do the query
+	# planner's job for it and first do the Geometry contains lookup, and
+	# then fetch just the Areas that are in the right generation(s).
+        # At least Like A Prayer is on. XXX
+
+        # list() to force evaluation here, we don't want it as a subquery
+        geoms = list(Geometry.objects.filter(polygon__contains=location))
         return Area.objects.filter(
-            polygons__polygon__contains=location,
+            polygons__in=geoms,
             generation_low__lte=generation, generation_high__gte=generation
         )
 

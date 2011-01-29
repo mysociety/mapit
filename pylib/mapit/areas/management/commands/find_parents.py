@@ -50,4 +50,5 @@ class Command(NoArgsCommand):
                 area.save()
 
     def pp_area(self, area):
+        if not area: return "None"
         return "%s [%d] (%s)" % (area.name, area.id, area.type)
