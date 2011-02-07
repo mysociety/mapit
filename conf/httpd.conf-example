@@ -1,0 +1,15 @@
+# Example Apache configuration for mapit.
+#
+# For development ignore this, you can just run python manage.py runserver as for any
+# Django application.
+#
+# Copyright (c) 2010 UK Citizens Online Democracy. All rights reserved.
+# Email: matthew@mysociety.org; WWW: http://www.mysociety.org
+
+WSGIDaemonProcess example.mapit.mysociety.org user=exampleuser group=examplegroup processes=5 threads=1 display-name=example.mapit.mysociety.org
+WSGIProcessGroup example.mapit.mysociety.org
+
+WSGIScriptAlias / /data/vhost/example.mapit.mysociety.org/docs/django.wsgi
+
+Alias /media /var/lib/python-support/python2.5/django/contrib/admin/media
+Alias /static /data/vhost/example.mapit.mysociety.org/docs/static
