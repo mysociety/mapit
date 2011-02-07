@@ -26,3 +26,4 @@ define('OPTION_MAPIT_DB_PORT', null);
 define('OPTION_DJANGO_SECRET_KEY', 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4');
 define('OPTION_BUGS_EMAIL', '');
 
+define('OPTION_AREA_SRID', 27700); # 4326 for WGS84

@@ -62,6 +62,8 @@ class Postcode(models.Model):
         result['northing'] = int(round(loc[1]))
         return result
 
+    # Doing this via self.location.transform(29902) gives incorrect results.
+    # The database has the right proj4 text, the proj file does not. I think.
     def as_irish_grid(self):
         cursor = connection.cursor()
         cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))

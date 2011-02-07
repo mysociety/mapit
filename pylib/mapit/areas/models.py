@@ -2,6 +2,7 @@ import re
 import itertools
 from django.contrib.gis.db import models
 from mapit.managers import Manager, GeoManager
+import mysociety.config
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -227,7 +228,7 @@ class Area(models.Model):
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
-    polygon = models.PolygonField(srid=27700)
+    polygon = models.PolygonField(srid=mysociety.config.get('AREA_SRID'))
     objects = GeoManager()
 
     class Meta:
