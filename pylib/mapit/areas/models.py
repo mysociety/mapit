@@ -178,17 +178,23 @@ class Area(models.Model):
         ('UTA', 'Unitary Authority'),
         ('UTE', 'Unitary Authority ward (UTE)'),
         ('UTW', 'Unitary Authority ward (UTW)'),
-        ('CPC', 'Civil Parish'),
-        ('OLF', 'Lower Layer Super Output Area (Full)'),
-        ('OLG', 'Lower Layer Super Output Area (Generalised)'),
-        ('OMF', 'Middle Layer Super Output Area (Full)'),
-        ('OMG', 'Middle Layer Super Output Area (Generalised)'),
+        ('England and Wales', (
+            ('CPC', 'Civil Parish'),
+            ('OLF', 'Lower Layer Super Output Area (Full)'),
+            ('OLG', 'Lower Layer Super Output Area (Generalised)'),
+            ('OMF', 'Middle Layer Super Output Area (Full)'),
+            ('OMG', 'Middle Layer Super Output Area (Generalised)'),
+        )),
+        ('Norway', (
+            ('NKO', 'Norway Kommune'),
+        )),
     ))
     country = models.CharField(max_length=1, choices=(
         ('E', 'England'),
         ('W', 'Wales'),
         ('S', 'Scotland'),
         ('N', 'Northern Ireland'),
+        ('O', 'Norway'),
         ('', '-'),
     ), blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
@@ -228,14 +234,14 @@ class Area(models.Model):
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
-    polygon = models.PolygonField(srid=mysociety.config.get('AREA_SRID'))
+    polygon = models.PolygonField(srid=int(mysociety.config.get('AREA_SRID')))
     objects = GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
 
     def __unicode__(self):
-        return '%s, polygon %d' % (self.area, self.id)
+        return u'%s, polygon %d' % (self.area, self.id)
 
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
@@ -290,7 +296,8 @@ class Code(models.Model):
     type = models.CharField(max_length=10, choices=(
         ('ons', 'SNAC'),
         ('gss', 'GSS (SNAC replacement)'),
-        ('unit_id', 'Boundary-Line (OS Admin Area ID)')
+        ('unit_id', 'Boundary-Line (OS Admin Area ID)'),
+        ('n5000', 'Norway code as given in N5000'),
     ))
     code = models.CharField(max_length=10)
     objects = Manager()

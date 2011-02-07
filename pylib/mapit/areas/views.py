@@ -237,7 +237,7 @@ def area(request, area_id, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid:
-        srid = 4326 if format in ('kml', 'json', 'geojson') else mysociety.config.get('AREA_SRID')
+        srid = 4326 if format in ('kml', 'json', 'geojson') else int(mysociety.config.get('AREA_SRID'))
     srid = int(srid)
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
@@ -248,7 +248,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
-    if srid != mysociety.config.get('AREA_SRID'):
+    if srid != int(mysociety.config.get('AREA_SRID')):
         all_areas.transform(srid)
     if format=='kml':
         out = '''<?xml version="1.0" encoding="UTF-8"?>
