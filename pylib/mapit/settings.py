@@ -20,7 +20,7 @@ CACHE_MIDDLEWARE_SECONDS = 86400
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-DEBUG = True if mysociety.config.get('STAGING') else False
+DEBUG = True if int(mysociety.config.get('STAGING')) else False
 TEMPLATE_DEBUG = DEBUG
 
 SERVER_EMAIL = mysociety.config.get('BUGS_EMAIL')
