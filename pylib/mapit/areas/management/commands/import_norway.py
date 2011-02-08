@@ -1,5 +1,5 @@
 # import_norway.py:
-# This script is used to import information from ihe N5000 datset available at
+# This script is used to import information from the N5000 datset available at
 # http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/
 #
 # Copyright (c) 2011 UK Citizens Online Democracy. All rights reserved.
@@ -36,11 +36,12 @@ class Command(LabelCommand):
             print " ", name
 
             code = feat['KOMM'].value
+            code_str = '%04d' % code
             area_code = 'NKO'
             country = 'O'
             
             try:
-                m = Area.objects.get(codes__type='n5000', codes__code=str(code))
+                m = Area.objects.get(codes__type='n5000', codes__code=code_str)
             except Area.DoesNotExist:
                 m = Area(
                     id = code,
@@ -60,6 +61,6 @@ class Command(LabelCommand):
             if options['commit']:
                 m.save()
                 m.names.update_or_create({ 'type': 'M' }, { 'name': name })
-                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': str(code) })
+                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
                 save_polygons({ code : (m, poly) })
 
