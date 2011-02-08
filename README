@@ -16,7 +16,7 @@ Installation
 ------------
 
 Our version is running on Debian lenny - to install PostGIS and GeoDjango I
-just followed the instructions (including creating the template) at
+just followed all the instructions (including creating the template) at
 http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
 
 However, not only is the PostGIS that is installed missing SRID 900913, as
@@ -27,10 +27,14 @@ in to it and update the proj4text column of SRID 27700 to include
 +datum=OSGB36, and update SRID 29902 to have +datum=ire65. (This may not be
 necessary, depending on your version of PostGIS, but do check.)
 
+United Kingdom
+--------------
+
 Here are the basic instructions to install OS OpenData and NSPD Open:
 
-1. Make sure DEBUG = False in settings.py, otherwise you'll soon run out of 
-   memory as it tries to remember all the SQL queries made.
+1. Make sure OPTION_STAGING is 1 in conf/general, otherwise you'll soon run out
+   of memory as it tries to remember all the SQL queries made. Also set
+   OPTION_AREA_SRID to 27700 (as Boundary-Line shapes are in OSGB).   
 2. Optional: turn off escape_string_warning in Postgres (unless you want your 
    server to run out of disc space logging all the errors, as ours did the first
    time I imported overnight and didn't realise).
@@ -67,6 +71,33 @@ You can manually increase the generation_high_id when something is new and
 something else isn't (most commonly, a new Boundary-Line means a new generation
 for Great Britain, and you can then increase the Northern Ireland boundaries
 manually to be in the new generation).
+
+Norway
+------
+
+Here are the basic instructions to install the N5000 data:
+
+1. Make sure OPTION_STAGING is 1 in conf/general, otherwise you'll soon run out
+   of memory as it tries to remember all the SQL queries made. Also set
+   OPTION_AREA_SRID to 4326 (as N5000 shapes are in WGS84).  
+2. Optional: turn off escape_string_warning in Postgres (unless you want your 
+   server to run out of disc space logging all the errors, as ours did the first
+   time I imported overnight and didn't realise).
+3. Download N5000 from
+   <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>
+   and save/unzip in the data directory.
+4. Change to the pylib/mapit directory, create database tables and start the site:
+   ./manage.py syncdb
+   ./manage.py runserver
+5. Go to the admin interface and create an inactive generation.
+6. Run the following:
+   ./manage.py import_norway --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
+   # (You can run without --commit to do a dry run.)
+   ./manage.py find_parents
+7. Go to the admin interface, and make the generation active.
+
+You should now be able to go to /point/4326/10.756389,59.949444 and have
+Oslo returned as a result.
 
 Improvements / patches
 ----------------------
