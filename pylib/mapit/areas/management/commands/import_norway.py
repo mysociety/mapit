@@ -35,14 +35,15 @@ class Command(LabelCommand):
             name = re.sub('\s+', ' ', name)
             print " ", name
 
-            code = str(feat['KOMM'].value)
+            code = feat['KOMM'].value
             area_code = 'NKO'
             country = 'O'
             
             try:
-                m = Area.objects.get(codes__type='n5000', codes__code=code)
+                m = Area.objects.get(codes__type='n5000', codes__code=str(code))
             except Area.DoesNotExist:
                 m = Area(
+                    id = code,
                     type = area_code,
                     country = country,
                     generation_low = new_generation,
@@ -53,14 +54,12 @@ class Command(LabelCommand):
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
 
-            feat.geom.srid = 4326
             g = feat.geom.transform(4326, clone=True)
-            poly = [ feat.geom ]
             poly = [ g ]
 
             if options['commit']:
                 m.save()
                 m.names.update_or_create({ 'type': 'M' }, { 'name': name })
-                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code })
+                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': str(code) })
                 save_polygons({ code : (m, poly) })
 
