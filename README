@@ -93,7 +93,6 @@ Here are the basic instructions to install the N5000 data:
 6. Run the following:
    ./manage.py import_norway --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
    # (You can run without --commit to do a dry run.)
-   ./manage.py find_parents
 7. Go to the admin interface, and make the generation active.
 
 You should now be able to go to /point/4326/10.756389,59.949444 and have
