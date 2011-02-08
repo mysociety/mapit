@@ -16,7 +16,7 @@
 &ldquo;Gentlemen, we can rebuild him. We have the technology. We can make him better than he was before. Better. Stronger. Faster.&rdquo;
 </blockquote>
 
-<h1>{{ request.META.HTTP_HOST }}</h1>
+<h1>{{ request.META.HTTP_HOST|default:"MaPit" }}</h1>
 <span><a href="/">Documentation</a></span>
 
 {% block content %}
