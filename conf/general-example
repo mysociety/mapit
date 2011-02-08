@@ -23,6 +23,7 @@ define('OPTION_MAPIT_DB_PASS', '');
 define('OPTION_MAPIT_DB_HOST', null);
 define('OPTION_MAPIT_DB_PORT', null); 
 
+define('OPTION_COUNTRY', 'GB'); # or NO
 define('OPTION_AREA_SRID', 27700); # 4326 for WGS84
 define('OPTION_STAGING', 1);
 define('OPTION_BUGS_EMAIL', 'example@example.org');

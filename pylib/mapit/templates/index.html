@@ -41,7 +41,7 @@ OS/RM/ONS as per their licenses, and please do attribute us too :) For commercia
 high-volume usage, please <a href="http://www.mysociety.org/contact/">contact us</a>
 about using the service, by licensing or by helping you install your own version.</p>
 
-<p>All calls below are made to http://mapit.mysociety.org/ and return JSON
+<p>All calls below are made to http://{{ request.META.HTTP_HOST }}/ and return JSON
 (on some calls, stick .html on the end for an HTML version). By default, calls
 will return active areas; for some calls you may specify a previous generation
 to look up instead. The main difference in generation 12 is that it contains
@@ -152,7 +152,7 @@ bounding boxes cover the particular point.
 <li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
 
 <li>/area/<i>[area ID]</i>.<i>[kml|geojson|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
-<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/2636.kml">Example KML file on a Google Map</a>.
+<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/2636.kml">Example KML file on a Google Map</a>.
 
 <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
 
@@ -163,7 +163,7 @@ bounding boxes cover the particular point.
 <ul>
 
 <li>/area/<i>[area ID]</i>/children &ndash; all the children of a particular area.
-<a href="http://mapit.mysociety.org/area/2236/children.html">Example of all electoral divisions of a county council</a>.
+<a href="/area/2236/children.html">Example of all electoral divisions of a county council</a>.
 
 <li>/area/<i>[area ID]</i>/touches &ndash; all the areas that border the selected area.
 <a rel="nofollow" href="/area/65622/touches.html?type=WMC">Example of all constituencies touching Witney</a>.
