@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
+from django.template import RequestContext
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -16,11 +17,19 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
             pass
         return super(GEOS_JSONEncoder, self).default(o)
 
+def render(request, template_name, context=None):
+    if context is None: context = {}
+#    context['base'] = base or 'base.html'
+#    context['connection'] = connection
+    return render_to_response(
+        template_name, context, context_instance = RequestContext(request)
+    )
+
 def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.path.replace('.html', '')
     kwargs['title'] = title
     kwargs['areas'] = areas
-    return render_to_response('data.html', kwargs)
+    return render(request, 'data.html', kwargs)
 
 def output_error(format, message, code):
     if format=='html':

@@ -2,12 +2,11 @@ import re
 import operator
 from psycopg2.extensions import QueryCanceledError
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, output_html, get_object_or_404, output_error, set_timeout
+from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
-from django.shortcuts import render_to_response
 from django.db.models import Q
 import mysociety.config
 
@@ -228,7 +227,7 @@ def area(request, area_id, format='json'):
         area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
     if format == 'html':
-        return render_to_response('area.html', {
+        return render(request, 'area.html', {
             'area': area,
             'show_geometry': (area.type not in ('EUR', 'SPE', 'WAE'))
         })
