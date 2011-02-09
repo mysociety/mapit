@@ -1,10 +1,6 @@
-# This script is used to import information from OS Boundary-Line,
-# which contains digital boundaries for administrative areas within
-# Great Britain. Northern Ireland is handled separately, during the
-# postcode import phase.
+# This script is used to create a new inactive generation for
+# inputting new boundaries of some sort.
 
-import re
-import sys
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.areas.models import Generation
