@@ -24,7 +24,8 @@ class Generation(models.Model):
     objects = GenerationManager()
 
     def __unicode__(self):
-        return "Generation %d (%sactive)" % (self.id, "" if self.active else "in")
+        id = self.id or '?'
+        return "Generation %s (%sactive)" % (id, "" if self.active else "in")
 
     def as_dict(self):
         return {
