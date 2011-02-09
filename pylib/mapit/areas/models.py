@@ -187,6 +187,7 @@ class Area(models.Model):
             ('OMG', 'Middle Layer Super Output Area (Generalised)'),
         )),
         ('Norway', (
+            ('NFY', 'Norway Fylke'),
             ('NKO', 'Norway Kommune'),
         )),
     ))
@@ -246,10 +247,13 @@ class Geometry(models.Model):
 
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
-    type = models.CharField(max_length=1, choices=(
+    type = models.CharField(max_length=10, choices=(
         ('O', 'Ordnance Survey'),
         ('S', 'ONS (SNAC/GSS)'),
         ('M', 'Override name'),
+        ('Nno', 'Norwegian - no'),
+        ('Nsmi', 'Norwegian - smi'),
+        ('Nfi', 'Norwegian - fi'),
     ))
     name = models.CharField(max_length=100)
     objects = Manager()
