@@ -1,4 +1,4 @@
-# import_norway.py:
+# import_norway_n5000.py:
 # This script is used to import information from the N5000 datset available at
 # http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/
 #
