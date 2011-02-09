@@ -50,8 +50,8 @@ class Command(LabelCommand):
                 code_str = '%02d' % code
             else:
                 area_code = 'NKO'
-                parent_area = Area.objects.get(id=int(code_str[0:2]))
                 code_str = '%04d' % code
+                parent_area = Area.objects.get(id=int(code_str[0:2]))
             
             try:
                 m = Area.objects.get(id=code)
