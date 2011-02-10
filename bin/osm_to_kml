@@ -8,15 +8,18 @@
 import xml.sax, urllib, os
 from xml.sax.handler import ContentHandler
 
+dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(dir, '..', 'data')
+
 # Make sure cache directory exists
 try:
-    os.mkdir('../data/cache')
+    os.mkdir('%s/cache' % data_dir)
 except:
     pass
 
 # Read in file matching names to IDs. Distinguish per fylke
 # as some names are used more than once.
-ids = open('../data/norway/ids.csv').readlines()
+ids = open('%s/norway/ids.csv' % data_dir).readlines()
 refs = {}
 for row in ids:
     id, name = row.decode('utf-8').strip().split(',')
@@ -95,7 +98,7 @@ class OSM2KML(ContentHandler):
 base_url = 'http://www.openstreetmap.org/api/0.6/%s/%s%s'
 def fetch_from_cache(type, id, full=''):
     if full: full='-full'
-    file = '../data/cache/%s-%s%s' % (type, id, full)
+    file = '%s/cache/%s-%s%s' % (data_dir, type, id, full)
     if not os.path.exists(file):
         if full: full = '/full'
         f = urllib.urlopen(base_url % (type, id, full))
@@ -136,7 +139,7 @@ for fylke_id, relation_id in relation_ids.items():
     P = OSM2KML()
     xml.sax.parse( fetch_from_cache('relation', relation_id), P )
 
-    out = open('../data/cache/%02d.kml' % fylke_id, 'w')
+    out = open('%s/cache/%02d.kml' % (data_dir, fylke_id), 'w')
     out.write('''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://earth.google.com/kml/2.1">
   <Folder>
