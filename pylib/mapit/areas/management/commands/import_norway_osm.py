@@ -52,35 +52,42 @@ class Command(LabelCommand):
                 area_code = 'NKO'
                 code_str = '%04d' % code
                 parent_area = Area.objects.get(id=int(code_str[0:2]))
-            
-            try:
-                m = Area.objects.get(id=code)
-            except Area.DoesNotExist:
-                m = Area(
-                    id = code,
-                    name = name,
-                    type = area_code,
-                    country = country,
-                    parent_area = parent_area,
-                    generation_low = new_generation,
-                    generation_high = new_generation,
-                )
 
-            if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
-            m.generation_high = new_generation
+            def update_or_create():
+                try:
+                    m = Area.objects.get(id=code)
+                except Area.DoesNotExist:
+                    m = Area(
+                        id = code,
+                        name = name,
+                        type = area_code,
+                        country = country,
+                        parent_area = parent_area,
+                        generation_low = new_generation,
+                        generation_high = new_generation,
+                    )
 
-            g = feat.geom.transform(4326, clone=True)
-            poly = [ g ]
+                if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
+                    raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                m.generation_high = new_generation
 
-            if options['commit']:
-                m.save()
-                for k, v in kml_data.data[name].items():
-                    if k in ('name:smi', 'name:fi'):
-                    	lang = 'N' + k[5:]
-                    	m.names.update_or_create({ 'type': lang }, { 'name': v })
-                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
-                save_polygons({ code : (m, poly) })
+                g = feat.geom.transform(4326, clone=True)
+                poly = [ g ]
+
+                if options['commit']:
+                    m.save()
+                    for k, v in kml_data.data[name].items():
+                        if k in ('name:smi', 'name:fi'):
+                    	    lang = 'N' + k[5:]
+                    	    m.names.update_or_create({ 'type': lang }, { 'name': v })
+                    m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
+                    save_polygons({ code : (m, poly) })
+
+            update_or_create()
+            # Special case Oslo so it's in twice, once as fylke, once as kommune
+            if code == 3:
+                code, area_code, parent_area, code_str = 301, 'NKO', 3, '0301'
+                update_or_create()
 
 class KML(ContentHandler):
     def __init__(self, *args, **kwargs):
