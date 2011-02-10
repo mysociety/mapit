@@ -42,7 +42,11 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 
 <ul>
 {% for type, code in area.all_codes.items %}
-<li>{{ type }}: {{ code }}
+<li>{{ type }}: {% ifequal type 'osm' %}
+<a href="http://www.openstreetmap.org/browse/relation/{{ code }}">{{ code }}</a>
+{% else %}
+{{ code }}
+{% endifequal %}
 {% empty %}
 <li>No codes found.
 {% endfor %}

@@ -92,6 +92,8 @@ Here are the basic instructions to install data from OSM:
    ./manage.py import_norway_osm --commit ../../data/cache/*.kml
    ./manage.py generation_activate --commit
 
+Please see below for information on where osm_to_kml gets its OSM data from.
+
 Alternatively, here are the basic instructions to install the N5000 data:
 
 1. Set OPTION_AREA_SRID in conf/general to 4326 (as we'll put N5000 shapes into WGS84).  
@@ -108,6 +110,16 @@ Alternatively, here are the basic instructions to install the N5000 data:
 
 You should now be able to go to /point/4326/10.756389,59.949444 and have
 Oslo returned as a result.
+
+Norway OSM data
+---------------
+
+The way osm_to_kml works is to fetch a number of fixed relation IDs from OSM -
+one (412437) containing all fylke, and then one for each fylke containing all
+the kommune inside. These relations should stay and (now they're correct) not
+change, though of course the underlying relations can have their boundaries
+improved and so on. See the source of osm_to_kml if you'd like to see the other
+relation IDs.
 
 Improvements / patches
 ----------------------
