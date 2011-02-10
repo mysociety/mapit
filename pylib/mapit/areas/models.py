@@ -303,6 +303,7 @@ class Code(models.Model):
         ('gss', 'GSS (SNAC replacement)'),
         ('unit_id', 'Boundary-Line (OS Admin Area ID)'),
         ('n5000', 'Norway code as given in N5000'),
+        ('osm', 'OSM'),
     ))
     code = models.CharField(max_length=10)
     objects = Manager()

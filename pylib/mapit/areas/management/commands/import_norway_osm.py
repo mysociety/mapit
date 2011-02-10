@@ -81,6 +81,7 @@ class Command(LabelCommand):
                     	    lang = 'N' + k[5:]
                     	    m.names.update_or_create({ 'type': lang }, { 'name': v })
                     m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
+                    m.codes.update_or_create({ 'type': 'osm' }, { 'code': int(kml_data.data[name]['osm']) })
                     save_polygons({ code : (m, poly) })
 
             update_or_create()

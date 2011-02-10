@@ -157,7 +157,7 @@ for fylke_id, relation_id in relation_ids.items():
         if not ref: ref = refs[name][fylke_id]
         print " ", id, name.encode('utf-8'), ref
 
-        extended = { 'ref': ref }
+        extended = { 'ref': ref, 'osm': id }
         for k in ('name:no', 'name:smi', 'name:fi'):
             if rel['tags'].get(k): extended[k] = rel['tags'].get(k)
         if rel['tags'].get('name:samisk'): extended['name:smi'] = rel['tags'].get('name:samisk')
