@@ -87,7 +87,7 @@ class Command(LabelCommand):
             update_or_create()
             # Special case Oslo so it's in twice, once as fylke, once as kommune
             if code == 3:
-                code, area_code, parent_area, code_str = 301, 'NKO', 3, '0301'
+                code, area_code, parent_area, code_str = 301, 'NKO', Area.objects.get(id=3), '0301'
                 update_or_create()
 
 class KML(ContentHandler):
