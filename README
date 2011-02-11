@@ -114,12 +114,24 @@ Oslo returned as a result.
 Norway OSM data
 ---------------
 
-The way osm_to_kml works is to fetch a number of fixed relation IDs from OSM -
-one (412437) containing all fylke, and then one for each fylke containing all
-the kommune inside. These relations should stay and (now they're correct) not
-change, though of course the underlying relations can have their boundaries
-improved and so on. See the source of osm_to_kml if you'd like to see the other
-relation IDs.
+The way osm_to_kml works is to fetch a number of fixed and pre-defined
+relation IDs from OSM - one (412437) containing all fylke, and then
+one for each fylke containing all the kommune inside. These relations
+should stay and (now they're correct) not change within OpenStreetmap,
+though of course the underlying relations can have their boundaries
+improved and so on. See the relation_ids list in the source of
+bin/osm_to_kml if you'd like to see the other relation IDs.
+
+The OSM tags 'name', and 'name:no' if 'name' is not set, are used to find
+the primary name of the fylke and kommune. In addition, the values of
+the tags 'name:smi', 'name:fi' are imported into mapit. Only the
+primary name is shown in the mapit web pages and JSON data, while the
+other names are stored in the database.
+
+The kommune and fylke number (ID) is fetched from a the tag 'ref' in
+OSM, and if it is missing a static list of such IDS in
+mapit/data/norway/ids.csv is consulted using the name (for fylke) or
+name+fylke (for kommune) as the key.
 
 Improvements / patches
 ----------------------
