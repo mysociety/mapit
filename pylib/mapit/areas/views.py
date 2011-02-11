@@ -447,17 +447,24 @@ def _area_geometry(area_id):
     if not all_areas:
         return output_json({ 'error': 'No polygons found' }, code=404)
     out = {
-        'area': all_areas.area,
         'parts': all_areas.num_geom,
-        'centre_e': all_areas.centroid[0],
-        'centre_n': all_areas.centroid[1],
     }
-    out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
-    all_areas.transform(4326)
-    out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
-    #all_areas.centroid.transform(4326)
-    out['centre_lon'] = all_areas.centroid[0]
-    out['centre_lat'] = all_areas.centroid[1]
+    if int(mysociety.config.get('AREA_SRID')) != 4326:
+        out['srid_en'] = mysociety.config.get('AREA_SRID')
+        out['area'] = all_areas.area
+        out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+        out['centre_e'], out['centre_n'] = all_areas.centroid
+        all_areas.transform(4326)
+        out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+        out['centre_lon'], out['centre_lat'] = all_areas.centroid
+    elif mysociety.config.get('COUNTRY') == 'NO':
+        out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+        out['centre_lon'], out['centre_lat'] = all_areas.centroid
+        all_areas.transform(32633)
+        out['srid_en'] = 32633
+        out['area'] = all_areas.area
+        out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+        out['centre_e'], out['centre_n'] = all_areas.centroid
     return out
 
 @ratelimit(minutes=3, requests=100)
