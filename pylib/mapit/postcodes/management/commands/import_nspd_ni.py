@@ -48,7 +48,10 @@ class Command(LabelCommand):
                 parl_area = Area.objects.get(
                     country='N', type='WMC', codes__type='ons', codes__code=parl_code,
                 )
+                gss_code = parl_area.all_codes['gss']
+                # Store lookup for both old and new codes, so any version of NSPD will work
                 code_to_area[parl_code] = parl_area
+                code_to_area[gss_code] = parl_area
 
         # Read in old SNAC for NI Assembly boundaries, still the same until 2011
         snac = csv.reader(open('../../data/snac-2003-ni-cons2ward.csv'))
@@ -71,6 +74,10 @@ class Command(LabelCommand):
             postcode = row[0].strip().replace(' ', '')
             if postcode[0:2] != 'BT': continue # Only importing NI from NSPD
 
+            # NSPD (now ONSPD) started using GSS codes for Parliament in February 2011
+            # Detect this here; although they're still using old codes for council/wards
+            gss = True if len(row[7]) == 6 else False
+
             # Create/update the postcode
             location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
             try:
@@ -87,8 +94,12 @@ class Command(LabelCommand):
                 count['created'] += 1
 
             # Create/update the areas
-            ons_code = ''.join(row[5:8])
-            parl_code = row[17].replace('N', '7') # Odd
+            if gss:
+                ons_code = row[7].replace(' ', '')
+                parl_code = row[17]
+            else:
+                ons_code = ''.join(row[5:8])
+                parl_code = row[17].replace('N', '7')
             output_area = row[33]
             super_output_area = row[44]
 
