@@ -1,8 +1,16 @@
 import re
+import mysociety.config
 
 def is_valid_postcode(pc):
     pc = re.sub('\s+', '', pc.upper())
 
+    if mysociety.config.get('COUNTRY') == 'GB':
+        return is_valid_uk_postcode(pc)
+    elif mysociety.config.get('COUNTRY') == 'NO':
+        return is_valid_no_postcode(pc)
+    return False
+
+def is_valid_uk_postcode(pc):
     # Our test postcode
     if pc in ('ZZ99ZZ', 'ZZ99ZY'): return True
 
@@ -38,9 +46,23 @@ def is_valid_postcode(pc):
 
     return False
 
+# Norwegian postcodes are four digits. Some put "no-" in front, but
+# this is ignored here.
+def is_valid_no_postcode(pc):
+    if re.match('\d{4}$', pc):
+        return True
+    return False
+
 def is_valid_partial_postcode(pc):
     pc = re.sub('\s+', '', pc.upper())
 
+    if mysociety.config.get('COUNTRY') == 'GB':
+        return is_valid_partial_uk_postcode(pc)
+    elif mysociety.config.get('COUNTRY') == 'NO':
+        return is_valid_partial_no_postcode(pc)
+    return False
+
+def is_valid_partial_uk_postcode(pc):
     # Our test postcode
     if pc == 'ZZ9': return True
     
@@ -58,5 +80,11 @@ def is_valid_partial_postcode(pc):
         re.match('[%s][%s][1-9][%s]$' % (fst, sec, fth), pc):
         return True
 
+    return False
+
+# Should match one, two and three digits.
+def is_valid_partial_no_postcode(pc):
+    if re.match('\d{1,3}$', pc):
+        return True
     return False
 

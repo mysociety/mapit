@@ -11,6 +11,8 @@
 {% if postcode.coordsyst %}
 <li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
 E/N: {{ postcode.easting }}, {{ postcode.northing }}
+{% endif %}
+{% if postcode.wgs84_lat or postcode.wgs84_lon %}
 <li>WGS84 lat/lon: <a href="http://maps.google.co.uk/maps?q=loc:{{ postcode.wgs84_lat }},{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
 {% else %}
 <li>No location information.
