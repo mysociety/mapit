@@ -2,13 +2,13 @@ import re
 import operator
 from psycopg2.extensions import QueryCanceledError
 from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, output_html, get_object_or_404, output_error, set_timeout
+from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
-from django.shortcuts import render_to_response
 from django.db.models import Q
+import mysociety.config
 
 voting_area = {
     'type_name': {
@@ -219,13 +219,15 @@ def generations(request):
 def area(request, area_id, format='json'):
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
         area = get_object_or_404(Area, format=format, codes__type='ons', codes__code=area_id)
+    elif re.match('[ENSW]\d{8}$', area_id):
+        area = get_object_or_404(Area, format=format, codes__type='gss', codes__code=area_id)
     elif not re.match('\d+$', area_id):
         return output_error(format, 'Bad area ID specified', 400)
     else:
         area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
     if format == 'html':
-        return render_to_response('area.html', {
+        return render(request, 'area.html', {
             'area': area,
             'show_geometry': (area.type not in ('EUR', 'SPE', 'WAE'))
         })
@@ -234,7 +236,7 @@ def area(request, area_id, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid:
-        srid = 4326 if format == 'kml' else 27700
+        srid = 4326 if format in ('kml', 'json', 'geojson') else int(mysociety.config.get('AREA_SRID'))
     srid = int(srid)
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
@@ -245,7 +247,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
-    if srid != 27700:
+    if srid != int(mysociety.config.get('AREA_SRID')):
         all_areas.transform(srid)
     if format=='kml':
         out = '''<?xml version="1.0" encoding="UTF-8"?>
@@ -256,7 +258,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     </Placemark>
 </kml>''' % (area.name, all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
-    elif format=='json':
+    elif format in ('json', 'geojson'):
         out = all_areas.json
         content_type = 'application/json'
     elif format=='wkt':
@@ -445,17 +447,24 @@ def _area_geometry(area_id):
     if not all_areas:
         return output_json({ 'error': 'No polygons found' }, code=404)
     out = {
-        'area': all_areas.area,
         'parts': all_areas.num_geom,
-        'centre_e': all_areas.centroid[0],
-        'centre_n': all_areas.centroid[1],
     }
-    out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
-    all_areas.transform(4326)
-    out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
-    #all_areas.centroid.transform(4326)
-    out['centre_lon'] = all_areas.centroid[0]
-    out['centre_lat'] = all_areas.centroid[1]
+    if int(mysociety.config.get('AREA_SRID')) != 4326:
+        out['srid_en'] = mysociety.config.get('AREA_SRID')
+        out['area'] = all_areas.area
+        out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+        out['centre_e'], out['centre_n'] = all_areas.centroid
+        all_areas.transform(4326)
+        out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+        out['centre_lon'], out['centre_lat'] = all_areas.centroid
+    elif mysociety.config.get('COUNTRY') == 'NO':
+        out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
+        out['centre_lon'], out['centre_lat'] = all_areas.centroid
+        all_areas.transform(32633)
+        out['srid_en'] = 32633
+        out['area'] = all_areas.area
+        out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+        out['centre_e'], out['centre_n'] = all_areas.centroid
     return out
 
 @ratelimit(minutes=3, requests=100)
@@ -497,7 +506,8 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False, format='json'):
         if method == 'box':
             args['polygons__polygon__bbcontains'] = location
         else:
-            args['polygons__polygon__contains'] = location
+            geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
+            args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )

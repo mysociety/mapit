@@ -5,6 +5,10 @@
 # The fields of Code-Point Open CSV file are:
 #   Postcode, Quality, 8 blanked out fields, Easting Northing, Country,
 #   NHS region, NHS health authority, County, District, Ward, blanked field
+#
+# XXX The February 2011 release has announced that the blanked out fields wil
+# be removed at some point. This code (specifically line 24) will have to be
+# modified then, plus some way of dealing with old Code-Points.
 
 import csv
 from django.contrib.gis.geos import Point

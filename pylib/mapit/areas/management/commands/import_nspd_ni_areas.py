@@ -17,7 +17,7 @@
 #   (Middle), Urban/rural, Urban/rural, Urban/rural, Intermediate, SOA (NI), OA
 #   classification, Pre October 2006 PCO
 
-import csv
+import csv, re
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
@@ -99,6 +99,8 @@ class Command(LabelCommand):
                     country='N', type='WMC', code_type='ons', code=parl_code,
                 )
                 parl_area.names.get_or_create(type='S', name=parl_name)
+                new_code = re.sub('^7', 'N060000', parl_code)
+                parl_area.codes.get_or_create(type='gss', code=new_code)
                 code_to_area[parl_code] = parl_area
                 name_to_area[parl_name] = parl_area
                 

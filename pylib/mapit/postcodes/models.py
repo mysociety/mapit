@@ -1,4 +1,5 @@
 import re
+import mysociety.config
 from django.contrib.gis.db import models
 from django.db import connection, transaction
 from mapit.managers import GeoManager
@@ -38,8 +39,11 @@ class Postcode(models.Model):
     def __unicode__(self):
         return self.get_postcode_display()
 
+    # Prettify postcode for display, if we know how to
     def get_postcode_display(self):
-        return re.sub('(...)$', r' \1', self.postcode).strip()
+        if mysociety.config.get('COUNTRY') == 'GB':
+            return re.sub('(...)$', r' \1', self.postcode).strip()
+        return self.postcode
 
     def as_dict(self):
         if not self.location:
@@ -52,16 +56,19 @@ class Postcode(models.Model):
             'wgs84_lon': loc[0],
             'wgs84_lat': loc[1]
         }
-        if self.postcode[0:2] == 'BT':
-            loc = self.as_irish_grid()
-            result['coordsyst'] = 'I'
-        else:
-            loc.transform(27700)
-            result['coordsyst'] = 'G'
-        result['easting'] = int(round(loc[0]))
-        result['northing'] = int(round(loc[1]))
+        if mysociety.config.get('COUNTRY') == 'GB':
+            if self.postcode[0:2] == 'BT':
+                loc = self.as_irish_grid()
+                result['coordsyst'] = 'I'
+            else:
+                loc.transform(27700)
+                result['coordsyst'] = 'G'
+            result['easting'] = int(round(loc[0]))
+            result['northing'] = int(round(loc[1]))
         return result
 
+    # Doing this via self.location.transform(29902) gives incorrect results.
+    # The database has the right proj4 text, the proj file does not. I think.
     def as_irish_grid(self):
         cursor = connection.cursor()
         cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))

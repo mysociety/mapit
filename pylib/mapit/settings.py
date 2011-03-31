@@ -20,7 +20,7 @@ CACHE_MIDDLEWARE_SECONDS = 86400
 CACHE_MIDDLEWARE_KEY_PREFIX = ''
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-DEBUG = False
+DEBUG = True if int(mysociety.config.get('STAGING')) else False
 TEMPLATE_DEBUG = DEBUG
 
 SERVER_EMAIL = mysociety.config.get('BUGS_EMAIL')
@@ -42,11 +42,14 @@ DATABASE_PORT = mysociety.config.get('MAPIT_DB_PORT')              # Set to empt
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'Europe/London'
-
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-gb'
+if mysociety.config.get('COUNTRY') == 'GB':
+    TIME_ZONE = 'Europe/London'
+    LANGUAGE_CODE = 'en-gb'
+elif mysociety.config.get('COUNTRY') == 'NO':
+    TIME_ZONE = 'Europe/Oslo'
+    LANGUAGE_CODE = 'no'
 
 SITE_ID = 1
 
@@ -91,11 +94,25 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'mapit.urls'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    package_dir + '/templates',
+# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+# Always use forward slashes, even on Windows.
+# Don't forget to use absolute paths, not relative paths.
+if mysociety.config.get('COUNTRY') == 'GB':
+    TEMPLATE_DIRS = (
+        package_dir + '/templates',
+    )
+elif mysociety.config.get('COUNTRY') == 'NO':
+    TEMPLATE_DIRS = (
+        package_dir + '/templates/no',
+        package_dir + '/templates',
+    )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.request',
+    'django.core.context_processors.auth',
+    #'django.core.context_processors.debug',
+    #'django.core.context_processors.i18n',
+    #'django.core.context_processors.media',
 )
 
 INSTALLED_APPS = (

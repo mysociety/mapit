@@ -15,9 +15,10 @@ from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<Boundary-Line SHP files (wards before Westminster>'
+    args = '<Boundary-Line SHP files (wards before Westminster)>'
     option_list = LabelCommand.option_list + (
         make_option('--control', action='store', dest='control', help='Refer to a Python module that can tell us what has changed'),
+        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
 
     ons_code_to_shape = {}
@@ -44,7 +45,7 @@ class Command(LabelCommand):
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
 
-            ons_code = feat['CODE'].value if (feat['CODE'].value != '999999' and feat['CODE'].value != '999999999') else None
+            ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
             if self.patch_boundary_line(ons_code, area_code):
@@ -72,8 +73,12 @@ class Command(LabelCommand):
                 poly.append(feat.geom)
                 continue
 
-            if area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
+            if control.code_version() == 'gss' and ons_code:
+                country = ons_code[0] # Hooray!
+            elif area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                 country = 'E'
+            elif control.code_version() == 'gss':
+                raise Exception, area_code
             elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
                 country = 'S'
             elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (ons_code and ons_code[0:3] in ('00N', '00P')):
@@ -91,7 +96,7 @@ class Command(LabelCommand):
                 if control.check(name, area_code, country, feat.geom):
                     raise Area.DoesNotExist
                 if ons_code:
-                    m = Area.objects.get(codes__type='ons', codes__code=ons_code)
+                    m = Area.objects.get(codes__type=control.code_version(), codes__code=ons_code)
                 elif unit_id:
                     m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
                     m_name = m.names.get(type='O').name
@@ -107,23 +112,28 @@ class Command(LabelCommand):
                     generation_high = new_generation,
                 )
 
-            if current_generation and m.generation_high and m.generation_high.id < current_generation.id:
+            if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
-            m.save()
+            if options['commit']:
+                m.save()
 
             poly = [ feat.geom ]
 
-            m.names.update_or_create({ 'type': 'O' }, { 'name': name })
+            if options['commit']:
+                m.names.update_or_create({ 'type': 'O' }, { 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
-                m.codes.update_or_create({ 'type': 'ons' }, { 'code': ons_code })
+                if options['commit']:
+                    m.codes.update_or_create({ 'type': control.code_version() }, { 'code': ons_code })
             if unit_id:
                 self.unit_id_to_shape[unit_id] = (m, poly)
-                m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
+                if options['commit']:
+                    m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
 
-        save_polygons(self.unit_id_to_shape)
-        save_polygons(self.ons_code_to_shape)
+        if options['commit']:
+            save_polygons(self.unit_id_to_shape)
+            save_polygons(self.ons_code_to_shape)
 
     def patch_boundary_line(self, ons_code, area_code):
         """Fix mistakes in Boundary-Line"""

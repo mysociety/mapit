@@ -22,8 +22,10 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 {% endif %}
 {% if area.polygons.count %}
 | <a href="/area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
-| <a href="/area/{{ area.id }}.kml">KML</a>
-(<a href="http://maps.google.co.uk/maps?q=http://mapit.mysociety.org/area/{{ area.id }}.kml">on a Google Map</a>)
+| <a href="/area/{{ area.id }}.wkt">WKT</a>,
+<a href="/area/{{ area.id }}.geojson">GeoJSON</a>,
+<a href="/area/{{ area.id }}.kml">KML</a>
+(<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/{{ area.id }}.kml">on a Google Map</a>)
 {% endif %}
 {% if area.children.count %}
 | <a href="/area/{{ area.id }}/children.html">Children</a>
@@ -40,7 +42,11 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 
 <ul>
 {% for type, code in area.all_codes.items %}
-<li>{{ type }}: {{ code }}
+<li>{{ type }}: {% ifequal type 'osm' %}
+<a href="http://www.openstreetmap.org/browse/relation/{{ code }}">{{ code }}</a>
+{% else %}
+{{ code }}
+{% endifequal %}
 {% empty %}
 <li>No codes found.
 {% endfor %}

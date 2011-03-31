@@ -16,7 +16,7 @@ Installation
 ------------
 
 Our version is running on Debian lenny - to install PostGIS and GeoDjango I
-just followed the instructions (including creating the template) at
+just followed all the instructions (including creating the template) at
 http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
 
 However, not only is the PostGIS that is installed missing SRID 900913, as
@@ -27,28 +27,40 @@ in to it and update the proj4text column of SRID 27700 to include
 +datum=OSGB36, and update SRID 29902 to have +datum=ire65. (This may not be
 necessary, depending on your version of PostGIS, but do check.)
 
+Initial instructions for all locations
+--------------------------------------
+
+1. Make sure OPTION_STAGING is 0 in conf/general, otherwise you'll run out
+   of memory as it tries to remember all the SQL queries made.
+2. Optional: turn off escape_string_warning in Postgres' config (unless you
+   want your server to run out of disc space logging all the errors, as ours
+   did the first time I imported overnight and didn't realise).
+
+United Kingdom
+--------------
+
 Here are the basic instructions to install OS OpenData and NSPD Open:
 
-1. Make sure DEBUG = False in settings.py, otherwise you'll soon run out of 
-   memory as it tries to remember all the SQL queries made.
-2. Optional: turn off escape_string_warning in Postgres (unless you want your 
-   server to run out of disc space logging all the errors, as ours did the first
-   time I imported overnight and didn't realise).
-3. Download the latest Code-Point Open, Boundary-Line and NSPD from
+1. Set OPTION_AREA_SRID in conf/general to 27700 (as Boundary-Line shapes are in OSGB).   
+2. Download the latest Code-Point Open, Boundary-Line and NSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
-4. Change to the pylib/mapit directory, create database tables and start the site:
+3. Change to the pylib/mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
-5. Go to the admin interface and create an inactive generation.
-6. Run the following:
-   ./manage.py import_boundary_line --control=controls.first `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   # (Alternatively, set up a live server however you wish.)
+4. Run the following:
+   ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py import_boundary_line --control=controls.first-gss --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   # (You can run without --commit to do a dry run.)
+   # first-gss in the above assumes the Boundary Line you're importing is
+   # October 2010 or later, and uses the new GSS codes.
    ./manage.py find_parents
    ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
    ./manage.py scilly ../../data/Code-Point-Open/tr.csv
    ./manage.py import_nspd_ni_areas ../../data/NSPD.csv
    ./manage.py import_nspd_ni ../../data/NSPD.csv
    ./manage.py import_nspd_crown_dependencies.py ../../data/NSPD.csv
-7. Go to the admin interface, and make the generation active.
+   ./manage.py generation_activate --commit
 
 For notes on what was done to create generations as you can see on
 mapit.mysociety.org, see the end of this file.
@@ -62,8 +74,66 @@ have changed, or import_nspd_ni_areas first if boundary changes too (this is
 incomplete, it doesn't use a control file like import_boundary_line does); 
 when new Boundary-Line, import_boundary_line and find_parents.
 
-Haven't had to test a Boundary-Line update yet, but Code-Point/ NSPD appeared
-to go okay.
+You can manually increase the generation_high_id when something is new and
+something else isn't (most commonly, a new Boundary-Line means a new generation
+for Great Britain, and you can then increase the Northern Ireland boundaries
+manually to be in the new generation).
+
+Norway
+------
+
+Here are the basic instructions to install data from OSM:
+
+1. Set OPTION_AREA_SRID in conf/general to 4326 (as OSM shapes are in WGS84).  
+2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
+3. Change to the pylib/mapit directory, create database tables and start the site:
+   ./manage.py syncdb
+   ./manage.py runserver
+4. Run the following (you can run anything without --commit to do a dry run):
+   ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py import_norway_osm --commit ../../data/cache/*.kml
+   ./manage.py generation_activate --commit
+
+Please see below for information on where osm_to_kml gets its OSM data from.
+
+Alternatively, here are the basic instructions to install the N5000 data:
+
+1. Set OPTION_AREA_SRID in conf/general to 4326 (as we'll put N5000 shapes into WGS84).  
+2. Download N5000 from
+   <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>
+   and save/unzip in the data directory.
+3. Change to the pylib/mapit directory, create database tables and start the site:
+   ./manage.py syncdb
+   ./manage.py runserver
+4. Run the following (you can run anything without --commit to do a dry run):
+   ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py import_norway_n5000 --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
+   ./manage.py generation_activate --commit
+
+You should now be able to go to /point/4326/10.756389,59.949444 and have
+Oslo returned as a result.
+
+Norway OSM data
+---------------
+
+The way osm_to_kml works is to fetch a number of fixed and pre-defined
+relation IDs from OSM - one (412437) containing all fylke, and then
+one for each fylke containing all the kommune inside. These relations
+should stay and (now they're correct) not change within OpenStreetmap,
+though of course the underlying relations can have their boundaries
+improved and so on. See the relation_ids list in the source of
+bin/osm_to_kml if you'd like to see the other relation IDs.
+
+The OSM tags 'name', and 'name:no' if 'name' is not set, are used to find
+the primary name of the fylke and kommune. In addition, the values of
+the tags 'name:smi', 'name:fi' are imported into mapit. Only the
+primary name is shown in the mapit web pages and JSON data, while the
+other names are stored in the database.
+
+The kommune and fylke number (ID) is fetched from a the tag 'ref' in
+OSM, and if it is missing a static list of such IDS in
+mapit/data/norway/ids.csv is consulted using the name (for fylke) or
+name+fylke (for kommune) as the key.
 
 Improvements / patches
 ----------------------
