@@ -26,11 +26,7 @@ class Command(LabelCommand):
 
     @transaction.commit_manually
     def handle_label(self, file, **options):
-        current_generation = Generation.objects.current()
-
-        euro_area = Area.objects.get(country='N', type='EUR',
-            generation_low__lte=current_generation, generation_high__gte=current_generation
-        )
+        euro_area = Area.objects.get(country='N', type='EUR')
 
         # Read in new ONS code to names, look up existing wards and Parliamentary constituencies
         snac = csv.reader(open('../../data/snac-2009-ni-cons2ward.csv'))
