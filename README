@@ -15,8 +15,9 @@ directory and it'll appear.
 Installation
 ------------
 
-Our version is running on Debian lenny - to install PostGIS and GeoDjango I
-just followed all the instructions (including creating the template) at
+Our version is running on Debian lenny, and we've successfully had it running
+on Ubuntu 10.04 as well - to install PostGIS and GeoDjango I just followed all
+the instructions (including creating the template) at
 http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
 
 However, not only is the PostGIS that is installed missing SRID 900913, as
@@ -47,7 +48,7 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
 3. Change to the pylib/mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
-   # (Alternatively, set up a live server however you wish.)
+   # (Alternatively, set up a live web server however you wish.)
 4. Run the following:
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py import_boundary_line --control=controls.first-gss --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
@@ -73,6 +74,10 @@ and scilly; when new NSPD is out, import_nspd_ni if it's only postcodes that
 have changed, or import_nspd_ni_areas first if boundary changes too (this is 
 incomplete, it doesn't use a control file like import_boundary_line does); 
 when new Boundary-Line, import_boundary_line and find_parents.
+
+In May 2011, the Northern Ireland Assembly boundaries move to match the current
+Parliamentary boundaries - import_nspd_ni_areas needs changing to cope with that,
+it currently only creates the current (pre May 2011) boundaries.
 
 You can manually increase the generation_high_id when something is new and
 something else isn't (most commonly, a new Boundary-Line means a new generation
