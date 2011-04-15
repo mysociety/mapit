@@ -1,0 +1,19 @@
+#
+# Kontaktpunkt for vegvesenet over det ganske land
+# Fra http://www.vegvesen.no/en/The+NPRA/Contact+us/Contact+information
+#
+10000001;NRA;Statens Vegvesen region øst;Akershus,Hedmark,Oppland,Oslo,Østfold;firmapost-ost@vegvesen.no;
+10000002;NRA;Statens Vegvesen region sør;Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder;firmapost-sor@vegvesen.no;
+10000003;NRA;Statens Vegvesen region vest;Rogaland,Hordaland,Sogn og Fjordane;firmapost-vest@vegvesen.no;
+10000004;NRA;Statens Vegvesen region midt;Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag;firmapost-midt@vegvesen.no;
+10000005;NRA;Statens Vegvesen region nord;Nordland,Troms,Finnmark;firmapost-nord@vegvesen.no;
+#
+# Elektrisitetsforsyningsregioner
+#
+20000001;NPG;Nord-Salten Kraft AS;Hamarøy,Tysfjord,Steigen;fiksgatami@nordsaltenkraft.no;Elektrisitetsleveranser
+#
+# Landsdekkende organisasjoner
+#
+30000001;NOR;Jernbaneverket;Akershus,Hedmark,Oppland,Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
+# http://www.kystverket.no/default.aspx?did=9104180&title=Feil+p%C3%A5+navigasjonsinstallasjoner
+30000002;NOR;Kystverket;Akershus,Hedmark,Oppland,Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;navco@kystverket.no;Sjømerker
