@@ -18,6 +18,20 @@ from utils import save_polygons
 # CVS format is
 # ID;code;name;area1,area2,...;other;fields
 
+# Copied from
+# http://www.mfasold.net/blog/2010/02/python-recipe-read-csvtsv-textfiles-and-ignore-comment-lines/
+class CommentedFile:
+    def __init__(self, f, commentstring="#"):
+        self.f = f
+        self.commentstring = commentstring
+    def next(self):
+        line = self.f.next()
+        while line.startswith(self.commentstring):
+            line = self.f.next()
+        return line
+    def __iter__(self):
+        return self
+
 class Command(LabelCommand):
     help = 'Import region data'
     args = '<CSV file listing name and which existing areas to combine into regions>'
@@ -29,16 +43,21 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
+            print "Using current generation %d" current_generation
             new_generation = current_generation
-#            raise Exception, "No new generation to be used for import!"
+        else:
+            print "Using new generation %d" new_generation
 
-        print filename
+        print "Loading file %s" % filename
+        region_line = csv.reader(CommentedFile(open(filename, "rb")),
+                                 delimiter=';')
 
-        csv.register_dialect('semicolon', delimiter = ';')
-        region_line = csv.reader(open(filename), dialect='semicolon')
-        # FIXME: Need to skip comments starting with '#'
-        for regionid, area_type, regionname, area_names, email in region_line:
+        for regionid, area_type, regionname, area_names, email, categories in region_line:
             print "Building region '%s'" % regionname
+            if (-2147483648 > int(regionid) or 2147483647 < int(regionid)):
+                print "Region ID %d is outside range of 32-bit integer" % regionid
+                return 1 # FIXME Should return error and exit the import
+
             if area_names:
                 # Look up areas using the names, find their geometry
                 # and build a geometric union to set as the geometry
@@ -59,8 +78,6 @@ class Command(LabelCommand):
                         print "ID:", area_id[0].id
                         args = {
                             'area__exact': area_id[0].id,
-#                            'generation_low__lte': current_generation,
-#                            'generation_high__gte': new_generation,
                             }
                         if geometry:
                             geometry = geometry | Geometry.objects.filter(**args)
@@ -75,10 +92,12 @@ class Command(LabelCommand):
                 def update_or_create():
                     country = 'O' # Norway
                     try:
-                        m = Area.objects.get(id=regionid)
+                        m = Area.objects.get(id=int(regionid))
+                        print "Updating area %s with id %d" % (regionname, int(regionid))
                     except Area.DoesNotExist:
+                        print "Creating new area %s with id %d" % (regionname, int(regionid))
                         m = Area(
-                            id = regionid,
+                            id = int(regionid),
                             name = regionname,
                             type = area_type,
                             country = country,
