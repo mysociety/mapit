@@ -15,8 +15,8 @@ from django.contrib.gis.geos import GEOSGeometry
 from mapit.areas.models import Area, Generation, Geometry
 from utils import save_polygons
 
-# CVS format is
-# ID;code;name;area1,area2,...;other;fields
+# CSV format is
+# ID;code;name;area1,area2,...;email;categories
 
 # Copied from
 # http://www.mfasold.net/blog/2010/02/python-recipe-read-csvtsv-textfiles-and-ignore-comment-lines/
