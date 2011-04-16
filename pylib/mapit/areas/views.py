@@ -14,6 +14,7 @@ from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
 from django.db.models import Q
+import mapit.postcodes.views
 import mysociety.config
 
 voting_area = {
@@ -522,8 +523,11 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False, format='json'):
         areas = Area.objects.filter(**args)
 
     if legacy: return output_json( dict( (area.id, area.type) for area in areas ) )
+    # FIXME Figure out how to make nearest postcode show up in the HTML version
     if format == 'html': return output_html(request, 'Areas containing (%s,%s)' % (x,y), areas)
-    return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
+    out = dict( (area.id, area.as_dict() ) for area in areas )
+    out['postcode'] = mapit.postcodes.views.nearest_postcode(location).get_postcode_display()
+    return output_json( out )
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
