@@ -43,10 +43,10 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            print "Using current generation %d" current_generation
+            print "Using current generation %d" % current_generation.id
             new_generation = current_generation
         else:
-            print "Using new generation %d" new_generation
+            print "Using new generation %d" % new_generation.id
 
         print "Loading file %s" % filename
         region_line = csv.reader(CommentedFile(open(filename, "rb")),
@@ -55,8 +55,7 @@ class Command(LabelCommand):
         for regionid, area_type, regionname, area_names, email, categories in region_line:
             print "Building region '%s'" % regionname
             if (-2147483648 > int(regionid) or 2147483647 < int(regionid)):
-                print "Region ID %d is outside range of 32-bit integer" % regionid
-                return 1 # FIXME Should return error and exit the import
+                raise Exception, "Region ID %d is outside range of 32-bit integer" % regionid
 
             if area_names:
                 # Look up areas using the names, find their geometry
@@ -66,14 +65,26 @@ class Command(LabelCommand):
                 for name in area_names.split(','):
                     name.strip()
                     name.lstrip()
-                    print "Looking up name '%s'" % name
 
-                    args = {
-                        'name__iexact': name,
-                        'generation_low__lte': current_generation,
-                        'generation_high__gte': new_generation,
-                        }
+                    try:
+                        # Use this to allow '123 Name' in area definition
+                        areaidnum = int(name.split()[0])
+                        print "Looking up ID '%d'" % areaidnum
+                        args = {
+                            'id__exact': areaidnum,
+                            'generation_low__lte': current_generation,
+                            'generation_high__gte': new_generation,
+                            }
+                    except (ValueError, IndexError):
+                        print "Looking up name '%s'" % name
+                        args = {
+                            'name__iexact': name,
+                            'generation_low__lte': current_generation,
+                            'generation_high__gte': new_generation,
+                            }
                     area_id = Area.objects.filter(**args).only('id')
+                    if 1 < len(area_id):
+                        raise Exception, "More than one Area named %s, use area ID instead" % name
                     try:
                         print "ID:", area_id[0].id
                         args = {
