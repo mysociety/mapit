@@ -13,6 +13,10 @@
 20000001;NPG;Nord-Salten Kraft AS;Hamarøy,Tysfjord,Steigen;fiksgatami@nordsaltenkraft.no;Elektrisitetsleveranser
 20000002;NPG;Hafslund ASA;Oslo,Asker,Aurskog-Høland,Bærum,Eidsvoll,Fet,Frogn,Gjerdrum,Hurdal,Lørenskog,Nes,Nannestad,Nittedal,Oppegård,Rælingen,Skedsmo,Sørum,Ullensaker,Vestby,Ås,Rygge,Råde;;Elektrisitetsleveranser
 #
+# Kollektivtransportselskaper
+#
+40000001;;Ruter AS;Oslo,Akershus;;T-banestopp,Trikkestopp
+#
 # Landsdekkende organisasjoner
 #
 30000001;NOR;Jernbaneverket;Akershus,Hedmark,Oppland,Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
