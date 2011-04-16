@@ -190,6 +190,7 @@ class Area(models.Model):
             ('NFY', 'Norway Fylke'),
             ('NKO', 'Norway Kommune'),
             ('NRA', 'Norway Public Roads Administration'),
+            ('NPT', 'Norway Pubic Transport Administration'),
             ('NPG', 'Norway Power Grid Administration'),
             ('NOR', 'Norway Country wide Administration'),
         )),
