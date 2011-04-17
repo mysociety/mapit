@@ -166,8 +166,4 @@ def nearpoint(request, srid, x, y, bb=False, legacy=False, format='json'):
         'location__distance_gte': ( location, D( mi = 0) ),
         }
     pc = Postcode.objects.filter(**args).distance(location).order_by('distance')[0]
-    if pc: pc = pc.get_postcode_display()
-    if format == 'html':
-        return render_to_response('example-postcode.html', { 'postcode': pc })
-    return output_json(pc)
-
+    return postcode(request, pc.postcode, legacy, format)
