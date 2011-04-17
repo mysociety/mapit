@@ -13,6 +13,7 @@ from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
+from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 # Stupid fixed IDs from old MaPit
@@ -158,10 +159,15 @@ def get_location(request, postcode, partial):
     if isinstance(postcode, HttpResponse): return postcode
     return output_json(postcode.as_dict())
 
-def nearest_postcode(location):
-    # location = Point()
+@ratelimit(minutes=3, requests=100)
+def nearpoint(request, srid, x, y, bb=False, legacy=False, format='json'):
+    location = Point(float(x), float(y), srid=int(srid))
     args = {
         'location__distance_gte': ( location, D( mi = 0) ),
         }
     pc = Postcode.objects.filter(**args).distance(location).order_by('distance')[0]
-    return pc
+    if pc: pc = pc.get_postcode_display()
+    if format == 'html':
+        return render_to_response('example-postcode.html', { 'postcode': pc })
+    return output_json(pc)
+

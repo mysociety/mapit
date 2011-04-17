@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     (r'^postcode/$', 'mapit.postcodes.views.form_submitted'),
     (r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, 'mapit.postcodes.views.postcode'),
     (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, 'mapit.postcodes.views.partial_postcode'),
+    (r'^postcode/nearpoint/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.postcodes.views.nearpoint'),
 
     (r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, 'mapit.areas.views.area'),
     (r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, 'mapit.postcodes.views.example_postcode_for_area'),
