@@ -160,7 +160,7 @@ def get_location(request, postcode, partial):
     return output_json(postcode.as_dict())
 
 @ratelimit(minutes=3, requests=100)
-def nearpoint(request, srid, x, y, bb=False, legacy=False, format='json'):
+def nearest(request, srid, x, y, bb=False, legacy=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
     args = {
         'location__distance_gte': ( location, D( mi = 0) ),
