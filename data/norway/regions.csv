@@ -2,11 +2,11 @@
 # Kontaktpunkt for vegvesenet over det ganske land
 # Fra http://www.vegvesen.no/en/The+NPRA/Contact+us/Contact+information
 #
-10000001;NRA;Statens Vegvesen region øst;Akershus,Hedmark,Oppland,3 Oslo,Østfold;firmapost-ost@vegvesen.no;
-10000002;NRA;Statens Vegvesen region sør;Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder;firmapost-sor@vegvesen.no;
-10000003;NRA;Statens Vegvesen region vest;Rogaland,Hordaland,Sogn og Fjordane;firmapost-vest@vegvesen.no;
-10000004;NRA;Statens Vegvesen region midt;Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag;firmapost-midt@vegvesen.no;
-10000005;NRA;Statens Vegvesen region nord;Nordland,Troms,Finnmark;firmapost-nord@vegvesen.no;
+10000001;NRA;Statens Vegvesen region øst;Akershus,Hedmark,Oppland,3 Oslo,Østfold;vts-ost@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+10000002;NRA;Statens Vegvesen region sør;Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder;vts-sor@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+10000003;NRA;Statens Vegvesen region vest;Rogaland,Hordaland,Sogn og Fjordane;vts-vest@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+10000004;NRA;Statens Vegvesen region midt;Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag;vts-midt@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+10000005;NRA;Statens Vegvesen region nord;Nordland,Troms,Finnmark;vts-nord@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
 #
 # Elektrisitetsforsyningsregioner
 #
