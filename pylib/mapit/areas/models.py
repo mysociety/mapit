@@ -192,7 +192,8 @@ class Area(models.Model):
             ('NRA', 'Norway Public Roads Administration'),
             ('NPT', 'Norway Pubic Transport Administration'),
             ('NPG', 'Norway Power Grid Administration'),
-            ('NOR', 'Norway Country wide Administration'),
+            ('NRR', 'Norway Railroad Administration'),
+            ('NSA', 'Norway Shoreline Administration'),
         )),
     ))
     country = models.CharField(max_length=1, choices=(

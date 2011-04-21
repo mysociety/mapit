@@ -19,6 +19,6 @@
 #
 # Landsdekkende organisasjoner
 #
-30000001;NOR;Jernbaneverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
+30000001;NRR;Jernbaneverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
 # http://www.kystverket.no/default.aspx?did=9104180&title=Feil+p%C3%A5+navigasjonsinstallasjoner
-30000002;NOR;Kystverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;navco@kystverket.no;Sjømerker
+30000002;NWA;Kystverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;navco@kystverket.no;Sjømerker
