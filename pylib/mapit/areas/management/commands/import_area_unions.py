@@ -84,7 +84,7 @@ class Command(LabelCommand):
                             }
                     area_id = Area.objects.filter(**args).only('id')
                     if 1 < len(area_id):
-                        raise Exception, "More than one Area named %s, use area ID instead" % name
+                        raise Exception, "More than one Area named %s, use area ID as well" % name
                     try:
                         print "ID:", area_id[0].id
                         args = {
@@ -95,9 +95,7 @@ class Command(LabelCommand):
                         else:
                             geometry = Geometry.objects.filter(**args)
                     except:
-                        print sys.exc_info()[0]
-                        raise
-#                        raise Exception, "Area with name %s was not found!" % name
+                        raise Exception, "Area or geometry with name %s was not found!" % name
                     unionoutline = geometry.unionagg()
 
                 def update_or_create():
