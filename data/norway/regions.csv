@@ -1,24 +1,24 @@
 #
+# Landsdekkende organisasjoner
+#
+10001;NRR;Jernbaneverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
+# http://www.kystverket.no/default.aspx?did=9104180&title=Feil+p%C3%A5+navigasjonsinstallasjoner
+10002;NWA;Kystverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;navco@kystverket.no;Sjømerker
+#
 # Kontaktpunkt for vegvesenet over det ganske land
 # Fra http://www.vegvesen.no/en/The+NPRA/Contact+us/Contact+information
 #
-10000001;NRA;Statens Vegvesen region øst;Akershus,Hedmark,Oppland,3 Oslo,Østfold;vts-ost@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
-10000002;NRA;Statens Vegvesen region sør;Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder;vts-sor@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
-10000003;NRA;Statens Vegvesen region vest;Rogaland,Hordaland,Sogn og Fjordane;vts-vest@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
-10000004;NRA;Statens Vegvesen region midt;Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag;vts-midt@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
-10000005;NRA;Statens Vegvesen region nord;Nordland,Troms,Finnmark;vts-nord@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+11001;NRA;Statens Vegvesen region øst;Akershus,Hedmark,Oppland,3 Oslo,Østfold;vts-ost@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+11002;NRA;Statens Vegvesen region sør;Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder;vts-sor@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+11003;NRA;Statens Vegvesen region vest;Rogaland,Hordaland,Sogn og Fjordane;vts-vest@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+11004;NRA;Statens Vegvesen region midt;Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag;vts-midt@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
+11005;NRA;Statens Vegvesen region nord;Nordland,Troms,Finnmark;vts-nord@vegvesen.no;Fortau/gangstier,Gatelys,Gater/Veier,Hull i vei,Snøbrøyting,Sykkelveier,Trafikklys,Trafikkskilter,Veinavn-skilter
 #
 # Elektrisitetsforsyningsregioner
 #
-20000001;NPG;Nord-Salten Kraft AS;Hamarøy,Tysfjord,Steigen;fiksgatami@nordsaltenkraft.no;Elektrisitetsleveranser
-20000002;NPG;Hafslund ASA;3 Oslo,Asker,Aurskog-Høland,Bærum,Eidsvoll,Fet,Frogn,Gjerdrum,Hurdal,Lørenskog,236 Nes,Nannestad,Nittedal,Oppegård,Rælingen,Skedsmo,Sørum,Ullensaker,Vestby,Ås,Rygge,Råde;;Elektrisitetsleveranser
+12001;NPG;Nord-Salten Kraft AS;Hamarøy,Tysfjord,Steigen;fiksgatami@nordsaltenkraft.no;Elektrisitetsleveranser
+12002;NPG;Hafslund ASA;3 Oslo,Asker,Aurskog-Høland,Bærum,Eidsvoll,Fet,Frogn,Gjerdrum,Hurdal,Lørenskog,236 Nes,Nannestad,Nittedal,Oppegård,Rælingen,Skedsmo,Sørum,Ullensaker,Vestby,Ås,Rygge,Råde;;Elektrisitetsleveranser
 #
 # Kollektivtransportselskaper
 #
-40000001;NPT;Ruter AS;3 Oslo,Akershus;;T-banestopp,Trikkestopp,Busstopp
-#
-# Landsdekkende organisasjoner
-#
-30000001;NRR;Jernbaneverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;kundesenter@jbv.no;Togstopp
-# http://www.kystverket.no/default.aspx?did=9104180&title=Feil+p%C3%A5+navigasjonsinstallasjoner
-30000002;NWA;Kystverket;Akershus,Hedmark,Oppland,3 Oslo,Østfold,Buskerud,Vestfold,Telemark,Aust-Agder,Vest-Agder,Rogaland,Hordaland,Sogn og Fjordane,Møre og Romsdal,Sør-Trøndelag,Nord-Trøndelag,Nordland,Troms,Finnmark;navco@kystverket.no;Sjømerker
+13001;NPT;Ruter AS;3 Oslo,Akershus;;T-banestopp,Trikkestopp,Busstopp
