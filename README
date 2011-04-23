@@ -97,6 +97,7 @@ Here are the basic instructions to install data from OSM:
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py import_norway_osm --commit ../../data/cache/*.kml
+   ./manage.py import_area_unions --commit data/norway/regions.csv
    ./manage.py generation_activate --commit
 
 Please see below for information on where osm_to_kml gets its OSM data from.
@@ -113,6 +114,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py import_norway_n5000 --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
+   ./manage.py import_area_unions --commit data/norway/regions.csv
    ./manage.py generation_activate --commit
 
 You should now be able to go to /point/4326/10.756389,59.949444 and have
