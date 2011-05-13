@@ -1,8 +1,6 @@
 # A control file for importing Boundary-Line.
-# Not all areas have ONS codes, so we have to have something
-# manual to e.g. tell us if some WMC have changed.
-#
-# Things without ONS codes: CED EUR GLA LAC SPC SPE WAC WAE WMC
+# CEDs don't have ONS codes, so we have to have something manual
+# to e.g. tell us if some county council wards have changed.
 # 
 # In the future, a county council (CTY) may have boundary changes to its
 # electoral divisions (CED). It's the only one that's tricky, as the others

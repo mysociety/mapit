@@ -10,7 +10,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Name, Generation
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -40,7 +40,6 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = unicode(feat['NAME'].value, 'iso-8859-1')
-            print " ", name
 
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
@@ -55,11 +54,13 @@ class Command(LabelCommand):
 
             if ons_code in self.ons_code_to_shape:
                 m, poly = self.ons_code_to_shape[ons_code]
-                m_name = m.names.get(type='O').name
+                try:
+                    m_name = m.names.get(type='O').name
+                except Name.DoesNotExist:
+                    m_name = m.name # If running without commit for dry run, so nothing being stored in db
                 if name != m_name:
                     raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
                 # Otherwise, combine the two shapes for one area
-                print "    Adding subsequent shape to ONS code %s" % ons_code
                 poly.append(feat.geom)
                 continue
 
@@ -69,7 +70,6 @@ class Command(LabelCommand):
                 if name != m_name:
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
                 # Otherwise, combine the two shapes for one area
-                print "    Adding subsequent shape to unit ID %s" % unit_id
                 poly.append(feat.geom)
                 continue
 
@@ -93,9 +93,12 @@ class Command(LabelCommand):
             # Do parents in separate P-in-P code after this is done.
 
             try:
-                if control.check(name, area_code, country, feat.geom):
+                check = control.check(name, area_code, country, feat.geom)
+                if check == True:
                     raise Area.DoesNotExist
-                if ons_code:
+                if isinstance(check, Area):
+                    m = check
+                elif ons_code:
                     m = Area.objects.get(codes__type=control.code_version(), codes__code=ons_code)
                 elif unit_id:
                     m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
@@ -105,7 +108,9 @@ class Command(LabelCommand):
                 else:
                     raise Exception, 'Area "%s" (%s) has neither ONS code nor unit ID' % (name, area_code)
             except Area.DoesNotExist:
+                print "New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
                 m = Area(
+                    name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = area_code,
                     country = country,
                     generation_low = new_generation,

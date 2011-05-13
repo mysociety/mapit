@@ -1,10 +1,10 @@
 # A control file for importing Boundary-Line.
-# Not all areas have ONS codes, so we have to have something
-# manual to e.g. tell us if some WMC have changed.
-#
-# Things without ONS codes: CED EUR GLA LAC SPC SPE WAC WAE WMC
+# CEDs don't have ONS codes, so we have to have something manual
+# to e.g. tell us if some county council wards have changed.
 # 
 # This edition of Boundary-Line uses the new SNAC codes
+
+from areas.models import Area, Generation
 
 def code_version():
     return 'gss'
@@ -17,7 +17,19 @@ def code_version():
 # Wiltshire: Parishes of Allcannings and Bower Chalke renamed All Cannings and Bowerchalke 
 
 def check(name, type, country, geometry):
-    """Should return True if this area is NEW, False if we should match"""
+    """Should return True if this area is NEW, False if we should match against ONS code,
+       or an Area to be used as an override instead"""
+
+    # There appears to be a regression, in that new areas introduced, I
+    # believe, correctly by October 2010 Boundary-Line (due to WSI 2010/1481:
+    # http://www.legislation.gov.uk/wsi/2010/1451/contents/made )
+    # have disappeared from May 2011 and it has the previous areas.
+    if type == 'UTE' and name in ('Sully ED', 'Dinas Powys ED', 'Plymouth ED', 'Llandough ED'):
+        area_within = Area.objects.filter(type='UTA', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
+        if area_within.name == 'Vale of Glamorgan Council':
+            current = Generation.objects.current()
+            return Area.objects.get(names__name=name, names__type='O', parent_area=area_within,
+                generation_low__lte=current, generation_high__gte=current)
 
     # The Scottish Parliament has had boundary changes. New Boundary-Line has
     # ONS codes for this too, hooray!
