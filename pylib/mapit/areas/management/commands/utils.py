@@ -10,7 +10,6 @@ def save_polygons(lookup):
         #g = OGRGeometry(OGRGeomType('MultiPolygon'))
         m.polygons.all().delete()
         for p in poly:
-            print p.geom_name
             if p.geom_name == 'POLYGON':
                 shapes = [ p ]
             else:
