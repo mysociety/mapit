@@ -272,7 +272,7 @@ class Name(models.Model):
         # Type must be 'O' here
         n = re.sub(' Euro Region$', '', n) # EUR
         n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
-        n = re.sub(' (Islands )?P Const$', '', n) # SPC
+        n = re.sub(' P Const$', '', n) # SPC
         n = re.sub(' PER$', '', n) # SPE
         n = re.sub(' GL Assembly Const$', '', n) # LAC
         n = re.sub(' Assembly Const$', '', n) # WAC
