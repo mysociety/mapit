@@ -47,8 +47,9 @@ class Command(LabelCommand):
             ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
-            if self.patch_boundary_line(ons_code, area_code):
-                ons_code = None
+            patch = self.patch_boundary_line(ons_code, area_code)
+            if patch == True: ons_code = None
+            elif patch: ons_code = patch
             
             if area_code == 'NCP': continue # Ignore Non Parished Areas
 
@@ -146,6 +147,6 @@ class Command(LabelCommand):
         if area_code == 'WMC' and ons_code == '42UH012':
             return True
         if area_code == 'UTA' and ons_code == 'S16000010':
-            return True
+            return 'S12000010'
         return False
 
