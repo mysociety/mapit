@@ -2,6 +2,7 @@ from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from datetime import datetime, timedelta
 import functools, hashlib
+import mysociety.config
 
 class ratelimit(object):
     "Instances of this class can be used as decorators"
@@ -58,7 +59,7 @@ class ratelimit(object):
             cache.set(key, cache.get(key, 0) + 1, self.expire_after())
     
     def should_ratelimit(self, request):
-        return True
+        return int(mysociety.config.get('RATE_LIMIT'))
     
     def get_counters(self, request):
         return self.cache_get_many(self.keys_to_check(request))
