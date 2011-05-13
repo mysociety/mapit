@@ -48,19 +48,11 @@ class Command(LabelCommand):
                 # Store lookup for both old and new codes, so any version of NSPD will work
                 code_to_area[parl_code] = parl_area
                 code_to_area[gss_code] = parl_area
-
-        # Read in old SNAC for NI Assembly boundaries, still the same until 2011
-        snac = csv.reader(open('../../data/snac-2003-ni-cons2ward.csv'))
-        snac.next()
-        ward_to_assembly = {}
-        for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
-            ward_code = ward_code.replace(' ', '')
-            if 'NIE' + parl_code not in code_to_area:
                 nia_area = Area.objects.get(
                     country='N', type='NIE', names__type='S', names__name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
-            ward_to_assembly[ward_code] = code_to_area['NIE' + parl_code]
+                code_to_area['NIE' + gss_code] = nia_area
 
         count = { 'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0 }
         for row in csv.reader(open(file)):
@@ -102,7 +94,7 @@ class Command(LabelCommand):
             ward = code_to_area[ons_code]
             electoral_area = ward.parent_area
             council = electoral_area.parent_area
-            nia_area = ward_to_assembly[ons_code]
+            nia_area = code_to_area['NIE' + parl_code]
             parl_area = code_to_area[parl_code]
 
             pc.areas.clear()
