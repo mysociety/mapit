@@ -145,5 +145,7 @@ class Command(LabelCommand):
         """Fix mistakes in Boundary-Line"""
         if area_code == 'WMC' and ons_code == '42UH012':
             return True
+        if area_code == 'UTA' and ons_code == 'S16000010':
+            return True
         return False
 
