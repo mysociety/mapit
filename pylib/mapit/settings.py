@@ -101,14 +101,20 @@ else:
 #         'django.template.loaders.eggs.load_template_source',
     )
 
+# UpdateCacheMiddleware does ETag setting, and
+# ConditionalGetMiddleware does ETag checking.
+# So we don't want this flag, which runs very
+# similar ETag code in CommonMiddleware.
+USE_ETAGS = False
+
 MIDDLEWARE_CLASSES = (
-    'django.middleware.gzip.GZipMiddleware',
+    'mapit.middleware.gzip.GZipMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    'mapit.cache.UpdateCacheMiddleware',
+    'mapit.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'mapit.cache.FetchFromCacheMiddleware',
+    'mapit.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
 )
 
