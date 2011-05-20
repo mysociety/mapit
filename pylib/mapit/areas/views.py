@@ -321,7 +321,7 @@ def area_intersect(query_type, title, request, area_id, format):
         areas = areas.filter(reduce(operator.or_, or_queries))
     elif len(all_areas) == 1:
         areas = Area.objects.intersect(query_type, area)
-        areas = areas.exclude(id=area.id).filter(**args)
+        areas = areas.filter(**args)
     else:
         areas = Area.objects.exclude(id=area.id).filter(**args)
         areas = areas.filter(**{'polygons__polygon__%s' % query_type : all_areas })
