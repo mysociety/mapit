@@ -58,9 +58,9 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
    ./manage.py find_parents
    ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
    ./manage.py scilly ../../data/Code-Point-Open/tr.csv
-   ./manage.py import_nspd_ni_areas ../../data/NSPD.csv
-   ./manage.py import_nspd_ni ../../data/NSPD.csv
-   ./manage.py import_nspd_crown_dependencies.py ../../data/NSPD.csv
+   ./manage.py import_nspd_ni_areas
+   ./manage.py import_nspd_ni ../../data/ONSPD.csv
+   ./manage.py import_nspd_crown_dependencies ../../data/ONSPD.csv
    ./manage.py generation_activate --commit
 
 For notes on what was done to create generations as you can see on
