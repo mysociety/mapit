@@ -15,7 +15,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
 <li>WGS84 lat/lon: <a href="http://maps.google.co.uk/maps?q=loc:{{ postcode.wgs84_lat }},{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
 {% else %}
-<li>No location information.
+<li>No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
 {% endif %}
 </ul>
 
