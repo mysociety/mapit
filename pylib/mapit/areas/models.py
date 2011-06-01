@@ -103,8 +103,8 @@ class AreaManager(models.GeoManager):
     def intersect(self, query_type, area):
         return Area.objects.exclude(id=area.id).extra(
             tables = [ 'areas_geometry' ],
-            where = [ 'areas_geometry.area_id = areas_area.id', 'ST_%s(areas_geometry.polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type, 'areas_geometry.polygon && (select polygon from areas_geometry where area_id=%s)' ],
-            params = [ area.id, area.id ]
+            where = [ 'areas_geometry.area_id = areas_area.id', 'ST_%s(areas_geometry.polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type ],
+            params = [ area.id ]
         )
 
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
