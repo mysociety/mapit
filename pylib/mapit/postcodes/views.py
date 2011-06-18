@@ -8,7 +8,7 @@ from mapit.shortcuts import output_json, get_object_or_404, output_error, set_ti
 from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -128,6 +128,12 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
     if format == 'html':
         return render_to_response('example-postcode.html', { 'area': area, 'postcode': pc })
     return output_json(pc)
+
+def form_submitted(request):
+    pc = request.POST.get('pc', None)
+    if not request.method == 'POST' or not pc:
+        return redirect('/')
+    return redirect('mapit.postcodes.views.postcode', postcode=pc, format='html')
 
 # Legacy Views from old MaPit. Don't use in future.
 

@@ -23,20 +23,27 @@ blockquote {
 h1 {
     margin: 0;
 }
-h1 + p {
-    clear: both;
-}
+
 h2 {
     margin-bottom: 0;
 }
+
 h3 {
     font-size: 120%;
     line-height: 1.25;
 }
 
+input {
+    font-size: 99%;
+}
+
 #logo {
     float: right;
     margin: 0 0 1.5em 3em;
+}
+
+#content {
+    clear: both;
 }
 
 #copyright {
@@ -84,3 +91,13 @@ h3 {
     border-top: solid 1px #999999;
 }
 
+form {
+    clear: right;
+    float: right;
+    font-size: 125%;
+    padding-left: 52px;
+    width: 16em;
+    margin-left: 1.6em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}

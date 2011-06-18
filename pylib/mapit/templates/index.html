@@ -4,6 +4,10 @@
 
 {% block content %}
 
+<p id="donate">mySociety is run by a registered charity &ndash; please
+<a href="http://www.mysociety.org/donate/">donate</a> to help keep us going and
+to be able to continue to do things like this!</p>
+
 <p>MaPit is our database and web service that maps
 <strong>postcodes</strong> and <strong>points</strong> to current or past
 administrative area information and polygons for <strong>all</strong> the
@@ -13,9 +17,11 @@ improvements including speed, a lovely admin interface, and much easier
 updating. The source code is
 <a href="http://github.com/mysociety/mapit">available on GitHub</a>.
 
-<p id="donate">mySociety is run by a registered charity &ndash; please
-<a href="http://www.mysociety.org/donate/">donate</a> to help keep us going and
-to be able to continue to do things like this!</p>
+<form method="post" action="/postcode/">
+    <label for="pc">Postcode:</label>
+    <input type="text" name="pc" id="pc" size="8">
+    <input type="submit" value="Go">
+</form>
 
 <p>Another notable benefit is that this new version has been filled with only
 totally open data, so you can be secure that you can reuse the data from this

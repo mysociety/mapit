@@ -10,6 +10,7 @@
 </head>
 <body>
 
+<div id="header" role="banner">
 <a href="http://www.mysociety.org/"><img id="logo" border=0 src="/static/mysociety_smT.png" alt="mySociety"></a>
 
 <blockquote>
@@ -18,11 +19,14 @@
 
 <h1>{{ request.META.HTTP_HOST|default:"MaPit" }}</h1>
 <span><a href="/">Documentation</a></span>
+</div>
 
+<div id="content" role="main">
 {% block content %}
 {% endblock %}
+</div>
 
-<div id="footer">
+<div id="footer" role="contentinfo">
 Built by Matthew Somerville. Pictures from Wikimedia Commons
 (<a href="http://commons.wikimedia.org/wiki/File:Liquid_filled_compass.jpg">background</a>).
 Hosted by M247.

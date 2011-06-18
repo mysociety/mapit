@@ -16,10 +16,14 @@ mysociety.config.set_file(os.path.abspath(package_dir + "/../../conf/general"))
 
 # Django settings for mapit project.
 
-CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=86400'
-CACHE_MIDDLEWARE_SECONDS = 86400
-CACHE_MIDDLEWARE_KEY_PREFIX = ''
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
+if int(mysociety.config.get('STAGING')):
+    CACHE_BACKEND = 'dummy://'
+    CACHE_MIDDLEWARE_SECONDS = 0
+else:
+    CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=86400'
+    CACHE_MIDDLEWARE_SECONDS = 86400
+    CACHE_MIDDLEWARE_KEY_PREFIX = ''
+    CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 DEBUG = True if int(mysociety.config.get('STAGING')) else False
 TEMPLATE_DEBUG = DEBUG
