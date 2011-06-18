@@ -101,3 +101,17 @@ form {
     padding-top: 1em;
     padding-bottom: 1em;
 }
+
+#mapBox {
+    margin-left: 1em;
+    margin-bottom: 1em;
+    float: right;
+}
+#map {
+    width: 390px;
+    height: 390px;
+    border: solid 1px #999999;
+}
+.olControlAttribution {
+    bottom: 3px;
+}

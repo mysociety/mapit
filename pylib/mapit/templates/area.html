@@ -7,6 +7,26 @@
 <h2>{{ area.name }}</h2>
 <a href="/area/{{ area.id }}">JSON of this data</a>
 
+{% if area.polygons.count and show_geometry %}
+<div id="mapBox"><div id="map"></div></div>
+<script>
+    var map = new OpenLayers.Map("map");
+    map.addLayer(new OpenLayers.Layer.OSM());
+    var area = new OpenLayers.Layer.Vector("KML", {
+        strategies: [ new OpenLayers.Strategy.Fixed() ],
+        protocol: new OpenLayers.Protocol.HTTP({
+            url: "/area/{{ area.id }}.kml",
+            format: new OpenLayers.Format.KML()
+        })
+    });
+    map.addLayer(area);
+    area.events.register('loadend', null, function(a,b,c) {
+    	map.zoomToExtent(area.getDataExtent());
+    });
+
+</script>
+{% endif %}
+
 <p>ID {{ area.id }},
 generations {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }},
 type {{ area.get_type_display }} (<small>{{ area.type }}</small>),
@@ -20,7 +40,7 @@ A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.na
 {% if area.polygons.count or area.postcodes.count %}
 <a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
 {% endif %}
-{% if area.polygons.count %}
+{% if area.polygons.count and show_geometry %}
 | <a href="/area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
 | <a href="/area/{{ area.id }}.wkt">WKT</a>,
 <a href="/area/{{ area.id }}.geojson">GeoJSON</a>,
