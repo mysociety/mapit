@@ -113,5 +113,5 @@ form {
     border: solid 1px #999999;
 }
 .olControlAttribution {
-    bottom: 3px;
+    bottom: 3px !important;
 }
