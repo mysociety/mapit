@@ -15,7 +15,7 @@
     var area = new OpenLayers.Layer.Vector("KML", {
         strategies: [ new OpenLayers.Strategy.Fixed() ],
         protocol: new OpenLayers.Protocol.HTTP({
-            url: "/area/{{ area.id }}.kml",
+            url: "/area/{{ area.id }}.kml?simplify_tolerance=0.0001",
             format: new OpenLayers.Format.KML()
         })
     });
