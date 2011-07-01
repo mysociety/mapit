@@ -249,6 +249,11 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         return output_json({ 'error': 'No polygons found' }, code=404)
     if srid != int(mysociety.config.get('AREA_SRID')):
         all_areas.transform(srid)
+
+    simplify_tolerance = request.GET.get('simplify_tolerance', 0)
+    if simplify_tolerance:
+        all_areas = all_areas.simplify(simplify_tolerance)
+
     if format=='kml':
         out = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
