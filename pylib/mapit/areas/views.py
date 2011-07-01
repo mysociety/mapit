@@ -250,7 +250,10 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     if srid != int(mysociety.config.get('AREA_SRID')):
         all_areas.transform(srid)
 
-    simplify_tolerance = request.GET.get('simplify_tolerance', 0)
+    try:
+        simplify_tolerance = float(request.GET['simplify_tolerance'])
+    except:
+        simplify_tolerance = 0
     if simplify_tolerance:
         all_areas = all_areas.simplify(simplify_tolerance)
 
