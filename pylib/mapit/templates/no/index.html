@@ -9,6 +9,12 @@ administrative area information and polygons for Norway (see
 <a href="http://mapit.mysociety.org/">the UK version</a>). The source code is
 <a href="http://github.com/mysociety/mapit">available on GitHub</a>.
 
+<form method="post" action="/postcode/">
+    <label for="pc">Postcode:</label>
+    <input type="text" name="pc" id="pc" size="8">
+    <input type="submit" value="Go">
+</form>
+
 <p id="donate">NUUG is a member organisation for people interested in free
 software, open standards and UNIX-like operating systems. Please
 <a href="http://www.nuug.no/innmelding.shtml">become a member</a> if you want
@@ -127,6 +133,7 @@ bounding boxes cover the particular point.
 
 <li>/area/<i>[area ID]</i>.<i>[kml|geojson|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
 <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">Example KML file on a Google Map</a>.
+You can specify a simplify_tolerance parameter to return a simplified polygon.
 
 <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
 
