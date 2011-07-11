@@ -165,5 +165,17 @@ def nearest(request, srid, x, y, bb=False, legacy=False, format='json'):
     args = {
         'location__distance_gte': ( location, D( mi = 0) ),
         }
-    pc = Postcode.objects.filter(**args).distance(location).order_by('distance')[0]
-    return postcode(request, pc.postcode, legacy, format)
+    try:
+        pc = Postcode.objects.filter(**args).distance(location).order_by('distance')[0]
+    except:
+        return output_error(format,
+                            'No postcode found near %d,%d (%s)' % (x, y, srid),
+                            404)
+
+    if format == 'html':
+        return render_to_response('postcode.html', {
+            'postcode': pc.as_dict(),
+            'json': '/postcode/nearest/',
+        })
+
+    return output_json(pc.as_dict())
