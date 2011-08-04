@@ -1,6 +1,7 @@
 import re
 import operator
 from psycopg2.extensions import QueryCanceledError
+from osgeo import gdal
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
@@ -486,7 +487,14 @@ def areas_by_point(request, srid, x, y, bb=False, legacy=False, format='json'):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
     if not generation: generation = Generation.objects.current()
+
     location = Point(float(x), float(y), srid=int(srid))
+    gdal.UseExceptions()
+    try:
+        location.transform(mysociety.config.get('AREA_SRID'), clone=True)
+    except:
+        return output_error(format, 'Point outside the area geometry', 400)
+
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
     args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
