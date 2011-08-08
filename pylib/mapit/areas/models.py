@@ -108,7 +108,7 @@ class AreaManager(models.GeoManager):
                 'ST_%s(areas_geometry.polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type,
                 'areas_geometry.polygon && (select polygon from areas_geometry where area_id=%s)',
             ],
-            params = [ area.id ]
+            params = [ area.id, area.id ]
         )
 
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
