@@ -319,7 +319,7 @@ def area_intersect(query_type, title, request, area_id, format):
     elif area.type in ('EUR'):
         args['type'] = area.type
 
-    areas = Area.objects.exclude(id=area.id).intersect(query_type, area).filter(**args).distinct()
+    areas = Area.objects.intersect(query_type, area).exclude(id=area.id).filter(**args).distinct()
 
     set_timeout(format)
     try:
