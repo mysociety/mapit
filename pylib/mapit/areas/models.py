@@ -105,8 +105,8 @@ class AreaManager(models.GeoManager):
             tables = [ 'areas_geometry' ],
             where = [
                 'areas_geometry.area_id = areas_area.id',
-                'ST_%s(areas_geometry.polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type
-                'areas_geometry.polygon && (select polygon from areas_geometry where area_id=%s)'
+                'ST_%s(areas_geometry.polygon, (select polygon from areas_geometry where area_id=%%s))' % query_type,
+                'areas_geometry.polygon && (select polygon from areas_geometry where area_id=%s)',
             ],
             params = [ area.id ]
         )
