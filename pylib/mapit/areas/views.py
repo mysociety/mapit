@@ -302,12 +302,7 @@ def area_intersect(query_type, title, request, area_id, format):
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
 
-    all_areas = area.polygons.all()
-    if len(all_areas) > 1:
-        all_areas = all_areas.collect()
-    elif len(all_areas) == 1:
-        all_areas = all_areas[0].polygon
-    else:
+    if not area.polygons.count():
         return output_error(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
@@ -324,18 +319,7 @@ def area_intersect(query_type, title, request, area_id, format):
     elif area.type in ('EUR'):
         args['type'] = area.type
 
-    if isinstance(query_type, list):
-        or_queries = [ Q(**{'polygons__polygon__%s' % t: all_areas}) for t in query_type ]
-        areas = Area.objects.exclude(id=area.id).filter(**args)
-        areas = areas.filter(reduce(operator.or_, or_queries))
-    elif len(all_areas) == 1:
-        areas = Area.objects.intersect(query_type, area)
-        areas = areas.filter(**args)
-    else:
-        areas = Area.objects.exclude(id=area.id).filter(**args)
-        areas = areas.filter(**{'polygons__polygon__%s' % query_type : all_areas })
-
-    areas = areas.distinct()
+    areas = Area.objects.exclude(id=area.id).intersect(query_type, area).filter(**args).distinct()
 
     set_timeout(format)
     try:
