@@ -200,6 +200,11 @@ class Area(models.Model):
         ('Norway', (
             ('NFY', 'Norway Fylke'),
             ('NKO', 'Norway Kommune'),
+            ('NRA', 'Norway Public Roads Administration'),
+            ('NPT', 'Norway Pubic Transport Administration'),
+            ('NPG', 'Norway Power Grid Administration'),
+            ('NRR', 'Norway Railroad Administration'),
+            ('NSA', 'Norway Shoreline Administration'),
         )),
     ))
     country = models.CharField(max_length=1, choices=(
