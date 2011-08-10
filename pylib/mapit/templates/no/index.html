@@ -17,6 +17,12 @@ to keep NUUG going.
 <a href="http://www.mysociety.org/donate/">donate</a> to help keep mySociety going and
 to be able to continue to do things like this!</p>
 
+<p><form method="post" action="/postcode/">
+    <label for="pc">Postcode:</label>
+    <input type="text" name="pc" id="pc" size="8">
+    <input type="submit" value="Go">
+</form></p>
+
 <p>This site is filled with only open data, so you can be secure that
 you can reuse the data from this site under the minimal terms of the
 licences given below. It is based on Kommune and Fylkes area info from
@@ -127,6 +133,7 @@ bounding boxes cover the particular point.
 
 <li>/area/<i>[area ID]</i>.<i>[kml|geojson|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
 <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">Example KML file on a Google Map</a>.
+You can specify a simplify_tolerance parameter to return a simplified polygon.
 
 <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
 
