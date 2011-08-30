@@ -1,6 +1,7 @@
 import re
 import operator
 from psycopg2.extensions import QueryCanceledError
+from psycopg2 import InternalError
 from osgeo import gdal
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
@@ -331,6 +332,8 @@ def area_intersect(query_type, title, request, area_id, format):
         return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
     except QueryCanceledError:
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+    except InternalError:
+        return output_error(format, 'There was an internal error performing that query.', 500)
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
