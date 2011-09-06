@@ -23,7 +23,10 @@ define('OPTION_MAPIT_DB_PASS', '');
 define('OPTION_MAPIT_DB_HOST', null);
 define('OPTION_MAPIT_DB_PORT', null); 
 
-define('OPTION_COUNTRY', 'GB'); # or NO
+# select the country this instance is for. You may need to create a
+# 'country_specific/XX.py' module too with custom entries in.
+define('OPTION_COUNTRY', 'GB'); # or 'NO'
+
 define('OPTION_AREA_SRID', 27700); # 4326 for WGS84
 define('OPTION_STAGING', 1);
 define('OPTION_RATE_LIMIT', 1);

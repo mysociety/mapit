@@ -2,6 +2,9 @@ import os
 import sys
 import django
 
+from django.core.exceptions import ImproperlyConfigured
+
+
 package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
 paths = (
     os.path.normpath(package_dir + "/../../pylib"),
@@ -161,3 +164,16 @@ INSTALLED_APPS = (
     'mapit.areas',
     'mapit.postcodes',
 )
+
+# Import the country specific settings
+country_specific_module = "country_settings.%s" % mysociety.config.get('COUNTRY')
+try:
+    module = __import__(country_specific_module, globals(), locals(), ['*'], -1)
+    AREA_TYPE_CHOICES    = getattr( module, 'AREA_TYPE_CHOICES' )
+    AREA_COUNTRY_CHOICES = getattr( module, 'AREA_COUNTRY_CHOICES' )
+    CODE_TYPE_CHOICES    = getattr( module, 'CODE_TYPE_CHOICES' )
+except ImportError:
+    raise ImproperlyConfigured("Could not load settings from '%s' - perhaps it does not exist?" % country_specific_module)
+
+
+

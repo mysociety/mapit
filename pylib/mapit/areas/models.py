@@ -1,8 +1,11 @@
 import re
 import itertools
 from django.contrib.gis.db import models
+from django.conf import settings
 from mapit.managers import Manager, GeoManager
 import mysociety.config
+
+
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -151,70 +154,8 @@ class AreaManager(models.GeoManager):
 class Area(models.Model):
     name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
-    type = models.CharField(max_length=3, db_index=True, choices=(
-        ('EUP', 'European Parliament'),
-        ('EUR', 'European region'),
-        ('HOL', 'House of Lords'),
-        ('HOC', 'House of Lords constituency'),
-        ('WMP', 'UK Parliament'),
-        ('WMC', 'UK Parliament constituency'),
-        ('Northern Ireland', (
-            ('NIA', 'Northern Ireland Assembly'),
-            ('NIE', 'Northern Ireland Assembly constituency'),
-            ('LGD', 'Northern Irish Council'),
-            ('LGE', 'Northern Irish Council electoral area'),
-            ('LGW', 'Northern Irish Council ward'),
-        )),
-        ('England', (
-            ('CTY', 'County council'),
-            ('CED', 'County council ward'),
-            ('DIS', 'District council'),
-            ('DIW', 'District council ward'),
-            ('GLA', 'Greater London Authority'),
-            ('LAC', 'London Assembly constituency'),
-            ('LAE', 'London Assembly area (shared)'),
-            ('LAS', 'London Assembly area'),
-            ('LBO', 'London borough'),
-            ('LBW', 'London borough ward'),
-            ('MTD', 'Metropolitan district'),
-            ('MTW', 'Metropolitan district ward'),
-            ('COI', 'Scilly Isles'),
-            ('COP', 'Scilly Isles "ward"'),
-        )),
-        ('SPA', 'Scottish Parliament'),
-        ('SPC', 'Scottish Parliament constituency'),
-        ('SPE', 'Scottish Parliament region'),
-        ('WAS', 'Welsh Assembly'),
-        ('WAC', 'Welsh Assembly constituency'),
-        ('WAE', 'Welsh Assembly region'),
-        ('UTA', 'Unitary Authority'),
-        ('UTE', 'Unitary Authority ward (UTE)'),
-        ('UTW', 'Unitary Authority ward (UTW)'),
-        ('England and Wales', (
-            ('CPC', 'Civil Parish'),
-            ('OLF', 'Lower Layer Super Output Area (Full)'),
-            ('OLG', 'Lower Layer Super Output Area (Generalised)'),
-            ('OMF', 'Middle Layer Super Output Area (Full)'),
-            ('OMG', 'Middle Layer Super Output Area (Generalised)'),
-        )),
-        ('Norway', (
-            ('NFY', 'Norway Fylke'),
-            ('NKO', 'Norway Kommune'),
-            ('NRA', 'Norway Public Roads Administration'),
-            ('NPT', 'Norway Pubic Transport Administration'),
-            ('NPG', 'Norway Power Grid Administration'),
-            ('NRR', 'Norway Railroad Administration'),
-            ('NSA', 'Norway Shoreline Administration'),
-        )),
-    ))
-    country = models.CharField(max_length=1, choices=(
-        ('E', 'England'),
-        ('W', 'Wales'),
-        ('S', 'Scotland'),
-        ('N', 'Northern Ireland'),
-        ('O', 'Norway'),
-        ('', '-'),
-    ), blank=True)
+    type = models.CharField(max_length=3, db_index=True, choices=settings.AREA_TYPE_CHOICES)
+    country = models.CharField(max_length=1, choices=settings.AREA_COUNTRY_CHOICES, blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
 
@@ -314,13 +255,7 @@ class Name(models.Model):
 
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
-    type = models.CharField(max_length=10, choices=(
-        ('ons', 'SNAC'),
-        ('gss', 'GSS (SNAC replacement)'),
-        ('unit_id', 'Boundary-Line (OS Admin Area ID)'),
-        ('n5000', 'Norway code as given in N5000'),
-        ('osm', 'OSM'),
-    ))
+    type = models.CharField(max_length=10, choices=settings.CODE_TYPE_CHOICES)
     code = models.CharField(max_length=10)
     objects = Manager()
 
