@@ -16,8 +16,11 @@ Installation
 ------------
 
 Our version is running on Debian lenny, and we've successfully had it running
-on Ubuntu 10.04 as well - to install PostGIS and GeoDjango I just followed all
-the instructions (including creating the template) at
+on Ubuntu 10.04 as well. There is a list of dependencies in 'conf/packages'
+(for debian).
+
+To install PostGIS and GeoDjango I just followed all the instructions
+(including creating the template) at
 http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
 
 However, not only is the PostGIS that is installed missing SRID 900913, as
