@@ -130,15 +130,13 @@ ROOT_URLCONF = 'mapit.urls'
 # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 # Always use forward slashes, even on Windows.
 # Don't forget to use absolute paths, not relative paths.
-if mysociety.config.get('COUNTRY') == 'GB':
-    TEMPLATE_DIRS = (
-        package_dir + '/templates',
-    )
-elif mysociety.config.get('COUNTRY') == 'NO':
-    TEMPLATE_DIRS = (
-        package_dir + '/templates/no',
-        package_dir + '/templates',
-    )
+TEMPLATE_DIRS = [ package_dir + '/templates' ]
+
+# If the country specific template dir exists add it to the search paths
+country_specific_template_path = package_dir + '/templates/' + mysociety.config.get('COUNTRY').lower()
+if os.path.exists( country_specific_template_path ):
+    TEMPLATE_DIRS.insert( 0, country_specific_template_path )
+
 
 if django.get_version() >= '1.2':
     TEMPLATE_CONTEXT_PROCESSORS = (
