@@ -31,9 +31,11 @@ necessary, depending on your version of PostGIS, but do check.)
 Initial instructions for all locations
 --------------------------------------
 
-1. Make sure OPTION_STAGING is 0 in conf/general, otherwise you'll run out
+1. Copy conf/general-example to conf/general and change the values to suit your
+   installation
+2. Make sure OPTION_STAGING is 0 in conf/general, otherwise you'll run out
    of memory as it tries to remember all the SQL queries made.
-2. Optional: turn off escape_string_warning in Postgres' config (unless you
+3. Optional: turn off escape_string_warning in Postgres' config (unless you
    want your server to run out of disc space logging all the errors, as ours
    did the first time I imported overnight and didn't realise).
 
