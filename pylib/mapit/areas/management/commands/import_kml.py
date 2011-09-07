@@ -40,6 +40,11 @@ class Command(LabelCommand):
             dest='area_type',
             help='Which area type should be used',            
         ),
+        make_option(
+            '--name_type',
+            dest='name_type',
+            help='Which name type should be used',            
+        ),
     )
 
     def handle_label(self, filename, **options):
@@ -48,6 +53,7 @@ class Command(LabelCommand):
 
         generation = Generation.objects.get( id=options['generation_id'] )
         area_type  = options['area_type']
+        name_type  = options['name_type']
         country    = options['country']
 
         # Need to parse the KML manually to get the ExtendedData
@@ -83,12 +89,7 @@ class Command(LabelCommand):
             
             if options['commit']:
                 m.save()
-                # for k, v in kml_data.data[name].items():
-                #     if k in ('name:smi', 'name:fi'):
-                #       lang = 'N' + k[5:]
-                #       m.names.update_or_create({ 'type': lang }, { 'name': v })
-                # m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
-                # m.codes.update_or_create({ 'type': 'osm' }, { 'code': int(kml_data.data[name]['osm']) })
+                m.names.update_or_create({ 'type': name_type }, { 'name': name })
                 save_polygons({ m.id : (m, poly) })
 
 

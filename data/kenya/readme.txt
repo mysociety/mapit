@@ -39,4 +39,15 @@ the following to fix them:
     done
         
     # edit files as needed to correct issues - most likely a bare '&'.
-    
+
+Using the admin create the generation(s) needed.
+
+Now import the files using:
+
+    ./manage.py import_kml --generation_id=1 --area_type=CTR --country=K --name_type=GADM --commit KEN_adm0.kml
+    ./manage.py import_kml --generation_id=1 --area_type=PRO --country=K --name_type=GADM --commit KEN_adm1.kml
+    ./manage.py import_kml --generation_id=1 --area_type=DIS --country=K --name_type=GADM --commit KEN_adm2.kml
+    ./manage.py import_kml --generation_id=1 --area_type=DIV --country=K --name_type=GADM --commit KEN_adm3.kml
+    ./manage.py import_kml --generation_id=1 --area_type=LOC --country=K --name_type=GADM --commit KEN_adm4.kml
+    ./manage.py import_kml --generation_id=1 --area_type=SLC --country=K --name_type=GADM --commit KEN_adm5.kml
+
