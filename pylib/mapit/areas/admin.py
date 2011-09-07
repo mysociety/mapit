@@ -24,6 +24,13 @@ class AreaAdmin(admin.OSMGeoAdmin):
 class GeometryAdmin(admin.OSMGeoAdmin):
     raw_id_fields = ('area',)
 
+    # we want to be able to filter on area in links from AreaAdmin but don't
+    # want to list all the areas in the sidebar. This avoids the
+    # SuspiciousOperation exception in Django >= 1.2.4
+    def lookup_allowed(self, lookup, *args, **kwargs):
+        return True if lookup == 'area' else False
+    
+
 class GenerationAdmin(admin.OSMGeoAdmin):
     list_display = ('id', 'active', 'created', 'description')
 
