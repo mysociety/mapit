@@ -26,7 +26,7 @@ def save_polygons(lookup):
                 # directly from the WKT before using it.
                 must_be_two_d = g.wkt.replace(' 0,', ',')
                 must_be_two_d = must_be_two_d.replace(' 0))', '))') # strip last one too
-                print must_be_two_d
+                # print must_be_two_d
 
                 m.polygons.create(polygon=must_be_two_d)
         #m.polygon = g.wkt
