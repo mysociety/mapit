@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+    <Document>
+        <name>Kenya</name>
+        <description><![CDATA[<a href='http://www.gadm.org'>GADM</a> boundaries.]]></description>
+        <Style id="0">
+            <LineStyle>
+                <width>1.5</width>
+                <color>ff000000</color>
+            </LineStyle>
+            <PolyStyle>
+                <color>aa0000df</color>
+                <fill>1</fill>
+            </PolyStyle>
+        </Style>
+        <Placemark>
+            <name>Kenya</name>
+            <description><![CDATA[KEN]]></description>
+            <styleUrl>#0</styleUrl>
+            <visibility>1</visibility>
+            <MultiGeometry>
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>
+39.37,-4.715
+39.37,-4.716
+39.38,-4.716
+39.38,-4.715
+39.37,-4.715
+</coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </MultiGeometry>
+        </Placemark>
+    </Document>
+</kml>
