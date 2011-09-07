@@ -21,3 +21,11 @@ CODE_TYPE_CHOICES = (
     ('n5000', 'Norway code as given in N5000'),
     ('osm', 'OSM'),
 )
+
+NAME_TYPE_CHOICES = (
+    ('S', 'ONS (SNAC/GSS)'),
+    ('M', 'Override name'),
+    ('Nno', 'Norwegian - no'),
+    ('Nsmi', 'Norwegian - smi'),
+    ('Nfi', 'Norwegian - fi'),
+)

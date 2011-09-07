@@ -204,14 +204,7 @@ class Geometry(models.Model):
 
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
-    type = models.CharField(max_length=10, choices=(
-        ('O', 'Ordnance Survey'),
-        ('S', 'ONS (SNAC/GSS)'),
-        ('M', 'Override name'),
-        ('Nno', 'Norwegian - no'),
-        ('Nsmi', 'Norwegian - smi'),
-        ('Nfi', 'Norwegian - fi'),
-    ))
+    type = models.CharField(max_length=10, choices=settings.NAME_TYPE_CHOICES)
     name = models.CharField(max_length=100)
     objects = Manager()
 

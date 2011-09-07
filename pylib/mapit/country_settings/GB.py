@@ -60,3 +60,9 @@ CODE_TYPE_CHOICES = (
     ('unit_id', 'Boundary-Line (OS Admin Area ID)'),
     ('osm', 'OSM'),
 )
+
+NAME_TYPE_CHOICES = (
+    ('O', 'Ordnance Survey'),
+    ('S', 'ONS (SNAC/GSS)'),
+    ('M', 'Override name'),
+)

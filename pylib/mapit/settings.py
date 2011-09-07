@@ -170,6 +170,7 @@ try:
     AREA_TYPE_CHOICES    = getattr( module, 'AREA_TYPE_CHOICES' )
     AREA_COUNTRY_CHOICES = getattr( module, 'AREA_COUNTRY_CHOICES' )
     CODE_TYPE_CHOICES    = getattr( module, 'CODE_TYPE_CHOICES' )
+    NAME_TYPE_CHOICES    = getattr( module, 'NAME_TYPE_CHOICES' )
 except ImportError:
     raise ImproperlyConfigured("Could not load settings from '%s' - perhaps it does not exist?" % country_specific_module)
 

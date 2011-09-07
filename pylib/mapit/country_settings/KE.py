@@ -17,3 +17,8 @@ AREA_COUNTRY_CHOICES = (
 CODE_TYPE_CHOICES = (
     ('gadm', 'Global Administrative Areas'),
 )
+
+NAME_TYPE_CHOICES = (
+    ('GADM', 'Global Administrative Areas'),
+    ('M', 'Override name'),
+)
