@@ -189,3 +189,19 @@ You probably don't need any of that for your own install.
 ./manage.py import_nspd ../../data/NSPD-2010-05.csv # This is now split into two scripts, see below.
 # Make generation active.
 
+
+
+TROUBLESHOOTING
+---------------
+
+django.db.utils.IntegrityError: new row for relation "areas_geometry" violates check constraint "enforce_srid_polygon"
+
+    You must select the correct SRID in conf/general before running syncdb for
+    the first time as it is used in the table constraints. Check that the
+    conf/general setting is correct, and check your database by running
+    './manage.py dbshell' and using the query '\d areas_geometry' to check the
+    'enforce_srid_polygon' constraint. Applies to the other tables too.
+
+
+
+
