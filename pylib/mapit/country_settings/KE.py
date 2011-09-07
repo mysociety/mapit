@@ -1,5 +1,5 @@
 AREA_TYPE_CHOICES = (
-    ('CTR','Country Border'),
+    ('CTR','Country'),
 
     ('Kenya', (
         ('PRO', 'Province'),
