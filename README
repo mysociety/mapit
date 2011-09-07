@@ -95,7 +95,7 @@ Norway
 Here are the basic instructions to install data from OSM:
 
 1. Set OPTION_AREA_SRID in conf/general to 4326 (as OSM shapes are in WGS84).  
-2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
+2. cd bin and run "python osm_to_kml_norway" to fetch OSM XML and convert it to KML.
 3. Change to the pylib/mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
@@ -105,7 +105,7 @@ Here are the basic instructions to install data from OSM:
    ./manage.py import_area_unions --commit data/norway/regions.csv
    ./manage.py generation_activate --commit
 
-Please see below for information on where osm_to_kml gets its OSM data from.
+Please see below for information on where osm_to_kml_norway gets its OSM data from.
 
 Alternatively, here are the basic instructions to install the N5000 data:
 
@@ -128,13 +128,13 @@ Oslo returned as a result.
 Norway OSM data
 ---------------
 
-The way osm_to_kml works is to fetch a number of fixed and pre-defined
+The way osm_to_kml_norway works is to fetch a number of fixed and pre-defined
 relation IDs from OSM - one (412437) containing all fylke, and then
 one for each fylke containing all the kommune inside. These relations
 should stay and (now they're correct) not change within OpenStreetmap,
 though of course the underlying relations can have their boundaries
 improved and so on. See the relation_ids list in the source of
-bin/osm_to_kml if you'd like to see the other relation IDs.
+bin/osm_to_kml_norway if you'd like to see the other relation IDs.
 
 The OSM tags 'name', and 'name:no' if 'name' is not set, are used to find
 the primary name of the fylke and kommune. In addition, the values of
