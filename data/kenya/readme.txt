@@ -51,3 +51,9 @@ Now import the files using:
     ./manage.py import_kml --generation_id=1 --area_type=LOC --country=K --name_type=GADM --commit KEN_adm4.kml
     ./manage.py import_kml --generation_id=1 --area_type=SLC --country=K --name_type=GADM --commit KEN_adm5.kml
 
+You can check the data using these urls:
+
+  /point/4326/36.821433,-1.287334   - Somewhere in Nairobi
+
+
+

@@ -27,21 +27,25 @@ class Command(LabelCommand):
         ),
         make_option(
             '--generation_id',
+            action="store",
             dest='generation_id',
             help='Which generation ID should be used',            
         ),
         make_option(
             '--country',
+            action="store",
             dest='country',
             help='Which country should be used',            
         ),
         make_option(
             '--area_type',
+            action="store",
             dest='area_type',
             help='Which area type should be used',            
         ),
         make_option(
             '--name_type',
+            action="store",
             dest='name_type',
             help='Which name type should be used',            
         ),
@@ -49,12 +53,19 @@ class Command(LabelCommand):
 
     def handle_label(self, filename, **options):
 
+        for k in ['generation_id','area_type','name_type','country']:
+            if options[k]: continue
+            raise Exception("Missing argument '--%s'" % k)
+
+        generation_id = options['generation_id']
+        area_type     = options['area_type']
+        name_type     = options['name_type']
+        country       = options['country']
+
         print "Importing from %s" % filename
 
-        generation = Generation.objects.get( id=options['generation_id'] )
-        area_type  = options['area_type']
-        name_type  = options['name_type']
-        country    = options['country']
+        current_generation = Generation.objects.current()
+        new_generation     = Generation.objects.get( id=generation_id )
 
         # Need to parse the KML manually to get the ExtendedData
         kml_data = KML()
@@ -75,12 +86,14 @@ class Command(LabelCommand):
                     type            = area_type,
                     country         = country,
                     # parent_area     = parent_area,
-                    generation_low  = generation,
-                    generation_high = generation,
+                    generation_low  = new_generation,
+                    generation_high = new_generation,
                 )
 
-            if m.generation_high != generation:
-                raise Exception('generation has changed')
+            # check that we are not about to skip a generation
+            if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
+                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+            m.generation_high = new_generation
             
             # g = feat.geom.transform(4326, clone=True)
             g = feat.geom
