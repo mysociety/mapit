@@ -95,8 +95,7 @@ class Command(LabelCommand):
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
             
-            # g = feat.geom.transform(4326, clone=True)
-            g = feat.geom
+            g = feat.geom.transform(4326, clone=True)
             
             poly = [ g ]
             
