@@ -177,6 +177,10 @@ class Area(models.Model):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type, name)
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ( 'mapit.areas.views.area', [ self.id, 'html' ] )
+
     def as_dict(self):
         return {
             'id': self.id,
