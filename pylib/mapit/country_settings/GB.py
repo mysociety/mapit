@@ -66,3 +66,17 @@ NAME_TYPE_CHOICES = (
     ('S', 'ONS (SNAC/GSS)'),
     ('M', 'Override name'),
 )
+
+AREA_CHILD_TO_PARENT_MAPPINGS = {
+    # child: parent || (parents,)
+    'DIW': 'DIS',
+    'CED': 'CTY',
+    'LBW': 'LBO',
+    'LAC': 'GLA',
+    'MTW': 'MTD',
+    'UTE': 'UTA',
+    'UTW': 'UTA',
+    'SPC': 'SPE',
+    'WAC': 'WAE',
+    'CPC': ('DIS', 'UTA', 'MTD', 'LBO', 'COI'),
+}

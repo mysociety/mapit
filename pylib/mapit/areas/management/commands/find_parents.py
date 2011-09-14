@@ -6,26 +6,22 @@
 from django.core.management.base import NoArgsCommand
 from mapit.areas.models import Area, Generation
 
+from django.conf import settings
+
 class Command(NoArgsCommand):
     help = 'Find parents for shapes'
 
     def handle_noargs(self, **options):
+
+        try:
+            parentmap = settings.AREA_CHILD_TO_PARENT_MAPPINGS
+        except AttributeError:
+            raise Exception, "Child to parent mappings not configured - add AREA_CHILD_TO_PARENT_MAPPINGS to your country specific config file"
+
         new_generation = Generation.objects.new()
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
-        parentmap = {
-            'DIW': 'DIS',
-            'CED': 'CTY',
-            'LBW': 'LBO',
-            'LAC': 'GLA',
-            'MTW': 'MTD',
-            'UTE': 'UTA',
-            'UTW': 'UTA',
-            'SPC': 'SPE',
-            'WAC': 'WAE',
-            'CPC': ('DIS', 'UTA', 'MTD', 'LBO', 'COI'),
-        }
         for area in Area.objects.filter(
             type__in=parentmap.keys(),
             generation_low__lte=new_generation, generation_high__gte=new_generation,
