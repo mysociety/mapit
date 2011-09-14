@@ -29,4 +29,5 @@ AREA_CHILD_TO_PARENT_MAPPINGS = {
     'LOC': 'DIV',
     'DIV': 'DIS',
     'DIS': 'PRO',
+    'PRO': 'CTR',
 }

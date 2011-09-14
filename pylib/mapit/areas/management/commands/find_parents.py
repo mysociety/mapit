@@ -7,9 +7,18 @@ from django.core.management.base import NoArgsCommand
 from mapit.areas.models import Area, Generation
 
 from django.conf import settings
+from optparse import make_option
 
 class Command(NoArgsCommand):
     help = 'Find parents for shapes'
+    option_list = NoArgsCommand.option_list + (
+            make_option(
+                '--allow_missing_parents',
+                action='store_true',
+                dest='allow_missing_parents',
+                default=False,
+                help="Don't raise a exception if an area has no parent"),
+            )
 
     def handle_noargs(self, **options):
 
@@ -39,7 +48,10 @@ class Command(NoArgsCommand):
                     args['type__in'] = parentmap[area.type]
                 parent = Area.objects.get(**args)
             except Area.DoesNotExist:
-                raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
+                if options['allow_missing_parents']:
+                    print "ERROR - found no parent for %s" % (self.pp_area(area))
+                else:
+                    raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
             if area.parent_area != parent:
                 print "Parent for %s was %s, is now %s" % (self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent))
                 area.parent_area = parent

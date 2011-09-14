@@ -55,5 +55,9 @@ You can check the data using these urls:
 
   /point/4326/36.821433,-1.287334   - Somewhere in Nairobi
 
+To set the parents correctly do the following:
 
-
+  * change the current generation to be inactive (needed as next script assumes it is fixing a new generation)
+  * run './manage.py find_parents --allow_missing_parents
+  * deal with any exceptions thrown, missing parents are OK
+  * make the generation active again
