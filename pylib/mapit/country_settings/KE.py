@@ -22,3 +22,11 @@ NAME_TYPE_CHOICES = (
     ('GADM', 'Global Administrative Areas'),
     ('M', 'Override name'),
 )
+
+AREA_CHILD_TO_PARENT_MAPPINGS = {
+    # child: parent || (parents,)
+    'SLC': 'LOC',
+    'LOC': 'DIV',
+    'DIV': 'DIS',
+    'DIS': 'PRO',
+}
