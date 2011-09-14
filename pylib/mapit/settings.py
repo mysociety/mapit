@@ -1,6 +1,7 @@
 import os
 import sys
 import django
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -167,10 +168,14 @@ INSTALLED_APPS = (
 country_specific_module = "country_settings.%s" % mysociety.config.get('COUNTRY')
 try:
     module = __import__(country_specific_module, globals(), locals(), ['*'], -1)
-    AREA_TYPE_CHOICES    = getattr( module, 'AREA_TYPE_CHOICES' )
-    AREA_COUNTRY_CHOICES = getattr( module, 'AREA_COUNTRY_CHOICES' )
-    CODE_TYPE_CHOICES    = getattr( module, 'CODE_TYPE_CHOICES' )
-    NAME_TYPE_CHOICES    = getattr( module, 'NAME_TYPE_CHOICES' )
+    
+    for key in dir( module ):
+        if re.search( r'^__', key): continue
+        setattr(
+            sys.modules[__name__], # The current settings module
+            key,                   # key
+            getattr( module, key ) # the value from country specific config module
+        )
 except ImportError:
     raise ImproperlyConfigured("Could not load settings from '%s' - perhaps it does not exist?" % country_specific_module)
 
