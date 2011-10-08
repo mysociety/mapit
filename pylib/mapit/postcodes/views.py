@@ -2,7 +2,7 @@ import re
 import itertools
 from psycopg2.extensions import QueryCanceledError
 from mapit.postcodes.models import Postcode
-from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
+from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode, is_special_uk_postcode
 from mapit.areas.models import Area, Generation
 from mapit.shortcuts import output_json, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
@@ -47,7 +47,8 @@ def postcode(request, postcode, legacy=False, format='json'):
         generation = int(request.REQUEST['generation'])
     except:
         generation = Generation.objects.current()
-    areas = Area.objects.by_postcode(postcode, generation)
+    if not is_special_uk_postcode(postcode.postcode):
+        areas = Area.objects.by_postcode(postcode, generation)
 
     # Shortcuts
     shortcuts = {}
@@ -97,7 +98,9 @@ def partial_postcode(request, postcode, format='json'):
     try:
         postcode = Postcode(
             postcode = postcode,
-            location = Postcode.objects.filter(postcode__startswith='%s ' % postcode).collect().centroid
+            location = Postcode.objects.filter(postcode__startswith=postcode).extra(
+                where = [ 'length(postcode) = %d' % (len(postcode)+3) ]
+            ).collect().centroid
         )
     except:
         return output_error(format, 'Postcode not found', 404)

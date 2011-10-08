@@ -4,6 +4,7 @@ from django.contrib.gis.db import models
 from django.db import connection, transaction
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
+from mapit.postcodes.utils import is_special_uk_postcode
 
 class PostcodeManager(GeoManager):
     def get_query_set(self):
@@ -56,7 +57,7 @@ class Postcode(models.Model):
             'wgs84_lon': loc[0],
             'wgs84_lat': loc[1]
         }
-        if mysociety.config.get('COUNTRY') == 'GB':
+        if mysociety.config.get('COUNTRY') == 'GB' and not is_special_uk_postcode(self.postcode):
             if self.postcode[0:2] == 'BT':
                 loc = self.as_irish_grid()
                 result['coordsyst'] = 'I'

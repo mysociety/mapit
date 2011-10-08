@@ -10,10 +10,7 @@ def is_valid_postcode(pc):
         return is_valid_no_postcode(pc)
     return False
 
-def is_valid_uk_postcode(pc):
-    # Our test postcode
-    if pc in ('ZZ99ZZ', 'ZZ99ZY'): return True
-
+def is_special_uk_postcode(pc):
     if pc in (
         'ASCN1ZZ', # Ascension Island
         'BBND1ZZ', # BIOT
@@ -28,6 +25,13 @@ def is_valid_uk_postcode(pc):
         'SANTA1', # Santa Claus
     ):
         return True
+    return False
+
+def is_valid_uk_postcode(pc):
+    # Our test postcode
+    if pc in ('ZZ99ZZ', 'ZZ99ZY'): return True
+
+    if is_special_uk_postcode(pc): return True
 
     # See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
     inward = 'ABDEFGHJLNPQRSTUWXYZ'
