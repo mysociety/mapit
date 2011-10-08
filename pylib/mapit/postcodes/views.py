@@ -49,6 +49,8 @@ def postcode(request, postcode, legacy=False, format='json'):
         generation = Generation.objects.current()
     if not is_special_uk_postcode(postcode.postcode):
         areas = Area.objects.by_postcode(postcode, generation)
+    else:
+        areas = []
 
     # Shortcuts
     shortcuts = {}
