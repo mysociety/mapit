@@ -97,7 +97,7 @@ def partial_postcode(request, postcode, format='json'):
     try:
         postcode = Postcode(
             postcode = postcode,
-            location = Postcode.objects.filter(postcode__startswith=postcode).collect().centroid
+            location = Postcode.objects.filter(postcode__startswith='%s ' % postcode).collect().centroid
         )
     except:
         return output_error(format, 'Postcode not found', 404)
