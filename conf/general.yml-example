@@ -11,8 +11,10 @@ MAPIT_DB_PASS: ''
 MAPIT_DB_HOST: null
 MAPIT_DB_PORT: null
 
-COUNTRY: 'GB' # or NO
-AREA_SRID: 27700 # 4326 for WGS84
+# Country is currently one of GB, NO, or KE
+COUNTRY: 'GB'
+# An EPSG code for what the areas are stored as. 27700 is OSGB, 4326 for WGS84.
+AREA_SRID: 27700
 STAGING: 1
 RATE_LIMIT: []
 BUGS_EMAIL: 'example@example.org'
