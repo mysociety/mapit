@@ -10,11 +10,7 @@ class ratelimit(object):
     minutes = 2 # The time period
     requests = 20 # Number of allowed requests in that time period
     # IP addresses that aren't rate limited
-    excluded_ips = [
-        '89.238.145.68', '89.238.145.69', '89.238.145.70', '89.238.145.71',
-        '89.238.145.72', '89.238.145.73', '89.238.145.74', '89.238.145.75',
-        '89.238.145.76',
-    ]
+    excluded_ips = mysociety.config.get('RATE_LIMIT')
     
     prefix = 'rl-' # Prefix for memcache key
     
@@ -60,7 +56,7 @@ class ratelimit(object):
             cache.set(key, cache.get(key, 0) + 1, self.expire_after())
     
     def should_ratelimit(self, request):
-        return int(mysociety.config.get('RATE_LIMIT'))
+        return len(mysociety.config.get('RATE_LIMIT'))
     
     def get_counters(self, request):
         return self.cache_get_many(self.keys_to_check(request))

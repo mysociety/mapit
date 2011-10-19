@@ -14,7 +14,7 @@ MAPIT_DB_PORT: null
 COUNTRY: 'GB' # or NO
 AREA_SRID: 27700 # 4326 for WGS84
 STAGING: 1
-RATE_LIMIT: 1
+RATE_LIMIT: []
 BUGS_EMAIL: 'example@example.org'
 
 DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
