@@ -253,9 +253,9 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         all_areas.transform(srid)
 
     try:
-        simplify_tolerance = float(request.GET['simplify_tolerance'])
+        simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
     except:
-        simplify_tolerance = 0
+        return output_error(format, 'Badly specified tolerance', 400)
     if simplify_tolerance:
         all_areas = all_areas.simplify(simplify_tolerance)
 
