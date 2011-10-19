@@ -1,0 +1,20 @@
+# general.yml-example:
+# Example values for the "general" config file.
+#
+# Copy this file to one called "general" in the same directory. Or have
+# multiple config files and use a symlink to change between them.
+
+# Connection details for database
+MAPIT_DB_NAME: 'mapit'
+MAPIT_DB_USER: 'mapit'
+MAPIT_DB_PASS: ''
+MAPIT_DB_HOST: null
+MAPIT_DB_PORT: null
+
+COUNTRY: 'GB' # or NO
+AREA_SRID: 27700 # 4326 for WGS84
+STAGING: 1
+RATE_LIMIT: 1
+BUGS_EMAIL: 'example@example.org'
+
+DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'

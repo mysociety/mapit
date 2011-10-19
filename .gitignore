@@ -1,6 +1,6 @@
 *.pyc
-/conf/general
-/conf/general.deployed
+/conf/general.yml
+/conf/general.yml.deployed
 /conf/httpd.conf
 /conf/httpd.conf.deployed
 /web/down.html
