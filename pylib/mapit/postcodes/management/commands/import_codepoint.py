@@ -2,13 +2,13 @@
 # Code-Point Open, released by the Ordnance Survey. Compared to the
 # scripts we had in 2003, and that the data is free, I'm in heaven.
 # 
-# The fields of Code-Point Open CSV file are:
-#   Postcode, Quality, 8 blanked out fields, Easting Northing, Country,
+# The fields of a Code-Point Open CSV file before August 2011 are:
+#   Postcode, Quality, 8 blanked out fields, Easting, Northing, Country,
 #   NHS region, NHS health authority, County, District, Ward, blanked field
 #
-# XXX The February 2011 release has announced that the blanked out fields wil
-# be removed at some point. This code (specifically line 24) will have to be
-# modified then, plus some way of dealing with old Code-Points.
+# The fields after August 2011, with blank fields removed and with new GSS
+# codes, are: Postcode, Quality, Easting, Northing, Country, NHS region, NHS
+# health authority, County, District, Ward
 
 import csv
 from django.contrib.gis.geos import Point
@@ -23,7 +23,8 @@ class Command(LabelCommand):
         for row in csv.reader(open(file)):
             if row[1] == '90': continue # Bad postcode
             postcode = row[0].strip().replace(' ', '')
-            location = Point(map(float, row[10:12]), srid=27700)
+            easting_column = 2 if len(row) == 10 else 10 # A new Code-Point only has 10 columns
+            location = Point(map(float, row[easting_column:easting_column+2]), srid=27700)
             # Want to compare co-ordinates so can't use straightforward update_or_create
             try:
                 pc = Postcode.objects.get(postcode=postcode)
