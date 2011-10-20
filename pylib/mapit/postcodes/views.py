@@ -132,7 +132,7 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
         except QueryCanceledError:
             return output_error(format, 'That query was taking too long to compute.', 500)
         except DatabaseError, e:
-            if e.args[0] != 'canceling statement due to statement timeout\n': raise
+            if 'canceling statement due to statement timeout' not in e.args[0]: raise
             return output_error(format, 'That query was taking too long to compute.', 500)
         except:
             pc = None

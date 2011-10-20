@@ -338,7 +338,7 @@ def area_intersect(query_type, title, request, area_id, format):
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
         # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
-        if e.args[0] != 'canceling statement due to statement timeout\n': raise
+        if 'canceling statement due to statement timeout' not in e.args[0]: raise
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except InternalError:
         return output_error(format, 'There was an internal error performing that query.', 500)
