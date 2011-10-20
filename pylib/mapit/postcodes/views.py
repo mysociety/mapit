@@ -1,6 +1,10 @@
 import re
 import itertools
 from psycopg2.extensions import QueryCanceledError
+try:
+    from django.db.utils import DatabaseError
+except:
+    from psycopg2 import DatabaseError
 from mapit.postcodes.models import Postcode
 from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode, is_special_uk_postcode
 from mapit.areas.models import Area, Generation
@@ -126,6 +130,9 @@ def example_postcode_for_area(request, area_id, legacy=False, format='json'):
         try:
             pc = Postcode.objects.filter_by_area(area).order_by()[0]
         except QueryCanceledError:
+            return output_error(format, 'That query was taking too long to compute.', 500)
+        except DatabaseError, e:
+            if e.args[0] != 'canceling statement due to statement timeout\n': raise
             return output_error(format, 'That query was taking too long to compute.', 500)
         except:
             pc = None

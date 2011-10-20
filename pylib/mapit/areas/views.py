@@ -2,6 +2,10 @@ import re
 import operator
 from psycopg2.extensions import QueryCanceledError
 from psycopg2 import InternalError
+try:
+    from django.db.utils import DatabaseError
+except:
+    from psycopg2 import DatabaseError
 from osgeo import gdal
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
@@ -331,6 +335,10 @@ def area_intersect(query_type, title, request, area_id, format):
             )
         return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
     except QueryCanceledError:
+        return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+    except DatabaseError, e:
+        # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
+        if e.args[0] != 'canceling statement due to statement timeout\n': raise
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except InternalError:
         return output_error(format, 'There was an internal error performing that query.', 500)
