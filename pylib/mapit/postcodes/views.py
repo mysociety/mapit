@@ -78,10 +78,6 @@ def postcode(request, postcode, format='json'):
             extra.extend(enclosing_areas[area.type])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
-    if legacy:
-        areas = dict( (area.type, area.id) for area in areas )
-        return output_json(areas)
-
     if format == 'html':
         return render_to_response('postcode.html', {
             'postcode': postcode.as_dict(),
