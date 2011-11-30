@@ -40,18 +40,4 @@ urlpatterns = patterns('',
     (r'^areas$', 'mapit.areas.views.deal_with_POST', { 'call': 'areas' }),
 
     (r'^admin/', include(admin.site.urls)),
-
-    # Old style MaPit calls
-    (r'^get_voting_areas/([A-Za-z0-9 ]+)$', 'mapit.postcodes.views.postcode', { 'legacy': True }),
-    (r'^get_voting_area_info/([0-9A-Za-z]+)$', 'mapit.areas.views.get_voting_area_info'),
-    (r'^get_voting_areas_info/(?P<area_ids>[0-9A-Za-z,]+)$', 'mapit.areas.views.get_voting_areas_info'),
-    (r'^get_voting_areas_info$', 'mapit.areas.views.deal_with_POST', { 'call': 'get_voting_areas_info' }),
-    (r"^get_voting_area_by_name/(.+?)$", 'mapit.areas.views.areas_by_name', { 'legacy': True }),
-    (r'^get_areas_by_type/([A-Z,]+)$', 'mapit.areas.views.areas_by_type', { 'legacy': True }),
-    (r'^get_voting_area_geometry/([0-9]+)$', 'mapit.areas.views.area_geometry', { 'legacy': True }),
-    (r'^get_voting_areas_geometry/([0-9,]+)$', 'mapit.areas.views.areas_geometry', { 'legacy': True }),
-    (r'^get_voting_areas_by_location/(?P<srid>27700|4326)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)/(?P<bb>box|polygon)$', 'mapit.areas.views.areas_by_point', { 'legacy': True }),
-    (r'^get_example_postcode/([0-9]+)$', 'mapit.postcodes.views.example_postcode_for_area', { 'legacy': True }),
-    (r'^get_voting_area_children/([0-9]+)$', 'mapit.areas.views.area_children', { 'legacy': True }),
-    (r'^get_location/([A-Za-z0-9 ]+)(?:/(partial))?$', 'mapit.postcodes.views.get_location'),
 )

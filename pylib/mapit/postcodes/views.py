@@ -44,7 +44,7 @@ def check_postcode(format, postcode):
     return postcode
 
 @ratelimit(minutes=3, requests=100)
-def postcode(request, postcode, legacy=False, format='json'):
+def postcode(request, postcode, format='json'):
     postcode = check_postcode(format, postcode)
     if isinstance(postcode, HttpResponse): return postcode
     try:
@@ -93,7 +93,7 @@ def postcode(request, postcode, legacy=False, format='json'):
     out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
     if shortcuts: out['shortcuts'] = shortcuts
     return output_json(out)
-    
+
 @ratelimit(minutes=3, requests=100)
 def partial_postcode(request, postcode, format='json'):
     postcode = re.sub('\s+', '', postcode.upper())
@@ -120,7 +120,7 @@ def partial_postcode(request, postcode, format='json'):
     return output_json(postcode.as_dict())
 
 @ratelimit(minutes=3, requests=100)
-def example_postcode_for_area(request, area_id, legacy=False, format='json'):
+def example_postcode_for_area(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
     try:
@@ -147,13 +147,4 @@ def form_submitted(request):
         return redirect('/')
     return redirect('mapit.postcodes.views.postcode', postcode=pc, format='html')
 
-# Legacy Views from old MaPit. Don't use in future.
-
-@ratelimit(minutes=3, requests=100)
-def get_location(request, postcode, partial):
-    if partial:
-        return partial_postcode(request, postcode)
-    postcode = check_postcode('json', postcode)
-    if isinstance(postcode, HttpResponse): return postcode
-    return output_json(postcode.as_dict())
 
