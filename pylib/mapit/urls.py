@@ -33,6 +33,8 @@ urlpatterns = patterns('',
     (r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.areas.views.areas_by_point_latlon'),
     (r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.areas.views.areas_by_point_osgb'),
 
+    (r'^nearest/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)%s$' % format_end, 'mapit.postcodes.views.nearest'),
+
     (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)%s$' % format_end, 'mapit.areas.views.areas'),
     (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)/geometry$', 'mapit.areas.views.areas_geometry'),
     (r'^areas/(?P<type>[A-Z,]*[A-Z]+)%s$' % format_end, 'mapit.areas.views.areas_by_type'),

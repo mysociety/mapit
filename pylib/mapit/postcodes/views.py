@@ -13,6 +13,8 @@ from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -143,4 +145,27 @@ def form_submitted(request):
         return redirect('/')
     return redirect('mapit.postcodes.views.postcode', postcode=pc, format='html')
 
+@ratelimit(minutes=3, requests=100)
+def nearest(request, srid, x, y, format='json'):
+    location = Point(float(x), float(y), srid=int(srid))
+    set_timeout(format)
+    try:
+        postcode = Postcode.objects.filter(location__distance_gte=( location, D(mi=0) )).distance(location).order_by('distance')[0]
+    except QueryCanceledError:
+        return output_error(format, 'That query was taking too long to compute.', 500)
+    except DatabaseError, e:
+        if 'canceling statement due to statement timeout' not in e.args[0]: raise
+        return output_error(format, 'That query was taking too long to compute.', 500)
+    except:
+        return output_error(format, 'No postcode found near %d,%d (%s)' % (x, y, srid), 404)
+
+    if format == 'html':
+        return render_to_response('postcode.html', {
+            'postcode': postcode.as_dict(),
+            'json': '/postcode/',
+        })
+
+    return output_json({
+        'postcode': postcode.as_dict(),
+    })
 
