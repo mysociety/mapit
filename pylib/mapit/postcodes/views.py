@@ -13,6 +13,8 @@ from mapit.ratelimitcache import ratelimit
 from django.template import loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
+from django.contrib.gis.geos import Point
+from django.contrib.gis.measure import D
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -144,3 +146,23 @@ def form_submitted(request):
     return redirect('mapit.postcodes.views.postcode', postcode=pc, format='html')
 
 
+@ratelimit(minutes=3, requests=100)
+def nearest(request, srid, x, y, bb=False, legacy=False, format='json'):
+    location = Point(float(x), float(y), srid=int(srid))
+    args = {
+        'location__distance_gte': ( location, D( mi = 0) ),
+        }
+    try:
+        pc = Postcode.objects.filter(**args).distance(location).order_by('distance')[0]
+    except:
+        return output_error(format,
+                            'No postcode found near %d,%d (%s)' % (x, y, srid),
+                            404)
+
+    if format == 'html':
+        return render_to_response('postcode.html', {
+            'postcode': pc.as_dict(),
+            'json': '/postcode/nearest/',
+        })
+
+    return output_json(pc.as_dict())
