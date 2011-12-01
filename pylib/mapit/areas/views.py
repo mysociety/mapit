@@ -20,17 +20,30 @@ def generations(request):
     generations = Generation.objects.all()
     return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
 
+def uk_code_lookup(area_id, format):
+    area_code = None
+    if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
+        area_code = 'ons'
+    if re.match('[ENSW]\d{8}$', area_id):
+        area_code = 'gss'
+    if not area_code:
+        return None
+    area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
+    if isinstance(area, HttpResponse): return area
+    return HttpResponseRedirect('/area/%d%s' % (area.id, '.%s' % format if format else ''))
+
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
-    if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
-        area = get_object_or_404(Area, format=format, codes__type='ons', codes__code=area_id)
-    elif re.match('[ENSW]\d{8}$', area_id):
-        area = get_object_or_404(Area, format=format, codes__type='gss', codes__code=area_id)
-    elif not re.match('\d+$', area_id):
+    if mysociety.config.get('COUNTRY') == 'GB':
+        resp = uk_code_lookup(area_id, format)
+        if resp: return resp
+
+    if not re.match('\d+$', area_id):
         return output_error(format, 'Bad area ID specified', 400)
-    else:
-        area = get_object_or_404(Area, format=format, id=area_id)
+
+    area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
+
     if format == 'html':
         return render(request, 'area.html', {
             'area': area,
@@ -40,9 +53,17 @@ def area(request, area_id, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
+    if not srid and mysociety.config.get('COUNTRY') == 'GB':
+        resp = uk_code_lookup(area_id, format)
+        if resp: return resp
+
+    if not re.match('\d+$', area_id):
+        return output_error(format, 'Bad area ID specified', 400)
+
     if not srid:
         srid = 4326 if format in ('kml', 'json', 'geojson') else int(mysociety.config.get('AREA_SRID'))
     srid = int(srid)
+
     area = get_object_or_404(Area, id=area_id)
     if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
@@ -315,11 +336,11 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (lon, lat, "/bb" if bb else '', '.%s' % format if format else ''))
+    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (lon, lat, "/box" if bb else '', '.%s' % format if format else ''))
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False, format=''):
-    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (e, n, "/bb" if bb else '', '.%s' % format if format else ''))
+    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (e, n, "/box" if bb else '', '.%s' % format if format else ''))
 
 # ---
 
