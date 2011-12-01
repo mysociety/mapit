@@ -3,9 +3,15 @@
 import os, sys
 
 file_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-path = os.path.normpath(file_dir + "/../pylib")
+path = os.path.normpath(os.path.join(file_dir, '..', 'pylib'))
 if path not in sys.path:
     sys.path.append(path)
+
+import mapit.settings
+
+if mapit.settings.DEBUG:
+    import wsgi_monitor
+    wsgi_monitor.start(interval=1.0)
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'mapit.settings'
 
