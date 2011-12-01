@@ -143,9 +143,9 @@ def area_intersect(query_type, title, request, area_id, format):
     elif area.type in ('EUR'):
         args['type'] = area.type
 
+    set_timeout(format)
     areas = Area.objects.intersect(query_type, area).exclude(id=area.id).filter(**args).distinct()
 
-    set_timeout(format)
     try:
         if format == 'html':
             return output_html(request,

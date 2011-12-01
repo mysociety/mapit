@@ -107,15 +107,12 @@ class AreaManager(models.GeoManager):
             'areas_geometry.area_id = areas_area.id',
             'areas_geometry.polygon && (select st_collect(polygon) from areas_geometry where area_id=%s)',
         ]
-        for type in query_type:
-            where.append(
-                'ST_%s(areas_geometry.polygon, (select st_collect(polygon) from areas_geometry where area_id=%%s))' % type,
-            )
+        where.append('(' + ' OR '.join([ 'ST_%s(areas_geometry.polygon, (select st_collect(polygon) from areas_geometry where area_id=%%s))' % type for type in query_type ]) + ')')
 
         return Area.objects.exclude(id=area.id).extra(
             tables = [ 'areas_geometry' ],
             where = where,
-            params = [ area.id ] * ( len(where) - 1 ),
+            params = [ area.id ] * ( 1 + len(query_type) ),
         )
 
     def get_or_create_with_name(self, country='', type='', name_type='', name=''):
