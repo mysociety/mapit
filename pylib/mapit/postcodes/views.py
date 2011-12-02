@@ -5,16 +5,19 @@ try:
     from django.db.utils import DatabaseError
 except:
     from psycopg2 import DatabaseError
-from mapit.postcodes.models import Postcode
-from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode, is_special_uk_postcode
-from mapit.areas.models import Area, Generation
-from mapit.shortcuts import output_json, get_object_or_404, output_error, set_timeout
-from mapit.ratelimitcache import ratelimit
+
 from django.template import loader
 from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+
+from mapit.postcodes.models import Postcode
+from mapit.postcodes.utils import is_valid_postcode, is_valid_partial_postcode
+from mapit.areas.models import Area, Generation
+from mapit.shortcuts import output_json, get_object_or_404, output_error, set_timeout
+from mapit.ratelimitcache import ratelimit
+import mapit.countries
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -53,7 +56,7 @@ def postcode(request, postcode, format='json'):
         generation = int(request.REQUEST['generation'])
     except:
         generation = Generation.objects.current()
-    if not is_special_uk_postcode(postcode.postcode):
+    if not hasattr(mapit.countries, 'is_special_postcode') or not mapit.countries.is_special_postcode(postcode.postcode):
         areas = Area.objects.by_postcode(postcode, generation)
     else:
         areas = []

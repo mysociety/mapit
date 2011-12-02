@@ -17,27 +17,16 @@ from django.conf import settings
 from mapit.areas.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
+import mapit.countries
 
 def generations(request):
     generations = Generation.objects.all()
     return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
 
-def uk_code_lookup(area_id, format):
-    area_code = None
-    if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
-        area_code = 'ons'
-    if re.match('[ENSW]\d{8}$', area_id):
-        area_code = 'gss'
-    if not area_code:
-        return None
-    area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
-    if isinstance(area, HttpResponse): return area
-    return HttpResponseRedirect('/area/%d%s' % (area.id, '.%s' % format if format else ''))
-
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
-    if settings.MAPIT_COUNTRY == 'GB':
-        resp = uk_code_lookup(area_id, format)
+    if hasattr(mapit.countries, 'area_code_lookup'):
+        resp = mapit.countries.area_code_lookup(area_id, format)
         if resp: return resp
 
     if not re.match('\d+$', area_id):
@@ -55,8 +44,8 @@ def area(request, area_id, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
-    if not srid and settings.MAPIT_COUNTRY == 'GB':
-        resp = uk_code_lookup(area_id, format)
+    if not srid and hasattr(mapit.countries, 'area_code_lookup'):
+        resp = mapit.countries.area_code_lookup(area_id, format)
         if resp: return resp
 
     if not re.match('\d+$', area_id):
@@ -273,14 +262,16 @@ def _area_geometry(area_id):
         all_areas.transform(4326)
         out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
         out['centre_lon'], out['centre_lat'] = all_areas.centroid
-    elif settings.MAPIT_COUNTRY == 'NO':
+    else:
         out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
         out['centre_lon'], out['centre_lat'] = all_areas.centroid
-        all_areas.transform(32633)
-        out['srid_en'] = 32633
-        out['area'] = all_areas.area
-        out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
-        out['centre_e'], out['centre_n'] = all_areas.centroid
+        if hasattr(mapit.countries, 'area_geometry_srid'):
+            srid = mapit.countries.area_geometry_srid
+            all_areas.transform(srid)
+            out['srid_en'] = srid
+            out['area'] = all_areas.area
+            out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
+            out['centre_e'], out['centre_n'] = all_areas.centroid
     return out
 
 @ratelimit(minutes=3, requests=100)

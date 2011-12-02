@@ -4,7 +4,7 @@ from django.db import connection, transaction
 from django.conf import settings
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
-from mapit.postcodes.utils import is_special_uk_postcode
+import mapit.countries
 
 class PostcodeManager(GeoManager):
     def get_query_set(self):
@@ -42,8 +42,8 @@ class Postcode(models.Model):
 
     # Prettify postcode for display, if we know how to
     def get_postcode_display(self):
-        if settings.MAPIT_COUNTRY == 'GB':
-            return re.sub('(...)$', r' \1', self.postcode).strip()
+        if hasattr(mapit.countries, 'get_postcode_display'):
+            return mapit.countries.get_postcode_display(self.postcode)
         return self.postcode
 
     def as_dict(self):
@@ -57,15 +57,8 @@ class Postcode(models.Model):
             'wgs84_lon': loc[0],
             'wgs84_lat': loc[1]
         }
-        if settings.MAPIT_COUNTRY == 'GB' and not is_special_uk_postcode(self.postcode):
-            if self.postcode[0:2] == 'BT':
-                loc = self.as_irish_grid()
-                result['coordsyst'] = 'I'
-            else:
-                loc.transform(27700)
-                result['coordsyst'] = 'G'
-            result['easting'] = int(round(loc[0]))
-            result['northing'] = int(round(loc[1]))
+        if hasattr(mapit.countries, 'augment_postcode'):
+            mapit.countries.augment_postcode(self, result)
         return result
 
     # Doing this via self.location.transform(29902) gives incorrect results.

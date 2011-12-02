@@ -69,6 +69,9 @@ if MAPIT_COUNTRY == 'GB':
 elif MAPIT_COUNTRY == 'NO':
     TIME_ZONE = 'Europe/Oslo'
     LANGUAGE_CODE = 'no'
+else:
+    TIME_ZONE = 'Europe/London'
+    LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -129,15 +132,10 @@ ROOT_URLCONF = 'mapit.urls'
 # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 # Always use forward slashes, even on Windows.
 # Don't forget to use absolute paths, not relative paths.
-if MAPIT_COUNTRY == 'GB':
-    TEMPLATE_DIRS = (
-        package_dir + '/templates',
-    )
-elif MAPIT_COUNTRY == 'NO':
-    TEMPLATE_DIRS = (
-        package_dir + '/templates/no',
-        package_dir + '/templates',
-    )
+TEMPLATE_DIRS = (
+    os.path.join( package_dir, 'templates', MAPIT_COUNTRY.lower() ),
+    os.path.join( package_dir, 'templates' ),
+)
 
 if django.get_version() >= '1.2':
     TEMPLATE_CONTEXT_PROCESSORS = (
