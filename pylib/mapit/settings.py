@@ -1,22 +1,23 @@
 import os
 import sys
+import yaml
 import django
 
 package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-paths = (
-    os.path.normpath(package_dir + "/../../pylib"),
-    os.path.normpath(package_dir + "/../../commonlib/pylib"),
-)
-for path in paths:
-    if path not in sys.path:
-        sys.path.append(path)
+path = os.path.normpath(package_dir + "/../../pylib")
+if path not in sys.path:
+    sys.path.append(path)
 
-import mysociety.config
-mysociety.config.set_file(os.path.abspath(package_dir + "/../../conf/general"))
+# load the mySociety config
+config = yaml.load( open(os.path.normpath(package_dir + "/../../conf/general.yml"), 'r') )
+
+MAPIT_AREA_SRID = int(config['AREA_SRID'])
+MAPIT_COUNTRY = config['COUNTRY']
+MAPIT_RATE_LIMIT = config['RATE_LIMIT']
 
 # Django settings for mapit project.
 
-if int(mysociety.config.get('STAGING')):
+if int(config['STAGING']):
     CACHE_BACKEND = 'dummy://'
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
@@ -25,12 +26,12 @@ else:
     CACHE_MIDDLEWARE_KEY_PREFIX = ''
     CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-DEBUG = True if int(mysociety.config.get('STAGING')) else False
+DEBUG = True if int(config['STAGING']) else False
 TEMPLATE_DEBUG = DEBUG
 
-SERVER_EMAIL = mysociety.config.get('BUGS_EMAIL')
+SERVER_EMAIL = config['BUGS_EMAIL']
 ADMINS = (
-    ('mySociety bugs', mysociety.config.get('BUGS_EMAIL')),
+    ('mySociety bugs', config['BUGS_EMAIL']),
 )
 
 MANAGERS = ADMINS
@@ -39,20 +40,20 @@ if django.get_version() >= '1.2':
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': mysociety.config.get('MAPIT_DB_NAME'),
-            'USER': mysociety.config.get('MAPIT_DB_USER'),
-            'PASSWORD': mysociety.config.get('MAPIT_DB_PASS'),
-            'HOST': mysociety.config.get('MAPIT_DB_HOST'),
-            'PORT': mysociety.config.get('MAPIT_DB_PORT'),
+            'NAME': config['MAPIT_DB_NAME'],
+            'USER': config['MAPIT_DB_USER'],
+            'PASSWORD': config['MAPIT_DB_PASS'],
+            'HOST': config['MAPIT_DB_HOST'],
+            'PORT': config['MAPIT_DB_PORT'],
         }
     }
 else:
     DATABASE_ENGINE = 'postgresql_psycopg2'
-    DATABASE_NAME = mysociety.config.get('MAPIT_DB_NAME')
-    DATABASE_USER = mysociety.config.get('MAPIT_DB_USER')
-    DATABASE_PASSWORD = mysociety.config.get('MAPIT_DB_PASS')
-    DATABASE_HOST = mysociety.config.get('MAPIT_DB_HOST')
-    DATABASE_PORT = mysociety.config.get('MAPIT_DB_PORT')
+    DATABASE_NAME = config['MAPIT_DB_NAME']
+    DATABASE_USER = config['MAPIT_DB_USER']
+    DATABASE_PASSWORD = config['MAPIT_DB_PASS']
+    DATABASE_HOST = config['MAPIT_DB_HOST']
+    DATABASE_PORT = config['MAPIT_DB_PORT']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -61,10 +62,10 @@ else:
 # system time zone.
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-if mysociety.config.get('COUNTRY') == 'GB':
+if MAPIT_COUNTRY == 'GB':
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en-gb'
-elif mysociety.config.get('COUNTRY') == 'NO':
+elif MAPIT_COUNTRY == 'NO':
     TIME_ZONE = 'Europe/Oslo'
     LANGUAGE_CODE = 'no'
 
@@ -89,7 +90,7 @@ MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = mysociety.config.get('DJANGO_SECRET_KEY')
+SECRET_KEY = config['DJANGO_SECRET_KEY']
 
 # List of callables that know how to import templates from various sources.
 if django.get_version() >= '1.2':
@@ -127,11 +128,11 @@ ROOT_URLCONF = 'mapit.urls'
 # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
 # Always use forward slashes, even on Windows.
 # Don't forget to use absolute paths, not relative paths.
-if mysociety.config.get('COUNTRY') == 'GB':
+if MAPIT_COUNTRY == 'GB':
     TEMPLATE_DIRS = (
         package_dir + '/templates',
     )
-elif mysociety.config.get('COUNTRY') == 'NO':
+elif MAPIT_COUNTRY == 'NO':
     TEMPLATE_DIRS = (
         package_dir + '/templates/no',
         package_dir + '/templates',

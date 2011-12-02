@@ -1,12 +1,12 @@
 import re
-import mysociety.config
+from django.conf import settings
 
 def is_valid_postcode(pc):
     pc = re.sub('\s+', '', pc.upper())
 
-    if mysociety.config.get('COUNTRY') == 'GB':
+    if settings.MAPIT_COUNTRY == 'GB':
         return is_valid_uk_postcode(pc)
-    elif mysociety.config.get('COUNTRY') == 'NO':
+    elif settings.MAPIT_COUNTRY == 'NO':
         return is_valid_no_postcode(pc)
     return False
 
@@ -60,9 +60,9 @@ def is_valid_no_postcode(pc):
 def is_valid_partial_postcode(pc):
     pc = re.sub('\s+', '', pc.upper())
 
-    if mysociety.config.get('COUNTRY') == 'GB':
+    if settings.MAPIT_COUNTRY == 'GB':
         return is_valid_partial_uk_postcode(pc)
-    elif mysociety.config.get('COUNTRY') == 'NO':
+    elif settings.MAPIT_COUNTRY == 'NO':
         return is_valid_partial_no_postcode(pc)
     return False
 

@@ -1,8 +1,9 @@
-from django.http import HttpResponseForbidden
-from django.core.cache import cache
 from datetime import datetime, timedelta
 import functools, hashlib
-import mysociety.config
+
+from django.http import HttpResponseForbidden
+from django.core.cache import cache
+from django.conf import settings
 
 class ratelimit(object):
     "Instances of this class can be used as decorators"
@@ -10,7 +11,7 @@ class ratelimit(object):
     minutes = 2 # The time period
     requests = 20 # Number of allowed requests in that time period
     # IP addresses that aren't rate limited
-    excluded_ips = mysociety.config.get('RATE_LIMIT')
+    excluded_ips = settings.MAPIT_RATE_LIMIT
     
     prefix = 'rl-' # Prefix for memcache key
     
@@ -56,7 +57,7 @@ class ratelimit(object):
             cache.set(key, cache.get(key, 0) + 1, self.expire_after())
     
     def should_ratelimit(self, request):
-        return len(mysociety.config.get('RATE_LIMIT'))
+        return len(settings.MAPIT_RATE_LIMIT)
     
     def get_counters(self, request):
         return self.cache_get_many(self.keys_to_check(request))

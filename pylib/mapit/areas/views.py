@@ -7,14 +7,16 @@ try:
 except:
     from psycopg2 import DatabaseError
 from osgeo import gdal
-from mapit.areas.models import Area, Generation, Geometry, Code
-from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
-from mapit.ratelimitcache import ratelimit
+
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
 from django.db.models import Q
-import mysociety.config
+from django.conf import settings
+
+from mapit.areas.models import Area, Generation, Geometry, Code
+from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
+from mapit.ratelimitcache import ratelimit
 
 def generations(request):
     generations = Generation.objects.all()
@@ -34,7 +36,7 @@ def uk_code_lookup(area_id, format):
 
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
-    if mysociety.config.get('COUNTRY') == 'GB':
+    if settings.MAPIT_COUNTRY == 'GB':
         resp = uk_code_lookup(area_id, format)
         if resp: return resp
 
@@ -53,7 +55,7 @@ def area(request, area_id, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
-    if not srid and mysociety.config.get('COUNTRY') == 'GB':
+    if not srid and settings.MAPIT_COUNTRY == 'GB':
         resp = uk_code_lookup(area_id, format)
         if resp: return resp
 
@@ -61,7 +63,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         return output_error(format, 'Bad area ID specified', 400)
 
     if not srid:
-        srid = 4326 if format in ('kml', 'json', 'geojson') else int(mysociety.config.get('AREA_SRID'))
+        srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
     srid = int(srid)
 
     area = get_object_or_404(Area, id=area_id)
@@ -73,7 +75,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         all_areas = all_areas[0].polygon
     else:
         return output_json({ 'error': 'No polygons found' }, code=404)
-    if srid != int(mysociety.config.get('AREA_SRID')):
+    if srid != settings.MAPIT_AREA_SRID:
         all_areas.transform(srid)
 
     try:
@@ -263,15 +265,15 @@ def _area_geometry(area_id):
     out = {
         'parts': all_areas.num_geom,
     }
-    if int(mysociety.config.get('AREA_SRID')) != 4326:
-        out['srid_en'] = mysociety.config.get('AREA_SRID')
+    if settings.MAPIT_AREA_SRID != 4326:
+        out['srid_en'] = settings.MAPIT_AREA_SRID
         out['area'] = all_areas.area
         out['min_e'], out['min_n'], out['max_e'], out['max_n'] = all_areas.extent
         out['centre_e'], out['centre_n'] = all_areas.centroid
         all_areas.transform(4326)
         out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
         out['centre_lon'], out['centre_lat'] = all_areas.centroid
-    elif mysociety.config.get('COUNTRY') == 'NO':
+    elif settings.MAPIT_COUNTRY == 'NO':
         out['min_lon'], out['min_lat'], out['max_lon'], out['max_lat'] = all_areas.extent
         out['centre_lon'], out['centre_lat'] = all_areas.centroid
         all_areas.transform(32633)
@@ -296,7 +298,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
     gdal.UseExceptions()
     try:
-        location.transform(mysociety.config.get('AREA_SRID'), clone=True)
+        location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
         return output_error(format, 'Point outside the area geometry', 400)
 

@@ -1,7 +1,7 @@
 import re
-import mysociety.config
 from django.contrib.gis.db import models
 from django.db import connection, transaction
+from django.conf import settings
 from mapit.managers import GeoManager
 from mapit.areas.models import Area
 from mapit.postcodes.utils import is_special_uk_postcode
@@ -42,7 +42,7 @@ class Postcode(models.Model):
 
     # Prettify postcode for display, if we know how to
     def get_postcode_display(self):
-        if mysociety.config.get('COUNTRY') == 'GB':
+        if settings.MAPIT_COUNTRY == 'GB':
             return re.sub('(...)$', r' \1', self.postcode).strip()
         return self.postcode
 
@@ -57,7 +57,7 @@ class Postcode(models.Model):
             'wgs84_lon': loc[0],
             'wgs84_lat': loc[1]
         }
-        if mysociety.config.get('COUNTRY') == 'GB' and not is_special_uk_postcode(self.postcode):
+        if settings.MAPIT_COUNTRY == 'GB' and not is_special_uk_postcode(self.postcode):
             if self.postcode[0:2] == 'BT':
                 loc = self.as_irish_grid()
                 result['coordsyst'] = 'I'

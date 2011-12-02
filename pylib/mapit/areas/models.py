@@ -1,8 +1,10 @@
 import re
 import itertools
+
 from django.contrib.gis.db import models
+from django.conf import settings
+
 from mapit.managers import Manager, GeoManager
-import mysociety.config
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -201,7 +203,7 @@ class Area(models.Model):
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
-    polygon = models.PolygonField(srid=int(mysociety.config.get('AREA_SRID')))
+    polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
     objects = GeoManager()
 
     class Meta:
