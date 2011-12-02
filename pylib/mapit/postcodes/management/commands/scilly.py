@@ -2,6 +2,7 @@
 # the Isles alone. We have to generate the COP parishes within it.
 
 import csv
+import re
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
@@ -38,14 +39,18 @@ class Command(LabelCommand):
             if area.parent_area != council:
                 area.parent_area = council
                 area.save()
-            # old_ward_code here as Code-Point as of 2010-11 still has old code
             ward[old_ward_code] = area
+            ward[new_ward_code] = area
 
         for row in csv.reader(open(file)):
             if row[1] == '90': continue
             postcode = row[0].strip().replace(' ', '')
-            ons_code = ''.join(row[15:18])
-            if ons_code[0:4] != '00HF': continue
+            if len(row) == 10:
+                ons_code = row[9]
+                if not re.match('^E0500832[2-6]$', ons_code): continue
+            else:
+                ons_code = ''.join(row[15:18])
+                if ons_code[0:4] != '00HF': continue
             pc = Postcode.objects.get(postcode=postcode)
             pc.areas.add(ward[ons_code])
             print ".",
