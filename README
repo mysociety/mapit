@@ -2,54 +2,87 @@ MapIt
 =====
 
 pylib/mapit is a standard GeoDjango project; the rest is mostly to fit within
-mySociety's standard deployment.
-
-Checking out the code
----------------------
-
-A standard git clone will get you the repository. Some code (used by multiple
-mySociety projects) is kept in a submodule repository called commonlib - to get
-that, simply type "git submodule update --init" in the main repository
-directory and it'll appear.
+mySociety's standard deployment. MapIt has been installed on Debian lenny and
+squeeze, and on Ubuntus from 10.04 onwards. If GeoDjango and PostGIS run on it,
+it should theoretically be okay; do let us know of any problems. Commands
+are intended to be run via the terminal or over ssh.
 
 Installation
 ------------
 
-Our version is running on Debian lenny, and we've successfully had it running
-on Ubuntu 10.04 as well - to install PostGIS and GeoDjango I just followed all
-the instructions (including creating the template) at
-http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/
+MapIt currently uses Postgres/PostGIS as its database backend - there's no reason 
+why e.g. SpatiaLite could not be used successfully, but it has never been tried.
 
-However, not only is the PostGIS that is installed missing SRID 900913, as
-the GeoDjango docs tell you, but both SRID 27700 (British National Grid) and
-SRID 29902 (Irish National Grid) are incorrect (and they're quite important
-for this application!). After you've installed and got a PostGIS template, log
-in to it and update the proj4text column of SRID 27700 to include
-+datum=OSGB36, and update SRID 29902 to have +datum=ire65. (This may not be
-necessary, depending on your version of PostGIS, but do check.)
+To install GeoDjango and PostGIS, please follow all the standard instructions
+(including creating the template) at:
+    http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/#ubuntudebian
+And anything else you need to set up Django as normal.
 
-Initial instructions for all locations
---------------------------------------
+[ Note for UK/Ireland: Not only is the PostGIS that is installed missing SRID
+900913, as the GeoDjango docs tell you, but both SRID 27700 (British National
+Grid) and SRID 29902 (Irish National Grid) can be incorrect (and they're quite
+important for this application!). After you've installed and got a PostGIS
+template, log in to it and update the proj4text column of SRID 27700 to include
++datum=OSGB36, and update SRID 29902 to have +datum=ire65. This may not be
+necessary, depending on your version of PostGIS, but do check. ]
 
-1. Make sure DEBUG is 0 in conf/general.yml, otherwise you'll run out
-   of memory as it tries to remember all the SQL queries made.
-2. Optional: turn off escape_string_warning in Postgres' config (unless you
-   want your server to run out of disc space logging all the errors, as ours
-   did the first time I imported overnight and didn't realise).
+You will also need a couple of other Debian packages, so install them:
+
+    sudo apt-get install python-yaml memcached python-memcache git-core
+
+A standard git clone will now get you the repository:
+
+    git clone git://github.com/mysociety/mapit.git
+
+Now in a terminal, navigate to the mapit directory you've just cloned.
+
+Copy conf/general.yml-example to conf/general.yml and edit it to point to
+your local postgresql database, and edit the other settings as per the
+documentation given in that file. If you don't know what SRID to use, delete
+that line or set it to 4326. COUNTRY is used for e.g. differing sorts of
+postcode (zipcode) validation.
+
+If you're going to be importing big datasets, make sure that DEBUG is False;
+otherwise, you'll run out of memory as it tries to remember all the SQL queries made.
+
+Optionally, also turn off escape_string_warning in Postgres' config (unless you
+want your server to run out of disc space logging all the errors, as ours did
+the first time I imported overnight and didn't realise).
+
+At this stage, you should be able to set up the database and run the
+development server. Do add an admin user when prompted:
+
+    cd pylib/mapit
+    ./manage.py syncdb
+    ./manage.py runserver
+
+(Alternatively, set up a live web server however you wish - see the Deployment
+Django documentation for details beyond the scope of this document.)
+
+You can then visit http://localhost:8000/ and hopefully see the default MapIt homepage.
+http://localhost:8000/admin/ should show the admin interface.
+
+This is enough to have a working site. You can create areas and postcodes using the
+admin interface and they will automatically work in the API-based front end.
+
+However, if you have some bulk data you wish to import (which will make things
+easier), you will need to import this data into MapIt. Below are some
+instructions for such bulk import for the United Kingdom and Norway, which
+should show the general format for how it's done.
 
 United Kingdom
 --------------
 
 Here are the basic instructions to install OS OpenData and NSPD Open:
 
-1. Set AREA_SRID in conf/general.yml to 27700 (as Boundary-Line shapes are in OSGB).   
+1. AREA_SRID in conf/general.yml should be 27700 (as Boundary-Line shapes are in OSGB).   
 2. Download the latest Code-Point Open, Boundary-Line and NSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
 3. Change to the pylib/mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
    # (Alternatively, set up a live web server however you wish.)
-4. Run the following:
+4. Run the following in order:
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py loaddata uk
    ./manage.py import_boundary_line --control=controls.first-gss --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`

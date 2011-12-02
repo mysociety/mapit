@@ -12,7 +12,7 @@ if path not in sys.path:
 config = yaml.load( open(os.path.normpath(package_dir + "/../../conf/general.yml"), 'r') )
 
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
-MAPIT_COUNTRY = config['COUNTRY']
+MAPIT_COUNTRY = config.get('COUNTRY', '')
 MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
 
 # Django settings for mapit project.
