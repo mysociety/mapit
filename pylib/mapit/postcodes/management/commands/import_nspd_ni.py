@@ -15,14 +15,14 @@
 
 import csv
 from django.contrib.gis.geos import Point
-from django.core.management.base import LabelCommand
 from django.db import transaction
-from mapit.postcodes.models import Postcode
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area
+from utils import PostcodeCommand
 
-class Command(LabelCommand):
+class Command(PostcodeCommand):
     help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'
     args = '<NSPD CSV file>'
+    often = 10000
 
     @transaction.commit_manually
     def handle_label(self, file, **options):
@@ -54,7 +54,6 @@ class Command(LabelCommand):
                 code_to_area['NIE' + parl_code] = nia_area
                 code_to_area['NIE' + gss_code] = nia_area
 
-        count = { 'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0 }
         for row in csv.reader(open(file)):
             if row[4]: continue # Terminated postcode
             if row[11] == '9': continue # PO Box etc.
@@ -65,21 +64,6 @@ class Command(LabelCommand):
             # NSPD (now ONSPD) started using GSS codes for Parliament in February 2011
             # Detect this here; although they're still using old codes for council/wards
             gss = True if len(row[7]) == 6 else False
-
-            # Create/update the postcode
-            location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
-            try:
-                pc = Postcode.objects.get(postcode=postcode)
-                pc_location = pc.as_irish_grid()
-                if round(pc_location[0]) != location[0] or round(pc_location[1]) != location[1]:
-                    pc.location = location
-                    pc.save()
-                    count['updated'] += 1
-                else:
-                    count['unchanged'] += 1
-            except Postcode.DoesNotExist:
-                pc = Postcode.objects.create(postcode=postcode, location=location)
-                count['created'] += 1
 
             # Create/update the areas
             if gss:
@@ -97,13 +81,10 @@ class Command(LabelCommand):
             nia_area = code_to_area['NIE' + parl_code]
             parl_area = code_to_area[parl_code]
 
+            # Create/update the postcode
+            location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
+            pc = self.do_postcode(postcode, location)
             pc.areas.clear()
             pc.areas.add(ward, electoral_area, council, nia_area, parl_area, euro_area)
             transaction.commit()
-
-            count['total'] += 1
-            if count['total'] % 10000 == 0:
-                print "Imported %d (%d new, %d changed, %d same)" % (
-                    count['total'], count['created'], count['updated'], count['unchanged']
-                )
 
