@@ -11,13 +11,16 @@ if path not in sys.path:
 # load the mySociety config
 config = yaml.load( open(os.path.normpath(package_dir + "/../../conf/general.yml"), 'r') )
 
-MAPIT_AREA_SRID = int(config['AREA_SRID'])
+MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 MAPIT_COUNTRY = config['COUNTRY']
-MAPIT_RATE_LIMIT = config['RATE_LIMIT']
+MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
 
 # Django settings for mapit project.
 
-if int(config['STAGING']):
+DEBUG = config.get('DEBUG', True)
+TEMPLATE_DEBUG = DEBUG
+
+if DEBUG:
     CACHE_BACKEND = 'dummy://'
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
@@ -26,13 +29,11 @@ else:
     CACHE_MIDDLEWARE_KEY_PREFIX = ''
     CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-DEBUG = True if int(config['STAGING']) else False
-TEMPLATE_DEBUG = DEBUG
-
-SERVER_EMAIL = config['BUGS_EMAIL']
-ADMINS = (
-    ('mySociety bugs', config['BUGS_EMAIL']),
-)
+if config.get('BUGS_EMAIL'):
+    SERVER_EMAIL = config['BUGS_EMAIL']
+    ADMINS = (
+        ('mySociety bugs', config['BUGS_EMAIL']),
+    )
 
 MANAGERS = ADMINS
 

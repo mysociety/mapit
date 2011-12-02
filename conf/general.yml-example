@@ -1,7 +1,7 @@
 # general.yml-example:
-# Example values for the "general" config file.
+# Example values for the "general.yml" config file.
 #
-# Copy this file to one called "general" in the same directory. Or have
+# Copy this file to one called "general.yml" in the same directory. Or have
 # multiple config files and use a symlink to change between them.
 
 # Connection details for database
@@ -13,10 +13,22 @@ MAPIT_DB_PORT: null
 
 # Country is currently one of GB, NO, or KE
 COUNTRY: 'GB'
-# An EPSG code for what the areas are stored as. 27700 is OSGB, 4326 for WGS84.
+
+# An EPSG code for what the areas are stored as, e.g. 27700 is OSGB, 4326 for WGS84.
+# Optional, defaults to 4326.
 AREA_SRID: 27700
-STAGING: 1
-RATE_LIMIT: []
+
+# A secret key for this particular Django installation.
+# Set this to a random string -- the longer, the better.
+DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
+
+# Mapped to Django's DEBUG and TEMPLATE_DEBUG settings. Optional, defaults to True.
+DEBUG: True
+
+# A list of IP addresses that should be excluded from rate limiting. Optional.
+RATE_LIMIT:
+  - '127.0.0.1'
+
+# Email address that errors should be sent to. Optional.
 BUGS_EMAIL: 'example@example.org'
 
-DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
