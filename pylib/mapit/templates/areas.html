@@ -1,7 +1,7 @@
 <ul>
 {% for area in areas %}
-<li><a href="/area/{{ area.id }}.html">{{ area.name }}</a> <small>(id {{ area.id }})</small>, {{ area.get_type_display }}
-    <small>({{ area.type }})</small>{% ifequal area.type 'EUR' %}, {{ area.get_country_display }}{% endifequal %}
+<li><a href="/area/{{ area.id }}.html">{{ area.name }}</a> <small>(id {{ area.id }})</small>, {{ area.type.description }}
+    <small>({{ area.type.code }})</small>{% ifequal area.type.code 'EUR' %}, {{ area.country }}{% endifequal %}
 {% if area.parent_area %}
 <br><small>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></small>
 {% endif %}

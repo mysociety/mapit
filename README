@@ -31,7 +31,7 @@ necessary, depending on your version of PostGIS, but do check.)
 Initial instructions for all locations
 --------------------------------------
 
-1. Make sure OPTION_STAGING is 0 in conf/general, otherwise you'll run out
+1. Make sure OPTION_STAGING is 0 in conf/general.yml, otherwise you'll run out
    of memory as it tries to remember all the SQL queries made.
 2. Optional: turn off escape_string_warning in Postgres' config (unless you
    want your server to run out of disc space logging all the errors, as ours
@@ -42,7 +42,7 @@ United Kingdom
 
 Here are the basic instructions to install OS OpenData and NSPD Open:
 
-1. Set OPTION_AREA_SRID in conf/general to 27700 (as Boundary-Line shapes are in OSGB).   
+1. Set OPTION_AREA_SRID in conf/general.yml to 27700 (as Boundary-Line shapes are in OSGB).   
 2. Download the latest Code-Point Open, Boundary-Line and NSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
 3. Change to the pylib/mapit directory, create database tables and start the site:
@@ -51,6 +51,7 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
    # (Alternatively, set up a live web server however you wish.)
 4. Run the following:
    ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py loaddata uk
    ./manage.py import_boundary_line --control=controls.first-gss --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
    # (You can run without --commit to do a dry run.)
    # first-gss in the above assumes the Boundary Line you're importing is
@@ -89,13 +90,14 @@ Norway
 
 Here are the basic instructions to install data from OSM:
 
-1. Set OPTION_AREA_SRID in conf/general to 4326 (as OSM shapes are in WGS84).  
+1. Set OPTION_AREA_SRID in conf/general.yml to 4326 (as OSM shapes are in WGS84).  
 2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
 3. Change to the pylib/mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py loaddata norway
    ./manage.py import_norway_osm --commit ../../data/cache/*.kml
    ./manage.py import_area_unions --commit data/norway/regions.csv
    ./manage.py generation_activate --commit
@@ -104,7 +106,7 @@ Please see below for information on where osm_to_kml gets its OSM data from.
 
 Alternatively, here are the basic instructions to install the N5000 data:
 
-1. Set OPTION_AREA_SRID in conf/general to 4326 (as we'll put N5000 shapes into WGS84).  
+1. Set OPTION_AREA_SRID in conf/general.yml to 4326 (as we'll put N5000 shapes into WGS84).  
 2. Download N5000 from
    <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>
    and save/unzip in the data directory.
@@ -113,6 +115,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
    ./manage.py runserver
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
+   ./manage.py loaddata norway
    ./manage.py import_norway_n5000 --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
    ./manage.py import_area_unions --commit data/norway/regions.csv
    ./manage.py generation_activate --commit

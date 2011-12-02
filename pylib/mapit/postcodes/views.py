@@ -61,23 +61,23 @@ def postcode(request, postcode, format='json'):
     # Shortcuts
     shortcuts = {}
     for area in areas:
-        if area.type in ('COP','LBW','LGE','MTW','UTE','UTW'):
+        if area.type.code in ('COP','LBW','LGE','MTW','UTE','UTW'):
             shortcuts['ward'] = area.id
             shortcuts['council'] = area.parent_area_id
-        elif area.type == 'CED':
+        elif area.type.code == 'CED':
             shortcuts.setdefault('ward', {})['county'] = area.id
             shortcuts.setdefault('council', {})['county'] = area.parent_area_id
-        elif area.type == 'DIW':
+        elif area.type.code == 'DIW':
             shortcuts.setdefault('ward', {})['district'] = area.id
             shortcuts.setdefault('council', {})['district'] = area.parent_area_id
-        elif area.type in ('WMC'): # XXX Also maybe 'EUR', 'NIE', 'SPC', 'SPE', 'WAC', 'WAE', 'OLF', 'OLG', 'OMF', 'OMG'):
-            shortcuts[area.type] = area.id
+        elif area.type.code in ('WMC'): # XXX Also maybe 'EUR', 'NIE', 'SPC', 'SPE', 'WAC', 'WAE', 'OLF', 'OLG', 'OMF', 'OMG'):
+            shortcuts[area.type.code] = area.id
 
     # Add manual enclosing areas. 
     extra = []
     for area in areas:
-        if area.type in enclosing_areas.keys():
-            extra.extend(enclosing_areas[area.type])
+        if area.type.code in enclosing_areas.keys():
+            extra.extend(enclosing_areas[area.type.code])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
     if format == 'html':

@@ -4,7 +4,7 @@ import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 from utils import save_polygons
 
 name_to_code = {
@@ -135,8 +135,8 @@ class Command(LabelCommand):
                 m = Area.objects.get(codes__type='gss', codes__code=ons_code)
             except Area.DoesNotExist:
                 m = Area(
-                    type = area_code,
-                    country = 'S',
+                    type = Type.objects.get(code=area_code),
+                    country = Country.objects.get(name='Scotland'),
                     generation_low = new_generation,
                     generation_high = new_generation,
                 )

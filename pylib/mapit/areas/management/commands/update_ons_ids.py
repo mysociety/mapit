@@ -22,16 +22,16 @@ class Command(NoArgsCommand):
             except Area.MultipleObjectsReturned:
                 if old_code == '11' or old_code == '12':
                     # Also the IDs of two EURs, but they're not in this lookup
-                    area = Area.objects.get(type='CTY', codes__code=old_code, codes__type='ons')
+                    area = Area.objects.get(type__code='CTY', codes__code=old_code, codes__type='ons')
                 elif old_code == '09':
                     # Also the ID of a now non-existent county council
-                    area = Area.objects.get(type='EUR', codes__code=old_code, codes__type='ons')
+                    area = Area.objects.get(type__code='EUR', codes__code=old_code, codes__type='ons')
                 else:
                     raise
             except Area.DoesNotExist:
                 # Don't have old WMC codes in, go on name
                 try:
-                    area = Area.objects.get(type='WMC', name=name.decode('iso-8859-1'), generation_high=current_generation)
+                    area = Area.objects.get(type__code='WMC', name=name.decode('iso-8859-1'), generation_high=current_generation)
                 except:
                     # New parishes in 2010-01
                     # 00NS007 Caldey Island and St. Margaret's Island

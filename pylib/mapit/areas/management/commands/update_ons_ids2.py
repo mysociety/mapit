@@ -19,9 +19,9 @@ class Command(NoArgsCommand):
         for row in mapping:
             type, new_code, old_code, name = row
             try:
-                area = Area.objects.get(type=type, codes__code=old_code, codes__type='ons')
+                area = Area.objects.get(type__code=type, codes__code=old_code, codes__type='ons')
             except Area.DoesNotExist:
-                area = Area.objects.get(type=type, name=name.decode('iso-8859-1'), generation_high=current_generation)
+                area = Area.objects.get(type__code=type, name=name.decode('iso-8859-1'), generation_high=current_generation)
 
             # Check if already has the right code
             if 'gss' in area.all_codes and area.all_codes['gss'] == new_code:

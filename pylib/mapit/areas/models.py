@@ -35,6 +35,20 @@ class Generation(models.Model):
             'description': self.description,
         }
 
+class Country(models.Model):
+    code = models.CharField(max_length=1, unique=True)
+    name = models.CharField(max_length=100, unique=True)
+
+    def __unicode__(self):
+        return self.name
+
+class Type(models.Model):
+    code = models.CharField(max_length=3, unique=True)
+    description = models.CharField(max_length=200, blank=True)
+
+    def __unicode__(self):
+        return '%s (%s)' % (self.description, self.code)
+
 class AreaManager(models.GeoManager):
     def by_location(self, location, generation=None):
         if generation is None: generation = Generation.objects.current()
@@ -115,7 +129,7 @@ class AreaManager(models.GeoManager):
             params = [ area.id ] * ( 1 + len(query_type) ),
         )
 
-    def get_or_create_with_name(self, country='', type='', name_type='', name=''):
+    def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         area, created = Area.objects.get_or_create(country=country, type=type,
@@ -130,7 +144,7 @@ class AreaManager(models.GeoManager):
             area.save()
         return area
 
-    def get_or_create_with_code(self, country='', type='', code_type='', code=''):
+    def get_or_create_with_code(self, country=None, type=None, code_type='', code=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         area, created = Area.objects.get_or_create(country=country, type=type,
@@ -148,70 +162,8 @@ class AreaManager(models.GeoManager):
 class Area(models.Model):
     name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
-    type = models.CharField(max_length=3, db_index=True, choices=(
-        ('EUP', 'European Parliament'),
-        ('EUR', 'European region'),
-        ('HOL', 'House of Lords'),
-        ('HOC', 'House of Lords constituency'),
-        ('WMP', 'UK Parliament'),
-        ('WMC', 'UK Parliament constituency'),
-        ('Northern Ireland', (
-            ('NIA', 'Northern Ireland Assembly'),
-            ('NIE', 'Northern Ireland Assembly constituency'),
-            ('LGD', 'Northern Irish Council'),
-            ('LGE', 'Northern Irish Council electoral area'),
-            ('LGW', 'Northern Irish Council ward'),
-        )),
-        ('England', (
-            ('CTY', 'County council'),
-            ('CED', 'County council ward'),
-            ('DIS', 'District council'),
-            ('DIW', 'District council ward'),
-            ('GLA', 'Greater London Authority'),
-            ('LAC', 'London Assembly constituency'),
-            ('LAE', 'London Assembly area (shared)'),
-            ('LAS', 'London Assembly area'),
-            ('LBO', 'London borough'),
-            ('LBW', 'London borough ward'),
-            ('MTD', 'Metropolitan district'),
-            ('MTW', 'Metropolitan district ward'),
-            ('COI', 'Scilly Isles'),
-            ('COP', 'Scilly Isles "ward"'),
-        )),
-        ('SPA', 'Scottish Parliament'),
-        ('SPC', 'Scottish Parliament constituency'),
-        ('SPE', 'Scottish Parliament region'),
-        ('WAS', 'Welsh Assembly'),
-        ('WAC', 'Welsh Assembly constituency'),
-        ('WAE', 'Welsh Assembly region'),
-        ('UTA', 'Unitary Authority'),
-        ('UTE', 'Unitary Authority ward (UTE)'),
-        ('UTW', 'Unitary Authority ward (UTW)'),
-        ('England and Wales', (
-            ('CPC', 'Civil Parish'),
-            ('OLF', 'Lower Layer Super Output Area (Full)'),
-            ('OLG', 'Lower Layer Super Output Area (Generalised)'),
-            ('OMF', 'Middle Layer Super Output Area (Full)'),
-            ('OMG', 'Middle Layer Super Output Area (Generalised)'),
-        )),
-        ('Norway', (
-            ('NFY', 'Norway Fylke'),
-            ('NKO', 'Norway Kommune'),
-            ('NRA', 'Norway Public Roads Administration'),
-            ('NPT', 'Norway Pubic Transport Administration'),
-            ('NPG', 'Norway Power Grid Administration'),
-            ('NRR', 'Norway Railroad Administration'),
-            ('NSA', 'Norway Shoreline Administration'),
-        )),
-    ))
-    country = models.CharField(max_length=1, choices=(
-        ('E', 'England'),
-        ('W', 'Wales'),
-        ('S', 'Scotland'),
-        ('N', 'Northern Ireland'),
-        ('O', 'Norway'),
-        ('', '-'),
-    ), blank=True)
+    type = models.ForeignKey(Type, related_name='areas')
+    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
 
@@ -231,17 +183,17 @@ class Area(models.Model):
 
     def __unicode__(self):
         name = self.name or '(unknown)'
-        return '%s %s' % (self.type, name)
+        return '%s %s' % (self.type.code, name)
 
     def as_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'parent_area': self.parent_area_id,
-            'type': self.type,
-            'type_name': self.get_type_display(),
-            'country': self.country,
-            'country_name': self.get_country_display(),
+            'type': self.type.code,
+            'type_name': self.type.description,
+            'country': self.country.code if self.country else '',
+            'country_name': self.country.name if self.country else '-',
             'generation_low': self.generation_low_id,
             'generation_high': self.generation_high_id,
             'codes': self.all_codes,
@@ -291,11 +243,11 @@ class Name(models.Model):
         n = re.sub(' Assembly Const$', '', n) # WAC
         n = re.sub(' Assembly ER$', '', n) # WAE
         n = re.sub(' London Boro$', ' Borough', n) # LBO
-        if self.area.country == 'W': n = re.sub('^.*? - ', '', n) # UTA
+        if self.area.country and self.area.country.name == 'Wales': n = re.sub('^.*? - ', '', n) # UTA
         n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
         n = re.sub(' District \(B\)$', ' Borough', n) # DIS
         n = re.sub(' \(B\)$', ' Borough', n) # DIS
-        if self.area.type in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'): n += ' Council'
+        if self.area.type.code in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'): n += ' Council'
         n = re.sub(' (ED|CP)$', '', n) # CPC, CED, UTE
         n = re.sub(' Ward$', '', n) # DIW, LBW, MTW, UTW
         return n

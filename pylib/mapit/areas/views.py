@@ -47,7 +47,7 @@ def area(request, area_id, format='json'):
     if format == 'html':
         return render(request, 'area.html', {
             'area': area,
-            'show_geometry': (area.type not in ('EUR', 'SPE', 'WAE'))
+            'show_geometry': (area.type.code not in ('EUR', 'SPE', 'WAE'))
         })
     return output_json( area.as_dict() )
 
@@ -113,9 +113,9 @@ def area_children(request, area_id, format='json'):
 
     type = request.REQUEST.get('type', '')
     if ',' in type:
-        args['type__in'] = type.split(',')
+        args['type__code__in'] = type.split(',')
     elif type:
-        args['type'] = type
+        args['type__code'] = type
 
     children = add_codes(area.children.filter(**args))
 
@@ -137,11 +137,11 @@ def area_intersect(query_type, title, request, area_id, format):
 
     type = request.REQUEST.get('type', '')
     if ',' in type:
-        args['type__in'] = type.split(',')
+        args['type__code__in'] = type.split(',')
     elif type:
-        args['type'] = type
+        args['type__code'] = type
     elif area.type in ('EUR'):
-        args['type'] = area.type
+        args['type__code'] = area.type
 
     set_timeout(format)
     areas = Area.objects.intersect(query_type, area).exclude(id=area.id).filter(**args).distinct()
@@ -209,9 +209,9 @@ def areas_by_type(request, type, format='json'):
 
     args = {}
     if ',' in type:
-        args['type__in'] = type.split(',')
+        args['type__code__in'] = type.split(',')
     elif type:
-        args['type'] = type
+        args['type__code'] = type
 
     if min_generation == -1:
         areas = add_codes(Area.objects.filter(**args))
@@ -239,9 +239,9 @@ def areas_by_name(request, name, format='json'):
         'generation_high__gte': min_generation,
     }
     if ',' in type:
-        args['type__in'] = type.split(',')
+        args['type__code__in'] = type.split(',')
     elif type:
-        args['type'] = type
+        args['type__code'] = type
 
     areas = add_codes(Area.objects.filter(**args))
     out = dict( ( area.id, area.as_dict() ) for area in areas )
@@ -305,9 +305,9 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
 
     if ',' in type:
-        args['type__in'] = type.split(',')
+        args['type__code__in'] = type.split(',')
     elif type:
-        args['type'] = type
+        args['type__code'] = type
 
     if type and method == 'polygon':
         args = dict( ("area__%s" % k, v) for k, v in args.items() )

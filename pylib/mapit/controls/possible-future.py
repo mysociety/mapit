@@ -21,7 +21,7 @@ def check(name, type, country, geometry):
     if type != 'CED': return False
 
     # Make sure CEDs are loaded *after* CTY
-    area_within = Area.objects.filter(type='CTY', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
+    area_within = Area.objects.filter(type__code='CTY', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
     if re.search('Buckinghamshire(?i)', area_within.name):
         return True
 

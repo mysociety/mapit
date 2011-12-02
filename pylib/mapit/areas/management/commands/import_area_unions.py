@@ -12,7 +12,7 @@ from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import GEOSGeometry
-from mapit.areas.models import Area, Generation, Geometry
+from mapit.areas.models import Area, Generation, Geometry, Country, Type
 from utils import save_polygons
 
 # CSV format is
@@ -99,7 +99,6 @@ class Command(LabelCommand):
                     unionoutline = geometry.unionagg()
 
                 def update_or_create():
-                    country = 'O' # Norway
                     try:
                         m = Area.objects.get(id=int(regionid))
                         print "Updating area %s with id %d" % (regionname, int(regionid))
@@ -108,8 +107,8 @@ class Command(LabelCommand):
                         m = Area(
                             id = int(regionid),
                             name = regionname,
-                            type = area_type,
-                            country = country,
+                            type = Type.objects.get(code=area_type),
+                            country = Country.objects.get(code='O'),
                             generation_low = new_generation,
                             generation_high = new_generation,
                             )

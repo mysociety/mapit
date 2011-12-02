@@ -10,7 +10,7 @@
 import csv
 from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Type
 
 lookup = {
     '01': 'Dartmoor National Park',
@@ -56,7 +56,7 @@ class Command(LabelCommand):
 
             national_park = row[36]
             name = lookup[national_park]
-            national_park_area = Area.objects.get_or_create_with_name( type='NPK', name_type='S', name=name )
+            national_park_area = Area.objects.get_or_create_with_name( type=Type.objects.get(code='NPK'), name_type='S', name=name )
             pc.areas.add(national_park_area)
 
             count += 1

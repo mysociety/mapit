@@ -8,7 +8,7 @@ import csv, re
 from django.contrib.gis.geos import Point
 from django.core.management.base import NoArgsCommand
 from mapit.postcodes.models import Postcode
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 
 class Command(NoArgsCommand):
     help = 'Creates/updates Northern Ireland areas'
@@ -16,10 +16,11 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
+        country = Country.objects.get(code='N')
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
-        euro_area, created = Area.objects.get_or_create(country='N', type='EUR',
+        euro_area, created = Area.objects.get_or_create(country=country, type=Type.objects.get(code='EUR'),
             generation_low__lte=current_generation, generation_high__gte=current_generation,
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
@@ -41,7 +42,7 @@ class Command(NoArgsCommand):
             last_electoral_area = electoral_area
             if electoral_area not in e:
                 ea = Area.objects.get_or_create_with_name(
-                    country='N', type='LGE', name_type='M', name=electoral_area,
+                    country=country, type=Type.objects.get(code='LGE'), name_type='M', name=electoral_area,
                 )
                 e[electoral_area] = ea
             ward_to_electoral_area.setdefault(district, {})[ward] = e[electoral_area]
@@ -60,14 +61,14 @@ class Command(NoArgsCommand):
 
             if district_code not in code_to_area:
                 district_area = Area.objects.get_or_create_with_code(
-                    country='N', type='LGD', code_type='ons', code=district_code,
+                    country=country, type=Type.objects.get(code='LGD'), code_type='ons', code=district_code,
                 )
                 district_area.names.get_or_create(type='S', name=district_name)
                 code_to_area[district_code] = district_area
 
             if ward_code not in code_to_area:
                 ward_area = Area.objects.get_or_create_with_code(
-                    country='N', type='LGW', code_type='ons', code=ward_code
+                    country=country, type=Type.objects.get(code='LGW'), code_type='ons', code=ward_code
                 )
                 ward_area.names.get_or_create(type='S', name=ward_name)
                 ward_area.parent_area = ward_to_electoral_area[district_name][ward_name]
@@ -80,7 +81,7 @@ class Command(NoArgsCommand):
 
             if parl_code not in code_to_area:
                 parl_area = Area.objects.get_or_create_with_code(
-                    country='N', type='WMC', code_type='ons', code=parl_code,
+                    country=country, type=Type.objects.get(code='WMC'), code_type='ons', code=parl_code,
                 )
                 parl_area.names.get_or_create(type='S', name=parl_name)
                 new_code = re.sub('^7', 'N060000', parl_code)
@@ -89,7 +90,7 @@ class Command(NoArgsCommand):
                 
             if 'NIE' + parl_code not in code_to_area:
                 nia_area = Area.objects.get_or_create_with_name(
-                    country='N', type='NIE', name_type='S', name=parl_name,
+                    country=country, type=Type.objects.get(code='NIE'), name_type='S', name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
 

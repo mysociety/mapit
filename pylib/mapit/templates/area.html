@@ -29,8 +29,8 @@
 
 <p>ID {{ area.id }},
 generations {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }},
-type {{ area.get_type_display }} (<small>{{ area.type }}</small>),
-{{ area.get_country_display }}.
+type {{ area.type.description }} <small>({{ area.type.code }})</small>,
+{{ area.country }}.
 {% if area.parent_area %}
 A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
 {% endif %}

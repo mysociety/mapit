@@ -5,7 +5,7 @@ import csv
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
 from mapit.postcodes.models import Postcode
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 
 class Command(LabelCommand):
     help = 'Sort out the Isles of Scilly'
@@ -17,8 +17,8 @@ class Command(LabelCommand):
             council = Area.objects.get(codes__type='gss', codes__code='E06000053')
         except:
             council = Area.objects.get(codes__type='ons', codes__code='00HF')
-        if council.type != 'COI':
-            council.type = 'COI'
+        if council.type != Type.objects.get(code='COI'):
+            council.type = Type.objects.get(code='COI')
             council.save()
         
         wards = (
@@ -31,7 +31,7 @@ class Command(LabelCommand):
         ward = {}
         for old_ward_code, new_ward_code, ward_name in wards:
             area = Area.objects.get_or_create_with_code(
-                country='E', type='COP', code_type='gss', code=new_ward_code
+                country=Country.objects.get(code='E'), type=Type.objects.get(code='COP'), code_type='gss', code=new_ward_code
             )
             area.names.get_or_create(type='S', name=ward_name)
             area.codes.get_or_create(type='ons', code=old_ward_code)

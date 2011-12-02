@@ -1,0 +1,12 @@
+[
+    { "pk": 1, "model": "areas.country", "fields": { "code": "O", "name": "Norway" } },
+
+    { "pk": 1, "model": "areas.type", "fields": { "code": "NFY", "description": "Fylke" } },
+    { "pk": 2, "model": "areas.type", "fields": { "code": "NKO", "description": "Kommune" } },
+    { "pk": 3, "model": "areas.type", "fields": { "code": "NRA", "description": "Public Roads Administration" } },
+    { "pk": 4, "model": "areas.type", "fields": { "code": "NPT", "description": "Public Transport Administration" } },
+    { "pk": 5, "model": "areas.type", "fields": { "code": "NPG", "description": "Power Grid Administration" } },
+    { "pk": 6, "model": "areas.type", "fields": { "code": "NRR", "description": "Railroad Administration" } },
+    { "pk": 7, "model": "areas.type", "fields": { "code": "NSA", "description": "Shoreline Administration" } }
+]
+

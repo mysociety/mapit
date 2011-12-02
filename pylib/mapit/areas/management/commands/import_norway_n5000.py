@@ -12,7 +12,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -38,15 +38,14 @@ class Command(LabelCommand):
             code = feat['KOMM'].value
             code_str = '%04d' % code
             area_code = 'NKO'
-            country = 'O'
             
             try:
                 m = Area.objects.get(codes__type='n5000', codes__code=code_str)
             except Area.DoesNotExist:
                 m = Area(
                     id = code,
-                    type = area_code,
-                    country = country,
+                    type = Type.objects.get(code=area_code),
+                    country = Country.objects.get(code='O'),
                     generation_low = new_generation,
                     generation_high = new_generation,
                 )

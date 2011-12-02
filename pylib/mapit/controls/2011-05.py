@@ -25,7 +25,7 @@ def check(name, type, country, geometry):
     # http://www.legislation.gov.uk/wsi/2010/1451/contents/made )
     # have disappeared from May 2011 and it has the previous areas.
     if type == 'UTE' and name in ('Sully ED', 'Dinas Powys ED', 'Plymouth ED', 'Llandough ED'):
-        area_within = Area.objects.filter(type='UTA', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
+        area_within = Area.objects.filter(type__code='UTA', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
         if area_within.name == 'Vale of Glamorgan Council':
             current = Generation.objects.current()
             return Area.objects.get(names__name=name, names__type='O', parent_area=area_within,

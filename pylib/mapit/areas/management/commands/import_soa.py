@@ -6,7 +6,7 @@
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 
 class Command(LabelCommand):
     help = 'Creates Super Output Area boundaries from ONS shapefiles'
@@ -46,12 +46,12 @@ class Command(LabelCommand):
             lsoa_code = feat[feat_code].value 
             country = lsoa_code[0]
             # skip if the SOA already exists in db (SOAs don't change)
-            if Area.objects.filter(type=area_type, codes__code=lsoa_code).count():
+            if Area.objects.filter(type__code=area_type, codes__code=lsoa_code).count():
                 continue
             print "Adding %s (%s) %s" % (name, lsoa_code, feat.geom.geom_name)
             m = Area(
-                type = area_type,
-                country = country,
+                type = Type.objects.get(code=area_type),
+                country = Country.objects.get(code=country),
                 generation_low = generation,
                 generation_high = generation,
             )

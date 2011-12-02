@@ -13,7 +13,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.areas.models import Area, Generation
+from mapit.areas.models import Area, Generation, Country, Type
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -43,7 +43,6 @@ class Command(LabelCommand):
             print " ", name.encode('utf-8')
 
             code = int(kml_data.data[name]['ref'])
-            country = 'O'
             if code < 100: # Not particularly nice, but fine
                 area_code = 'NFY'
                 parent_area = None
@@ -60,8 +59,8 @@ class Command(LabelCommand):
                     m = Area(
                         id = code,
                         name = name,
-                        type = area_code,
-                        country = country,
+                        type = Type.objects.get(code=area_code),
+                        country = Country.objects.get(code='O'),
                         parent_area = parent_area,
                         generation_low = new_generation,
                         generation_high = new_generation,
