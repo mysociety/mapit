@@ -1,0 +1,10 @@
+{% extends "mapit/base.html" %}
+
+{% block title %}Example postcode in {{ area.name }}{% endblock title %}
+
+{% block content %}
+
+<p>An example postcode for <a href="/area/{{ area.id }}.html">{{ area.name }}</a> is <strong>{{ postcode }}</strong>
+(<a href="/area/{{ area.id }}/example_postcode">JSON</a>).
+
+{% endblock %}

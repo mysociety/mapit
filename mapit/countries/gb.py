@@ -2,12 +2,12 @@ import re
 
 from django.http import HttpResponse, HttpResponseRedirect
 
-from mapit.areas.models import Area
 from mapit.shortcuts import get_object_or_404
 
 area_geometry_srid = 32633
 
 def area_code_lookup(area_id, format):
+    from mapit.models import Area
     area_code = None
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
         area_code = 'ons'

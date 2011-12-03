@@ -1,0 +1,166 @@
+{% extends "mapit/base.html" %}
+
+{% block fulltitle %}MapIt{% endblock %}
+
+{% block content %}
+
+<p>MapIt is a database and web service that maps points to
+administrative area information and polygons for Norway (see
+<a href="http://mapit.mysociety.org/">the UK version</a>). The source code is
+<a href="http://github.com/mysociety/mapit">available on GitHub</a>.
+
+<p id="donate">NUUG is a member organisation for people interested in free
+software, open standards and UNIX-like operating systems. Please
+<a href="http://www.nuug.no/innmelding.shtml">become a member</a> if you want
+to keep NUUG going.
+<br>mySociety is run by a registered charity &ndash; please
+<a href="http://www.mysociety.org/donate/">donate</a> to help keep mySociety going and
+to be able to continue to do things like this!</p>
+
+<p><form method="post" action="/postcode/">
+    <label for="pc">Postcode:</label>
+    <input type="text" name="pc" id="pc" size="8">
+    <input type="submit" value="Go">
+</form></p>
+
+<p>This site is filled with only open data, so you can be secure that
+you can reuse the data from this site under the minimal terms of the
+licences given below. It is based on Kommune and Fylkes area info from
+<a href="http://www.openstreetmap.org/">OpenStreetMap</a> and
+Norwegian post code coordinates from
+<a href="http://www.erikbolstad.no/geo/">Erik Bolstad</a>.
+
+<p id="copyright">This database contains OpenStreetMap data &copy;
+<a href="http://www.openstreetmap.org/">OpenStreetMap</a> and contributors,
+<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA-2.0</a>.
+The post code coordinate data is &copy; Erik Bolstad
+(<a href="http://creativecommons.org/licenses/by/3.0/">CC-BY-3.0</a>)</p>
+
+<h2>API</h2>
+
+<p>Non-commercial, low-volume use of this service is free. You will need to attribute
+data sources as per their licenses, and please do attribute us too :) For commercial or
+high-volume usage, please <a href="http://www.mysociety.org/contact/">contact us</a>
+about using the service, by licensing or by helping you install your own version.</p>
+
+<p>All calls below are made to http://{{ request.META.HTTP_HOST }}/ and return JSON
+(on some calls, stick .html on the end for an HTML version). By default, calls
+will return active areas; for some calls you may specify a previous generation
+to look up instead.
+
+Whenever an area is returned from MapIt, it is as a dictionary with the
+following keys: id, name, country, type, parent_area, generation_low,
+generation_high, codes.</p>
+
+<div id="col1">
+<h3>By postcode</h3>
+
+<ul>
+
+<li>/postcode/<i>[postcode]</i> &ndash; information on a particular
+postcode, including its location in WGS84 latitude/longitude, and the
+areas it is contained within. You may specify a previous generation as
+a ?generation=N parameter. <a href="/postcode/0373.html">Example
+postcode lookup</a>.</li>
+
+<li>/postcode/partial/<i>[partial postcode]</i> &ndash; location
+information on the centroid of a partial
+postcode. <a href="/postcode/partial/85.html">Example partial
+postcode lookup</a>.</li>
+
+</ul>
+
+<h3>Multiple areas</h3>
+
+<ul>
+
+<li>/areas/<i>[area IDs, separated by commas]</i> &mdash; information on more than one
+area at once, as a dictionary indexed by area ID. <a href="/areas/814,815.html">Example area IDs lookup</a>.
+
+<li>/areas/<i>[area IDs, separated by commas]</i>/geometry &ndash; all the geometry
+information you would get from single geometry calls.
+
+<li>/areas/<i>[type OR types]</i> &ndash; all the areas in a specific area type
+or types (separated by commas). You may specific a minimum generation with the
+min_generation parameter. The current list of types is: 
+<small><a href="/areas/NKO.html">NKO</a> (kommune),
+<a href="/areas/NFY.html">NFY</a> (fylke),
+<a href="/areas/NRA.html">NRA</a> (vegvesen),
+<a href="/areas/NPT.html">NPT</a> (kollektivtransportselskap),
+<a href="/areas/NPG.html">NPG</a> (kraftregionselskap),
+<a href="/areas/NRR.html">NRR</a> (jernbaneverk),
+<a href="/areas/NSA.html">NSA</a> (kystverk)</small>.
+
+<li>/areas/<i>[name]</i> &ndash; all areas that start with the specified text. You
+may restrict results to a type or types with the type parameter (as always,
+multiple separated by commas), or expand to previous generations with the
+min_generation parameter. <a href="/areas/As.html">Example lookup of all
+areas starting &ldquo;As&rdquo;</a>.
+
+</ul>
+
+<h3>Generations</h3>
+
+<ul>
+<li>/generations &ndash; return a list of all generations.
+</ul>
+
+</div>
+<div id="col2">
+
+<h3>By point</h3>
+
+<a href="http://commons.wikimedia.org/wiki/File:Norway_municipalities.png"><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Norway_municipalities.png/200px-Norway_municipalities.png" align="right" alt="" border="0" width="200" height="235"></a>
+<p>An SRID is a unique number referring to a particular co-ordinate system; the
+one you probably are interested in is 4326 for WGS84 lon/lat. You can restrict
+results to particular area types with a type parameter (multiple types
+separated by commas), and have results for a previous generation with a
+generation parameter. Note that x,y means longitude,latitude.</p>
+
+<ul>
+
+<li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> &ndash; the areas covering the particular point.
+<a href="/point/4326/10,59.html">Example of areas containing (59,10)</a>.
+
+<li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box &ndash; the areas whose
+bounding boxes cover the particular point.
+
+<li>/nearest/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> &ndash;
+the postcode closest to the particular point.
+<a href="/nearest/4326/10,59.html">Example of postcode near
+(59,10)</a>.
+
+</ul>
+
+<h3>By area ID</h3>
+
+<ul>
+
+<li>/area/<i>[area ID]</i> &ndash; information on a particular area. 
+<a href="/area/1811.html">Example of an area&rsquo;s results</a>.
+
+<li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
+
+<li>/area/<i>[area ID]</i>.<i>[kml|geojson|wkt]</i> &ndash; the actual geometry of the area, in the specified format (WGS84 for KML, OSGB otherwise).
+<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">Example KML file on a Google Map</a>.
+You can specify a simplify_tolerance parameter to return a simplified polygon.
+
+<li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml|json|wkt]</i> &ndash; the actual geometry of the area, in the specified format and geometry.
+
+</ul>
+
+<p>All the following can take a type parameter to restrict results to a type or types:</p>
+
+<ul>
+
+<li>/area/<i>[area ID]</i>/children &ndash; all the children of a particular area.
+<a href="/area/02/children.html">Example of all kommune within Akershus</a>.
+
+<li>/area/<i>[area ID]</i>/touches &ndash; all the areas that border the selected area.
+<a rel="nofollow" href="/area/0301/touches.html">Example of all areas touching Oslo</a>.
+
+</ul>
+
+</div>
+
+{% endblock %}

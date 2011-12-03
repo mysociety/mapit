@@ -29,7 +29,7 @@ def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.path.replace('.html', '')
     kwargs['title'] = title
     kwargs['areas'] = areas
-    return render(request, 'data.html', kwargs)
+    return render(request, 'mapit/data.html', kwargs)
 
 def output_error(format, message, code):
     if format=='html':
@@ -39,7 +39,7 @@ def output_error(format, message, code):
             500: http.HttpResponseServerError,
         }
         response_type = types.get(code, http.HttpResponse)
-        return response_type(render_to_string('%s.html' % code, {
+        return response_type(render_to_string('mapit/%s.html' % code, {
             'error': message,
         }))
     return output_json({ 'error': message }, code=code)

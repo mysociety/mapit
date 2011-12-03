@@ -1,0 +1,12 @@
+{% extends "mapit/base.html" %}
+
+{% block title %}{{ title|striptags }}{% endblock title %}
+
+{% block content %}
+
+<h2>{{ title|safe }}</h2>
+<a href="{{ json_url }}">JSON of this data</a>
+
+{% include "mapit/areas.html" %}
+
+{% endblock %}

@@ -1,1 +1,0 @@
-create index postcodes_postcode_areas_area_id_idx on postcodes_postcode_areas (area_id);

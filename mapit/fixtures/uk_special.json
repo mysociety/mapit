@@ -1,0 +1,11 @@
+[
+ { "pk": 900000, "model": "mapit.area", "fields": { "name": "House of Commons", "country": null, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 5 } },
+ { "pk": 900001, "model": "mapit.area", "fields": { "name": "European Parliament", "country": null, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 1 } },
+ { "pk": 900002, "model": "mapit.area", "fields": { "name": "London Assembly", "country": 1, "parent_area": 900006, "generation_high": null, "generation_low": 1, "type": 24 } },
+ { "pk": 900003, "model": "mapit.area", "fields": { "name": "Scottish Parliament", "country": 3, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 16 } },
+ { "pk": 900004, "model": "mapit.area", "fields": { "name": "National Assembly for Wales", "country": 4, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 19 } },
+ { "pk": 900005, "model": "mapit.area", "fields": { "name": "Northern Ireland Assembly", "country": 2, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 11 } },
+ { "pk": 900006, "model": "mapit.area", "fields": { "name": "London Assembly", "country": 1, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 25 } },
+ { "pk": 900007, "model": "mapit.area", "fields": { "name": "House of Lords", "country": null, "parent_area": null, "generation_high": null, "generation_low": 1, "type": 3 } },
+ { "pk": 900008, "model": "mapit.area", "fields": { "name": "House of Lords", "country": null, "parent_area": 900007, "generation_high": null, "generation_low": 1, "type": 4 } }
+]
