@@ -4,12 +4,9 @@ import yaml
 import django
 
 package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-path = os.path.normpath(package_dir + "/../../pylib")
-if path not in sys.path:
-    sys.path.append(path)
 
 # load the mySociety config
-config = yaml.load( open(os.path.normpath(package_dir + "/../../conf/general.yml"), 'r') )
+config = yaml.load( open(os.path.normpath(package_dir + "/../conf/general.yml"), 'r') )
 
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 MAPIT_COUNTRY = config.get('COUNTRY', '')

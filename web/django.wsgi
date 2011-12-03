@@ -3,9 +3,13 @@
 import os, sys
 
 file_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-path = os.path.normpath(os.path.join(file_dir, '..', 'pylib'))
-if path not in sys.path:
-    sys.path.append(path)
+paths = (
+    os.path.normpath(os.path.join(file_dir)),
+    os.path.normpath(os.path.join(file_dir, '..'))
+)
+for path in paths:
+    if path not in sys.path:
+        sys.path.append(path)
 
 import mapit.settings
 
