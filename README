@@ -1,11 +1,11 @@
 MapIt
 =====
 
-pylib/mapit is a standard GeoDjango project; the rest is mostly to fit within
-mySociety's standard deployment. MapIt has been installed on Debian lenny and
-squeeze, and on Ubuntus from 10.04 onwards. If GeoDjango and PostGIS run on it,
-it should theoretically be okay; do let us know of any problems. Commands
-are intended to be run via the terminal or over ssh.
+The mapit directory is a standard GeoDjango project; the rest is mostly to fit
+within mySociety's standard deployment. MapIt has been installed on Debian
+lenny and squeeze, and on Ubuntus from 10.04 onwards. If GeoDjango and PostGIS
+run on it, it should theoretically be okay; do let us know of any problems.
+Commands are intended to be run via the terminal or over ssh.
 
 Installation
 ------------
@@ -53,7 +53,7 @@ the first time I imported overnight and didn't realise).
 At this stage, you should be able to set up the database and run the
 development server. Do add an admin user when prompted:
 
-    cd pylib/mapit
+    cd mapit
     ./manage.py syncdb
     ./manage.py runserver
 
@@ -79,7 +79,7 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
 1. AREA_SRID in conf/general.yml should be 27700 (as Boundary-Line shapes are in OSGB).   
 2. Download the latest Code-Point Open, Boundary-Line and NSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
-3. Change to the pylib/mapit directory, create database tables and start the site:
+3. Change to the mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
    # (Alternatively, set up a live web server however you wish.)
@@ -126,7 +126,7 @@ Here are the basic instructions to install data from OSM:
 
 1. Set AREA_SRID in conf/general.yml to 4326 (as OSM shapes are in WGS84).  
 2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
-3. Change to the pylib/mapit directory, create database tables and start the site:
+3. Change to the mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
 4. Run the following (you can run anything without --commit to do a dry run):
@@ -144,7 +144,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
 2. Download N5000 from
    <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>
    and save/unzip in the data directory.
-3. Change to the pylib/mapit directory, create database tables and start the site:
+3. Change to the mapit directory, create database tables and start the site:
    ./manage.py syncdb
    ./manage.py runserver
 4. Run the following (you can run anything without --commit to do a dry run):
