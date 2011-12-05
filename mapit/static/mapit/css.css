@@ -3,7 +3,7 @@ body {
     line-height: 1.5;
     margin: 0;
     padding: 1em;
-    background-image: url("/static/compassS.jpg");
+    background-image: url("/static/mapit/compassS.jpg");
     background-position: 0 0;
     background-attachment: fixed;
     background-repeat: no-repeat;

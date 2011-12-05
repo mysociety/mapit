@@ -9,7 +9,7 @@
 WSGIDaemonProcess example.mapit.mysociety.org user=exampleuser group=examplegroup processes=5 threads=1 display-name=example.mapit.mysociety.org
 WSGIProcessGroup example.mapit.mysociety.org
 
-WSGIScriptAlias / /data/vhost/example.mapit.mysociety.org/docs/django.wsgi
+WSGIScriptAlias / /data/vhost/example.mapit.mysociety.org/mapit/web/django.wsgi
 
 Alias /media /var/lib/python-support/python2.5/django/contrib/admin/media
-Alias /static /data/vhost/example.mapit.mysociety.org/docs/static
+Alias /static /data/vhost/example.mapit.mysociety.org/mapit/mapit/static
