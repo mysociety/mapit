@@ -10,7 +10,7 @@ for dirpath, dirnames, filenames in os.walk('mapit'):
         packages.append(dirpath.replace('/', '.'))
 
 setup(
-    name='MapIt',
+    name='django-mapit',
     version='1.0.0pr1',
     description='A web service for mapping postcodes and points to current or past administrative area information and polygons.',
     long_description=open('README').read(), # TODO: Put this into ReST format
