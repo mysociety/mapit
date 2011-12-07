@@ -1,0 +1,7 @@
+include LICENSE.txt README
+include bin/osm_to_kml
+recursive-include project *.py
+recursive-include mapit *.html *.json *.sql 
+recursive-include mapit/static *
+recursive-include data *.csv *.sql
+

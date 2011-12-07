@@ -3,21 +3,25 @@ import sys
 import yaml
 import django
 
+# Make sure the application in this repository is on the path
 package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
+path = os.path.abspath( os.path.join( package_dir, '..' ) )
 
-# Try and simply import mapit first, in case it's been installed with e.g. pip.
+# We don't want two copies of this on the path, so remove it if it's
+# already there.
+while path in sys.path:
+    sys.path.remove(path)
+
+sys.path.insert(0, path)
+
+# The mySociety deployment system works by having a conf directory at the root
+# of the repo, containing a general.yml file of options. Use that file if
+# present. Obviously you can just edit any part of this file, it is a normal
+# Django settings.py file.
 try:
-    import mapit
+    config = yaml.load( open(os.path.normpath(package_dir + "/../conf/general.yml"), 'r') )
 except:
-    # Okay, it's not just there, add where it is to the path.
-    import sys
-    path = os.path.abspath( os.path.join( package_dir, '..' ) )
-    if path not in sys.path:
-        sys.path.insert(0, path)
-    import mapit
-
-# load the mySociety config
-config = yaml.load( open(os.path.normpath(package_dir + "/../conf/general.yml"), 'r') )
+    config = {}
 
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 MAPIT_COUNTRY = config.get('COUNTRY', '')
@@ -42,27 +46,29 @@ if config.get('BUGS_EMAIL'):
     ADMINS = (
         ('mySociety bugs', config['BUGS_EMAIL']),
     )
-
-MANAGERS = ADMINS
+    MANAGERS = ADMINS
 
 if django.get_version() >= '1.2':
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': config['MAPIT_DB_NAME'],
-            'USER': config['MAPIT_DB_USER'],
-            'PASSWORD': config['MAPIT_DB_PASS'],
-            'HOST': config['MAPIT_DB_HOST'],
-            'PORT': config['MAPIT_DB_PORT'],
+            'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
+            'USER': config.get('MAPIT_DB_USER', 'mapit'),
+            'PASSWORD': config.get('MAPIT_DB_PASS', ''),
+            'HOST': config.get('MAPIT_DB_HOST', ''),
+            'PORT': config.get('MAPIT_DB_PORT', ''),
         }
     }
 else:
     DATABASE_ENGINE = 'postgresql_psycopg2'
-    DATABASE_NAME = config['MAPIT_DB_NAME']
-    DATABASE_USER = config['MAPIT_DB_USER']
-    DATABASE_PASSWORD = config['MAPIT_DB_PASS']
-    DATABASE_HOST = config['MAPIT_DB_HOST']
-    DATABASE_PORT = config['MAPIT_DB_PORT']
+    DATABASE_NAME = config.get('MAPIT_DB_NAME', 'mapit')
+    DATABASE_USER = config.get('MAPIT_DB_USER', 'mapit')
+    DATABASE_PASSWORD = config.get('MAPIT_DB_PASS', '')
+    DATABASE_HOST = config.get('MAPIT_DB_HOST', '')
+    DATABASE_PORT = config.get('MAPIT_DB_PORT', '')
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -100,9 +106,6 @@ MEDIA_URL = ''
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = config['DJANGO_SECRET_KEY']
 
 # List of callables that know how to import templates from various sources.
 if django.get_version() >= '1.2':
