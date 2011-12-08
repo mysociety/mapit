@@ -47,9 +47,10 @@ You will also need to be using South to manage schema migrations.
 Installation as a Django app
 ----------------------------
 
-As mapit is a Django app, if you are making a Django project you can simply use
-mapit from within your project like any normal Django app:
-* Make sure it is on sys.path (a packaged install does this for you);
+As mapit is a Django app, if you are making a GeoDjango project you can simply
+use mapit from within your project like any normal Django app:
+* Make sure it is on sys.path (a packaged install e.g. with 'pip install
+  django-mapit' does this for you);
 * Add 'mapit' to your INSTALLED_APPS;
 * Add the following settings to settings.py:
   MAPIT_AREA_SRID - the SRID of your area data (if in doubt, set to 4326)
@@ -90,6 +91,7 @@ development server. Do add an admin user when prompted:
 
     cd project
     ./manage.py syncdb
+    ./manage.py migrate mapit
     ./manage.py runserver
 
 (Alternatively, set up a live web server however you wish - see the Deployment
@@ -116,6 +118,7 @@ Here are the basic instructions to install OS OpenData and NSPD Open:
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
    ./manage.py syncdb
+   ./manage.py migrate mapit
 4. Run the following in order:
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py loaddata uk
@@ -161,6 +164,7 @@ Here are the basic instructions to install data from OSM:
 2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
 3. Change to the project directory, and create database tables:
    ./manage.py syncdb
+   ./manage.py migrate mapit
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py loaddata norway
@@ -178,6 +182,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
    and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
    ./manage.py syncdb
+   ./manage.py migrate mapit
 4. Run the following (you can run anything without --commit to do a dry run):
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py loaddata norway
