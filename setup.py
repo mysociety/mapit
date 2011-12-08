@@ -33,7 +33,7 @@ setup(
     ] },
 
     # TODO: This does nothing, apparently - needs to be install_requires and using setuptools
-    requires=[ 'memcache', 'gdal', 'django', 'yaml', 'psycopg2' ],
+    requires=[ 'memcache', 'gdal', 'django', 'yaml', 'psycopg2', 'south' ],
 
     classifiers=[
         'Development Status :: 3 - Alpha',

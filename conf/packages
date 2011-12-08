@@ -11,3 +11,4 @@ postgresql-8.4-postgis | postgresql-8.3-postgis
 memcached
 python-memcache
 python-gdal
+python-django-south

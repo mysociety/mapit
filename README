@@ -42,13 +42,14 @@ You will also need a couple of other Debian packages, so install them:
 
     sudo apt-get install python-yaml memcached python-memcache git-core
 
+You will also need to be using South to manage schema migrations.
+
 Installation as a Django app
 ----------------------------
 
 As mapit is a Django app, if you are making a Django project you can simply use
 mapit from within your project like any normal Django app:
-* Make sure it is on sys.path (a packaged install - doesn't yet exist! - will
-  do this for you);
+* Make sure it is on sys.path (a packaged install does this for you);
 * Add 'mapit' to your INSTALLED_APPS;
 * Add the following settings to settings.py:
   MAPIT_AREA_SRID - the SRID of your area data (if in doubt, set to 4326)
