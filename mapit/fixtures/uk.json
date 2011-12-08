@@ -49,6 +49,15 @@
     { "pk": 36, "model": "mapit.type", "fields": { "code": "OLF", "description": "Lower Layer Super Output Area (Full)" } },
     { "pk": 37, "model": "mapit.type", "fields": { "code": "OLG", "description": "Lower Layer Super Output Area (Generalised)" } },
     { "pk": 38, "model": "mapit.type", "fields": { "code": "OMF", "description": "Middle Layer Super Output Area (Full)" } },
-    { "pk": 39, "model": "mapit.type", "fields": { "code": "OMG", "description": "Middle Layer Super Output Area (Generalised)" } }
+    { "pk": 39, "model": "mapit.type", "fields": { "code": "OMG", "description": "Middle Layer Super Output Area (Generalised)" } },
+
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
+    { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
+
+    { "pk": 1, "model": "mapit.nametype", "fields": { "code": "O", "description": "Ordnance Survey" } },
+    { "pk": 2, "model": "mapit.nametype", "fields": { "code": "S", "description": "ONS (SNAC/GSS)" } },
+    { "pk": 3, "model": "mapit.nametype", "fields": { "code": "M", "description": "Override name" } }
+
 ]
 

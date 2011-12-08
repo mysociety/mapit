@@ -214,16 +214,16 @@ class Geometry(models.Model):
     def __unicode__(self):
         return u'%s, polygon %d' % (self.area, self.id)
 
+class NameType(models.Model):
+    code = models.CharField(max_length=10, unique=True)
+    description = models.CharField(max_length=200, blank=True)
+
+    def __unicode__(self):
+        return '%s (%s)' % (self.description, self.code)
+
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
-    type = models.CharField(max_length=10, choices=(
-        ('O', 'Ordnance Survey'),
-        ('S', 'ONS (SNAC/GSS)'),
-        ('M', 'Override name'),
-        ('Nno', 'Norwegian - no'),
-        ('Nsmi', 'Norwegian - smi'),
-        ('Nfi', 'Norwegian - fi'),
-    ))
+    type = models.ForeignKey(NameType, related_name='names')
     name = models.CharField(max_length=100)
     objects = Manager()
 
@@ -265,15 +265,16 @@ class Name(models.Model):
         except:
             pass
 
+class CodeType(models.Model):
+    code = models.CharField(max_length=10, unique=True)
+    description = models.CharField(max_length=200, blank=True)
+
+    def __unicode__(self):
+        return '%s (%s)' % (self.description, self.code)
+
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
-    type = models.CharField(max_length=10, choices=(
-        ('ons', 'SNAC'),
-        ('gss', 'GSS (SNAC replacement)'),
-        ('unit_id', 'Boundary-Line (OS Admin Area ID)'),
-        ('n5000', 'Norway code as given in N5000'),
-        ('osm', 'OSM'),
-    ))
+    type = models.ForeignKey(CodeType, related_name='codes')
     code = models.CharField(max_length=10)
     objects = Manager()
 
