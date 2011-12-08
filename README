@@ -57,7 +57,7 @@ use mapit from within your project like any normal Django app:
   MAPIT_COUNTRY - used to supply country specific functions (such as postcode
     validation). If you look at the country files in mapit/countries/ you can
     see how to add specialised country-specific functions.
-  MAPIT_RATE_LIMIT - a list of IP addresses excluded from rate limiting
+  MAPIT_RATE_LIMIT - a list of IP addresses or User Agents excluded from rate limiting
 * Set up a path in your main urls.py to point at mapit.urls.
 
 This approach is new, so please let us know if something goes wrong or could be

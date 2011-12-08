@@ -23,8 +23,16 @@ try:
 except:
     config = {}
 
+# An EPSG code for what the areas are stored as, e.g. 27700 is OSGB, 4326 for
+# WGS84. Optional, defaults to 4326.
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
+
+# Country is currently one of GB, NO, or KE. Optional; country specific things
+# won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
+
+# A list of IP addresses or User Agents that should be excluded from rate
+# limiting. Optional.
 MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
 
 # Django settings for mapit project.

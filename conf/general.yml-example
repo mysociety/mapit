@@ -25,7 +25,7 @@ DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
 # Mapped to Django's DEBUG and TEMPLATE_DEBUG settings. Optional, defaults to True.
 DEBUG: True
 
-# A list of IP addresses that should be excluded from rate limiting. Optional.
+# A list of IP addresses or User Agents that should be excluded from rate limiting. Optional.
 RATE_LIMIT:
   - '127.0.0.1'
 
