@@ -10,7 +10,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Name, Generation, Country, Type
+from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -29,6 +29,10 @@ class Command(LabelCommand):
             raise Exception, "You must specify a control file"
         __import__(options['control'])
         control = sys.modules[options['control']]
+
+        code_version = CodeType.objects.get(code=control.code_version())
+        name_type = NameType.objects.get(code='O')
+        code_type_os = CodeType.objects.get(code='unit_id')
 
         print filename
         current_generation = Generation.objects.current()
@@ -56,7 +60,7 @@ class Command(LabelCommand):
             if ons_code in self.ons_code_to_shape:
                 m, poly = self.ons_code_to_shape[ons_code]
                 try:
-                    m_name = m.names.get(type='O').name
+                    m_name = m.names.get(type=name_type).name
                 except Name.DoesNotExist:
                     m_name = m.name # If running without commit for dry run, so nothing being stored in db
                 if name != m_name:
@@ -67,18 +71,18 @@ class Command(LabelCommand):
 
             if unit_id in self.unit_id_to_shape:
                 m, poly = self.unit_id_to_shape[unit_id]
-                m_name = m.names.get(type='O').name
+                m_name = m.names.get(type=name_type).name
                 if name != m_name:
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
                 # Otherwise, combine the two shapes for one area
                 poly.append(feat.geom)
                 continue
 
-            if control.code_version() == 'gss' and ons_code:
+            if code_version.code == 'gss' and ons_code:
                 country = ons_code[0] # Hooray!
             elif area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                 country = 'E'
-            elif control.code_version() == 'gss':
+            elif code_version.code == 'gss':
                 raise Exception, area_code
             elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (ons_code and ons_code[0:3] in ('00Q', '00R')):
                 country = 'S'
@@ -99,12 +103,12 @@ class Command(LabelCommand):
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
                     m = check
-                    ons_code = m.codes.get(type=control.code_version())
+                    ons_code = m.codes.get(type=code_version)
                 elif ons_code:
-                    m = Area.objects.get(codes__type=control.code_version(), codes__code=ons_code)
+                    m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:
-                    m = Area.objects.get(codes__type='unit_id', codes__code=unit_id)
-                    m_name = m.names.get(type='O').name
+                    m = Area.objects.get(codes__type=code_type_os, codes__code=unit_id)
+                    m_name = m.names.get(type=name_type).name
                     if name != m_name:
                         raise Exception, "Unit ID code %s is %s in DB but %s in SHP file" % (unit_id, m_name, name)
                 else:
@@ -128,15 +132,15 @@ class Command(LabelCommand):
             poly = [ feat.geom ]
 
             if options['commit']:
-                m.names.update_or_create({ 'type': 'O' }, { 'name': name })
+                m.names.update_or_create({ 'type': name_type }, { 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': control.code_version() }, { 'code': ons_code })
+                    m.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
             if unit_id:
                 self.unit_id_to_shape[unit_id] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': 'unit_id' }, { 'code': unit_id })
+                    m.codes.update_or_create({ 'type': code_type_os }, { 'code': unit_id })
 
         if options['commit']:
             save_polygons(self.unit_id_to_shape)

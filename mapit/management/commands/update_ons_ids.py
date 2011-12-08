@@ -2,7 +2,7 @@
 
 import csv
 from django.core.management.base import NoArgsCommand
-from mapit.models import Area, Generation
+from mapit.models import Area, Generation, CodeType
 from psycopg2 import IntegrityError
 
 class Command(NoArgsCommand):
@@ -18,14 +18,14 @@ class Command(NoArgsCommand):
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]
             try:
-                area = Area.objects.get(codes__code=old_code, codes__type='ons')
+                area = Area.objects.get(codes__code=old_code, codes__type__code='ons')
             except Area.MultipleObjectsReturned:
                 if old_code == '11' or old_code == '12':
                     # Also the IDs of two EURs, but they're not in this lookup
-                    area = Area.objects.get(type__code='CTY', codes__code=old_code, codes__type='ons')
+                    area = Area.objects.get(type__code='CTY', codes__code=old_code, codes__type__code='ons')
                 elif old_code == '09':
                     # Also the ID of a now non-existent county council
-                    area = Area.objects.get(type__code='EUR', codes__code=old_code, codes__type='ons')
+                    area = Area.objects.get(type__code='EUR', codes__code=old_code, codes__type__code='ons')
                 else:
                     raise
             except Area.DoesNotExist:
@@ -46,7 +46,7 @@ class Command(NoArgsCommand):
                 continue
 
             try:
-                area.codes.create(type='gss', code=new_code)
+                area.codes.create(type=CodeType.objects.get(code='gss'), code=new_code)
             except IntegrityError:
                 raise Exception, "Key already exists for %s, can't give it %s" % (area, new_code)
 

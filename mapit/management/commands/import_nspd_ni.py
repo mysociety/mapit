@@ -36,20 +36,20 @@ class Command(PostcodeCommand):
             ward_code = ward_code.replace(' ', '')
             if ward_code not in code_to_area:
                 ward_area = Area.objects.get(
-                    country__code='N', type__code='LGW', codes__type='ons', codes__code=ward_code
+                    country__code='N', type__code='LGW', codes__type__code='ons', codes__code=ward_code
                 )
                 code_to_area[ward_code] = ward_area
 
             if parl_code not in code_to_area and len(parl_code)==3: # Ignore Derryaghy line
                 parl_area = Area.objects.get(
-                    country__code='N', type__code='WMC', codes__type='ons', codes__code=parl_code,
+                    country__code='N', type__code='WMC', codes__type__code='ons', codes__code=parl_code,
                 )
                 gss_code = parl_area.all_codes['gss']
                 # Store lookup for both old and new codes, so any version of NSPD will work
                 code_to_area[parl_code] = parl_area
                 code_to_area[gss_code] = parl_area
                 nia_area = Area.objects.get(
-                    country__code='N', type__code='NIE', names__type='S', names__name=parl_name,
+                    country__code='N', type__code='NIE', names__type__code='S', names__name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
                 code_to_area['NIE' + gss_code] = nia_area

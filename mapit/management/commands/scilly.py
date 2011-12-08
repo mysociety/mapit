@@ -5,7 +5,7 @@ import csv
 import re
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
-from mapit.models import Postcode, Area, Generation, Country, Type
+from mapit.models import Postcode, Area, Generation, Country, Type, CodeType, NameType
 
 class Command(LabelCommand):
     help = 'Sort out the Isles of Scilly'
@@ -14,9 +14,9 @@ class Command(LabelCommand):
     def handle_label(self, file, **options):
         # The Isles of Scilly have changed their code in B-L, but Code-Point still has the old code currently
         try:
-            council = Area.objects.get(codes__type='gss', codes__code='E06000053')
+            council = Area.objects.get(codes__type__code='gss', codes__code='E06000053')
         except:
-            council = Area.objects.get(codes__type='ons', codes__code='00HF')
+            council = Area.objects.get(codes__type__code='ons', codes__code='00HF')
         if council.type != Type.objects.get(code='COI'):
             council.type = Type.objects.get(code='COI')
             council.save()
@@ -33,8 +33,8 @@ class Command(LabelCommand):
             area = Area.objects.get_or_create_with_code(
                 country=Country.objects.get(code='E'), type=Type.objects.get(code='COP'), code_type='gss', code=new_ward_code
             )
-            area.names.get_or_create(type='S', name=ward_name)
-            area.codes.get_or_create(type='ons', code=old_ward_code)
+            area.names.get_or_create(type=NameType.objects.get(code='S'), name=ward_name)
+            area.codes.get_or_create(type=CodeType.objects.get(code='ons'), code=old_ward_code)
             if area.parent_area != council:
                 area.parent_area = council
                 area.save()

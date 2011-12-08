@@ -4,7 +4,7 @@ import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type
+from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from utils import save_polygons
 
 name_to_code = {
@@ -106,6 +106,9 @@ class Command(LabelCommand):
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
+        name_type = NameType.objects.get(code='O')
+        code_type = CodeType.objects.get(code='gss')
+
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
@@ -123,7 +126,7 @@ class Command(LabelCommand):
             if ons_code in self.ons_code_to_shape:
                 m, poly = self.ons_code_to_shape[ons_code]
                 if options['commit']:
-                    m_name = m.names.get(type='O').name
+                    m_name = m.names.get(type=name_type).name
                     if name != m_name:
                         raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
                 # Otherwise, combine the two shapes for one area
@@ -132,7 +135,7 @@ class Command(LabelCommand):
                 continue
 
             try:
-                m = Area.objects.get(codes__type='gss', codes__code=ons_code)
+                m = Area.objects.get(codes__type=code_type, codes__code=ons_code)
             except Area.DoesNotExist:
                 m = Area(
                     type = Type.objects.get(code=area_code),
@@ -147,11 +150,11 @@ class Command(LabelCommand):
             poly = [ feat.geom ]
 
             if options['commit']:
-                m.names.update_or_create({ 'type': 'O' }, { 'name': name })
+                m.names.update_or_create({ 'type': name_type }, { 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': 'gss' }, { 'code': ons_code })
+                    m.codes.update_or_create({ 'type': code_type }, { 'code': ons_code })
 
         if options['commit']:
             save_polygons(self.ons_code_to_shape)

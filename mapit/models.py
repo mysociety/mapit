@@ -138,11 +138,11 @@ class AreaManager(models.GeoManager):
         new_generation = Generation.objects.new()
         area, created = Area.objects.get_or_create(country=country, type=type,
             generation_low__lte=current_generation, generation_high__gte=current_generation,
-            names__type=name_type, names__name=name,
+            names__type__code=name_type, names__name=name,
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
         if created:
-            area.names.get_or_create(type=name_type, name=name)
+            area.names.get_or_create(type=NameType.objects.get(code=name_type), name=name)
         else:
             area.generation_high = new_generation
             area.save()
@@ -153,11 +153,11 @@ class AreaManager(models.GeoManager):
         new_generation = Generation.objects.new()
         area, created = Area.objects.get_or_create(country=country, type=type,
             generation_low__lte=current_generation, generation_high__gte=current_generation,
-            codes__type=code_type, codes__code=code,
+            codes__type__code=code_type, codes__code=code,
             defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
         )
         if created:
-            area.codes.get_or_create(type=code_type, code=code)
+            area.codes.get_or_create(type=CodeType.objects.get(code=code_type), code=code)
         else:
             area.generation_high = new_generation
             area.save()
@@ -182,7 +182,7 @@ class Area(models.Model):
             self.code_list = self.codes.all()
         codes = {}
         for code in self.code_list:
-            codes[code.type] = code.code
+            codes[code.type.code] = code.code
         return codes
 
     def __unicode__(self):
@@ -231,13 +231,13 @@ class Name(models.Model):
         unique_together = ('area', 'type')
 
     def __unicode__(self):
-        return '%s (%s) [%s]' % (self.name, self.type, self.area.id)
+        return '%s (%s) [%s]' % (self.name, self.type.code, self.area.id)
 
     def make_friendly_name(self, name):
         n = re.sub('\s+', ' ', name.name.strip())
         n = n.replace('St. ', 'St ')
-        if name.type == 'M': return n
-        if name.type == 'S': return n
+        if name.type.code == 'M': return n
+        if name.type.code == 'S': return n
         # Type must be 'O' here
         n = re.sub(' Euro Region$', '', n) # EUR
         n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
@@ -259,7 +259,7 @@ class Name(models.Model):
     def save(self, *args, **kwargs):
         super(Name, self).save(*args, **kwargs)
         try:
-            name = self.area.names.filter(type__in=('M', 'O', 'S')).order_by('type')[0]
+            name = self.area.names.filter(type__code__in=('M', 'O', 'S')).order_by('type__code')[0]
             self.area.name = self.make_friendly_name(name)
             self.area.save()
         except:
@@ -282,7 +282,7 @@ class Code(models.Model):
         unique_together = ('area', 'type')
 
     def __unicode__(self):
-        return '%s (%s) [%s]' % (self.code, self.type, self.area.id)
+        return '%s (%s) [%s]' % (self.code, self.type.code, self.area.id)
 
 # Postcodes
 

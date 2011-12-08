@@ -13,7 +13,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type
+from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -34,6 +34,9 @@ class Command(LabelCommand):
         # Need to parse the KML manually to get the ExtendedData
         kml_data = KML()
         xml.sax.parse(filename, kml_data)
+
+        code_type_osm = CodeType.objects.get(code='osm')
+        code_type_n5000 = CodeType.objects.get(code='n5000')
 
         ds = DataSource(filename)
         layer = ds[0]
@@ -78,9 +81,9 @@ class Command(LabelCommand):
                     for k, v in kml_data.data[name].items():
                         if k in ('name:smi', 'name:fi'):
                     	    lang = 'N' + k[5:]
-                    	    m.names.update_or_create({ 'type': lang }, { 'name': v })
-                    m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
-                    m.codes.update_or_create({ 'type': 'osm' }, { 'code': int(kml_data.data[name]['osm']) })
+                    	    m.names.update_or_create({ 'type': NameType.objects.get(code=lang) }, { 'name': v })
+                    m.codes.update_or_create({ 'type': code_type_n5000 }, { 'code': code_str })
+                    m.codes.update_or_create({ 'type': code_type_osm }, { 'code': int(kml_data.data[name]['osm']) })
                     save_polygons({ code : (m, poly) })
 
             update_or_create()

@@ -14,7 +14,8 @@
 
     { "pk": 1, "model": "mapit.nametype", "fields": { "code": "Nno", "description": "Norwegian - no" } },
     { "pk": 2, "model": "mapit.nametype", "fields": { "code": "Nsmi", "description": "Norwegian - smi" } },
-    { "pk": 3, "model": "mapit.nametype", "fields": { "code": "Nfi", "description": "Norwegian - fi" } }
+    { "pk": 3, "model": "mapit.nametype", "fields": { "code": "Nfi", "description": "Norwegian - fi" } },
+    { "pk": 4, "model": "mapit.nametype", "fields": { "code": "M", "description": "Override name" } }
 
 ]
 

@@ -12,7 +12,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type
+from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from utils import save_polygons
 
 class Command(LabelCommand):
@@ -28,6 +28,9 @@ class Command(LabelCommand):
         if not new_generation:
             raise Exception, "No new generation to be used for import!"
 
+        code_type = CodeType.objects.get(code='n5000')
+        name_type = NameType.objects.get(code='M')
+
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
@@ -40,7 +43,7 @@ class Command(LabelCommand):
             area_code = 'NKO'
             
             try:
-                m = Area.objects.get(codes__type='n5000', codes__code=code_str)
+                m = Area.objects.get(codes__type=code_type, codes__code=code_str)
             except Area.DoesNotExist:
                 m = Area(
                     id = code,
@@ -59,7 +62,7 @@ class Command(LabelCommand):
 
             if options['commit']:
                 m.save()
-                m.names.update_or_create({ 'type': 'M' }, { 'name': name })
-                m.codes.update_or_create({ 'type': 'n5000' }, { 'code': code_str })
+                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.codes.update_or_create({ 'type': code_type }, { 'code': code_str })
                 save_polygons({ code : (m, poly) })
 

@@ -6,7 +6,7 @@
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type
+from mapit.models import Area, Generation, Country, Type, NameType, CodeType
 
 class Command(LabelCommand):
     help = 'Creates Super Output Area boundaries from ONS shapefiles'
@@ -56,8 +56,8 @@ class Command(LabelCommand):
                 generation_high = generation,
             )
             m.save()
-            m.names.update_or_create({ 'type': 'S' }, { 'name': name })
-            m.codes.update_or_create({ 'type': 'ons' }, { 'code': lsoa_code })
+            m.names.update_or_create({ 'type': NameType.objects.get(code='S') }, { 'name': name })
+            m.codes.update_or_create({ 'type': CodeType.objects.get(code='ons') }, { 'code': lsoa_code })
 
             p = feat.geom
             if p.geom_name == 'POLYGON':
