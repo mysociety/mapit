@@ -46,6 +46,8 @@ class Command(LabelCommand):
             print " ", name.encode('utf-8')
 
             code = int(kml_data.data[name]['ref'])
+            if code == 301: # Oslo ref in OSM could be either 3 (fylke) or 301 (kommune). Make sure it's 3.
+                code = 3
             if code < 100: # Not particularly nice, but fine
                 area_code = 'NFY'
                 parent_area = None
