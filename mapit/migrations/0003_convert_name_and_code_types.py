@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import DataMigration
 from django.db import models
+from django.conf import settings
 
 class Migration(DataMigration):
     
@@ -64,7 +65,7 @@ class Migration(DataMigration):
             'Meta': {'object_name': 'Geometry'},
             'area': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'polygons'", 'to': "orm['mapit.Area']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'polygon': ('django.contrib.gis.db.models.fields.PolygonField', [], {'srid': '27700'})
+            'polygon': ('django.contrib.gis.db.models.fields.PolygonField', [], {'srid': str(settings.MAPIT_AREA_SRID)})
         },
         'mapit.name': {
             'Meta': {'unique_together': "(('area', 'type'),)", 'object_name': 'Name'},

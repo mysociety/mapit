@@ -3,6 +3,7 @@ import datetime
 from south.db import db
 from south.v2 import SchemaMigration
 from django.db import models
+from django.conf import settings
 
 class Migration(SchemaMigration):
     
@@ -47,7 +48,7 @@ class Migration(SchemaMigration):
 
         # Adding model 'Geometry'
         db.create_table('mapit_geometry', (
-            ('polygon', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=27700)),
+            ('polygon', self.gf('django.contrib.gis.db.models.fields.PolygonField')(srid=settings.MAPIT_AREA_SRID)),
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('area', self.gf('django.db.models.fields.related.ForeignKey')(related_name='polygons', to=orm['mapit.Area'])),
         ))
@@ -165,7 +166,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Geometry'},
             'area': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'polygons'", 'to': "orm['mapit.Area']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'polygon': ('django.contrib.gis.db.models.fields.PolygonField', [], {'srid': '27700'})
+            'polygon': ('django.contrib.gis.db.models.fields.PolygonField', [], {'srid': str(settings.MAPIT_AREA_SRID)})
         },
         'mapit.name': {
             'Meta': {'unique_together': "(('area', 'type'),)", 'object_name': 'Name'},
