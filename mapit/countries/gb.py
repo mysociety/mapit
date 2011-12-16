@@ -4,8 +4,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from mapit.shortcuts import get_object_or_404
 
-area_geometry_srid = 32633
-
 def area_code_lookup(area_id, format):
     from mapit.models import Area, CodeType
     area_code = None
