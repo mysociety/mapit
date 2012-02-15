@@ -112,17 +112,17 @@ class Migration(SchemaMigration):
         # Deleting model 'Geometry'
         db.delete_table('mapit_geometry')
 
-        # Deleting model 'Name'
-        db.delete_table('mapit_name')
-
         # Removing unique constraint on 'Name', fields ['area', 'type']
         db.delete_unique('mapit_name', ['area_id', 'type'])
 
-        # Deleting model 'Code'
-        db.delete_table('mapit_code')
+        # Deleting model 'Name'
+        db.delete_table('mapit_name')
 
         # Removing unique constraint on 'Code', fields ['area', 'type']
         db.delete_unique('mapit_code', ['area_id', 'type'])
+
+        # Deleting model 'Code'
+        db.delete_table('mapit_code')
 
         # Deleting model 'Postcode'
         db.delete_table('mapit_postcode')

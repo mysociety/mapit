@@ -26,12 +26,13 @@ class Migration(SchemaMigration):
         db.alter_column('mapit_code', 'type_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['mapit.CodeType']))
         db.rename_column('mapit_code', 'type_id', 'type_id_id')
         db.add_column('mapit_code', 'type', self.gf('django.db.models.fields.CharField')(default='', max_length=10), keep_default=False)
+        db.create_unique('mapit_code', ['area_id', 'type'])
 
         db.delete_unique('mapit_name', ['type_id', 'area_id'])
         db.alter_column('mapit_name', 'type_id', self.gf('django.db.models.fields.related.ForeignKey')(null=True, to=orm['mapit.NameType']))
         db.rename_column('mapit_name', 'type_id', 'type_id_id')
         db.add_column('mapit_name', 'type', self.gf('django.db.models.fields.CharField')(default='', max_length=10), keep_default=False)
-    
+        db.create_unique('mapit_name', ['area_id', 'type'])
     
     models = {
         'mapit.area': {
