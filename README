@@ -59,6 +59,7 @@ use mapit from within your project like any normal Django app:
     see how to add specialised country-specific functions.
   MAPIT_RATE_LIMIT - a list of IP addresses or User Agents excluded from rate limiting
 * Set up a path in your main urls.py to point at mapit.urls.
+* run './manage.py syncdb' and './manage.py migrate' to ensure the db is set up
 
 This approach is new, so please let us know if something goes wrong or could be
 improved.
