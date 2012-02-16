@@ -10,7 +10,7 @@ from osgeo import gdal
 
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import resolve
+from django.core.urlresolvers import resolve, reverse
 from django.db.models import Q
 from django.conf import settings
 
@@ -140,7 +140,7 @@ def area_intersect(query_type, title, request, area_id, format):
     try:
         if format == 'html':
             return output_html(request,
-                title % ('<a href="/area/%d.html">%s</a>' % (area.id, area.name)),
+                title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name)),
                 areas, norobots=True
             )
         return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )

@@ -1,9 +1,9 @@
 <ul>
 {% for area in areas %}
-<li><a href="/area/{{ area.id }}.html">{{ area.name }}</a> <small>(id {{ area.id }})</small>, {{ area.type.description }}
+<li><a href="{% url mapit_index %}area/{{ area.id }}.html">{{ area.name }}</a> <small>(id {{ area.id }})</small>, {{ area.type.description }}
     <small>({{ area.type.code }})</small>{% ifequal area.type.code 'EUR' %}, {{ area.country }}{% endifequal %}
 {% if area.parent_area %}
-<br><small>A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></small>
+<br><small>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></small>
 {% endif %}
 {% empty %}
 <li>No matching areas found.

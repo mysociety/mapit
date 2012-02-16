@@ -9,7 +9,7 @@ admin.autodiscover()
 format_end = '(?:\.(?P<format>html|json))?'
 
 urlpatterns = patterns('',
-    (r'^$', direct_to_template, { 'template': 'mapit/index.html' }),
+    (r'^$', direct_to_template, { 'template': 'mapit/index.html' }, 'mapit_index' ),
 
     (r'^generations$', 'mapit.views.areas.generations'),
 

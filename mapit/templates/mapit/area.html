@@ -5,7 +5,7 @@
 {% block content %}
 
 <h2>{{ area.name }}</h2>
-<a href="/area/{{ area.id }}">JSON of this data</a>
+<a href="{% url mapit_index %}area/{{ area.id }}">JSON of this data</a>
 
 {% if area.polygons.count and show_geometry %}
 <div id="mapBox"><div id="map"></div></div>
@@ -15,7 +15,7 @@
     var area = new OpenLayers.Layer.Vector("KML", {
         strategies: [ new OpenLayers.Strategy.Fixed() ],
         protocol: new OpenLayers.Protocol.HTTP({
-            url: "/area/{{ area.id }}.kml?simplify_tolerance=0.0001",
+            url: "{% url mapit_index %}area/{{ area.id }}.kml?simplify_tolerance=0.0001",
             format: new OpenLayers.Format.KML()
         })
     });
@@ -32,30 +32,30 @@ generations {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }},
 type {{ area.type.description }} <small>({{ area.type.code }})</small>,
 {{ area.country }}.
 {% if area.parent_area %}
-A child of <a href="/area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
+A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
 {% endif %}
 </p>
 
 <p>
 {% if area.polygons.count or area.postcodes.count %}
-<a href="/area/{{ area.id }}/example_postcode.html">Example postcode</a>
+<a href="{% url mapit_index %}area/{{ area.id }}/example_postcode.html">Example postcode</a>
 {% endif %}
 {% if area.polygons.count and show_geometry %}
-| <a href="/area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
-| <a href="/area/{{ area.id }}.wkt">WKT</a>,
-<a href="/area/{{ area.id }}.geojson">GeoJSON</a>,
-<a href="/area/{{ area.id }}.kml">KML</a>
-(<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/{{ area.id }}.kml">on a Google Map</a>)
+| <a href="{% url mapit_index %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
+| <a href="{% url mapit_index %}area/{{ area.id }}.wkt">WKT</a>,
+<a href="{% url mapit_index %}area/{{ area.id }}.geojson">GeoJSON</a>,
+<a href="{% url mapit_index %}area/{{ area.id }}.kml">KML</a>
+(<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url mapit_index %}area/{{ area.id }}.kml">on a Google Map</a>)
 {% endif %}
 {% if area.children.count %}
-| <a href="/area/{{ area.id }}/children.html">Children</a>
+| <a href="{% url mapit_index %}area/{{ area.id }}/children.html">Children</a>
 {% endif %}
 {% if area.polygons.count and show_geometry %}
-<br>Areas: <a rel="nofollow" href="/area/{{ area.id }}/touches.html">Touching</a>
-| <a rel="nofollow" href="/area/{{ area.id }}/overlaps.html">Overlapping</a>
-| <a rel="nofollow" href="/area/{{ area.id }}/covers.html">Covered</a>
-| <a rel="nofollow" href="/area/{{ area.id }}/covered.html">Covered by</a>
-| <a rel="nofollow" href="/area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
+<br>Areas: <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html">Touching</a>
+| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html">Overlapping</a>
+| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html">Covered</a>
+| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covered by</a>
+| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
 {% endif %}
 
 <h3>Codes</h3>

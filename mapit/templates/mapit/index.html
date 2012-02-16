@@ -70,10 +70,10 @@ generation_high, codes.</p>
 <li>/postcode/<i>[postcode]</i> &ndash; information on a particular postcode,
 including its location in both National Grid and WGS84 latitude/longitude, and
 the areas it is contained within. You may specify a previous generation as a
-?generation=N parameter. <a href="/postcode/SW1A1AA.html">Example postcode lookup</a>.
+?generation=N parameter. <a href="{% url mapit_index %}postcode/SW1A1AA.html">Example postcode lookup</a>.
 
 <li>/postcode/partial/<i>[partial postcode]</i> &ndash; location information on the
-centroid of a partial postcode. <a href="/postcode/partial/EH1.html">Example partial
+centroid of a partial postcode. <a href="{% url mapit_index %}postcode/partial/EH1.html">Example partial
 postcode lookup</a>.
 
 </ul>
@@ -84,7 +84,7 @@ postcode lookup</a>.
 <ul>
 
 <li>/areas/<i>[area IDs, separated by commas]</i> &mdash; information on more than one
-area at once, as a dictionary indexed by area ID. <a href="/areas/2636,2637.html">Example area IDs lookup</a>.
+area at once, as a dictionary indexed by area ID. <a href="{% url mapit_index %}areas/2636,2637.html">Example area IDs lookup</a>.
 
 <li>/areas/<i>[area IDs, separated by commas]</i>/geometry &ndash; all the geometry
 information you would get from single geometry calls.
@@ -103,12 +103,12 @@ SPC (Scottish Parliament constituency), SPE (Scottish Parliament region),
 UTA (Unitary authority), UTE (Unitary authority electoral division),
 UTW (Unitary authority ward), WAC (Welsh Assembly constituency),
 WAE (Welsh Assembly region), WMC (UK Parliamentary constituency)</small>.
-<a href="/areas/CTY.html">Example county council (CTY) lookup</a>.
+<a href="{% url mapit_index %}areas/CTY.html">Example county council (CTY) lookup</a>.
 
 <li>/areas/<i>[name]</i> &ndash; all areas that start with the specified text. You
 may restrict results to a type or types with the type parameter (as always,
 multiple separated by commas), or expand to previous generations with the
-min_generation parameter. <a href="/areas/Bourn.html">Example lookup of all
+min_generation parameter. <a href="{% url mapit_index %}areas/Bourn.html">Example lookup of all
 areas starting &ldquo;Bourn&rdquo;</a>.
 
 </ul>
@@ -138,14 +138,14 @@ generation parameter. Note that x,y means longitude,latitude.</p>
 <ul>
 
 <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> &ndash; the areas covering the particular point.
-<a href="/point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.
+<a href="{% url mapit_index %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.
 
 <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box &ndash; the areas whose
 bounding boxes cover the particular point.
 
 <li>/nearest/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> &ndash;
 the postcode closest to the particular point.
-<a href="/nearest/27700/400000,300000.html">Example of
+<a href="{% url mapit_index %}nearest/27700/400000,300000.html">Example of
 postcode near (400000,300000)</a>.
 
 </ul>
@@ -156,10 +156,10 @@ postcode near (400000,300000)</a>.
 <ul>
 
 <li>/area/<i>[area ID or ONS code]</i> &ndash; information on a particular area. 
-<a href="/area/2514.html">Example of an area&rsquo;s results</a>.
+<a href="{% url mapit_index %}area/2514.html">Example of an area&rsquo;s results</a>.
 
 <li>/area/<i>[area ID]</i>/example_postcode &ndash; a random postcode within the area specified.
-<a href="/area/2514/example_postcode.html">Example example postcode</a>.
+<a href="{% url mapit_index %}area/2514/example_postcode.html">Example example postcode</a>.
 
 <li>/area/<i>[area ID]</i>/geometry &ndash; geometry information on the area including its centroid, extent and area.
 
@@ -176,22 +176,22 @@ You can specify a simplify_tolerance floating point parameter to return a simpli
 <ul>
 
 <li>/area/<i>[area ID]</i>/children &ndash; all the children of a particular area.
-<a href="/area/2236/children.html">Example of all electoral divisions of a county council</a>.
+<a href="{% url mapit_index %}area/2236/children.html">Example of all electoral divisions of a county council</a>.
 
 <li>/area/<i>[area ID]</i>/touches &ndash; all the areas that border the selected area.
-<a rel="nofollow" href="/area/65622/touches.html?type=WMC">Example of all constituencies touching Witney</a>.
+<a rel="nofollow" href="{% url mapit_index %}area/65622/touches.html?type=WMC">Example of all constituencies touching Witney</a>.
 
 <li>/area/<i>[area ID]</i>/overlaps &ndash; all the areas that overlap the selected area.
-<a rel="nofollow" href="/area/2511/overlaps.html">Example of all areas overlapping Barking and Dagenham council</a>.
+<a rel="nofollow" href="{% url mapit_index %}area/2511/overlaps.html">Example of all areas overlapping Barking and Dagenham council</a>.
 
 <li>/area/<i>[area ID]</i>/covers &ndash; all the areas that are covered by the selected area.
-<a rel="nofollow" href="/area/65622/covers.html?type=CPC">Example of all parish councils covered by Witney</a>.
+<a rel="nofollow" href="{% url mapit_index %}area/65622/covers.html?type=CPC">Example of all parish councils covered by Witney</a>.
 
 <li>/area/<i>[area ID]</i>/covered &ndash; all the areas that cover the selected area.
-<a rel="nofollow" href="/area/65622/covered.html">Example of all areas covering Witney</a>.
+<a rel="nofollow" href="{% url mapit_index %}area/65622/covered.html">Example of all areas covering Witney</a>.
 
 <li>/area/<i>[area ID]</i>/coverlaps &ndash; all the areas covered by or overlapping the selected area.
-<a rel="nofollow" href="/area/2511/coverlaps.html?type=WMC">Example of all constituencies covered by or overlapping Barking and Dagenham</a>.
+<a rel="nofollow" href="{% url mapit_index %}area/2511/coverlaps.html?type=WMC">Example of all constituencies covered by or overlapping Barking and Dagenham</a>.
 
 </ul>
 
