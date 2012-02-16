@@ -3,9 +3,6 @@ from django.views.generic.simple import direct_to_template
 
 handler500 = 'mapit.shortcuts.json_500'
 
-from django.contrib import admin
-admin.autodiscover()
-
 format_end = '(?:\.(?P<format>html|json))?'
 
 urlpatterns = patterns('',
@@ -40,6 +37,4 @@ urlpatterns = patterns('',
     (r'^areas/(?P<type>[A-Z,]*[A-Z]+)%s$' % format_end, 'mapit.views.areas.areas_by_type'),
     (r'^areas/(?P<name>.+?)%s$' % format_end, 'mapit.views.areas.areas_by_name'),
     (r'^areas$', 'mapit.views.areas.deal_with_POST', { 'call': 'areas' }),
-
-    (r'^admin/', include(admin.site.urls)),
 )
