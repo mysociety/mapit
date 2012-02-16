@@ -45,6 +45,9 @@ class Country(models.Model):
 
     def __unicode__(self):
         return self.name
+    
+    class Meta:
+        verbose_name_plural='countries'
 
 class Type(models.Model):
     code = models.CharField(max_length=3, unique=True)

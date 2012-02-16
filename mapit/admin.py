@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from mapit.models import Area, Code, Name, Generation, Geometry, Postcode
+from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, Country
 
 class NameInline(admin.TabularInline):
     model = Name
@@ -31,8 +31,19 @@ class PostcodeAdmin(admin.OSMGeoAdmin):
     search_fields = ['postcode']
     raw_id_fields = ('areas',)
 
+class TypeAdmin(admin.OSMGeoAdmin):
+    pass
+
+class NameTypeAdmin(admin.OSMGeoAdmin):
+    pass
+
+class CountryAdmin(admin.OSMGeoAdmin):
+    pass
+
 admin.site.register(Area, AreaAdmin)
 admin.site.register(Geometry, GeometryAdmin)
 admin.site.register(Generation, GenerationAdmin)
 admin.site.register(Postcode, PostcodeAdmin)
-
+admin.site.register(Type, TypeAdmin)
+admin.site.register(NameType, NameTypeAdmin)
+admin.site.register(Country, CountryAdmin)
