@@ -345,6 +345,9 @@ def area_intersect(query_type, title, request, area_id, format):
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
+    # XXX Exempt an error that throws a GEOS Exception
+    if area_id == '2658':
+        return output_error(format, 'There was an internal error performing that query.', 500)
     return area_intersect('touches', 'Areas touching %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
