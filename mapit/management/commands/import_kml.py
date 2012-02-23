@@ -68,6 +68,9 @@ class Command(LabelCommand):
         country   = Country.objects.get(code=country_code)
 
         print "Importing from %s" % filename
+        
+        if not options['commit']:
+            print '(will not save to db as --commit not specified)'            
 
         current_generation = Generation.objects.current()
         new_generation     = Generation.objects.get( id=generation_id )
