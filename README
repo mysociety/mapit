@@ -51,7 +51,7 @@ As mapit is a Django app, if you are making a GeoDjango project you can simply
 use mapit from within your project like any normal Django app:
 * Make sure it is on sys.path (a packaged install e.g. with 'pip install
   django-mapit' does this for you);
-* Add 'mapit' to your INSTALLED_APPS;
+* Add 'mapit' and 'django.contrib.gis' to your INSTALLED_APPS;
 * Add the following settings to settings.py:
   MAPIT_AREA_SRID - the SRID of your area data (if in doubt, set to 4326)
   MAPIT_COUNTRY - used to supply country specific functions (such as postcode
