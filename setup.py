@@ -32,7 +32,7 @@ setup(
             'sql/*.sql',
     ] },
 
-    install_requires=[ 'distribute', 'memcache', 'gdal', 'django', 'yaml', 'psycopg2', 'south' ],
+    install_requires=[ 'distribute', 'python-memcached', 'Django', 'PyYAML', 'psycopg2', 'South', 'GDAL' ],
 
     classifiers=[
         'Development Status :: 3 - Alpha',
