@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 import os
 
 file_dir = os.path.dirname(__file__)
@@ -32,8 +32,7 @@ setup(
             'sql/*.sql',
     ] },
 
-    # TODO: This does nothing, apparently - needs to be install_requires and using setuptools
-    requires=[ 'memcache', 'gdal', 'django', 'yaml', 'psycopg2', 'south' ],
+    install_requires=[ 'distribute', 'memcache', 'gdal', 'django', 'yaml', 'psycopg2', 'south' ],
 
     classifiers=[
         'Development Status :: 3 - Alpha',
