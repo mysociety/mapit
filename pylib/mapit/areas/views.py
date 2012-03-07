@@ -14,6 +14,7 @@ from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve
 from django.db.models import Q
+from django.utils.html import escape
 import mysociety.config
 
 voting_area = {
@@ -270,7 +271,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         <name>%s</name>
         %s
     </Placemark>
-</kml>''' % (area.name, all_areas.kml)
+</kml>''' % (escape(area.name), all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
     elif format in ('json', 'geojson'):
         out = all_areas.json
