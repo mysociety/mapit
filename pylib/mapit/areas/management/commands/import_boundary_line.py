@@ -109,8 +109,10 @@ class Command(LabelCommand):
                         raise Exception, "Unit ID code %s is %s in DB but %s in SHP file" % (unit_id, m_name, name)
                 else:
                     raise Exception, 'Area "%s" (%s) has neither ONS code nor unit ID' % (name, area_code)
+                if int(options['verbosity']) > 1:
+                    print "  Area matched, %s" % (m, )
             except Area.DoesNotExist:
-                print "New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
+                print "  New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
                 m = Area(
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = area_code,
