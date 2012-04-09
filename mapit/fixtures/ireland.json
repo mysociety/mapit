@@ -1,0 +1,20 @@
+[
+    { "pk": 1, "model": "mapit.country", "fields": { "code": "I", "name": "Ireland" } },
+
+    { "pk": 1, "model": "mapit.type", "fields": { "code": "IEE", "description": "District Electoral Division" } },
+    { "pk": 2, "model": "mapit.type", "fields": { "code": "ICC", "description": "Local Electoral Area" } },
+    { "pk": 3, "model": "mapit.type", "fields": { "code": "ICO", "description": "County or City Council" } },
+    { "pk": 4, "model": "mapit.type", "fields": { "code": "IDC", "description": "Dáil Constituency"} },
+    { "pk": 5, "model": "mapit.type", "fields": { "code": "ITO", "description": "Town or Borough Council" } },
+    { "pk": 6, "model": "mapit.type", "fields": { "code": "ITC", "description": "Town or Borough Council LEA" } },
+    { "pk": 7, "model": "mapit.type", "fields": { "code": "EUR", "description": "European Parliament Constituency" } },
+
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "cso", "description": "Central Statistical Office" } },
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "osm", "description": "OSM" } },
+
+    { "pk": 1, "model": "mapit.nametype", "fields": { "code": "O", "description": "Ordnance Survey Ireland" } },
+    { "pk": 2, "model": "mapit.nametype", "fields": { "code": "C", "description": "Central Statistical Office" } },
+    { "pk": 3, "model": "mapit.nametype", "fields": { "code": "M", "description": "Override name" } }
+
+]
+
