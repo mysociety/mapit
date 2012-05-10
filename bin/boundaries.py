@@ -35,6 +35,8 @@ class Node:
         return result
     def __hash__(self):
         return hash(self.node_id)
+    def __repr__(self):
+        return "node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
 
 class Way:
     def __init__(self, way_id, nodes=None):
