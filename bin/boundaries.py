@@ -14,43 +14,55 @@ def mkdir_p(path):
             raise
 
 class Node:
+
     def __init__(self, node_id, latitude, longitude):
         self.node_id = node_id
         self.lat = latitude
         self.lon = longitude
         self.tags = {}
+
     def get_element_name(self):
         return 'node'
+
     def __eq__(self, other):
         if type(other) is type(self):
             return self.node_id == other.node_id
         return False
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         return result
+
     def __hash__(self):
         return hash(self.node_id)
+
     def __repr__(self):
         return "node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
 
 class Way:
+
     def __init__(self, way_id, nodes=None):
         self.way_id = way_id
         self.nodes = nodes or []
         self.tags = {}
+
     def get_element_name(self):
         return 'way'
+
     def __eq__(self, other):
         if type(other) is type(self):
             return self.way_id == other.way_id
         return False
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"way (%s)" % (self.way_id)
@@ -59,14 +71,18 @@ class Way:
         for node in self.nodes:
             result += u"\n" + node.pretty(indent + 2)
         return result
+
     @property
     def first(self):
         return self.nodes[0]
+
     @property
     def last(self):
         return self.nodes[-1]
+
     def closed(self):
         return self.first == self.last
+
     def join(self, other):
         """Try to join another way to this one.  It will succeed if
         they can be joined at either end, and otherwise returns None.
@@ -88,6 +104,7 @@ class Way:
         return Way(None, new_nodes)
 
 class Relation:
+
     def __init__(self, relation_id):
         self.relation_id = relation_id
         # A relation has an ordered list of children, which we store
@@ -95,14 +112,18 @@ class Relation:
         # Node, Way or Relation, and the second is a "role" string.
         self.children = []
         self.tags = {}
+
     def get_element_name(self):
         return 'relation'
+
     def __eq__(self, other):
         if type(other) is type(self):
             return self.relation_id == other.relation_id
         return False
+
     def __ne__(self, other):
         return not self.__eq__(other)
+
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"relation (%s)" % (self.relation_id)
