@@ -33,6 +33,8 @@ class Node:
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         return result
+    def __hash__(self):
+        return hash(self.node_id)
 
 class Way:
     def __init__(self, way_id, nodes=None):
