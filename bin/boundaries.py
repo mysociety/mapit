@@ -55,10 +55,16 @@ class Way:
         for node in self.nodes:
             result += u"\n" + node.pretty(indent + 2)
         return result
+    def closed(self):
+        return self.nodes[0] == self.nodes[-1]
     def join(self, other):
         """Try to join another way to this one.  It will succeed if
         they can be joined at either end, and otherwise returns None.
         """
+        if self.closed():
+            raise Exception, "Trying to join a closed way to another"
+        if other.closed():
+            raise Exception, "Trying to join a way to a close way"
         if self.nodes[0] == other.nodes[0]:
             new_nodes = list(reversed(other.nodes))[0:-1] + self.nodes
         elif self.nodes[0] == other.nodes[-1]:
@@ -68,7 +74,7 @@ class Way:
         elif self.nodes[-1] == other.nodes[-1]:
             new_nodes = self.nodes[0:-1] + list(reversed(other.nodes))
         else:
-            return None
+            raise Exception, "Trying to join two ways with no end point in common"
         return Way(None, new_nodes)
 
 class Relation:
