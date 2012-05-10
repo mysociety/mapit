@@ -43,7 +43,7 @@ class Node:
         return hash(self.node_id)
 
     def __repr__(self):
-        return "node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
+        return "node(%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
 
 class Way:
 
@@ -103,6 +103,9 @@ class Way:
             raise Exception, "Trying to join two ways with no end point in common"
         return Way(None, new_nodes)
 
+    def __repr__(self):
+        return "way(%s) with %d nodes" % (self.way_id, len(self.nodes))
+
 class Relation:
 
     def __init__(self, relation_id):
@@ -148,6 +151,9 @@ class Relation:
             elif child.get_element_name() == 'relation':
                 for sub_way in child.way_iterator(inner):
                     yield sub_way
+
+    def __repr__(self):
+        return "relation(%s) with %d children" % (self.relation_id, len(self.children))
 
 class OSMXMLParser(ContentHandler):
 
