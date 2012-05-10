@@ -227,8 +227,6 @@ class OSMXMLParser(ContentHandler):
 
     def endElement(self, name):
         if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
-            if self.current_top_level_element:
-                print self.current_top_level_element.pretty(2).encode('utf-8')
             self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
