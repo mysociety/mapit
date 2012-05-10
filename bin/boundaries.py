@@ -110,6 +110,20 @@ class Relation:
             result += u"\n" + child.pretty(indent + 4)
         return result
 
+    def way_iterator(self, inner=False):
+        for child, role in self.children:
+            if inner:
+                if role not in ('enclave', 'inner'):
+                    continue
+            else:
+                if role and role != 'outer':
+                    continue
+            if child.get_element_name() == 'way':
+                yield child
+            elif child.get_element_name() == 'relation':
+                for sub_way in child.way_iterator(inner):
+                    yield sub_way
+
 class OSMXMLParser(ContentHandler):
 
     VALID_TOP_LEVEL_ELEMENTS = set(('node', 'relation', 'way'))
