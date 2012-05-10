@@ -35,9 +35,9 @@ class Node:
         return result
 
 class Way:
-    def __init__(self, way_id):
+    def __init__(self, way_id, nodes=None):
         self.way_id = way_id
-        self.nodes = []
+        self.nodes = nodes or []
         self.tags = {}
     def get_element_name(self):
         return 'way'
@@ -55,6 +55,21 @@ class Way:
         for node in self.nodes:
             result += u"\n" + node.pretty(indent + 2)
         return result
+    def join(self, other):
+        """Try to join another way to this one.  It will succeed if
+        they can be joined at either end, and otherwise returns None.
+        """
+        if self.nodes[0] == other.nodes[0]:
+            new_nodes = list(reversed(other.nodes))[0:-1] + self.nodes
+        elif self.nodes[0] == other.nodes[-1]:
+            new_nodes = other.nodes[0:-1] + self.nodes
+        elif self.nodes[-1] == other.nodes[0]:
+            new_nodes = self.nodes[0:-1] + other.nodes
+        elif self.nodes[-1] == other.nodes[-1]:
+            new_nodes = self.nodes[0:-1] + list(reversed(other.nodes))
+        else:
+            return None
+        return Way(None, new_nodes)
 
 class Relation:
     def __init__(self, relation_id):
