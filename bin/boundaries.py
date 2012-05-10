@@ -328,8 +328,36 @@ def join_way_soup(ways):
         raise Exception, "There were some unclosed paths left."
     return closed_ways
 
+def main():
+
+    # Try some useful examples:
+
+    example_relation_ids = (
+        375982, # Orkney - relation contains sub-relations for islands
+        1711291, # Guernsey
+        295353 # South Cambridgeshire - has an hole (inner ways)
+        )
+
+    for relation_id in example_relation_ids:
+
+        print "Fetching the relation", relation_id
+        parsed_relation = fetch_osm_element('relation', relation_id)
+
+        print "Outer boundaries:"
+        for way in parsed_relation.way_iterator(False):
+            print way
+        print "Inner boundaries:"
+        for way in parsed_relation.way_iterator(True):
+            print way
+
+        inner_ways = list(parsed_relation.way_iterator(True))
+        closed_inner_ways = join_way_soup(inner_ways)
+
+        print len(closed_inner_ways)
+
+        outer_ways = list(parsed_relation.way_iterator(False))
+        closed_outer_ways = join_way_soup(outer_ways)
+        print len(closed_outer_ways)
+
 if __name__ == "__main__":
-    # Try Orkney as an example:
-    # orkney_relation = fetch_osm_element('relation', '375982')
-    # guernsey_relation = fetch_osm_element('relation', '1711291')
-    south_cambridgeshire = fetch_osm_element('relation', '295353')
+    main()
