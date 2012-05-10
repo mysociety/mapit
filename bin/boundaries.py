@@ -21,6 +21,12 @@ class Node:
         self.tags = {}
     def get_element_name(self):
         return 'node'
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.node_id == other.node_id
+        return False
+    def __ne__(self, other):
+        return not self.__eq__(other)
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
@@ -35,6 +41,12 @@ class Way:
         self.tags = {}
     def get_element_name(self):
         return 'way'
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.way_id == other.way_id
+        return False
+    def __ne__(self, other):
+        return not self.__eq__(other)
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"way (%s)" % (self.way_id)
@@ -54,6 +66,12 @@ class Relation:
         self.tags = {}
     def get_element_name(self):
         return 'relation'
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.relation_id == other.relation_id
+        return False
+    def __ne__(self, other):
+        return not self.__eq__(other)
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"relation (%s)" % (self.relation_id)
