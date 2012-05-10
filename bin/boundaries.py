@@ -15,6 +15,8 @@ def mkdir_p(path):
 
 class Node:
 
+    """Represents an OSM node as returned via the Overpass API"""
+
     def __init__(self, node_id, latitude, longitude):
         self.node_id = node_id
         self.lat = latitude
@@ -46,6 +48,8 @@ class Node:
         return "node(%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
 
 class Way:
+
+    """Represents an OSM way as returned via the Overpass API"""
 
     def __init__(self, way_id, nodes=None):
         self.way_id = way_id
@@ -108,6 +112,8 @@ class Way:
 
 class Relation:
 
+    """Represents an OSM relation as returned via the Overpass API"""
+
     def __init__(self, relation_id):
         self.relation_id = relation_id
         # A relation has an ordered list of children, which we store
@@ -157,6 +163,13 @@ class Relation:
 
 class OSMXMLParser(ContentHandler):
 
+    """A SAX-based parser for data from OSM's Overpass API
+
+    This builds a structure of Node, Way and Relation objects that
+    represent the returned data, fetching missing elements as
+    necessary.  Typically one would then call get_known_or_fetch on
+    this object to get back data for a particular element."""
+
     VALID_TOP_LEVEL_ELEMENTS = set(('node', 'relation', 'way'))
     VALID_RELATION_MEMBERS = set(('node', 'relation', 'way'))
     IGNORED_TAGS = set(('osm', 'note', 'meta'))
@@ -182,6 +195,7 @@ class OSMXMLParser(ContentHandler):
             raise Exception, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent)
 
     def get_known_or_fetch(self, element_type, element_id):
+        """Return an OSM Node, Way or Relation, fetching it if necessary"""
         element_id = str(element_id)
         d = {'node': self.known_nodes,
              'way': self.known_ways,
@@ -281,6 +295,11 @@ def fetch_osm_element(element_type, element_id):
 
 class EndpointToWayMap:
 
+    """A class for mapping endpoints to the Way they're on
+
+    This is useful for quickly checking finding which Ways (if any)
+    you can join another Way to."""
+
     def __init__(self):
         self.endpoints = {}
 
@@ -311,13 +330,20 @@ class EndpointToWayMap:
         return len(self.endpoints)
 
 def join_way_soup(ways):
+    """Join an iterable collection of ways into closed ways
+
+    Two ways can be joined when the share a start or end node.  This
+    function will try to join the given ways into a series of closed
+    loops.  If there are any unclosed loops left at the end, they are
+    reported to standard error and an exception is thrown.
+    """
     closed_ways = []
     endpoints_to_ways = EndpointToWayMap()
     for way in ways:
         if way.closed():
             closed_ways.append(way)
             continue
-        # Is there an existing way we can join this to?
+        # Are there any existing ways we can join this to?
         to_join_to = endpoints_to_ways.get_from_either_end(way)
         if to_join_to:
             joined = way
@@ -359,12 +385,11 @@ def main():
 
         inner_ways = list(parsed_relation.way_iterator(True))
         closed_inner_ways = join_way_soup(inner_ways)
-
-        print len(closed_inner_ways)
+        print "They made up %d closed inner way(s)" % (len(closed_inner_ways),)
 
         outer_ways = list(parsed_relation.way_iterator(False))
         closed_outer_ways = join_way_soup(outer_ways)
-        print len(closed_outer_ways)
+        print "They made up %d closed outer way(s)" % (len(closed_outer_ways),)
 
 if __name__ == "__main__":
     main()
