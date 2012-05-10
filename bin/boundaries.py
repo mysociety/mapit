@@ -176,6 +176,7 @@ class OSMXMLParser(ContentHandler):
             raise Exception, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent)
 
     def get_known_or_fetch(self, element_type, element_id):
+        element_id = str(element_id)
         d = {'node': self.known_nodes,
              'way': self.known_ways,
              'relation': self.known_relations}[element_type]
@@ -266,6 +267,7 @@ def fetch_osm_element(element_type, element_id):
 
     More data is fetched from the API if required.  'element_type'
     should be one of 'relation', 'way' or 'node'."""
+    element_id = str(element_id)
     # Make sure we have the XML file for that relation, node or way:
     filename = fetch_cached(element_type, element_id)
     parsed = parse_xml(filename)
@@ -333,10 +335,9 @@ def main():
     # Try some useful examples:
 
     example_relation_ids = (
-        375982, # Orkney - relation contains sub-relations for islands
-        1711291, # Guernsey
-        295353 # South Cambridgeshire - has an hole (inner ways)
-        )
+        '375982', # Orkney - relation contains sub-relations for islands
+        '1711291', # Guernsey
+        '295353') # South Cambridgeshire - has an hole (inner ways)
 
     for relation_id in example_relation_ids:
 
