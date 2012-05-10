@@ -271,6 +271,63 @@ def fetch_osm_element(element_type, element_id):
     parsed = parse_xml(filename)
     return parsed.get_known_or_fetch(element_type, element_id)
 
+class EndpointToWayMap:
+
+    def __init__(self):
+        self.endpoints = {}
+
+    def add_way(self, way):
+        if self.get_from_either_end(way):
+            raise Exception, "Call to add_way would overwrite existing way(s)"
+        self.endpoints[way.first] = way
+        self.endpoints[way.last] = way
+
+    def remove_way(self, way):
+        del self.endpoints[way.first]
+        del self.endpoints[way.last]
+
+    def get_from_either_end(self, way):
+        return [ self.endpoints[e] for e in (way.first, way.last)
+                 if e in self.endpoints ]
+
+    def pretty(self, indent=0):
+        i = " "*indent
+        result = i + "EndpointToWayMap:"
+        for k, v in self.endpoints.items():
+            result += "\n%s  endpoint: %s" % (i, k.pretty())
+            result += "\n%s    way.first: %r" % (i, v.first)
+            result += "\n%s    way.last: %r" % (i, v.last)
+        return result
+
+    def number_of_endpoints(self):
+        return len(self.endpoints)
+
+def join_way_soup(ways):
+    closed_ways = []
+    endpoints_to_ways = EndpointToWayMap()
+    for way in ways:
+        if way.closed():
+            closed_ways.append(way)
+            continue
+        # Is there an existing way we can join this to?
+        to_join_to = endpoints_to_ways.get_from_either_end(way)
+        if to_join_to:
+            joined = way
+            for existing_way in to_join_to:
+                joined = joined.join(existing_way)
+                endpoints_to_ways.remove_way(existing_way)
+                if joined.closed():
+                    closed_ways.append(joined)
+                    break
+            if not joined.closed():
+                endpoints_to_ways.add_way(joined)
+        else:
+            endpoints_to_ways.add_way(way)
+    if endpoints_to_ways.number_of_endpoints():
+        print >> sys.stderr, endpoints_to_ways.pretty()
+        raise Exception, "There were some unclosed paths left."
+    return closed_ways
+
 if __name__ == "__main__":
     # Try Orkney as an example:
     # orkney_relation = fetch_osm_element('relation', '375982')
