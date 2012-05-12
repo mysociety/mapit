@@ -164,6 +164,16 @@ class Relation:
     def __repr__(self):
         return "relation(%s) with %d children" % (self.relation_id, len(self.children))
 
+class UnexpectedElementException(Exception):
+    def __init__(self, element_name, message=None):
+        self.element_name = element_name
+        if message is None:
+            self.message = "The element name was '%s'" % (element_name)
+        else:
+            self.message = message
+    def __str__(self):
+        return self.message
+
 class OSMXMLParser(ContentHandler):
 
     """A SAX-based parser for data from OSM's Overpass API
@@ -197,15 +207,15 @@ class OSMXMLParser(ContentHandler):
 
     def raise_if_sub_level(self, name):
         if self.current_top_level_element:
-            raise Exception, "Should never get a new <%s> when still in a top-level element" % (name,)
+            raise UnexpectedElementException(name, "Should never get a new <%s> when still in a top-level element" % (name,))
 
     def raise_if_top_level(self, name):
         if not self.current_top_level_element:
-            raise Exception, "Should never get a new <%s> when not in a top-level element" % (name,)
+            raise UnexpectedElementException(name, "Should never get a new <%s> when not in a top-level element" % (name,))
 
     def raise_unless_expected_parent(self, name, expected_parent):
         if self.current_top_level_element.get_element_name() != expected_parent:
-            raise Exception, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent)
+            raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent))
 
     def get_known_or_fetch(self, element_type, element_id):
         """Return an OSM Node, Way or Relation, fetching it if necessary"""
@@ -303,7 +313,15 @@ def fetch_osm_element(element_type, element_id):
     element_id = str(element_id)
     # Make sure we have the XML file for that relation, node or way:
     filename = fetch_cached(element_type, element_id)
-    parsed = parse_xml(filename)
+    try:
+        parsed = parse_xml(filename)
+    except UnexpectedElementException, e:
+        # If we failed to parse the file, move it out of the way (so
+        # for transient errors we can just try again) and re-raise the
+        # exception:
+        new_filename = filename+".broken"
+        os.rename(filename, new_filename)
+        raise
     return parsed.get_known_or_fetch(element_type, element_id)
 
 class EndpointToWayMap:
