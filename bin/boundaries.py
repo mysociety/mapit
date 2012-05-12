@@ -226,6 +226,8 @@ class OSMXMLParser(ContentHandler):
         if element_id in d:
             return d[element_id]
         o = fetch_osm_element(element_type, element_id)
+        if not o:
+            return None
         d[element_id] = o
         return o
 
@@ -260,11 +262,16 @@ class OSMXMLParser(ContentHandler):
                 if member_type not in OSMXMLParser.VALID_RELATION_MEMBERS:
                     raise "Unknown member type '%s' in <relation>" % (member_type,)
                 member = self.get_known_or_fetch(member_type, attr['ref'])
-                t = (member, attr['role'])
-                self.current_top_level_element.children.append(t)
+                if member:
+                    t = (member, attr['role'])
+                    self.current_top_level_element.children.append(t)
+                else:
+                    print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
             elif name == "nd":
                 self.raise_unless_expected_parent(name, 'way')
                 node = self.get_known_or_fetch('node', attr['ref'])
+                if not node:
+                    raise Exception, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
                 self.current_top_level_element.nodes.append(node)
             else:
                 raise "Unhandled element <%s>" % (name,)
@@ -322,6 +329,10 @@ def fetch_osm_element(element_type, element_id):
         new_filename = filename+".broken"
         os.rename(filename, new_filename)
         raise
+    # Sometimes we seem to have an empty element returned, in which
+    # case just return None:
+    if not len(parsed):
+        return None
     return parsed.get_known_or_fetch(element_type, element_id)
 
 class EndpointToWayMap:
