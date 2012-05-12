@@ -185,6 +185,16 @@ class OSMXMLParser(ContentHandler):
         self.known_ways = {}
         self.known_relations = {}
 
+    def __iter__(self):
+        for e in self.top_level_elements:
+            yield e
+
+    def __len__(self):
+        return len(self.top_level_elements)
+
+    def empty(self):
+        return 0 == len(self.top_level_elements)
+
     def raise_if_sub_level(self, name):
         if self.current_top_level_element:
             raise Exception, "Should never get a new <%s> when still in a top-level element" % (name,)
