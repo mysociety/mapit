@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import xml.sax, os, errno, urllib, urllib2, sys
+import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
 from xml.sax.handler import ContentHandler
 
 # Suggested by http://stackoverflow.com/q/600268/223092
@@ -281,7 +281,28 @@ class OSMXMLParser(ContentHandler):
             self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
+class RateLimitedPOST:
+
+    last_post = None
+    min_time_between = datetime.timedelta(seconds=2)
+
+    @staticmethod
+    def request(url, values, filename):
+        if RateLimitedPOST.last_post:
+            since_last = datetime.datetime.now() - RateLimitedPOST.last_post
+            if since_last < RateLimitedPOST.min_time_between:
+                difference = RateLimitedPOST.min_time_between - since_last
+                time.sleep(difference.total_seconds())
+        encoded_values = urllib.urlencode(values)
+        request = urllib2.Request(url, encoded_values)
+        print "making request to url:", url
+        response = urllib2.urlopen(request)
+        with open(filename, "w") as fp:
+            fp.write(response.read())
+        RateLimitedPOST.last_post = datetime.datetime.now()
+
 def fetch_cached(element_type, element_id):
+    global last_overpass_fetch
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception, "Unknown element type '%s'" % (element_type,)
@@ -299,11 +320,7 @@ def fetch_cached(element_type, element_id):
 out;
 ''' % arguments
         values = {'data': data}
-        encoded_values = urllib.urlencode(values)
-        request = urllib2.Request(url, encoded_values)
-        response = urllib2.urlopen(request)
-        with open(filename, "w") as fp:
-            fp.write(response.read())
+        RateLimitedPOST.request(url, values, filename)
     return filename
 
 def parse_xml(filename):
