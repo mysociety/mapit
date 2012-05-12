@@ -47,6 +47,9 @@ class Node:
     def __repr__(self):
         return "node(%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
 
+    def lon_lat_tuple(self):
+        return (self.lon, self.lat)
+
 class Way:
 
     """Represents an OSM way as returned via the Overpass API"""
