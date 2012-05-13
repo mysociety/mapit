@@ -335,6 +335,7 @@ def fetch_osm_element(element_type, element_id):
     More data is fetched from the API if required.  'element_type'
     should be one of 'relation', 'way' or 'node'."""
     element_id = str(element_id)
+    print "fetch_osm_element(%s, %s)" % (element_type, element_id)
     # Make sure we have the XML file for that relation, node or way:
     filename = fetch_cached(element_type, element_id)
     try:
