@@ -187,13 +187,14 @@ class OSMXMLParser(ContentHandler):
     VALID_RELATION_MEMBERS = set(('node', 'relation', 'way'))
     IGNORED_TAGS = set(('osm', 'note', 'meta'))
 
-    def __init__(self):
+    def __init__(self, fetch_missing=True):
         self.top_level_elements = []
         self.current_top_level_element = None
         # These dictionaries map ids to already discovered elements:
         self.known_nodes = {}
         self.known_ways = {}
         self.known_relations = {}
+        self.fetch_missing = fetch_missing
 
     def __iter__(self):
         for e in self.top_level_elements:
@@ -225,6 +226,11 @@ class OSMXMLParser(ContentHandler):
              'relation': self.known_relations}[element_type]
         if element_id in d:
             return d[element_id]
+        if not self.fetch_missing:
+            # It might be better to return an element that records the
+            # expected type and ID, and that the element wasn't
+            # fetched.  (Or, in the later case, that it was missing.)
+            return None
         o = fetch_osm_element(element_type, element_id)
         if not o:
             return None
@@ -327,13 +333,13 @@ out;
         RateLimitedPOST.request(url, values, filename)
     return filename
 
-def parse_xml(filename):
-    parser = OSMXMLParser()
+def parse_xml(filename, fetch_missing=True):
+    parser = OSMXMLParser(fetch_missing)
     with open(filename) as fp:
         xml.sax.parse(fp, parser)
     return parser
 
-def fetch_osm_element(element_type, element_id):
+def fetch_osm_element(element_type, element_id, fetch_missing=True):
     """Fetch and parse a particular OSM element recursively
 
     More data is fetched from the API if required.  'element_type'
@@ -343,7 +349,7 @@ def fetch_osm_element(element_type, element_id):
     # Make sure we have the XML file for that relation, node or way:
     filename = fetch_cached(element_type, element_id)
     try:
-        parsed = parse_xml(filename)
+        parsed = parse_xml(filename, fetch_missing)
     except UnexpectedElementException, e:
         # If we failed to parse the file, move it out of the way (so
         # for transient errors we can just try again) and re-raise the
