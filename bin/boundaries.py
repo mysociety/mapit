@@ -281,6 +281,10 @@ class OSMXMLParser(ContentHandler):
             self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
+def get_total_seconds(td):
+    """A replacement for timedelta.total_seconds(), that's only in Python >= 2.7"""
+    return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
+
 class RateLimitedPOST:
 
     last_post = None
@@ -292,7 +296,7 @@ class RateLimitedPOST:
             since_last = datetime.datetime.now() - RateLimitedPOST.last_post
             if since_last < RateLimitedPOST.min_time_between:
                 difference = RateLimitedPOST.min_time_between - since_last
-                time.sleep(difference.total_seconds())
+                time.sleep(get_total_seconds(difference))
         encoded_values = urllib.urlencode(values)
         request = urllib2.Request(url, encoded_values)
         print "making request to url:", url
