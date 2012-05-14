@@ -186,6 +186,7 @@ class OSMXMLParser(ContentHandler):
     VALID_TOP_LEVEL_ELEMENTS = set(('node', 'relation', 'way'))
     VALID_RELATION_MEMBERS = set(('node', 'relation', 'way'))
     IGNORED_TAGS = set(('osm', 'note', 'meta'))
+    IGNORED_ROLES = set(('subarea',))
 
     def __init__(self, fetch_missing=True):
         self.top_level_elements = []
@@ -267,12 +268,14 @@ class OSMXMLParser(ContentHandler):
                 member_type = attr['type']
                 if member_type not in OSMXMLParser.VALID_RELATION_MEMBERS:
                     raise "Unknown member type '%s' in <relation>" % (member_type,)
-                member = self.get_known_or_fetch(member_type, attr['ref'])
-                if member:
-                    t = (member, attr['role'])
-                    self.current_top_level_element.children.append(t)
-                else:
-                    print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
+                if attr['role'] not in OSMXMLParser.IGNORED_ROLES:
+                    member = self.get_known_or_fetch(member_type, attr['ref'])
+                    if member:
+                        t = (member, attr['role'])
+                        self.current_top_level_element.children.append(t)
+                    else:
+                        if self.fetch_missing:
+                            print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
             elif name == "nd":
                 self.raise_unless_expected_parent(name, 'way')
                 node = self.get_known_or_fetch('node', attr['ref'])
