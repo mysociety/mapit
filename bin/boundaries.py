@@ -402,6 +402,9 @@ class EndpointToWayMap:
     def number_of_endpoints(self):
         return len(self.endpoints)
 
+class UnclosedBoundariesException(Exception):
+    pass
+
 def join_way_soup(ways):
     """Join an iterable collection of ways into closed ways
 
@@ -432,7 +435,7 @@ def join_way_soup(ways):
             endpoints_to_ways.add_way(way)
     if endpoints_to_ways.number_of_endpoints():
         print >> sys.stderr, endpoints_to_ways.pretty()
-        raise Exception, "There were some unclosed paths left."
+        raise UnclosedBoundariesException, "There were some unclosed paths left."
     return closed_ways
 
 def main():
