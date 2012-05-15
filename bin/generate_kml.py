@@ -3,6 +3,36 @@
 
 from boundaries import *
 from lxml import etree
+from shapely.geometry import Polygon
+
+def ways_overlap(a, b):
+    tuples_a = [(float(n.lon), float(n.lat)) for n in a]
+    tuples_b = [(float(n.lon), float(n.lat)) for n in b]
+    polygon_a = Polygon(tuples_a)
+    polygon_b = Polygon(tuples_b)
+    return polygon_a.intersects(polygon_b)
+
+def group_boundaries_into_polygons(outer_ways, inner_ways):
+
+    """Group outer_ways and inner_ways into distinct polygons"""
+
+    # For each outer boundary, find all the inner paths that overlap
+    # with it, and remove them from the list of inner paths to consider:
+
+    result = []
+    inner_ways_left = inner_ways[:]
+
+    for outer_way in outer_ways:
+        polygon = { 'outer': [outer_way],
+                    'inner': [] }
+        for i in range(len(inner_ways_left) - 1, -1, -1):
+            inner_way = inner_ways_left[i]
+            if ways_overlap(inner_way, outer_way):
+                polygon['inner'].append(inner_way)
+                del inner_ways_left[i]
+        result.append(polygon)
+
+    return result
 
 def kml_string(folder_name,
                placemark_name,
@@ -27,16 +57,18 @@ def kml_string(folder_name,
         value = etree.SubElement(data, "value")
         value.text = v
 
-    all_ways = [(w, False) for w in outer_ways]
-    all_ways += [(w, True) for w in inner_ways]
+    multigeometry = etree.SubElement(placemark, "MultiGeometry")
 
-    polygon = etree.SubElement(placemark, "Polygon")
-    for way, inner in all_ways:
-        boundary_type = "inner" if inner else "outer"
-        boundary = etree.SubElement(polygon, boundary_type+"BoundaryIs")
-        linear_ring = etree.SubElement(boundary, "LinearRing")
-        coordinates = etree.SubElement(linear_ring, "coordinates")
-        coordinates.text = " ".join("%s,%s,0 " % n.lon_lat_tuple() for n in way.nodes)
+    for p in group_boundaries_into_polygons(outer_ways, inner_ways):
+        polygon = etree.SubElement(multigeometry, "Polygon")
+        all_ways = [(w, False) for w in p['outer']]
+        all_ways += [(w, True) for w in p['inner']]
+        for way, inner in all_ways:
+            boundary_type = "inner" if inner else "outer"
+            boundary = etree.SubElement(polygon, boundary_type+"BoundaryIs")
+            linear_ring = etree.SubElement(boundary, "LinearRing")
+            coordinates = etree.SubElement(linear_ring, "coordinates")
+            coordinates.text = " ".join("%s,%s,0 " % n.lon_lat_tuple() for n in way.nodes)
 
     return etree.tostring(kml,
                           pretty_print=True,
