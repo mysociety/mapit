@@ -70,6 +70,10 @@ class Way:
     def __ne__(self, other):
         return not self.__eq__(other)
 
+    def __iter__(self):
+        for n in self.nodes:
+            yield n
+
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"way (%s)" % (self.way_id)
