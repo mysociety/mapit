@@ -438,7 +438,7 @@ def join_way_soup(ways):
         else:
             endpoints_to_ways.add_way(way)
     if endpoints_to_ways.number_of_endpoints():
-        print >> sys.stderr, endpoints_to_ways.pretty()
+        print >> sys.stderr, endpoints_to_ways.pretty().encode('utf-8')
         raise UnclosedBoundariesException, "There were some unclosed paths left."
     return closed_ways
 
