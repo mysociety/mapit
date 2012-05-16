@@ -13,12 +13,50 @@ def mkdir_p(path):
         else:
             raise
 
-class Node:
+class OSMElement(object):
+
+    def __init__(self, element_id, element_content_missing=False):
+        self.element_id = element_id
+        self.missing = element_content_missing
+
+    def get_id(self):
+        return self.element_id
+
+    def __eq__(self, other):
+        if type(other) is type(self):
+            return self.element_id == other.element_id
+        return False
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash(self.element_id)
+
+    def name_id_tuple(self):
+        return (self.get_element_name(), self.element_id)
+
+    @property
+    def element_content_missing(self):
+        return self.missing
+
+    @staticmethod
+    def make_missing_element(element_type, element_id):
+        if element_type == "node":
+            return Node(element_id, element_content_missing=True)
+        elif element_type == "way":
+            return Way(element_id, element_content_missing=True)
+        elif element_type == "relation":
+            return Relation(element_id, element_content_missing=True)
+        else:
+            raise Exception, "Unknown element name '%s'" % (element_type,)
+
+class Node(OSMElement):
 
     """Represents an OSM node as returned via the Overpass API"""
 
-    def __init__(self, node_id, latitude, longitude):
-        self.node_id = node_id
+    def __init__(self, node_id, latitude=None, longitude=None, element_content_missing=False):
+        super(Node, self).__init__(node_id, element_content_missing)
         self.lat = latitude
         self.lon = longitude
         self.tags = {}
@@ -26,49 +64,30 @@ class Node:
     def get_element_name(self):
         return 'node'
 
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.node_id == other.node_id
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def pretty(self, indent=0):
         i = u" "*indent
-        result = i + u"node (%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
+        result = i + u"node (%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         return result
 
-    def __hash__(self):
-        return hash(self.node_id)
-
-    def __repr__(self):
-        return "node(%s) lat: %s, lon: %s" % (self.node_id, self.lat, self.lon)
-
     def lon_lat_tuple(self):
         return (self.lon, self.lat)
 
-class Way:
+    def __repr__(self):
+        return "node(%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
+
+class Way(OSMElement):
 
     """Represents an OSM way as returned via the Overpass API"""
 
-    def __init__(self, way_id, nodes=None):
-        self.way_id = way_id
+    def __init__(self, way_id, nodes=None, element_content_missing=False):
+        super(Way, self).__init__(way_id, element_content_missing)
         self.nodes = nodes or []
         self.tags = {}
 
     def get_element_name(self):
         return 'way'
-
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.way_id == other.way_id
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __iter__(self):
         for n in self.nodes:
@@ -76,7 +95,7 @@ class Way:
 
     def pretty(self, indent=0):
         i = u" "*indent
-        result = i + u"way (%s)" % (self.way_id)
+        result = i + u"way (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         for node in self.nodes:
@@ -115,34 +134,30 @@ class Way:
         return Way(None, new_nodes)
 
     def __repr__(self):
-        return "way(%s) with %d nodes" % (self.way_id, len(self.nodes))
+        return "way(%s) with %d nodes" % (self.element_id, len(self.nodes))
 
-class Relation:
+class Relation(OSMElement):
 
     """Represents an OSM relation as returned via the Overpass API"""
 
-    def __init__(self, relation_id):
-        self.relation_id = relation_id
+    def __init__(self, relation_id, element_content_missing=False):
+        super(Relation, self).__init__(relation_id, element_content_missing)
         # A relation has an ordered list of children, which we store
         # as a list of tuples.  The first element of each tuple is a
         # Node, Way or Relation, and the second is a "role" string.
         self.children = []
         self.tags = {}
 
+    def __iter__(self):
+        for c in self.children:
+            yield c
+
     def get_element_name(self):
         return 'relation'
 
-    def __eq__(self, other):
-        if type(other) is type(self):
-            return self.relation_id == other.relation_id
-        return False
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def pretty(self, indent=0):
         i = u" "*indent
-        result = i + u"relation (%s)" % (self.relation_id)
+        result = i + u"relation (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         for child, role in self.children:
@@ -166,7 +181,7 @@ class Relation:
                     yield sub_way
 
     def __repr__(self):
-        return "relation(%s) with %d children" % (self.relation_id, len(self.children))
+        return "relation(%s) with %d children" % (self.element_id, len(self.children))
 
 class UnexpectedElementException(Exception):
     def __init__(self, element_name, message=None):
@@ -232,10 +247,7 @@ class OSMXMLParser(ContentHandler):
         if element_id in d:
             return d[element_id]
         if not self.fetch_missing:
-            # It might be better to return an element that records the
-            # expected type and ID, and that the element wasn't
-            # fetched.  (Or, in the later case, that it was missing.)
-            return None
+            return OSMElement.make_missing_element(element_type, element_id)
         o = fetch_osm_element(element_type, element_id)
         if not o:
             return None
@@ -247,18 +259,16 @@ class OSMXMLParser(ContentHandler):
             return
         elif name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
             self.raise_if_sub_level(name)
+            element_id = attr['id']
             if name == "node":
-                node_id = attr['id']
-                self.current_top_level_element = Node(node_id, attr['lat'], attr['lon'])
-                self.known_nodes[node_id] = self.current_top_level_element
+                self.current_top_level_element = Node(element_id, attr['lat'], attr['lon'])
+                self.known_nodes[element_id] = self.current_top_level_element
             elif name == "way":
-                way_id = attr['id']
-                self.current_top_level_element = Way(way_id)
-                self.known_ways[way_id] = self.current_top_level_element
+                self.current_top_level_element = Way(element_id)
+                self.known_ways[element_id] = self.current_top_level_element
             elif name == "relation":
-                relation_id = attr['id']
-                self.current_top_level_element = Relation(relation_id)
-                self.known_relations[relation_id] = self.current_top_level_element
+                self.current_top_level_element = Relation(element_id)
+                self.known_relations[element_id] = self.current_top_level_element
             else:
                 assert "Unhandled top level element %s" % (name,)
         else:
