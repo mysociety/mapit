@@ -36,6 +36,17 @@ class OSMElement(object):
     def name_id_tuple(self):
         return (self.get_element_name(), self.element_id)
 
+    def get_name(self):
+        # FIXME: Using the English name ('name:en') by default is just
+        # temporary, for debugging purposes - should use ('name') in
+        # preference for real use.
+        if 'name:en' in self.tags:
+            return self.tags['name:en']
+        elif 'name' in self.tags:
+            return self.tags['name']
+        else:
+            return "Unknown name for %s with ID %s" % self.name_id_tuple()
+
     @property
     def element_content_missing(self):
         return self.missing
