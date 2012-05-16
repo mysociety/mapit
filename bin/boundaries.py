@@ -238,7 +238,7 @@ class OSMXMLParser(ContentHandler):
     VALID_TOP_LEVEL_ELEMENTS = set(('node', 'relation', 'way'))
     VALID_RELATION_MEMBERS = set(('node', 'relation', 'way'))
     IGNORED_TAGS = set(('osm', 'note', 'meta'))
-    IGNORED_ROLES = set(('subarea',))
+    IGNORED_ROLES = set(('subarea', 'defaults', 'apply_to'))
 
     def __init__(self, fetch_missing=True):
         self.top_level_elements = []
