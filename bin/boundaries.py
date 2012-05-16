@@ -144,6 +144,28 @@ class Way(OSMElement):
             raise Exception, "Trying to join two ways with no end point in common"
         return Way(None, new_nodes)
 
+    def bounding_box_tuple(self):
+        """Returns a tuple of floats representing a bounding box of this Way
+
+        Each tuple is (min_lat, min_lon, max_lat, max_lon).  If the
+        longitude of any node is less than -90 degrees, 360 is added
+        to every node, to deal with ways that cross the -180 degree
+        meridian"""
+
+        longitudes = [float(n.lon) for n in self]
+        latitudes = [float(n.lat) for n in self]
+
+        if any(x for x in longitudes if x < -90):
+            longitudes = [x + 360 for x in longitudes]
+
+        min_lon = min(longitudes)
+        max_lon = max(longitudes)
+
+        min_lat = min(latitudes)
+        max_lat = max(latitudes)
+
+        return (min_lat, min_lon, max_lat, max_lon)
+
     def __repr__(self):
         return "way(%s) with %d nodes" % (self.element_id, len(self.nodes))
 
