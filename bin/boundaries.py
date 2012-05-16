@@ -372,13 +372,7 @@ def fetch_cached(element_type, element_id):
     filename = os.path.join(cache_directory,"%s-%s.xml" % arguments)
     if not os.path.exists(filename):
         url = "http://www.overpass-api.de/api/interpreter"
-        data = '''
-(
-  %s(%s);
-  >;
-);
-out;
-''' % arguments
+        data = '[timeout:3600];(%s(%s);>;);out;' % arguments
         values = {'data': data}
         RateLimitedPOST.request(url, values, filename)
     return filename
