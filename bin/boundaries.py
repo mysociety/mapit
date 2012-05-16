@@ -344,7 +344,7 @@ def get_total_seconds(td):
 class RateLimitedPOST:
 
     last_post = None
-    min_time_between = datetime.timedelta(seconds=2)
+    min_time_between = datetime.timedelta(seconds=0.5)
 
     @staticmethod
     def request(url, values, filename):
