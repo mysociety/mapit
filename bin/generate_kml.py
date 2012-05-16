@@ -113,7 +113,7 @@ def get_kml_for_osm_element(element_type, element_id):
                 bounding_boxes)
 
     else:
-        raise Exception, "Element type %s is not supported by get_kml_for_osm_element"
+        raise Exception, "Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id)
 
 def main():
 
