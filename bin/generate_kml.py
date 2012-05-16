@@ -83,8 +83,6 @@ def get_kml_for_osm_element(element_type, element_id):
     name = e.get_name()
     folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
 
-    print folder_name
-
     if element_type == 'way':
         if not e.closed():
             raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
