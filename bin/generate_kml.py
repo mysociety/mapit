@@ -75,22 +75,54 @@ def kml_string(folder_name,
                           encoding="utf-8",
                           xml_declaration=True)
 
+
+def get_kml_for_osm_element(element_type, element_id):
+
+    e = fetch_osm_element(element_type, element_id)
+
+    name = e.get_name()
+    folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
+
+    print folder_name
+
+    if element_type == 'way':
+        if not e.closed():
+            raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
+        return (kml_string(folder_name,
+                           name,
+                           e.tags,
+                           [e],
+                           []),
+                [e.bounding_box_tuple()])
+
+    elif element_type == 'relation':
+
+        outer_ways = join_way_soup(e.way_iterator(False))
+        inner_ways = join_way_soup(e.way_iterator(True))
+
+        bounding_boxes = [w.bounding_box_tuple() for w in outer_ways]
+
+        extended_data = e.tags.copy()
+        extended_data['osm'] = element_id
+
+        return (kml_string(folder_name,
+                           name,
+                           e.tags,
+                           outer_ways,
+                           inner_ways),
+                bounding_boxes)
+
+    else:
+        raise Exception, "Element type %s is not supported by get_kml_for_osm_element"
+
 def main():
 
     # relation_id = '375982' # Orkney
     relation_id = '295353' # South Cambridgeshire
 
-    parsed_relation = fetch_osm_element('relation', relation_id)
-    outer_ways = join_way_soup(parsed_relation.way_iterator(False))
-    inner_ways = join_way_soup(parsed_relation.way_iterator(True))
+    kml, bboxes = get_kml_for_osm_element('relation', relation_id)
 
-    print kml_string(u"Norway OSM boundaries",
-                     u"Akershus",
-                     {u"ref": u"02",
-                      u"osm": u"406106",
-                      u"name:ru": u"Акерсхус"},
-                     outer_ways,
-                     inner_ways)
+    print kml
 
 if __name__ == "__main__":
     main()
