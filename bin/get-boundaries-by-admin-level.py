@@ -77,16 +77,19 @@ for admin_level in range(start_admin_level, 12):
 
             element_type, element_id = e.name_id_tuple()
 
-            kml, _ = get_kml_for_osm_element(element_type, element_id)
-
             basename = "%s-%s-%s" % (element_type,
                                      element_id,
                                      replace_slashes(e.get_name()))
 
             filename = os.path.join(level_directory, u"%s.kml" % (basename,))
-            print "      Writing KML to", filename.encode('utf-8')
-            with open(filename, "w") as fp:
-                fp.write(kml)
+
+            if not os.path.exists(filename):
+
+                kml, _ = get_kml_for_osm_element(element_type, element_id)
+
+                print "      Writing KML to", filename.encode('utf-8')
+                with open(filename, "w") as fp:
+                    fp.write(kml)
 
         except UnclosedBoundariesException:
             print "      ... ignoring unclosed boundary"
