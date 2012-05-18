@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # This script fetches all administrative boundaries from OpenStreetMap
@@ -10,6 +10,14 @@ import urllib, urllib2
 
 from boundaries import *
 from generate_kml import *
+
+if len(sys.argv) > 2:
+    print >> sys.stderr, "Usage: %s [LARGEST-ADMIN-LEVEL]" % (sys.argv[0],)
+    sys.exit(1)
+
+start_admin_level = 2
+if len(sys.argv) == 2:
+    start_admin_level = int(sys.argv[1])
 
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
@@ -39,7 +47,7 @@ def get_non_contained_elements(elements):
                 contained_elements.add(member.name_id_tuple())
     return [e for e in elements if e not in contained_elements]
 
-for admin_level in range(2, 12):
+for admin_level in range(start_admin_level, 12):
 
     print "Fetching data at admin level", admin_level
 
@@ -69,16 +77,19 @@ for admin_level in range(2, 12):
 
             element_type, element_id = e.name_id_tuple()
 
-            kml, _ = get_kml_for_osm_element(element_type, element_id)
-
             basename = "%s-%s-%s" % (element_type,
                                      element_id,
                                      replace_slashes(e.get_name()))
 
             filename = os.path.join(level_directory, u"%s.kml" % (basename,))
-            print "      Writing KML to", filename.encode('utf-8')
-            with open(filename, "w") as fp:
-                fp.write(kml)
+
+            if not os.path.exists(filename):
+
+                kml, _ = get_kml_for_osm_element(element_type, element_id)
+
+                print "      Writing KML to", filename.encode('utf-8')
+                with open(filename, "w") as fp:
+                    fp.write(kml)
 
         except UnclosedBoundariesException:
             print "      ... ignoring unclosed boundary"

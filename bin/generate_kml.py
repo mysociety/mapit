@@ -23,10 +23,15 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
     inner_ways_left = inner_ways[:]
 
     for outer_way in outer_ways:
+        if len(outer_way) < 3:
+            continue
         polygon = { 'outer': [outer_way],
                     'inner': [] }
         for i in range(len(inner_ways_left) - 1, -1, -1):
             inner_way = inner_ways_left[i]
+            if len(inner_way) < 3:
+                del inner_ways_left[i]
+                continue
             if ways_overlap(inner_way, outer_way):
                 polygon['inner'].append(inner_way)
                 del inner_ways_left[i]

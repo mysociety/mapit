@@ -104,6 +104,9 @@ class Way(OSMElement):
         for n in self.nodes:
             yield n
 
+    def __len__(self):
+        return len(self.nodes)
+
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"way (%s)" % (self.element_id)
@@ -260,11 +263,11 @@ class OSMXMLParser(ContentHandler):
         return 0 == len(self.top_level_elements)
 
     def raise_if_sub_level(self, name):
-        if self.current_top_level_element:
+        if self.current_top_level_element is not None:
             raise UnexpectedElementException(name, "Should never get a new <%s> when still in a top-level element" % (name,))
 
     def raise_if_top_level(self, name):
-        if not self.current_top_level_element:
+        if self.current_top_level_element is None:
             raise UnexpectedElementException(name, "Should never get a new <%s> when not in a top-level element" % (name,))
 
     def raise_unless_expected_parent(self, name, expected_parent):
