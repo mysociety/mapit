@@ -13,6 +13,20 @@ def mkdir_p(path):
         else:
             raise
 
+def get_cache_filename(element_type, element_id):
+    element_id = int(element_id, 10)
+    subdirectory = "%03d" % (element_id % 1000,)
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    full_subdirectory = os.path.join(script_directory,
+                                     '..',
+                                     'data',
+                                     'new-cache',
+                                     element_type,
+                                     subdirectory)
+    mkdir_p(full_subdirectory)
+    basename = "%s-%d.xml" % (element_type, element_id)
+    return os.path.join(full_subdirectory, basename)
+
 class OSMElement(object):
 
     def __init__(self, element_id, element_content_missing=False):
@@ -369,10 +383,7 @@ def fetch_cached(element_type, element_id):
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception, "Unknown element type '%s'" % (element_type,)
-    d = os.path.dirname(os.path.abspath(__file__))
-    cache_directory = os.path.realpath(os.path.join(d, '..', 'data', 'new-cache'))
-    mkdir_p(cache_directory)
-    filename = os.path.join(cache_directory,"%s-%s.xml" % arguments)
+    filename = get_cache_filename(element_type, element_id)
     if not os.path.exists(filename):
         url = "http://www.overpass-api.de/api/interpreter"
         data = '[timeout:3600];(%s(%s);>;);out;' % arguments
