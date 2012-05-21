@@ -13,6 +13,42 @@ def mkdir_p(path):
         else:
             raise
 
+def get_cache_filename(element_type, element_id):
+    element_id = int(element_id, 10)
+    subdirectory = "%03d" % (element_id % 1000,)
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    full_subdirectory = os.path.join(script_directory,
+                                     '..',
+                                     'data',
+                                     'new-cache',
+                                     element_type,
+                                     subdirectory)
+    mkdir_p(full_subdirectory)
+    basename = "%s-%d.xml" % (element_type, element_id)
+    return os.path.join(full_subdirectory, basename)
+
+def get_name_from_tags(tags, element_type=None, element_id=None):
+    # FIXME: Using the English name ('name:en') by default is just
+    # temporary, for debugging purposes - should use ('name') in
+    # preference for real use.
+    if 'name:en' in tags:
+        return tags['name:en']
+    elif 'name' in tags:
+        return tags['name']
+    elif element_type and element_id:
+        return "Unknown name for %s with ID %s" % (element_type, element_id)
+    else:
+        return "Unknown"
+
+def get_non_contained_elements(elements):
+    """Filter elements, keeping only those which are not a member of another"""
+    contained_elements = set([])
+    for e in elements:
+        if e.get_element_name() == "relation":
+            for member, role in e:
+                contained_elements.add(member.name_id_tuple())
+    return [e for e in elements if e not in contained_elements]
+
 class OSMElement(object):
 
     def __init__(self, element_id, element_content_missing=False):
@@ -21,6 +57,10 @@ class OSMElement(object):
 
     def get_id(self):
         return self.element_id
+
+    def get_element_name(self):
+        # This should be overriden by any subclass:
+        return "[BUG]"
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -37,15 +77,7 @@ class OSMElement(object):
         return (self.get_element_name(), self.element_id)
 
     def get_name(self):
-        # FIXME: Using the English name ('name:en') by default is just
-        # temporary, for debugging purposes - should use ('name') in
-        # preference for real use.
-        if 'name:en' in self.tags:
-            return self.tags['name:en']
-        elif 'name' in self.tags:
-            return self.tags['name']
-        else:
-            return "Unknown name for %s with ID %s" % self.name_id_tuple()
+        return get_name_from_tags(self.tags, self.get_element_name(), self.element_id)
 
     @property
     def element_content_missing(self):
@@ -340,6 +372,33 @@ class OSMXMLParser(ContentHandler):
             self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
+class MinimalOSMXMLParser(ContentHandler):
+
+    """Only extract ID and tags from top-level elements"""
+
+    def __init__(self, handle_element):
+        self.handle_element = handle_element
+        self.current_tags = None
+        self.current_element_type = None
+        self.current_element_id = None
+
+    def startElement(self, name, attr):
+        if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
+            self.current_element_type = name
+            self.current_element_id = attr['id']
+            self.current_tags = {}
+        elif name == "tag":
+            self.current_tags[attr['k']] = attr['v']
+
+    def endElement(self, name):
+        if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
+            self.handle_element(self.current_element_type,
+                                self.current_element_id,
+                                self.current_tags)
+            self.current_element_type = None
+            self.current_element_id = None
+            self.current_tags = None
+
 def get_total_seconds(td):
     """A replacement for timedelta.total_seconds(), that's only in Python >= 2.7"""
     return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
@@ -369,16 +428,18 @@ def fetch_cached(element_type, element_id):
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception, "Unknown element type '%s'" % (element_type,)
-    d = os.path.dirname(os.path.abspath(__file__))
-    cache_directory = os.path.realpath(os.path.join(d, '..', 'data', 'new-cache'))
-    mkdir_p(cache_directory)
-    filename = os.path.join(cache_directory,"%s-%s.xml" % arguments)
+    filename = get_cache_filename(element_type, element_id)
     if not os.path.exists(filename):
         url = "http://www.overpass-api.de/api/interpreter"
         data = '[timeout:3600];(%s(%s);>;);out;' % arguments
         values = {'data': data}
         RateLimitedPOST.request(url, values, filename)
     return filename
+
+def parse_xml_minimal(filename, element_handler):
+    parser = MinimalOSMXMLParser(element_handler)
+    with open(filename) as fp:
+        xml.sax.parse(fp, parser)
 
 def parse_xml(filename, fetch_missing=True):
     parser = OSMXMLParser(fetch_missing)

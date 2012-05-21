@@ -112,10 +112,10 @@ should show the general format for how it's done.
 United Kingdom
 --------------
 
-Here are the basic instructions to install OS OpenData and NSPD Open:
+Here are the basic instructions to install OS OpenData and ONSPD:
 
 1. AREA_SRID in conf/general.yml should be 27700 (as Boundary-Line shapes are in OSGB).   
-2. Download the latest Code-Point Open, Boundary-Line and NSPD from
+2. Download the latest Code-Point Open, Boundary-Line and ONSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
    ./manage.py syncdb
@@ -142,7 +142,7 @@ Notes on future releases
 ------------------------
 
 When a new Code-Point is released, you should just be able to run import_codepoint 
-and scilly; when new NSPD is out, import_nspd_ni if it's only postcodes that 
+and scilly; when new ONSPD is out, import_nspd_ni if it's only postcodes that
 have changed, or import_nspd_ni_areas first if boundary changes too (this is 
 incomplete, it doesn't use a control file like import_boundary_line does); 
 when new Boundary-Line, import_boundary_line and find_parents.
