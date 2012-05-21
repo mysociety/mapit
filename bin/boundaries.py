@@ -372,6 +372,33 @@ class OSMXMLParser(ContentHandler):
             self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
+class MinimalOSMXMLParser(ContentHandler):
+
+    """Only extract ID and tags from top-level elements"""
+
+    def __init__(self, handle_element):
+        self.handle_element = handle_element
+        self.current_tags = None
+        self.current_element_type = None
+        self.current_element_id = None
+
+    def startElement(self, name, attr):
+        if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
+            self.current_element_type = name
+            self.current_element_id = attr['id']
+            self.current_tags = {}
+        elif name == "tag":
+            self.current_tags[attr['k']] = attr['v']
+
+    def endElement(self, name):
+        if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
+            self.handle_element(self.current_element_type,
+                                self.current_element_id,
+                                self.current_tags)
+            self.current_element_type = None
+            self.current_element_id = None
+            self.current_tags = None
+
 def get_total_seconds(td):
     """A replacement for timedelta.total_seconds(), that's only in Python >= 2.7"""
     return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
@@ -408,6 +435,11 @@ def fetch_cached(element_type, element_id):
         values = {'data': data}
         RateLimitedPOST.request(url, values, filename)
     return filename
+
+def parse_xml_minimal(filename, element_handler):
+    parser = MinimalOSMXMLParser(element_handler)
+    with open(filename) as fp:
+        xml.sax.parse(fp, parser)
 
 def parse_xml(filename, fetch_missing=True):
     parser = OSMXMLParser(fetch_missing)
