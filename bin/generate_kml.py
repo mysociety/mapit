@@ -84,6 +84,8 @@ def kml_string(folder_name,
 def get_kml_for_osm_element(element_type, element_id):
 
     e = fetch_osm_element(element_type, element_id)
+    if e is None:
+        return (None, None)
 
     name = e.get_name()
     folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
