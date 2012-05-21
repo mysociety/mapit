@@ -27,6 +27,19 @@ def get_cache_filename(element_type, element_id):
     basename = "%s-%d.xml" % (element_type, element_id)
     return os.path.join(full_subdirectory, basename)
 
+def get_name_from_tags(tags, element_type=None, element_id=None):
+    # FIXME: Using the English name ('name:en') by default is just
+    # temporary, for debugging purposes - should use ('name') in
+    # preference for real use.
+    if 'name:en' in tags:
+        return tags['name:en']
+    elif 'name' in tags:
+        return tags['name']
+    elif element_type and element_id:
+        return "Unknown name for %s with ID %s" % (element_type, element_id)
+    else:
+        return "Unknown"
+
 class OSMElement(object):
 
     def __init__(self, element_id, element_content_missing=False):
@@ -35,6 +48,10 @@ class OSMElement(object):
 
     def get_id(self):
         return self.element_id
+
+    def get_element_name(self):
+        # This should be overriden by any subclass:
+        return "[BUG]"
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -51,15 +68,7 @@ class OSMElement(object):
         return (self.get_element_name(), self.element_id)
 
     def get_name(self):
-        # FIXME: Using the English name ('name:en') by default is just
-        # temporary, for debugging purposes - should use ('name') in
-        # preference for real use.
-        if 'name:en' in self.tags:
-            return self.tags['name:en']
-        elif 'name' in self.tags:
-            return self.tags['name']
-        else:
-            return "Unknown name for %s with ID %s" % self.name_id_tuple()
+        return get_name_from_tags(self.tags, self.get_element_name(), self.element_id)
 
     @property
     def element_content_missing(self):
