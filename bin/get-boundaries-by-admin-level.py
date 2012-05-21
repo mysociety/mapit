@@ -55,22 +55,22 @@ for admin_level in range(start_admin_level, 12):
     level_directory = os.path.join(data_dir, "cache", "al%02d" % (admin_level,))
     mkdir_p(level_directory)
 
-    for e in get_non_contained_elements(parse_xml(xml_filename, False)):
+    def handle_top_level_element(element_type, element_id, tags):
 
-        if 'admin_level' not in e.tags:
-            continue
-        if e.tags['admin_level'] != str(admin_level):
-            continue
+        if 'admin_level' not in tags:
+            return
+        if tags['admin_level'] != str(admin_level):
+            return
 
-        print "Considering admin boundary:", e.get_name().encode('utf-8')
+        name = get_name_from_tags(tags, element_type, element_id)
+
+        print "Considering admin boundary:", name.encode('utf-8')
 
         try:
 
-            element_type, element_id = e.name_id_tuple()
-
             basename = "%s-%s-%s" % (element_type,
                                      element_id,
-                                     replace_slashes(e.get_name()))
+                                     replace_slashes(name))
 
             filename = os.path.join(level_directory, u"%s.kml" % (basename,))
 
@@ -84,3 +84,5 @@ for admin_level in range(start_admin_level, 12):
 
         except UnclosedBoundariesException:
             print "      ... ignoring unclosed boundary"
+
+    parse_xml_minimal(xml_filename, handle_top_level_element)
