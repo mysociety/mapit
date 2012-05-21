@@ -79,7 +79,7 @@ for admin_level in range(start_admin_level, 12):
                 kml, _ = get_kml_for_osm_element(element_type, element_id)
                 if not kml:
                     print "      No data found for %s %s" % (element_type, element_id)
-                    continue
+                    return
 
                 print "      Writing KML to", filename.encode('utf-8')
                 with open(filename, "w") as fp:
