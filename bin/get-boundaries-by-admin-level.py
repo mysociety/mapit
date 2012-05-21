@@ -38,15 +38,6 @@ def overpass_post_request(data, filename):
 def replace_slashes(s):
     return re.sub(r'/', '_', s)
 
-def get_non_contained_elements(elements):
-    """Filter elements, keeping only those which are not a member of another"""
-    contained_elements = set([])
-    for e in elements:
-        if e.get_element_name() == "relation":
-            for member, role in e:
-                contained_elements.add(member.name_id_tuple())
-    return [e for e in elements if e not in contained_elements]
-
 for admin_level in range(start_admin_level, 12):
 
     print "Fetching data at admin level", admin_level

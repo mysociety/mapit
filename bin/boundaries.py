@@ -40,6 +40,15 @@ def get_name_from_tags(tags, element_type=None, element_id=None):
     else:
         return "Unknown"
 
+def get_non_contained_elements(elements):
+    """Filter elements, keeping only those which are not a member of another"""
+    contained_elements = set([])
+    for e in elements:
+        if e.get_element_name() == "relation":
+            for member, role in e:
+                contained_elements.add(member.name_id_tuple())
+    return [e for e in elements if e not in contained_elements]
+
 class OSMElement(object):
 
     def __init__(self, element_id, element_content_missing=False):
