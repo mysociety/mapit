@@ -1,24 +1,21 @@
 #!/usr/bin/env python
 
 import sys, re
-from lxml.html import parse
-from lxml import etree
+from bs4 import BeautifulSoup
+import urllib2
 
 url = "http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative"
 
-root = parse(url).getroot()
+f = urllib2.urlopen(url)
+data = f.read()
+f.close()
+
+soup = BeautifulSoup(data, "lxml")
 
 def strip_all_tags(element):
-    replace_tag_with_text(element, 'br', "\n")
-    return ("".join(element.itertext())).strip()
-
-def replace_tag_with_text(root, tag_name, replacement_text):
-    for tag in root.xpath(tag_name):
-        if tag.tail:
-            tag.tail = replacement_text + tag.tail
-        else:
-            tag.tail = replacement_text
-    etree.strip_elements(root, tag_name, with_tail=False)
+    for br in element.find_all('br'):
+        br.replaceWith(u"\n")
+    return "".join(element.findAll(text=True)).strip()
 
 # Tidy up the country name column - I'm not sure there's an obviously
 # smarter way of doing this for the moment:
@@ -41,25 +38,32 @@ def make_missing_none(s):
 
 country_to_admin_levels = {}
 
-for table in root.cssselect('table.wikitable'):
-    for tr in table:
-        if len(tr) <= 2:
+for table in soup.find_all('table', 'wikitable'):
+    rows = table.findAll('tr', recursive=False)
+    for row in rows:
+        ths = row.findAll('th', recursive=False)
+        if ths:
+            headers = [th.string.strip() for th in ths]
             continue
-        if tr[0].tag == "th":
-            headers = [ h.text.strip() for h in table[1] ]
+        tds = row.findAll('td', recursive=False)
+        if len(tds) <= 2:
             continue
-        country_name = get_country_name(strip_all_tags(tr[0]))
-        if len(tr) != len(headers):
-            print >> sys.stderr, "Ignoring row of unexpected length (%d)" % (len(tr),)
+        country_name = get_country_name(strip_all_tags(tds[0]))
+        if len(tds) != len(headers):
+            print >> sys.stderr, "Warning: Ignoring row of unexpected length", len(tds)
             continue
-        # There's no admin level 0:
         levels = [None]
         levels += [make_missing_none(strip_all_tags(td))
-                   for td in tr[1:]]
-        print "####", country_name.encode('utf-8')
-        for i, s in enumerate(levels):
-            print "---- level", i
-            if s:
-                print "  " + s.encode('utf-8')
-            else:
-                print "  [No information]"
+                   for td in tds[1:]]
+        if country_name in country_to_admin_levels:
+            print >> sys.stderr, "Warning: Overwriting previous information for country '%s'" % (country_name,)
+        country_to_admin_levels[country_name] = levels
+
+for country_name, levels in sorted(country_to_admin_levels.items()):
+    print "####", country_name.encode('utf-8')
+    for i, s in enumerate(levels):
+        print "---- level", i
+        if s:
+            print "  " + s.encode('utf-8')
+        else:
+            print "  [No information]"
