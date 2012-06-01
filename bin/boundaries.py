@@ -94,6 +94,13 @@ class OSMElement(object):
         else:
             raise Exception, "Unknown element name '%s'" % (element_type,)
 
+    def get_missing_elements(self, to_append_to=None):
+        if to_append_to is None:
+            to_append_to = []
+        if self.element_content_missing:
+            to_append_to.append(self.name_id_tuple())
+        return to_append_to
+
 class Node(OSMElement):
 
     """Represents an OSM node as returned via the Overpass API"""
@@ -204,6 +211,12 @@ class Way(OSMElement):
     def __repr__(self):
         return "way(%s) with %d nodes" % (self.element_id, len(self.nodes))
 
+    def get_missing_elements(self, to_append_to=None):
+        to_append_to = OSMElement.get_missing_elements(self, to_append_to)
+        for node in self:
+            node.get_missing_elements(to_append_to)
+        return to_append_to
+
 class Relation(OSMElement):
 
     """Represents an OSM relation as returned via the Overpass API"""
@@ -250,6 +263,13 @@ class Relation(OSMElement):
 
     def __repr__(self):
         return "relation(%s) with %d children" % (self.element_id, len(self.children))
+
+    def get_missing_elements(self, to_append_to=None):
+        to_append_to = OSMElement.get_missing_elements(self, to_append_to)
+        for member, role in self:
+            if role not in OSMXMLParser.IGNORED_ROLES:
+                member.get_missing_elements(to_append_to)
+        return to_append_to
 
 class UnexpectedElementException(Exception):
     def __init__(self, element_name, message=None):
