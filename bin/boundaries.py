@@ -295,7 +295,7 @@ class OSMXMLParser(ContentHandler):
     IGNORED_TAGS = set(('osm', 'note', 'meta', 'bound'))
     IGNORED_ROLES = set(('subarea', 'defaults', 'apply_to'))
 
-    def __init__(self, fetch_missing=True, callback=None):
+    def __init__(self, fetch_missing=True, callback=None, cache=True):
         self.top_level_elements = []
         self.current_top_level_element = None
         # These dictionaries map ids to already discovered elements:
@@ -304,6 +304,12 @@ class OSMXMLParser(ContentHandler):
         self.known_relations = {}
         self.fetch_missing = fetch_missing
         self.callback = callback
+        self.cache = cache
+
+    def clear_caches(self):
+        self.known_nodes.clear()
+        self.known_ways.clear()
+        self.known_relations.clear()
 
     # FIXME: make this a decorator
     def raise_if_callback(self):
@@ -338,17 +344,19 @@ class OSMXMLParser(ContentHandler):
     def get_known_or_fetch(self, element_type, element_id):
         """Return an OSM Node, Way or Relation, fetching it if necessary"""
         element_id = str(element_id)
-        d = {'node': self.known_nodes,
-             'way': self.known_ways,
-             'relation': self.known_relations}[element_type]
-        if element_id in d:
-            return d[element_id]
+        if self.cache:
+            d = {'node': self.known_nodes,
+                 'way': self.known_ways,
+                 'relation': self.known_relations}[element_type]
+            if element_id in d:
+                return d[element_id]
         if not self.fetch_missing:
             return OSMElement.make_missing_element(element_type, element_id)
         o = fetch_osm_element(element_type, element_id)
         if not o:
             return None
-        d[element_id] = o
+        if self.cache:
+            d[element_id] = o
         return o
 
     def startElement(self, name, attr):
@@ -359,13 +367,16 @@ class OSMXMLParser(ContentHandler):
             element_id = attr['id']
             if name == "node":
                 self.current_top_level_element = Node(element_id, attr['lat'], attr['lon'])
-                self.known_nodes[element_id] = self.current_top_level_element
+                if self.cache:
+                    self.known_nodes[element_id] = self.current_top_level_element
             elif name == "way":
                 self.current_top_level_element = Way(element_id)
-                self.known_ways[element_id] = self.current_top_level_element
+                if self.cache:
+                    self.known_ways[element_id] = self.current_top_level_element
             elif name == "relation":
                 self.current_top_level_element = Relation(element_id)
-                self.known_relations[element_id] = self.current_top_level_element
+                if self.cache:
+                    self.known_relations[element_id] = self.current_top_level_element
             else:
                 assert "Unhandled top level element %s" % (name,)
         else:
