@@ -2,6 +2,7 @@
 
 import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
 from xml.sax.handler import ContentHandler
+from lxml import etree
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -51,16 +52,18 @@ def get_non_contained_elements(elements):
 
 class OSMElement(object):
 
-    def __init__(self, element_id, element_content_missing=False):
+    def __init__(self, element_id, element_content_missing=False, element_name=None):
         self.element_id = element_id
         self.missing = element_content_missing
+        self.element_name = element_name
 
     def get_id(self):
         return self.element_id
 
     def get_element_name(self):
-        # This should be overriden by any subclass:
-        return "[BUG]"
+        # This should be overriden by any subclass, but when we're
+        # creating members that are missing, we might set the name:
+        return self.element_name or "BUG"
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -101,6 +104,18 @@ class OSMElement(object):
             to_append_to.append(self.name_id_tuple())
         return to_append_to
 
+    @staticmethod
+    def xml_wrapping():
+        osm = etree.Element("osm", attrib={"version": "0.6",
+                                           "generator": "mySociety Boundary Extractor"})
+        note = etree.SubElement(osm, "note")
+        note.text = "The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history"
+        return osm
+
+    def xml_add_tags(self, xml_element):
+        for k, v in sorted(self.tags.items()):
+            etree.SubElement(xml_element, 'tag', attrib={'k': k, 'v': v})
+
 class Node(OSMElement):
 
     """Represents an OSM node as returned via the Overpass API"""
@@ -126,6 +141,17 @@ class Node(OSMElement):
 
     def __repr__(self):
         return "node(%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
+
+    def to_xml(self, parent_element=None):
+        if parent_element is None:
+            parent_element = OSMElement.xml_wrapping()
+        node = etree.SubElement(parent_element,
+                                'node',
+                                attrib={'id': self.element_id,
+                                        'lat': self.lat,
+                                        'lon': self.lon})
+        self.xml_add_tags(node)
+        return parent_element
 
 class Way(OSMElement):
 
@@ -217,6 +243,17 @@ class Way(OSMElement):
             node.get_missing_elements(to_append_to)
         return to_append_to
 
+    def to_xml(self, parent_element=None):
+        if parent_element is None:
+            parent_element = OSMElement.xml_wrapping()
+        way = etree.SubElement(parent_element,
+                               'way',
+                               attrib={'id': self.element_id})
+        for node in self:
+            etree.SubElement(way, 'nd', attrib={'ref': node.element_id})
+        self.xml_add_tags(way)
+        return parent_element
+
 class Relation(OSMElement):
 
     """Represents an OSM relation as returned via the Overpass API"""
@@ -270,6 +307,21 @@ class Relation(OSMElement):
             if role not in OSMXMLParser.IGNORED_ROLES:
                 member.get_missing_elements(to_append_to)
         return to_append_to
+
+    def to_xml(self, parent_element=None):
+        if parent_element is None:
+            parent_element = OSMElement.xml_wrapping()
+        relation = etree.SubElement(parent_element,
+                                    'relation',
+                                    attrib={'id': self.element_id})
+        for member, role in self:
+            etree.SubElement(relation,
+                             'member',
+                             attrib={'type': member.get_element_name(),
+                                     'ref': member.element_id,
+                                     'role': role})
+        self.xml_add_tags(relation)
+        return parent_element
 
 class UnexpectedElementException(Exception):
     def __init__(self, element_name, message=None):
@@ -394,15 +446,18 @@ class OSMXMLParser(ContentHandler):
                     member = self.get_known_or_fetch(member_type, attr['ref'])
                     if member:
                         t = (member, attr['role'])
-                        self.current_top_level_element.children.append(t)
                     else:
+                        t = (OSMElement(attr['ref'], element_name=member_type), attr['role'])
                         if self.fetch_missing:
                             print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
+                    self.current_top_level_element.children.append(t)
             elif name == "nd":
                 self.raise_unless_expected_parent(name, 'way')
                 node = self.get_known_or_fetch('node', attr['ref'])
                 if not node:
-                    raise Exception, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
+                    if self.fetch_missing:
+                         print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
+                    node = OSMElement(attr['ref'], element_name='node')
                 self.current_top_level_element.nodes.append(node)
             else:
                 raise "Unhandled element <%s>" % (name,)
