@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
 from xml.sax.handler import ContentHandler
