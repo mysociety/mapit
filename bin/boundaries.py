@@ -295,7 +295,7 @@ class OSMXMLParser(ContentHandler):
     IGNORED_TAGS = set(('osm', 'note', 'meta', 'bound'))
     IGNORED_ROLES = set(('subarea', 'defaults', 'apply_to'))
 
-    def __init__(self, fetch_missing=True):
+    def __init__(self, fetch_missing=True, callback=None):
         self.top_level_elements = []
         self.current_top_level_element = None
         # These dictionaries map ids to already discovered elements:
@@ -303,15 +303,24 @@ class OSMXMLParser(ContentHandler):
         self.known_ways = {}
         self.known_relations = {}
         self.fetch_missing = fetch_missing
+        self.callback = callback
+
+    # FIXME: make this a decorator
+    def raise_if_callback(self):
+        if self.callback:
+            raise Exception, "When parsed with a callback, no top level elements are kept in memory"
 
     def __iter__(self):
+        self.raise_if_callback()
         for e in self.top_level_elements:
             yield e
 
     def __len__(self):
+        self.raise_if_callback()
         return len(self.top_level_elements)
 
     def empty(self):
+        self.raise_if_callback()
         return 0 == len(self.top_level_elements)
 
     def raise_if_sub_level(self, name):
@@ -389,7 +398,10 @@ class OSMXMLParser(ContentHandler):
 
     def endElement(self, name):
         if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
-            self.top_level_elements.append(self.current_top_level_element)
+            if self.callback:
+                self.callback(self.current_top_level_element)
+            else:
+                self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
 
 class MinimalOSMXMLParser(ContentHandler):
