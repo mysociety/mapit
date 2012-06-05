@@ -402,14 +402,27 @@ class OSMXMLParser(ContentHandler):
                  'relation': self.known_relations}[element_type]
             if element_id in d:
                 return d[element_id]
-        if not self.fetch_missing:
-            return OSMElement.make_missing_element(element_type, element_id)
-        o = fetch_osm_element(element_type, element_id)
-        if not o:
-            return None
+        result = None
+        # See if it is in the on-disk cache:
+        cache_filename = get_cache_filename(element_type, element_id)
+        if os.path.exists(cache_filename):
+            parser = parse_xml(cache_filename, fetch_missing=self.fetch_missing)
+            for e in parser.top_level_elements:
+                if e.name_id_tuple() == (element_type, element_id):
+                    result = e
+                    break
+            if not result:
+                raise Exception, "Failed to find expected element in:", cache_filename
+        if not result:
+            if self.fetch_missing:
+                result = fetch_osm_element(element_type, element_id)
+                if not result:
+                    return None
+            else:
+                return OSMElement.make_missing_element(element_type, element_id)
         if self.cache:
-            d[element_id] = o
-        return o
+            d[element_id] = result
+        return result
 
     def startElement(self, name, attr):
         if name in OSMXMLParser.IGNORED_TAGS:
