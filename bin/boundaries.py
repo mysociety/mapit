@@ -463,7 +463,7 @@ class OSMXMLParser(ContentHandler):
                     if member:
                         t = (member, attr['role'])
                     else:
-                        t = (OSMElement(attr['ref'], element_name=member_type), attr['role'])
+                        t = (OSMElement.make_missing_element(member_type, attr['ref']), attr['role'])
                         if self.fetch_missing:
                             print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
                     self.current_top_level_element.children.append(t)
@@ -473,7 +473,7 @@ class OSMXMLParser(ContentHandler):
                 if not node:
                     if self.fetch_missing:
                          print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
-                    node = OSMElement(attr['ref'], element_name='node')
+                    node = OSMElement.make_missing_element('node', attr['ref'])
                 self.current_top_level_element.nodes.append(node)
             else:
                 raise "Unhandled element <%s>" % (name,)
