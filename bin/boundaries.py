@@ -142,7 +142,7 @@ class Node(OSMElement):
     def __repr__(self):
         return "node(%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
 
-    def to_xml(self, parent_element=None):
+    def to_xml(self, parent_element=None, write_nodes_with_way=False):
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
         node = etree.SubElement(parent_element,
@@ -243,9 +243,12 @@ class Way(OSMElement):
             node.get_missing_elements(to_append_to)
         return to_append_to
 
-    def to_xml(self, parent_element=None):
+    def to_xml(self, parent_element=None, write_nodes_with_way=False):
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
+        if write_nodes_with_way:
+            for node in self:
+                node.to_xml(parent_element, write_nodes_with_way)
         way = etree.SubElement(parent_element,
                                'way',
                                attrib={'id': self.element_id})
@@ -308,7 +311,7 @@ class Relation(OSMElement):
                 member.get_missing_elements(to_append_to)
         return to_append_to
 
-    def to_xml(self, parent_element=None):
+    def to_xml(self, parent_element=None, write_nodes_with_way=False):
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
         relation = etree.SubElement(parent_element,
