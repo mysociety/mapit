@@ -81,44 +81,50 @@ def kml_string(folder_name,
                           xml_declaration=True)
 
 
-def get_kml_for_osm_element(element_type, element_id):
+def get_kml_for_osm_element_no_fetch(element):
 
-    e = fetch_osm_element(element_type, element_id)
-    if e is None:
-        return (None, None)
+    element_type, element_id = element.name_id_tuple()
 
-    name = e.get_name()
+    name = element.get_name()
     folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
 
     if element_type == 'way':
-        if not e.closed():
+        if not element.closed():
             raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
         return (kml_string(folder_name,
                            name,
-                           e.tags,
-                           [e],
+                           element.tags,
+                           [element],
                            []),
-                [e.bounding_box_tuple()])
+                [element.bounding_box_tuple()])
 
     elif element_type == 'relation':
 
-        outer_ways = join_way_soup(e.way_iterator(False))
-        inner_ways = join_way_soup(e.way_iterator(True))
+        outer_ways = join_way_soup(element.way_iterator(False))
+        inner_ways = join_way_soup(element.way_iterator(True))
 
         bounding_boxes = [w.bounding_box_tuple() for w in outer_ways]
 
-        extended_data = e.tags.copy()
+        extended_data = element.tags.copy()
         extended_data['osm'] = element_id
 
         return (kml_string(folder_name,
                            name,
-                           e.tags,
+                           element.tags,
                            outer_ways,
                            inner_ways),
                 bounding_boxes)
 
     else:
         raise Exception, "Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id)
+
+def get_kml_for_osm_element(element_type, element_id):
+
+    e = fetch_osm_element(element_type, element_id)
+    if e is None:
+        return (None, None)
+
+    return get_kml_for_osm_element_no_fetch(e)
 
 def main():
 
