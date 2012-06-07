@@ -257,6 +257,24 @@ class Way(OSMElement):
         self.xml_add_tags(way)
         return parent_element
 
+    def reconstruct_missing(self, parser, id_to_node):
+        still_missing = []
+        for i, node in enumerate(self.nodes):
+            if not node.element_content_missing:
+                continue
+            node_id = node.element_id
+            found_node = None
+            if node_id in id_to_node:
+                found_node = id_to_node[node_id]
+            else:
+                # Ask the parser to try to fetch it from its filesystem cache:
+                found_node = parser.get_known_or_fetch('node', node_id)
+            if found_node and not found_node.element_content_missing:
+                self.nodes[i] = found_node
+            else:
+                still_missing.append(node)
+        return still_missing
+
 class Relation(OSMElement):
 
     """Represents an OSM relation as returned via the Overpass API"""
@@ -325,6 +343,29 @@ class Relation(OSMElement):
                                      'role': role})
         self.xml_add_tags(relation)
         return parent_element
+
+    def reconstruct_missing(self, parser, id_to_node):
+        still_missing = []
+        for i, t in enumerate(self.children):
+            member, role = t
+            if role in OSMXMLParser.IGNORED_ROLES:
+                continue
+            if not member.element_content_missing:
+                continue
+            element_type = member.get_element_name()
+            element_id = member.element_id
+            found_element = None
+            if element_type == 'node':
+                if element_id in id_to_node:
+                    found_element = id_to_node[element_id]
+            if not found_element:
+                # Ask the parser to try to fetch it from its filesystem cache:
+                found_element = parser.get_known_or_fetch(element_type, element_id)
+            if found_element and not found_element.element_content_missing:
+                self.children[i] = (found_element, role)
+            else:
+                still_missing.append(member)
+        return still_missing
 
 class UnexpectedElementException(Exception):
     def __init__(self, element_name, message=None):
