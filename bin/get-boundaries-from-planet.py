@@ -47,7 +47,7 @@ def wanted_boundary(element):
     # if admin_level != '4':
     if not admin_level:
         return None
-    if element.get_element_name() == 'node':
+    if element.element_type == 'node':
         return None
     return admin_level
 

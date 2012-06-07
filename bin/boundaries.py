@@ -45,25 +45,20 @@ def get_non_contained_elements(elements):
     """Filter elements, keeping only those which are not a member of another"""
     contained_elements = set([])
     for e in elements:
-        if e.get_element_name() == "relation":
+        if e.element_type == "relation":
             for member, role in e:
                 contained_elements.add(member.name_id_tuple())
     return [e for e in elements if e not in contained_elements]
 
 class OSMElement(object):
 
-    def __init__(self, element_id, element_content_missing=False, element_name=None):
+    def __init__(self, element_id, element_content_missing=False, element_type=None):
         self.element_id = element_id
+        self.element_type = element_type or "BUG"
         self.missing = element_content_missing
-        self.element_name = element_name
 
     def get_id(self):
         return self.element_id
-
-    def get_element_name(self):
-        # This should be overriden by any subclass, but when we're
-        # creating members that are missing, we might set the name:
-        return self.element_name or "BUG"
 
     def __eq__(self, other):
         if type(other) is type(self):
@@ -77,10 +72,10 @@ class OSMElement(object):
         return hash(self.element_id)
 
     def name_id_tuple(self):
-        return (self.get_element_name(), self.element_id)
+        return (self.element_type, self.element_id)
 
     def get_name(self):
-        return get_name_from_tags(self.tags, self.get_element_name(), self.element_id)
+        return get_name_from_tags(self.tags, self.element_type, self.element_id)
 
     @property
     def element_content_missing(self):
@@ -121,13 +116,10 @@ class Node(OSMElement):
     """Represents an OSM node as returned via the Overpass API"""
 
     def __init__(self, node_id, latitude=None, longitude=None, element_content_missing=False):
-        super(Node, self).__init__(node_id, element_content_missing)
+        super(Node, self).__init__(node_id, element_content_missing, 'node')
         self.lat = latitude
         self.lon = longitude
         self.tags = {}
-
-    def get_element_name(self):
-        return 'node'
 
     def pretty(self, indent=0):
         i = u" "*indent
@@ -158,12 +150,9 @@ class Way(OSMElement):
     """Represents an OSM way as returned via the Overpass API"""
 
     def __init__(self, way_id, nodes=None, element_content_missing=False):
-        super(Way, self).__init__(way_id, element_content_missing)
+        super(Way, self).__init__(way_id, element_content_missing, 'way')
         self.nodes = nodes or []
         self.tags = {}
-
-    def get_element_name(self):
-        return 'way'
 
     def __iter__(self):
         for n in self.nodes:
@@ -280,7 +269,7 @@ class Relation(OSMElement):
     """Represents an OSM relation as returned via the Overpass API"""
 
     def __init__(self, relation_id, element_content_missing=False):
-        super(Relation, self).__init__(relation_id, element_content_missing)
+        super(Relation, self).__init__(relation_id, element_content_missing, 'relation')
         # A relation has an ordered list of children, which we store
         # as a list of tuples.  The first element of each tuple is a
         # Node, Way or Relation, and the second is a "role" string.
@@ -291,16 +280,13 @@ class Relation(OSMElement):
         for c in self.children:
             yield c
 
-    def get_element_name(self):
-        return 'relation'
-
     def pretty(self, indent=0):
         i = u" "*indent
         result = i + u"relation (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
             result += u"\n%s  %s => %s" % (i, k, v)
         for child, role in self.children:
-            result += u"\n%s  child %s" % (i, child.get_element_name())
+            result += u"\n%s  child %s" % (i, child.element_type)
             result += u" with role '%s'" % (role)
             result += u"\n" + child.pretty(indent + 4)
         return result
@@ -313,9 +299,9 @@ class Relation(OSMElement):
             else:
                 if role and role != 'outer':
                     continue
-            if child.get_element_name() == 'way':
+            if child.element_type == 'way':
                 yield child
-            elif child.get_element_name() == 'relation':
+            elif child.element_type == 'relation':
                 for sub_way in child.way_iterator(inner):
                     yield sub_way
 
@@ -338,7 +324,7 @@ class Relation(OSMElement):
         for member, role in self:
             etree.SubElement(relation,
                              'member',
-                             attrib={'type': member.get_element_name(),
+                             attrib={'type': member.element_type,
                                      'ref': member.element_id,
                                      'role': role})
         self.xml_add_tags(relation)
@@ -352,7 +338,7 @@ class Relation(OSMElement):
                 continue
             if not member.element_content_missing:
                 continue
-            element_type = member.get_element_name()
+            element_type = member.element_type
             element_id = member.element_id
             found_element = None
             if element_type == 'node':
@@ -434,7 +420,7 @@ class OSMXMLParser(ContentHandler):
             raise UnexpectedElementException(name, "Should never get a new <%s> when not in a top-level element" % (name,))
 
     def raise_unless_expected_parent(self, name, expected_parent):
-        if self.current_top_level_element.get_element_name() != expected_parent:
+        if self.current_top_level_element.element_type != expected_parent:
             raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent))
 
     def get_known_or_fetch(self, element_type, element_id):

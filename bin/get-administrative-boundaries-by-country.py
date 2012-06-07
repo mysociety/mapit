@@ -34,7 +34,7 @@ def get_non_contained_elements(elements):
     """Filter elements, keeping only those which are not a member of another"""
     contained_elements = set([])
     for e in elements:
-        if e.get_element_name() == "relation":
+        if e.element_type == "relation":
             for member, role in e:
                 contained_elements.add(member.name_id_tuple())
     return [e for e in elements if e not in contained_elements]
