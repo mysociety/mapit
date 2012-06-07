@@ -3,9 +3,36 @@
 import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
 from xml.sax.handler import ContentHandler
 from lxml import etree
+from tempfile import mkdtemp, NamedTemporaryFile
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
+    """Create a directory (and parents if necessary) like mkdir -p
+
+    For example:
+
+    >>> test_directory = mkdtemp()
+    >>> new_directory = os.path.join(test_directory, "foo", "bar")
+    >>> mkdir_p(new_directory)
+    >>> os.path.exists(new_directory)
+    True
+    >>> os.path.isdir(new_directory)
+    True
+
+    There should be no error if the directory already exists:
+
+    >>> mkdir_p(new_directory)
+
+    But if there is another error, e.g. permissions prevent the
+    directory from being created:
+
+    >>> os.chmod(new_directory, 0)
+    >>> new_subdirectory = os.path.join(new_directory, "baz")
+    >>> mkdir_p(new_subdirectory) #doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+      ...
+    OSError: [Errno 13] Permission denied: '/tmp/tmp64Q8MJ/foo/bar/baz'
+    """
     try:
         os.makedirs(path)
     except OSError as exc:
@@ -29,25 +56,62 @@ def get_cache_filename(element_type, element_id):
     return os.path.join(full_subdirectory, basename)
 
 def get_name_from_tags(tags, element_type=None, element_id=None):
-    # FIXME: Using the English name ('name:en') by default is just
-    # temporary, for debugging purposes - should use ('name') in
-    # preference for real use.
-    if 'name:en' in tags:
-        return tags['name:en']
-    elif 'name' in tags:
+    """Given an OSMElement, return a readable name if possible
+
+    If there's a name tag (typically the local spelling of the
+    element), then use that:
+
+    >>> tags = {'name': 'Deutschland',
+    ...         'name:en': 'Federal Republic of Germany'}
+    >>> get_name_from_tags(tags, 'relation', '51477')
+    'Deutschland'
+
+    Or fall back to the English name, if that's the only option:
+
+    >>> tags = {'name:en': 'Freedonia', 'relation': '345678'}
+    >>> get_name_from_tags(tags)
+    'Freedonia'
+
+    Otherwise, use the type and ID to form a readable name:
+
+    >>> get_name_from_tags({}, 'node', '65432')
+    'Unknown name for node with ID 65432'
+
+    Or if we've no information at all, just return 'Unknown':
+
+    >>> get_name_from_tags({})
+    'Unknown'
+
+    """
+
+    if 'name' in tags:
         return tags['name']
+    elif 'name:en' in tags:
+        return tags['name:en']
     elif element_type and element_id:
         return "Unknown name for %s with ID %s" % (element_type, element_id)
     else:
         return "Unknown"
 
 def get_non_contained_elements(elements):
-    """Filter elements, keeping only those which are not a member of another"""
+    """Filter elements, keeping only those which are not a member of another
+
+    As an example, you can do the following:
+
+    >>> top = Relation("13")
+    >>> sub = Relation("14")
+    >>> top.children.append((sub, ''))
+    >>> lone = Way("15")
+    >>> get_non_contained_elements([top, sub, lone])
+    [Relation(id="13", members=1), Way(id="15", nodes=0)]
+
+
+    """
     contained_elements = set([])
     for e in elements:
         if e.element_type == "relation":
             for member, role in e:
-                contained_elements.add(member.name_id_tuple())
+                contained_elements.add(member)
     return [e for e in elements if e not in contained_elements]
 
 class OSMElement(object):
@@ -57,24 +121,73 @@ class OSMElement(object):
         self.element_type = element_type or "BUG"
         self.missing = element_content_missing
 
-    def get_id(self):
-        return self.element_id
-
     def __eq__(self, other):
-        if type(other) is type(self):
+        """Define equality of OSMElements as same (OSM) type and ID
+
+        For example, they should be equal even if one is of the base
+        class and one the subclass:
+
+        >>> missing = OSMElement('42', element_content_missing=True, element_type='node')
+        >>> real = Node('42')
+        >>> missing == real
+        True
+
+        But non-OSMElements aren't equal:
+
+        >>> real == ('node', '42')
+        False
+
+        And elements of different type aren't equal:
+        >>> real == Relation('42')
+        False
+
+        """
+        if not isinstance(other, OSMElement):
+            return False
+        if self.element_type == other.element_type:
             return self.element_id == other.element_id
         return False
 
     def __ne__(self, other):
+        """Inequality is just the negation of equality
+
+        >>> Node('42') != Relation('42')
+        True
+
+        >>> Node('42') != Node('8')
+        True
+
+        """
         return not self.__eq__(other)
 
     def __hash__(self):
         return hash(self.element_id)
 
     def name_id_tuple(self):
+        """Return the OSM type and ID as a tuple
+
+        This is sometimes useful for a lower-memory representation of
+        elements.  (Debatably - this should be considered for removal.)
+        FIXME: also should rename this to type_id_tuple
+
+        >>> n = Node('123456', latitude="52", longitude="0")
+        >>> n.tags['name'] = 'Cambridge'
+        >>> n.name_id_tuple()
+        ('node', '123456')
+        """
+
         return (self.element_type, self.element_id)
 
     def get_name(self):
+        """Get a human-readable name for the element, if possible
+
+        >>> germany = Relation("51477")
+        >>> tags = {'name': 'Deutschland',
+        ...         'name:en': 'Federal Republic of Germany'}
+        >>> germany.tags.update(tags)
+        >>> germany.get_name()
+        'Deutschland'
+        """
         return get_name_from_tags(self.tags, self.element_type, self.element_id)
 
     @property
@@ -83,6 +196,25 @@ class OSMElement(object):
 
     @staticmethod
     def make_missing_element(element_type, element_id):
+        """Create an element for which we only know the type and ID
+
+        It is useful to be able to represent OSM elements that we've
+        just seen mentioned as members of relations, but haven't
+        actually parsed.  You can use this static method to create a
+        node of such a type:
+
+        >>> OSMElement.make_missing_element('node', '42')
+        Node(id="42", missing)
+        >>> OSMElement.make_missing_element('way', '7')
+        Way(id="7", missing)
+        >>> OSMElement.make_missing_element('relation', '13')
+        Relation(id="13", missing)
+        >>> OSMElement.make_missing_element('other', '2')
+        Traceback (most recent call last):
+          ...
+        Exception: Unknown element name 'other'
+        """
+
         if element_type == "node":
             return Node(element_id, element_content_missing=True)
         elif element_type == "way":
@@ -92,7 +224,49 @@ class OSMElement(object):
         else:
             raise Exception, "Unknown element name '%s'" % (element_type,)
 
+    def __repr__(self):
+        """A returns simple repr-style representation of the OSMElement
+
+        For example:
+
+        >>> OSMElement('23', element_type='node')
+        OSMElement(id="23", type="node")
+
+        >>> OSMElement('25', element_content_missing=True, element_type='relation')
+        OSMElement(id="25", type="relation", missing)
+        """
+
+        if self.element_content_missing:
+            return 'OSMElement(id="%s", type="%s", missing)' % (self.element_id,
+                                                                self.element_type)
+        else:
+            return 'OSMElement(id="%s", type="%s")' % (self.element_id,
+                                                       self.element_type)
+
     def get_missing_elements(self, to_append_to=None):
+        """Return a list of element type, id tuples of missing elements
+
+        In the case of an element without children, this should either
+        return an empty list or a list with this element in it,
+        depending on whether it's marked as missing or not:
+
+        >>> missing = OSMElement('42', element_content_missing=True, element_type="node")
+        >>> missing.get_missing_elements()
+        [('node', '42')]
+        >>> present = OSMElement('42', element_type="node")
+        >>> present.get_missing_elements()
+        []
+
+        If to_append_to is supplied, the missing elements should be
+        appended to that array, and the same array returned:
+
+        >>> l = []
+        >>> result = missing.get_missing_elements(l)
+        >>> l is result
+        True
+        >>> l
+        [('node', '42')]
+        """
         if to_append_to is None:
             to_append_to = []
         if self.element_content_missing:
@@ -101,6 +275,17 @@ class OSMElement(object):
 
     @staticmethod
     def xml_wrapping():
+        """Get an XML element that OSM nodes/ways/relations can be added to
+
+        The returned object is an etree.Element, which can be
+        pretty-printed with etree.tostring:
+
+        >>> print etree.tostring(OSMElement.xml_wrapping(), pretty_print=True),
+        <osm version="0.6" generator="mySociety Boundary Extractor">
+          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+        </osm>
+        """
+
         osm = etree.Element("osm", attrib={"version": "0.6",
                                            "generator": "mySociety Boundary Extractor"})
         note = etree.SubElement(osm, "note")
@@ -108,12 +293,51 @@ class OSMElement(object):
         return osm
 
     def xml_add_tags(self, xml_element):
+        """Add the tags from this OSM element to an XML element
+
+        >>> n = Node('42')
+        >>> n.tags.update({'name': 'Venezia',
+        ...                'name:en': 'Venice'})
+        >>> xe = etree.Element('example')
+        >>> n.xml_add_tags(xe)
+        >>> print etree.tostring(xe, pretty_print=True),
+        <example>
+          <tag k="name" v="Venezia"/>
+          <tag k="name:en" v="Venice"/>
+        </example>
+        """
+
         for k, v in sorted(self.tags.items()):
             etree.SubElement(xml_element, 'tag', attrib={'k': k, 'v': v})
 
 class Node(OSMElement):
 
-    """Represents an OSM node as returned via the Overpass API"""
+    """Represents an OSM node
+
+    You can create a complete node as follows:
+
+    >>> cambridge = Node("12345", latitude="52.205", longitude="0.119")
+    >>> cambridge
+    Node(id="12345", lat="52.205", lon="0.119")
+
+    Each node has a tags attribute as well:
+    >>> cambridge.tags['name:en'] = "Cambridge"
+
+    The tags can be seen with the .pretty() representation:
+
+    >>> print cambridge.pretty(4)
+        node (12345) lat: 52.205, lon: 0.119
+          name:en => Cambridge
+
+    If you only know the ID of the node, but not its latitude or
+    longitude yet, you can create it as a 'missing' node with a
+    static method from OSMElement:
+
+    >>> missing = OSMElement.make_missing_element("node", "321")
+    >>> missing
+    Node(id="321", missing)
+
+    """
 
     def __init__(self, node_id, latitude=None, longitude=None, element_content_missing=False):
         super(Node, self).__init__(node_id, element_content_missing, 'node')
@@ -129,12 +353,47 @@ class Node(OSMElement):
         return result
 
     def lon_lat_tuple(self):
+        """Return the latitude and longitude as a tuple of two strings
+
+        >>> n = Node("1234", latitude="52", longitude="0.5")
+        >>> n.lon_lat_tuple()
+        ('0.5', '52')
+        """
         return (self.lon, self.lat)
 
     def __repr__(self):
-        return "node(%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
+        if self.element_content_missing:
+            return 'Node(id="%s", missing)' % (self.element_id)
+        else:
+            return 'Node(id="%s", lat="%s", lon="%s")' % (self.element_id,
+                                                          self.lat,
+                                                          self.lon)
 
-    def to_xml(self, parent_element=None, write_nodes_with_way=False):
+    def to_xml(self, parent_element=None, include_node_dependencies=False):
+        """Generate an XML element representing this node
+
+        If parent_element is supplied, it is added to that element and
+        returned.  If no parent_element is supplied, an OSM XML root
+        element is created, and the generated <node> element is added
+        to that.
+
+        >>> n = Node("1234", latitude="51.2", longitude="-0.2")
+        >>> parent = etree.Element('example')
+        >>> result = n.to_xml(parent_element=parent)
+        >>> parent is result
+        True
+        >>> print etree.tostring(parent, pretty_print=True),
+        <example>
+          <node lat="51.2" lon="-0.2" id="1234"/>
+        </example>
+        >>> full_result = n.to_xml()
+        >>> print etree.tostring(full_result, pretty_print=True),
+        <osm version="0.6" generator="mySociety Boundary Extractor">
+          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <node lat="51.2" lon="-0.2" id="1234"/>
+        </osm>
+        """
+
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
         node = etree.SubElement(parent_element,
@@ -147,7 +406,47 @@ class Node(OSMElement):
 
 class Way(OSMElement):
 
-    """Represents an OSM way as returned via the Overpass API"""
+    """Represents an OSM way as returned via the Overpass API
+
+    You can create a Way object as follows:
+
+    >>> Way("314159265")
+    Way(id="314159265", nodes=0)
+
+    Or supply a list of nodes:
+
+    >>> top_left = Node("12", latitude="52", longitude="1")
+    >>> top_right = Node("13", latitude="52", longitude="2")
+    >>> bottom_right = Node("14", latitude="51", longitude="2")
+    >>> bottom_left = Node("15", latitude="51", longitude="1")
+
+    >>> ns = [top_left,
+    ...       top_right,
+    ...       bottom_right,
+    ...       bottom_left]
+    >>> unclosed = Way("314159265", ns)
+    >>> unclosed
+    Way(id="314159265", nodes=4)
+
+    You can iterate over the nodes:
+
+    >>> for n in unclosed:
+    ...     print n
+    Node(id="12", lat="52", lon="1")
+    Node(id="13", lat="52", lon="2")
+    Node(id="14", lat="51", lon="2")
+    Node(id="15", lat="51", lon="1")
+
+    Or test if a node is closed or not:
+
+    >>> unclosed.closed()
+    False
+    >>> nsc = ns + [top_left]
+    >>> closed = Way("98765", nodes=nsc)
+    >>> closed.closed()
+    True
+
+    """
 
     def __init__(self, way_id, nodes=None, element_content_missing=False):
         super(Way, self).__init__(way_id, element_content_missing, 'way')
@@ -162,6 +461,26 @@ class Way(OSMElement):
         return len(self.nodes)
 
     def pretty(self, indent=0):
+        """Generate a fuller string representation of this way
+
+        For example:
+
+        >>> w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                         Node("13", latitude="52", longitude="2"),
+        ...                         Node("14", latitude="51", longitude="1"),
+        ...                         Node("15", latitude="51", longitude="2")])
+        >>> w.tags['random_key'] = 'some value or other'
+        >>> w.tags['boundary'] = 'administrative'
+        >>> print w.pretty(2)
+          way (76543)
+            boundary => administrative
+            random_key => some value or other
+            node (12) lat: 52, lon: 1
+            node (13) lat: 52, lon: 2
+            node (14) lat: 51, lon: 1
+            node (15) lat: 51, lon: 2
+        """
+
         i = u" "*indent
         result = i + u"way (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
@@ -182,13 +501,98 @@ class Way(OSMElement):
         return self.first == self.last
 
     def join(self, other):
-        """Try to join another way to this one.  It will succeed if
-        they can be joined at either end, and otherwise returns None.
+        """Try to join another way to this one.
+
+        This will succeed if they can be joined at either end, and
+        otherwise returns None.
+
+        As examples, consider joining two edges of a square in various
+        ways:
+
+             top_left -- top_right
+
+                 |           |
+
+          bottom_left -- bottom_right
+
+        In the examples below, we try to join the top edge to the
+        right in four distinct ways:
+
+        >>> top_left = Node("12", latitude="52", longitude="1")
+        >>> top_right = Node("13", latitude="52", longitude="2")
+        >>> bottom_right = Node("14", latitude="51", longitude="2")
+        >>> bottom_left = Node("15", latitude="51", longitude="1")
+
+        >>> top_cw = Way("3456", nodes=[top_left, top_right])
+        >>> right_cw = Way("1234", nodes=[top_right, bottom_right])
+        >>> bottom_cw = Way("6789", nodes=[bottom_right, bottom_left])
+
+        >>> joined = top_cw.join(right_cw)
+        >>> print joined.pretty(2)
+          way (None)
+            node (12) lat: 52, lon: 1
+            node (13) lat: 52, lon: 2
+            node (14) lat: 51, lon: 2
+
+        >>> top_ccw = Way("4567", nodes=[top_right, top_left])
+        >>> joined = top_ccw.join(right_cw)
+        >>> print joined.pretty(2)
+          way (None)
+            node (14) lat: 51, lon: 2
+            node (13) lat: 52, lon: 2
+            node (12) lat: 52, lon: 1
+
+        >>> right_ccw = Way("2345", nodes=[bottom_right, top_right])
+        >>> joined = top_ccw.join(right_ccw)
+        >>> print joined.pretty(2)
+          way (None)
+            node (14) lat: 51, lon: 2
+            node (13) lat: 52, lon: 2
+            node (12) lat: 52, lon: 1
+
+        >>> joined = top_cw.join(right_ccw)
+        >>> print joined.pretty(2)
+          way (None)
+            node (12) lat: 52, lon: 1
+            node (13) lat: 52, lon: 2
+            node (14) lat: 51, lon: 2
+
+        Closed ways cannot be joined, and throw exceptions as in these
+        examples:
+
+        >>> closed = Way("5678", nodes=[top_left,
+        ...                             top_right,
+        ...                             bottom_right,
+        ...                             bottom_left,
+        ...                             top_left])
+        >>> joined = closed.join(top_cw)
+        Traceback (most recent call last):
+           ...
+        Exception: Trying to join a closed way to another
+
+        >>> closed = Way("5678", nodes=[top_left,
+        ...                             top_right,
+        ...                             bottom_right,
+        ...                             bottom_left,
+        ...                             top_left])
+        >>> joined = top_cw.join(closed)
+        Traceback (most recent call last):
+           ...
+        Exception: Trying to join a way to a closed way
+
+        Finally, an exception is also thrown if there are no end
+        points in common between the two ways:
+
+        >>> top_cw.join(bottom_cw)
+        Traceback (most recent call last):
+           ...
+        Exception: Trying to join two ways with no end point in common
         """
+
         if self.closed():
             raise Exception, "Trying to join a closed way to another"
         if other.closed():
-            raise Exception, "Trying to join a way to a close way"
+            raise Exception, "Trying to join a way to a closed way"
         if self.first == other.first:
             new_nodes = list(reversed(other.nodes))[0:-1] + self.nodes
         elif self.first == other.last:
@@ -207,7 +611,29 @@ class Way(OSMElement):
         Each tuple is (min_lat, min_lon, max_lat, max_lon).  If the
         longitude of any node is less than -90 degrees, 360 is added
         to every node, to deal with ways that cross the -180 degree
-        meridian"""
+        meridian.
+
+        >>> w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                         Node("13", latitude="52", longitude="2"),
+        ...                         Node("14", latitude="51", longitude="1"),
+        ...                         Node("15", latitude="51", longitude="2")])
+        >>> w.bounding_box_tuple()
+        (51.0, 1.0, 52.0, 2.0)
+
+        As another example close to the -180 degree meridian, create a
+        closed way somewhere in Alaska:
+
+
+        >>> w = Way('76543', nodes=[Node("12", latitude="62", longitude="-149"),
+        ...                         Node("13", latitude="62", longitude="-150"),
+        ...                         Node("14", latitude="61", longitude="-149"),
+        ...                         Node("15", latitude="61", longitude="-150")])
+        >>> w.bounding_box_tuple()
+        (61.0, 210.0, 62.0, 211.0)
+
+
+
+        """
 
         longitudes = [float(n.lon) for n in self]
         latitudes = [float(n.lat) for n in self]
@@ -224,20 +650,120 @@ class Way(OSMElement):
         return (min_lat, min_lon, max_lat, max_lon)
 
     def __repr__(self):
-        return "way(%s) with %d nodes" % (self.element_id, len(self.nodes))
+        """A returns simple repr-style representation of the Way
+
+        >>> Way('81')
+        Way(id="81", nodes=0)
+        >>> OSMElement.make_missing_element('way', '49')
+        Way(id="49", missing)
+        """
+
+        if self.element_content_missing:
+            return 'Way(id="%s", missing)' % (self.element_id,)
+        else:
+            return 'Way(id="%s", nodes=%d)' % (self.element_id, len(self.nodes))
 
     def get_missing_elements(self, to_append_to=None):
+        """Return a list of element type, id tuples of missing elements
+
+        In the case of an element without children, this should either
+        return an empty list or a list with this element in it,
+        depending on whether it's marked as missing or not:
+
+        >>> nodes = [OSMElement.make_missing_element('node', '43'),
+        ...          Node('44'),
+        ...          Node('45'),
+        ...          OSMElement.make_missing_element('node', '46')]
+        >>> w = Way("42", nodes=nodes)
+        >>> w.get_missing_elements()
+        [('node', '43'), ('node', '46')]
+
+        >>> l = [('relation', '47')]
+        >>> result = w.get_missing_elements(l)
+        >>> l is result
+        True
+        >>> l
+        [('relation', '47'), ('node', '43'), ('node', '46')]
+        """
+
         to_append_to = OSMElement.get_missing_elements(self, to_append_to)
         for node in self:
             node.get_missing_elements(to_append_to)
         return to_append_to
 
-    def to_xml(self, parent_element=None, write_nodes_with_way=False):
+    def to_xml(self, parent_element=None, include_node_dependencies=False):
+        """Generate an XML element representing this way
+
+        If parent_element is supplied, it is added to that element and
+        returned.  If no parent_element is supplied, an OSM XML root
+        element is created, and the generated <node> element is added
+        to that.
+
+        >>> w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                         Node("13", latitude="52", longitude="2"),
+        ...                         Node("14", latitude="51", longitude="1"),
+        ...                         Node("15", latitude="51", longitude="2")])
+        >>> w.tags.update({'boundary': 'administrative',
+        ...                'admin_level': '2'})
+        >>> xe = etree.Element('example')
+        >>> result = w.to_xml(xe)
+        >>> result is xe
+        True
+        >>> print etree.tostring(xe, pretty_print=True),
+        <example>
+          <way id="76543">
+            <nd ref="12"/>
+            <nd ref="13"/>
+            <nd ref="14"/>
+            <nd ref="15"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </way>
+        </example>
+
+        Sometimes we'd like to output the nodes that are in a way at the same time:
+
+        >>> xe = etree.Element('example-with-nodes')
+        >>> w.to_xml(xe, include_node_dependencies=True) #doctest: +ELLIPSIS
+        <Element example-with-nodes at 0x...>
+        >>> print etree.tostring(xe, pretty_print=True),
+        <example-with-nodes>
+          <node lat="52" lon="1" id="12"/>
+          <node lat="52" lon="2" id="13"/>
+          <node lat="51" lon="1" id="14"/>
+          <node lat="51" lon="2" id="15"/>
+          <way id="76543">
+            <nd ref="12"/>
+            <nd ref="13"/>
+            <nd ref="14"/>
+            <nd ref="15"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </way>
+        </example-with-nodes>
+
+        And the final option is to include the OSM XML boilerplate as well:
+
+        >>> result = w.to_xml()
+        >>> print etree.tostring(result, pretty_print=True),
+        <osm version="0.6" generator="mySociety Boundary Extractor">
+          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <way id="76543">
+            <nd ref="12"/>
+            <nd ref="13"/>
+            <nd ref="14"/>
+            <nd ref="15"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </way>
+        </osm>
+        """
+
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
-        if write_nodes_with_way:
+        if include_node_dependencies:
             for node in self:
-                node.to_xml(parent_element, write_nodes_with_way)
+                node.to_xml(parent_element, include_node_dependencies)
         way = etree.SubElement(parent_element,
                                'way',
                                attrib={'id': self.element_id})
@@ -247,6 +773,42 @@ class Way(OSMElement):
         return parent_element
 
     def reconstruct_missing(self, parser, id_to_node):
+        """Replace any missing nodes from the parser's cache or id_to_node
+
+        id_to_node should be a dictionary that maps IDs of nodes (as
+        strings) the complete Node object or None.  parser should have
+        a method called get_known_or_fetch('node', element_id) which
+        will return None or the complete Node object, if the parser
+        can find it.
+
+        If any nodes could not be found from parser or id_to_node,
+        they are returned as a list.  Therefore, if the way could be
+        completely reconstructed, [] will be returned.
+
+        >>> w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                         OSMElement.make_missing_element('node', '13'),
+        ...                         OSMElement.make_missing_element('node', '14'),
+        ...                         Node("15", latitude="51", longitude="2")])
+        >>> class FakeParser:
+        ...     def get_known_or_fetch(self, element_type, element_id):
+        ...         if element_type != 'node':
+        ...             return None
+        ...         if element_id == "14":
+        ...             return Node("14", latitude="52.4", longitude="2.1")
+        ...         return None
+        >>> node_cache = {"13": Node("13", latitude="51.2", longitude="1.3"),
+        ...               "22": None}
+        >>> w.reconstruct_missing(FakeParser(), node_cache)
+        []
+
+        >>> w = Way('76543', nodes=[Node("21", latitude="52", longitude="1"),
+        ...                         OSMElement.make_missing_element('node', '22'),
+        ...                         OSMElement.make_missing_element('node', '23'),
+        ...                         Node("24", latitude="51", longitude="2")])
+        >>> w.reconstruct_missing(FakeParser(), node_cache)
+        [Node(id="22", missing), Node(id="23", missing)]
+        """
+
         still_missing = []
         for i, node in enumerate(self.nodes):
             if not node.element_content_missing:
@@ -280,7 +842,38 @@ class Relation(OSMElement):
         for c in self.children:
             yield c
 
+    def add_member(self, new_member, role=''):
+        self.children.append((new_member, role))
+
     def pretty(self, indent=0):
+        """Generate a fuller string representation of this way
+
+        For example:
+
+        >>> r = Relation('98765')
+        >>> r.add_member(Node('76542', latitude="51.0", longitude="0.3"))
+        >>> r.add_member(Way('76543'))
+        >>> r.add_member(Way('76544'), role='inner')
+        >>> r.add_member(Way('76545'), role='inner')
+        >>> r.add_member(Way('76546'))
+        >>> r.tags['random_key'] = 'some value or other'
+        >>> r.tags['boundary'] = 'administrative'
+        >>> print r.pretty(2)
+          relation (98765)
+            boundary => administrative
+            random_key => some value or other
+            child node with role ''
+              node (76542) lat: 51.0, lon: 0.3
+            child way with role ''
+              way (76543)
+            child way with role 'inner'
+              way (76544)
+            child way with role 'inner'
+              way (76545)
+            child way with role ''
+              way (76546)
+        """
+
         i = u" "*indent
         result = i + u"relation (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
@@ -292,6 +885,43 @@ class Relation(OSMElement):
         return result
 
     def way_iterator(self, inner=False):
+        """Iterate over the ways in this relation
+
+        If inner is set, iterate only over ways with the roles 'inner'
+        or 'enclave' - otherwise miss them out.
+
+        For example:
+
+        >>> subr1 = Relation('98764')
+        >>> subr1.add_member(Way('54319'), role='inner')
+        >>> subr1.add_member(Way('54320'))
+
+        >>> subr2 = Relation('87654')
+        >>> subr2.add_member(Way('54321'))
+        >>> subr2.add_member(Way('54322'), role='inner')
+
+        >>> r = Relation('98765')
+        >>> r.add_member(Node('76542', latitude="51.0", longitude="0.3"))
+        >>> r.add_member(Way('76543'))
+        >>> r.add_member(subr1)
+        >>> r.add_member(Way('76544'), role='inner')
+        >>> r.add_member(Way('76545'), role='inner')
+        >>> r.add_member(subr2, role='inner')
+        >>> r.add_member(Way('76546'))
+
+        >>> for w in r.way_iterator():
+        ...     print w
+        Way(id="76543", nodes=0)
+        Way(id="54320", nodes=0)
+        Way(id="76546", nodes=0)
+
+        >>> for w in r.way_iterator(inner=True):
+        ...     print w
+        Way(id="76544", nodes=0)
+        Way(id="76545", nodes=0)
+        Way(id="54322", nodes=0)
+        """
+
         for child, role in self.children:
             if inner:
                 if role not in ('enclave', 'inner'):
@@ -306,51 +936,263 @@ class Relation(OSMElement):
                     yield sub_way
 
     def __repr__(self):
-        return "relation(%s) with %d children" % (self.element_id, len(self.children))
+        """A returns simple repr-style representation of the OSMElement
+
+        For example:
+
+        >>> Relation('6')
+        Relation(id="6", members=0)
+
+        >>> OSMElement.make_missing_element('relation', '7')
+        Relation(id="7", missing)
+        """
+
+        if self.element_content_missing:
+            return 'Relation(id="%s", missing)' % (self.element_id,)
+        else:
+            return 'Relation(id="%s", members=%d)' % (self.element_id, len(self.children))
 
     def get_missing_elements(self, to_append_to=None):
+        """Return a list of element type, id tuples of missing elements
+
+        In the case of an element without children, this should either
+        return an empty list or a list with this element in it,
+        depending on whether it's marked as missing or not:
+
+        >>> r1 = Relation('77')
+        >>> r1.get_missing_elements()
+        []
+        >>> r2 = OSMElement.make_missing_element('relation', '78')
+        >>> r2.get_missing_elements()
+        [('relation', '78')]
+
+        >>> subr1 = Relation('98764')
+        >>> subr1.add_member(Way('54319'), role='inner')
+        >>> subr1.add_member(OSMElement.make_missing_element('relation', '54320'))
+        >>> subr1.add_member(OSMElement.make_missing_element('way', '54321'))
+
+        >>> subr2 = Relation('87654')
+        >>> subr2.add_member(Way('54322'))
+        >>> subr2.add_member(Way('54323'), role='inner')
+
+        >>> r = Relation('98765')
+        >>> r.add_member(OSMElement.make_missing_element('node', '76542'))
+        >>> r.add_member(Way('76543'))
+        >>> r.add_member(subr1)
+        >>> r.add_member(OSMElement.make_missing_element('way', '98764'))
+        >>> r.add_member(Way('76545'), role='inner')
+        >>> r.add_member(subr2, role='inner')
+        >>> r.add_member(Way('76546'))
+
+        >>> r.get_missing_elements()
+        [('node', '76542'), ('relation', '54320'), ('way', '54321'), ('way', '98764')]
+        """
+
         to_append_to = OSMElement.get_missing_elements(self, to_append_to)
         for member, role in self:
             if role not in OSMXMLParser.IGNORED_ROLES:
                 member.get_missing_elements(to_append_to)
         return to_append_to
 
-    def to_xml(self, parent_element=None, write_nodes_with_way=False):
+    def to_xml(self, parent_element=None, include_node_dependencies=False):
+        """Generate an XML element representing this relation
+
+        If parent_element is supplied, it is added to that element and
+        returned.  If no parent_element is supplied, an OSM XML root
+        element is created, and the generated <node> element is added
+        to that.
+
+        >>> subr1 = Relation('98764')
+        >>> subr1.add_member(Way('54319'), role='inner')
+        >>> subr1.add_member(OSMElement.make_missing_element('relation', '54320'))
+        >>> subr1.add_member(OSMElement.make_missing_element('way', '54321'))
+
+        >>> subr2 = Relation('87654')
+        >>> subr2.add_member(Way('54322'))
+        >>> subr2.add_member(Way('54323'), role='inner')
+
+        >>> r = Relation('98765')
+        >>> r.add_member(Node('76542', latitude='52', longitude='0.3'))
+        >>> r.add_member(Way('76543'))
+        >>> r.add_member(subr1)
+        >>> r.add_member(OSMElement.make_missing_element('way', '98764'))
+        >>> r.add_member(Way('76545'), role='inner')
+        >>> r.add_member(subr2, role='inner')
+        >>> r.add_member(Way('76546'))
+
+        >>> r.tags.update({'boundary': 'administrative',
+        ...                'admin_level': '2'})
+        >>> xe = etree.Element('example')
+        >>> result = r.to_xml(xe)
+        >>> result is xe
+        True
+        >>> print etree.tostring(xe, pretty_print=True),
+        <example>
+          <relation id="98765">
+            <member ref="76542" role="" type="node"/>
+            <member ref="76543" role="" type="way"/>
+            <member ref="98764" role="" type="relation"/>
+            <member ref="98764" role="" type="way"/>
+            <member ref="76545" role="inner" type="way"/>
+            <member ref="87654" role="inner" type="relation"/>
+            <member ref="76546" role="" type="way"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </relation>
+        </example>
+
+        Sometimes we'd like to output the nodes that are included at the same time:
+
+        >>> xe = etree.Element('example-with-nodes')
+        >>> r.to_xml(xe, include_node_dependencies=True) #doctest: +ELLIPSIS
+        <Element example-with-nodes at 0x...>
+        >>> print etree.tostring(xe, pretty_print=True),
+        <example-with-nodes>
+          <node lat="52" lon="0.3" id="76542"/>
+          <relation id="98765">
+            <member ref="76542" role="" type="node"/>
+            <member ref="76543" role="" type="way"/>
+            <member ref="98764" role="" type="relation"/>
+            <member ref="98764" role="" type="way"/>
+            <member ref="76545" role="inner" type="way"/>
+            <member ref="87654" role="inner" type="relation"/>
+            <member ref="76546" role="" type="way"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </relation>
+        </example-with-nodes>
+
+
+        And the final option is to include the OSM XML boilerplate as well:
+
+        >>> result = r.to_xml()
+        >>> print etree.tostring(result, pretty_print=True),
+        <osm version="0.6" generator="mySociety Boundary Extractor">
+          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <relation id="98765">
+            <member ref="76542" role="" type="node"/>
+            <member ref="76543" role="" type="way"/>
+            <member ref="98764" role="" type="relation"/>
+            <member ref="98764" role="" type="way"/>
+            <member ref="76545" role="inner" type="way"/>
+            <member ref="87654" role="inner" type="relation"/>
+            <member ref="76546" role="" type="way"/>
+            <tag k="admin_level" v="2"/>
+            <tag k="boundary" v="administrative"/>
+          </relation>
+        </osm>
+
+        An exception should be thrown if a missing node is included,
+        and include_node_dependencies is true:
+
+        >>> r = Relation('1234')
+        >>> r.add_member(OSMElement.make_missing_element('node', '17'))
+        >>> example = etree.Element('exception-example')
+        >>> r.to_xml(example, include_node_dependencies=True)
+        Traceback (most recent call last):
+          ...
+        Exception: Trying out output a missing node %s as XML
+        """
+
         if parent_element is None:
             parent_element = OSMElement.xml_wrapping()
-        relation = etree.SubElement(parent_element,
-                                    'relation',
-                                    attrib={'id': self.element_id})
+        relation = etree.Element('relation',
+                                 attrib={'id': self.element_id})
+        members_xml = []
         for member, role in self:
+            if include_node_dependencies and member.element_type == "node":
+                if member.element_content_missing:
+                    raise Exception, "Trying out output a missing node %s as XML"
+                member.to_xml(parent_element, include_node_dependencies)
             etree.SubElement(relation,
                              'member',
                              attrib={'type': member.element_type,
                                      'ref': member.element_id,
                                      'role': role})
+        parent_element.append(relation)
         self.xml_add_tags(relation)
         return parent_element
 
     def reconstruct_missing(self, parser, id_to_node):
+        """Replace any missing nodes from the parser's cache or id_to_node
+
+        id_to_node should be a dictionary that maps IDs of nodes (as
+        strings) the complete Node object or None.  parser should have
+        a method called get_known_or_fetch('node', element_id) which
+        will return None or the complete Node object, if the parser
+        can find it.
+
+        If any nodes could not be found from parser or id_to_node,
+        they are returned as a list.  Therefore, if the way could be
+        completely reconstructed, [] will be returned.
+
+        >>> def make_incomplete_relation():
+        ...     w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                             OSMElement.make_missing_element('node', '13'),
+        ...                             OSMElement.make_missing_element('node', '14'),
+        ...                             Node("15", latitude="51", longitude="2")])
+        ...     r = Relation('76544')
+        ...     r.add_member(Node("16", latitude="50", longitude="0"))
+        ...     r.add_member(w)
+        ...     r.add_member(OSMElement.make_missing_element('relation', '76545'), role='defaults')
+        ...     r.add_member(Way('17'))
+        ...     r.add_member(OSMElement.make_missing_element('way', '18'))
+        ...     r.add_member(OSMElement.make_missing_element('node', '19'))
+        ...     r.add_member(OSMElement.make_missing_element('node', '20'))
+        ...     return r
+        >>> r = make_incomplete_relation()
+        >>> class FakeParser:
+        ...     def get_known_or_fetch(self, element_type, element_id):
+        ...         if element_type != 'node':
+        ...             return OSMElement.make_missing_element(element_type, element_id)
+        ...         if element_id == "14":
+        ...             return Node("14", latitude="52.4", longitude="2.1")
+        ...         return OSMElement.make_missing_element(element_type, element_id)
+        >>> node_cache = {"13": Node("13", latitude="51.2", longitude="1.3"),
+        ...               "19": None,
+        ...               "20": Node("20", latitude="51.3", longitude="1.1"),
+        ...               "22": None}
+        >>> r.reconstruct_missing(FakeParser(), node_cache)
+        [Way(id="18", missing), Node(id="19", missing)]
+
+        Supposing that both those caches are empty, all of the missing
+        elements should be returned:
+
+        >>> r = make_incomplete_relation()
+        >>> class FakeEmptyParser:
+        ...     def get_known_or_fetch(self, element_type, element_id):
+        ...         return OSMElement.make_missing_element(element_type, element_id)
+        >>> node_cache = {}
+        >>> r.reconstruct_missing(FakeEmptyParser(), node_cache)
+        [Node(id="13", missing), Node(id="14", missing), Way(id="18", missing), Node(id="19", missing), Node(id="20", missing)]
+        """
+
         still_missing = []
         for i, t in enumerate(self.children):
             member, role = t
             if role in OSMXMLParser.IGNORED_ROLES:
                 continue
-            if not member.element_content_missing:
-                continue
             element_type = member.element_type
             element_id = member.element_id
-            found_element = None
-            if element_type == 'node':
-                if element_id in id_to_node:
-                    found_element = id_to_node[element_id]
-            if not found_element:
-                # Ask the parser to try to fetch it from its filesystem cache:
-                found_element = parser.get_known_or_fetch(element_type, element_id)
-            if found_element and not found_element.element_content_missing:
-                self.children[i] = (found_element, role)
+            if member.element_content_missing:
+                found_element = None
+                if element_type == 'node':
+                    if element_id in id_to_node:
+                        found_element = id_to_node[element_id]
+                if not found_element:
+                    # Ask the parser to try to fetch it from its filesystem cache:
+                    found_element = parser.get_known_or_fetch(element_type, element_id)
+                if found_element and not found_element.element_content_missing:
+                    self.children[i] = (found_element, role)
+                else:
+                    still_missing.append(member)
             else:
-                still_missing.append(member)
+                # Even if the element isn't marked as missing, it may
+                # contain nodes, ways or relations that *are* missing,
+                # so we have to recurse:
+                if element_type != 'node':
+                    still_missing.extend(member.reconstruct_missing(parser, id_to_node))
+
         return still_missing
 
 class UnexpectedElementException(Exception):
@@ -423,8 +1265,11 @@ class OSMXMLParser(ContentHandler):
         if self.current_top_level_element.element_type != expected_parent:
             raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent))
 
-    def get_known_or_fetch(self, element_type, element_id):
-        """Return an OSM Node, Way or Relation, fetching it if necessary"""
+    def get_known_or_fetch(self, element_type, element_id, verbose=False):
+        """Return an OSM Node, Way or Relation, fetching it if necessary
+
+        If the element couldn't be found any means, an element marked
+        with element_content_missing is returned."""
         element_id = str(element_id)
         if self.cache:
             d = {'node': self.known_nodes,
@@ -447,7 +1292,7 @@ class OSMXMLParser(ContentHandler):
             if self.fetch_missing:
                 result = fetch_osm_element(element_type, element_id)
                 if not result:
-                    return None
+                    return OSMElement.make_missing_element(element_type, element_id)
             else:
                 return OSMElement.make_missing_element(element_type, element_id)
         if self.cache:
@@ -550,7 +1395,7 @@ class RateLimitedPOST:
     min_time_between = datetime.timedelta(seconds=0.5)
 
     @staticmethod
-    def request(url, values, filename):
+    def request(url, values, filename, verbose=False):
         if RateLimitedPOST.last_post:
             since_last = datetime.datetime.now() - RateLimitedPOST.last_post
             if since_last < RateLimitedPOST.min_time_between:
@@ -558,13 +1403,14 @@ class RateLimitedPOST:
                 time.sleep(get_total_seconds(difference))
         encoded_values = urllib.urlencode(values)
         request = urllib2.Request(url, encoded_values)
-        print "making request to url:", url
+        if verbose:
+            print "making request to url:", url
         response = urllib2.urlopen(request)
         with open(filename, "w") as fp:
             fp.write(response.read())
         RateLimitedPOST.last_post = datetime.datetime.now()
 
-def fetch_cached(element_type, element_id):
+def fetch_cached(element_type, element_id, verbose=False):
     global last_overpass_fetch
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
@@ -574,29 +1420,89 @@ def fetch_cached(element_type, element_id):
         url = "http://www.overpass-api.de/api/interpreter"
         data = '[timeout:3600];(%s(%s);>;);out;' % arguments
         values = {'data': data}
-        RateLimitedPOST.request(url, values, filename)
+        RateLimitedPOST.request(url, values, filename, verbose)
     return filename
 
 def parse_xml_minimal(filename, element_handler):
+    """Parse some OSM XML just to get type, id and tags
+
+    >>> def output(type, id, tags):
+    ...     print "type:", type, "id:", id, "tags:", tags
+    >>> example_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="291974462" lat="55.0548850" lon="-2.9544991"/>
+    ...   <node id="312203528" lat="54.4600000" lon="-5.0596341"/>
+    ...   <way id="28421671">
+    ...     <nd ref="291974462"/>
+    ...     <nd ref="312203528"/>
+    ...   </way>
+    ...   <relation id="3123205528">
+    ...     <member type="way" ref="28421671" role="inner"/>
+    ...      <tag k="name:en" v="Whatever"/>
+    ...   </relation>
+    ... </osm>
+    ... '''
+    >>> with NamedTemporaryFile(delete=False) as ntf:
+    ...     ntf.write(example_xml)
+    >>> parse_xml_minimal(ntf.name, output)
+    type: node id: 291974462 tags: {}
+    type: node id: 312203528 tags: {}
+    type: way id: 28421671 tags: {}
+    type: relation id: 3123205528 tags: {u'name:en': u'Whatever'}
+    """
     parser = MinimalOSMXMLParser(element_handler)
     with open(filename) as fp:
         xml.sax.parse(fp, parser)
 
 def parse_xml(filename, fetch_missing=True):
+    """Completely parse an OSM XML file
+
+    >>> example_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="291974462" lat="55.0548850" lon="-2.9544991"/>
+    ...   <node id="312203528" lat="54.4600000" lon="-5.0596341"/>
+    ...   <way id="28421671">
+    ...     <nd ref="291974462"/>
+    ...     <nd ref="312203528"/>
+    ...   </way>
+    ...   <relation id="3123205528">
+    ...     <member type="way" ref="28421671" role="inner"/>
+    ...      <tag k="name:en" v="Whatever"/>
+    ...   </relation>
+    ... </osm>
+    ... '''
+    >>> with NamedTemporaryFile(delete=False) as ntf:
+    ...     ntf.write(example_xml)
+    >>> parser = parse_xml(ntf.name, fetch_missing=False)
+    >>> for top_level_element in parser:
+    ...     print top_level_element
+    Node(id="291974462", lat="55.0548850", lon="-2.9544991")
+    Node(id="312203528", lat="54.4600000", lon="-5.0596341")
+    Way(id="28421671", nodes=2)
+    Relation(id="3123205528", members=1)
+    """
     parser = OSMXMLParser(fetch_missing)
     with open(filename) as fp:
         xml.sax.parse(fp, parser)
     return parser
 
-def fetch_osm_element(element_type, element_id, fetch_missing=True):
+def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False):
     """Fetch and parse a particular OSM element recursively
 
     More data is fetched from the API if required.  'element_type'
-    should be one of 'relation', 'way' or 'node'."""
+    should be one of 'relation', 'way' or 'node'.
+
+    For example, you could request the relation representing Scotland
+    with:
+
+    >>> fetch_osm_element("relation", "58446")
+    Relation(id="58446", members=70)
+    """
     element_id = str(element_id)
-    print "fetch_osm_element(%s, %s)" % (element_type, element_id)
+    if verbose:
+        print "fetch_osm_element(%s, %s)" % (element_type, element_id)
     # Make sure we have the XML file for that relation, node or way:
-    filename = fetch_cached(element_type, element_id)
+    filename = fetch_cached(element_type, element_id, verbose)
     try:
         parsed = parse_xml(filename, fetch_missing)
     except UnexpectedElementException, e:
@@ -686,6 +1592,14 @@ def join_way_soup(ways):
 
 def main():
 
+    osm = OSMElement.xml_wrapping()
+    print etree.tostring(osm,
+                   pretty_print=True,
+                   encoding="utf-8",
+                   xml_declaration=True)
+
+    return
+
     # Try some useful examples:
 
     example_relation_ids = (
@@ -714,4 +1628,5 @@ def main():
         print "They made up %d closed outer way(s)" % (len(closed_outer_ways),)
 
 if __name__ == "__main__":
-    main()
+    import doctest
+    doctest.testmod()

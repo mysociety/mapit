@@ -34,7 +34,7 @@ def write_element_to_cached_xml(element):
     if os.path.exists(filename):
         return
     with open(filename, 'w') as fp:
-        fp.write(etree.tostring(element.to_xml(write_nodes_with_way=True),
+        fp.write(etree.tostring(element.to_xml(include_node_dependencies=True),
                                 pretty_print=True,
                                 encoding="utf-8",
                                 xml_declaration=True))
