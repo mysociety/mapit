@@ -1314,7 +1314,11 @@ class OSMXMLParser(ContentHandler):
                 raise Exception, "Failed to find expected element in: " + cache_filename
         if result is None:
             if self.fetch_missing:
-                result = fetch_osm_element(element_type, element_id, self.cache_directory)
+                result = fetch_osm_element(element_type,
+                                           element_id,
+                                           self.fetch_missing,
+                                           verbose,
+                                           self.cache_directory)
                 if not result:
                     return OSMElement.make_missing_element(element_type, element_id)
             else:
