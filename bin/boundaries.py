@@ -859,6 +859,9 @@ class Relation(OSMElement):
         for c in self.children:
             yield c
 
+    def __len__(self):
+        return len(self.children)
+
     def __getitem__(self, val):
         return self.children.__getitem__(val)
 
