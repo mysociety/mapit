@@ -4,6 +4,7 @@ import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
 from xml.sax.handler import ContentHandler
 from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
+from StringIO import StringIO
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -1506,6 +1507,12 @@ def parse_xml(filename, fetch_missing=True):
     parser = OSMXMLParser(fetch_missing)
     with open(filename) as fp:
         xml.sax.parse(fp, parser)
+    return parser
+
+def parse_xml_string(s, *parser_args, **parser_kwargs):
+    fp = StringIO(s)
+    parser = OSMXMLParser(*parser_args, **parser_kwargs)
+    xml.sax.parse(fp, parser)
     return parser
 
 def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None):
