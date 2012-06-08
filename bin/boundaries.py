@@ -1201,12 +1201,9 @@ class Relation(OSMElement):
         return still_missing
 
 class UnexpectedElementException(Exception):
-    def __init__(self, element_name, message=None):
+    def __init__(self, element_name, message):
         self.element_name = element_name
-        if message is None:
-            self.message = "The element name was '%s'" % (element_name)
-        else:
-            self.message = message
+        self.message = message
     def __str__(self):
         return self.message
 
