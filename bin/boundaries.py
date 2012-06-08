@@ -1584,7 +1584,7 @@ class EndpointToWayMap:
     def pretty(self, indent=0):
         i = " "*indent
         result = i + "EndpointToWayMap:"
-        for k, v in self.endpoints.items():
+        for k, v in sorted(self.endpoints.items()):
             result += "\n%s  endpoint: %s" % (i, k.pretty())
             result += "\n%s    way.first: %r" % (i, v.first)
             result += "\n%s    way.last: %r" % (i, v.last)
