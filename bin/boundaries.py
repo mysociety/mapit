@@ -1375,7 +1375,8 @@ class OSMXMLParser(ContentHandler):
                 node = self.get_known_or_fetch('node', attr['ref'])
                 if node.element_content_missing:
                     if self.fetch_missing:
-                         print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
+                         # print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
+                         pass
                     node = OSMElement.make_missing_element('node', attr['ref'])
                 self.current_top_level_element.nodes.append(node)
             else:
