@@ -469,6 +469,16 @@ class Way(OSMElement):
             yield n
 
     def __len__(self):
+        """Allow len(way) to return the number of nodes
+
+        For example:
+
+        >>> w = Way("1", nodes=[Node("12", latitude="52", longitude="1"),
+        ...                     Node("13", latitude="52", longitude="2"),
+        ...                     Node("14", latitude="51", longitude="2")])
+        >>> len(w)
+        3
+        """
         return len(self.nodes)
 
     def __getitem__(self, val):
@@ -1235,10 +1245,262 @@ class OSMXMLParser(ContentHandler):
 
     """A SAX-based parser for data from OSM's Overpass API
 
-    This builds a structure of Node, Way and Relation objects that
-    represent the returned data, fetching missing elements as
-    necessary.  Typically one would then call get_known_or_fetch on
-    this object to get back data for a particular element."""
+    This has two main modes of operation.  The first builds a
+    structure of Node, Way and Relation objects that represent the
+    returned data, fetching missing elements as necessary, keeping
+    these all in memory.  Typically one would then call
+    get_known_or_fetch on this object to get back data for a
+    particular element.
+
+    The second allows you to supply a callback that will be called for
+    each top-level element as it's parsed, which takes a minimal
+    amount of memory.
+
+    >>> valid_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="291974462" lat="55.0548850" lon="-2.9544991"/>
+    ...   <node id="312203528" lat="54.4600000" lon="-5.0596341"/>
+    ...   <way id="28421671">
+    ...     <nd ref="291974462"/>
+    ...     <nd ref="312203528"/>
+    ...   </way>
+    ...   <relation id="3123205528">
+    ...     <member type="way" ref="28421671" role="inner"/>
+    ...      <tag k="name:en" v="Whatever"/>
+    ...   </relation>
+    ... </osm>'''
+    >>> parser = parse_xml_string(valid_xml, fetch_missing=False)
+    >>> len(parser)
+    4
+    >>> parser.empty()
+    False
+
+    If any unexpected elements occur, an exception is thrown:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <blah/>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    UnexpectedElementException: Should never get a <blah> at the top level
+
+    Similarly for unexpected elements at lower level:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="123" lat="52" lon="0">
+    ...     <foo>
+    ...   </node>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    UnexpectedElementException: Unhandled element <foo>
+
+    Some elements can only be nested in others:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="123" lat="52" lon="0">
+    ...     <member type="way" ref="345" role=""/>
+    ...   </node>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    UnexpectedElementException: Didn't expect to find <member> in a <node>, can only be in <relation>
+
+    And some elements can't be at the top level:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <member type="way" ref="345" role=""/>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    UnexpectedElementException: Should never get a <member> at the top level
+
+    Top-level elements should never be found at a sub-level:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <node id="123" lat="52" lon="0">
+    ...     <node>
+    ...   </node>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    UnexpectedElementException: Should never get a new <node> when still in a top-level element
+
+    The types of members of relations must be known:
+
+    >>> parse_xml_string('''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <relation id="3123205528">
+    ...     <member type="foo" ref="28421671" role="inner"/>
+    ...   </relation>
+    ... </osm>''', fetch_missing=False)
+    Traceback (most recent call last):
+      ...
+    Exception: Unknown member type 'foo' in <relation>
+
+    Parsed elements are normally cached:
+
+    >>> parser = parse_xml_string(valid_xml, fetch_missing=False)
+    >>> len(parser.known_nodes)
+    2
+    >>> len(parser.known_ways)
+    1
+    >>> len(parser.known_relations)
+    1
+
+    But the cache can be cleared:
+
+    >>> parser.clear_caches()
+    >>> len(parser.known_nodes) + len(parser.known_ways) + len(parser.known_relations)
+    0
+
+    Or you can request no caching in the first place:
+
+    parser = parse_xml_string(valid_xml, cache_in_memory=False, fetch_missing=False)
+    >>> len(parser.known_nodes) + len(parser.known_ways) + len(parser.known_relations)
+    0
+
+    Now some examples of using a callback instead:
+
+    >>> def test(element, parser):
+    ...    print "got element:", element
+    >>> parser = parse_xml_string(valid_xml, fetch_missing=False, callback=test)
+    got element: Node(id="291974462", lat="55.0548850", lon="-2.9544991")
+    got element: Node(id="312203528", lat="54.4600000", lon="-5.0596341")
+    got element: Way(id="28421671", nodes=2)
+    got element: Relation(id="3123205528", members=1)
+
+    And then trying to access the top-level elements in any way should
+    throw an exception:
+
+    >>> len(parser)
+    Traceback (most recent call last):
+      ...
+    Exception: When parsed with a callback, no top level elements are kept in memory
+    >>> parser.empty()
+    Traceback (most recent call last):
+      ...
+    Exception: When parsed with a callback, no top level elements are kept in memory
+    >>> for e in parser:
+    ...    print e
+    Traceback (most recent call last):
+      ...
+    Exception: When parsed with a callback, no top level elements are kept in memory
+
+    If the elements are in an unhelpful order, then parsing still
+    succeeds:
+
+    >>> reordered_xml = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <relation id="3123205528">
+    ...     <member type="way" ref="28421671" role="inner"/>
+    ...      <tag k="name:en" v="Whatever"/>
+    ...   </relation>
+    ...   <way id="28421671">
+    ...     <nd ref="291974462"/>
+    ...     <nd ref="312203528"/>
+    ...   </way>
+    ...   <node id="291974462" lat="55.0548850" lon="-2.9544991"/>
+    ...   <node id="312203528" lat="54.4600000" lon="-5.0596341"/>
+    ... </osm>'''
+    >>> parser = parse_xml_string(reordered_xml, fetch_missing=False)
+    >>> for e in parser:
+    ...     print e
+    Relation(id="3123205528", members=1)
+    Way(id="28421671", nodes=2)
+    Node(id="291974462", lat="55.0548850", lon="-2.9544991")
+    Node(id="312203528", lat="54.4600000", lon="-5.0596341")
+
+    But some elements may be marked as missing:
+
+    >>> r = parser[0]
+    >>> r
+    Relation(id="3123205528", members=1)
+    >>> r[0]
+    (Way(id="28421671", missing), u'inner')
+
+    ... which can be fixed up with reconstruct_missing, which uses its
+    in-memory cache:
+
+    >>> still_missing = r.reconstruct_missing(parser, {})
+    >>> still_missing
+    []
+    >>> parser[0][0]
+    (Way(id="28421671", nodes=2), u'inner')
+
+    If there are some missing elements which aren't in the XML at all,
+    they can be fetched from the Overpass API if you have the
+    fetch_missing option on (as it is by default):
+
+    >>> tmp_cache = mkdtemp()
+    >>> xml_requiring_fetch = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <relation id="1">
+    ...     <member type="relation" ref="295353" role="example-subrelation"/>
+    ...   </relation>
+    ... </osm>'''
+    >>> parser = parse_xml_string(xml_requiring_fetch,
+    ...                           cache_directory=tmp_cache)
+    >>> south_cambridgeshire_relation, fake_role = parser[0][0]
+    >>> south_cambridgeshire_relation # doctest: +ELLIPSIS
+    Relation(id="295353", members=...)
+    >>> len(south_cambridgeshire_relation) > 0
+    True
+
+    Doing that again will be faster, since the results of the API will
+    have been cached to disk, but still produce the same result:
+
+    >>> parser = parse_xml_string(xml_requiring_fetch,
+    ...                           cache_directory=tmp_cache)
+    >>> south_cambridgeshire_relation, fake_role = parser[0][0]
+    >>> south_cambridgeshire_relation # doctest: +ELLIPSIS
+    Relation(id="295353", members=...)
+    >>> len(south_cambridgeshire_relation) > 0
+    True
+
+    If some elements are totally non-existent, and we're not fetching:
+
+    >>> xml_with_fictitious_refs = '''<?xml version="1.0" encoding="UTF-8"?>
+    ... <osm version="0.6" generator="Overpass API">
+    ...   <way id="28421671">
+    ...     <nd ref="1000000000000"/>
+    ...     <nd ref="1000000000001"/>
+    ...   </way>
+    ... </osm>'''
+    >>> parser = parse_xml_string(xml_with_fictitious_refs,
+    ...                           fetch_missing=False,
+    ...                           cache_directory=tmp_cache)
+    >>> for e in parser[0]:
+    ...     print e
+    Node(id="1000000000000", missing)
+    Node(id="1000000000001", missing)
+
+    If fetching isn't allowed, we get the same result the first time:
+
+    >>> parser = parse_xml_string(xml_with_fictitious_refs,
+    ...                           cache_directory=tmp_cache)
+    >>> for e in parser[0]:
+    ...     print e
+    Node(id="1000000000000", missing)
+    Node(id="1000000000001", missing)
+
+    However, the second time, we find an empty file in the cache, and
+    an exception is thrown - this is inconsistent, and thus a FIXME:
+
+    >>> parser = parse_xml_string(xml_with_fictitious_refs,
+    ...                           cache_directory=tmp_cache) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    Exception: Failed to find expected element in: ...
+
+    Remove the temporary directory created for these doctests:
+    >>> shutil.rmtree(tmp_cache)
+    """
 
     VALID_TOP_LEVEL_ELEMENTS = set(('node', 'relation', 'way'))
     VALID_RELATION_MEMBERS = set(('node', 'relation', 'way'))
@@ -1443,6 +1705,24 @@ class RateLimitedPOST:
         RateLimitedPOST.last_post = datetime.datetime.now()
 
 def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
+    """Get an OSM element from the Overpass API, with caching on disk
+
+    >>> tmp_cache = mkdtemp()
+    >>> filename = fetch_cached('relation',
+    ...                         '375982',
+    ...                         cache_directory=tmp_cache)
+    >>> filename # doctest: +ELLIPSIS
+    '.../relation/982/relation-375982.xml'
+
+    If you request an unknown element type, an exception is thrown:
+    >>> filename = fetch_cached('nonsense',
+    ...                         '1',
+    ...                         cache_directory=tmp_cache)
+    Traceback (most recent call last):
+      ...
+    Exception: Unknown element type 'nonsense'
+    """
+
     global last_overpass_fetch
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
@@ -1534,9 +1814,23 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     For example, you could request the relation representing Scotland
     with:
 
-    >>> fetch_osm_element("relation", "58446")
+    >>> tmp_cache = mkdtemp()
+    >>> fetch_osm_element("relation", "58446", cache_directory=tmp_cache)
     Relation(id="58446", members=70)
+
+    Or do the same, more verbosely, with:
+
+    >>> tmp_cache2 = mkdtemp()
+    >>> fetch_osm_element("relation", "58446", verbose=True, cache_directory=tmp_cache2)
+    fetch_osm_element(relation, 58446)
+    making request to url: http://www.overpass-api.de/api/interpreter
+    Relation(id="58446", members=70)
+
+    Remove the temporary directories created for these doctests:
+    >>> shutil.rmtree(tmp_cache)
+    >>> shutil.rmtree(tmp_cache2)
     """
+
     element_id = str(element_id)
     if verbose:
         print "fetch_osm_element(%s, %s)" % (element_type, element_id)
@@ -1562,7 +1856,80 @@ class EndpointToWayMap:
     """A class for mapping endpoints to the Way they're on
 
     This is useful for quickly checking finding which Ways (if any)
-    you can join another Way to."""
+    you can join another Way to.  However, each endpoint can only map
+    to one way.
+
+    For example, create some nodes that are at the corners of a square
+
+    >>> top_left = Node("12", latitude="52", longitude="1")
+    >>> top_right = Node("13", latitude="52", longitude="2")
+    >>> bottom_right = Node("14", latitude="51", longitude="2")
+    >>> bottom_left = Node("15", latitude="51", longitude="1")
+
+    ... and extra ones at the bottom left:
+
+    >>> below_bottom_left = Node("16", latitude="50", longitude="1")
+    >>> left_of_bottom_left = Node("17", latitude="51", longitude="0")
+
+    And create a way which represents the left side (w), top and right
+    sides (ne), bottom side (s) and edges coming down and left from
+    the bottom left:
+
+    >>> w = Way("1", nodes=[bottom_left, top_left])
+    >>> ne = Way("2", nodes=[top_left, top_right, bottom_right])
+    >>> s = Way("3", nodes=[bottom_right, bottom_left])
+    >>> stalk_down = Way("4", nodes=[below_bottom_left, bottom_left])
+    >>> stalk_left = Way("5", nodes=[left_of_bottom_left, bottom_left])
+
+    Now add two to an EndpointToWayMap:
+
+    >>> etwm = EndpointToWayMap()
+    >>> etwm.add_way(ne)
+    >>> etwm.add_way(stalk_down)
+
+    Ways can them be retrieved by endpoints that overlap:
+
+    >>> etwm.get_from_either_end(stalk_left)
+    [Way(id="4", nodes=2)]
+    >>> result = etwm.get_from_either_end(s)
+    >>> set(result) == set([stalk_down, ne])
+    True
+    >>> etwm.number_of_endpoints()
+    4
+
+    You can output a readable version of the EndpointToWayMap:
+
+    >>> print etwm.pretty(2)
+      EndpointToWayMap:
+        endpoint: node (12) lat: 52, lon: 1
+          way.first: Node(id="12", lat="52", lon="1")
+          way.last: Node(id="14", lat="51", lon="2")
+        endpoint: node (14) lat: 51, lon: 2
+          way.first: Node(id="12", lat="52", lon="1")
+          way.last: Node(id="14", lat="51", lon="2")
+        endpoint: node (15) lat: 51, lon: 1
+          way.first: Node(id="16", lat="50", lon="1")
+          way.last: Node(id="15", lat="51", lon="1")
+        endpoint: node (16) lat: 50, lon: 1
+          way.first: Node(id="16", lat="50", lon="1")
+          way.last: Node(id="15", lat="51", lon="1")
+
+    Ways can be removed from the map as well:
+
+    >>> etwm.remove_way(ne)
+    >>> etwm.remove_way(stalk_down)
+    >>> etwm.get_from_either_end(w)
+    []
+
+    Adding a way that has endpoints that are already in the map is an
+    error:
+
+    >>> etwm.add_way(ne)
+    >>> etwm.add_way(s)
+    Traceback (most recent call last):
+      ...
+    Exception: Call to add_way would overwrite existing way(s)
+    """
 
     def __init__(self):
         self.endpoints = {}
@@ -1604,7 +1971,84 @@ def join_way_soup(ways):
     function will try to join the given ways into a series of closed
     loops.  If there are any unclosed loops left at the end, they are
     reported to standard error and an exception is thrown.
+
+    For example, if we create some points in a square:
+
+    >>> top_left = Node("12", latitude="52", longitude="1")
+    >>> top_right = Node("13", latitude="52", longitude="2")
+    >>> bottom_right = Node("14", latitude="51", longitude="2")
+    >>> bottom_left = Node("15", latitude="51", longitude="1")
+
+    ... and extra ones at the bottom left:
+
+    >>> below_bottom_left = Node("16", latitude="50", longitude="1")
+    >>> left_of_bottom_left = Node("17", latitude="51", longitude="0")
+
+    And create a way which represents the left side (w), top and right
+    sides (ne), bottom side (s) and edges coming down and left from
+    the bottom left:
+
+    >>> w = Way("1", nodes=[bottom_left, top_left])
+    >>> ne = Way("2", nodes=[top_left, top_right, bottom_right])
+    >>> s = Way("3", nodes=[bottom_right, bottom_left])
+    >>> stalk_down = Way("4", nodes=[below_bottom_left, bottom_left])
+    >>> stalk_left = Way("5", nodes=[left_of_bottom_left, bottom_left])
+
+    It shouldn't be possible to join stalk_left to ne:
+
+    >>> join_way_soup([stalk_left, ne])
+    Traceback (most recent call last):
+    ...
+    UnclosedBoundariesException
+
+    And w and ne can be joined, but won't form a closed boundary (the
+    bottom side of the square (s) is missing):
+
+    >>> join_way_soup([w, ne])
+    Traceback (most recent call last):
+    ...
+    UnclosedBoundariesException
+
+    However, all of the sides of the square can be joined:
+
+    >>> result = join_way_soup([w, ne, s])
+    >>> result
+    [Way(id="None", nodes=5)]
+
+    The nodes in the joined way should be the same as all the corners
+    of the square (with one repeated once to join up again):
+
+    >>> set(result[0].nodes) == set([top_left, top_right, bottom_left, bottom_right])
+    True
+
+    The ways supplied can from more than one closed polygon.  e.g.
+
+    >>> other_top_left = Node("18", latitude="52", longitude="5")
+    >>> other_top_right = Node("19", latitude="52", longitude="6")
+    >>> other_bottom_right = Node("20", latitude="51", longitude="5")
+    >>> other_bottom_left = Node("21", latitude="51", longitude="6")
+
+    >>> other_nw = Way("6", nodes=[other_bottom_left, other_top_left, other_top_right])
+    >>> other_se = Way("7", nodes=[other_top_right, other_bottom_right, other_bottom_left])
+
+    >>> join_way_soup([s, w, ne, other_nw, other_se])
+    [Way(id="None", nodes=5), Way(id="None", nodes=5)]
+
+    But one closed polygon and an open one still fails:
+
+    >>> join_way_soup([s, ne, other_nw, other_se])
+    Traceback (most recent call last):
+    ...
+    UnclosedBoundariesException
+
+    Another option is that one of the ways might already be closed,
+    which is fine:
+
+    >>> whole_square = Way("8", nodes=[top_left, top_right, bottom_right, bottom_left, top_left])
+    >>> join_way_soup([whole_square, other_nw, other_se])
+    [Way(id="8", nodes=5), Way(id="None", nodes=5)]
     """
+
     closed_ways = []
     endpoints_to_ways = EndpointToWayMap()
     for way in ways:
