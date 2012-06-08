@@ -1366,7 +1366,7 @@ class OSMXMLParser(ContentHandler):
                 self.raise_unless_expected_parent(name, 'relation')
                 member_type = attr['type']
                 if member_type not in OSMXMLParser.VALID_RELATION_MEMBERS:
-                    raise "Unknown member type '%s' in <relation>" % (member_type,)
+                    raise Exception, "Unknown member type '%s' in <relation>" % (member_type,)
                 if attr['role'] not in OSMXMLParser.IGNORED_ROLES:
                     member = self.get_known_or_fetch(member_type, attr['ref'])
                     self.current_top_level_element.children.append((member, attr['role']))
@@ -1379,7 +1379,7 @@ class OSMXMLParser(ContentHandler):
                     node = OSMElement.make_missing_element('node', attr['ref'])
                 self.current_top_level_element.nodes.append(node)
             else:
-                raise "Unhandled element <%s>" % (name,)
+                raise UnexpectedElementException(name, "Unhandled element <%s>" % (name,))
 
     def endElement(self, name):
         if name in OSMXMLParser.VALID_TOP_LEVEL_ELEMENTS:
