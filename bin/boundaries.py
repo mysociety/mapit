@@ -1289,11 +1289,12 @@ class OSMXMLParser(ContentHandler):
 
     def raise_if_top_level(self, name):
         if self.current_top_level_element is None:
-            raise UnexpectedElementException(name, "Should never get a new <%s> when not in a top-level element" % (name,))
+            raise UnexpectedElementException(name, "Should never get a <%s> at the top level" % (name,))
 
     def raise_unless_expected_parent(self, name, expected_parent):
         if self.current_top_level_element.element_type != expected_parent:
-            raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>" % (name, expected_parent))
+            wrong_parent = self.current_top_level_element.element_type
+            raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>, can only be in <%s>" % (name, wrong_parent, expected_parent))
 
     def get_known_or_fetch(self, element_type, element_id, verbose=False):
         """Return an OSM Node, Way or Relation, fetching it if necessary
