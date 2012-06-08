@@ -1629,43 +1629,36 @@ def join_way_soup(ways):
         raise UnclosedBoundariesException, endpoints_to_ways.pretty()
     return closed_ways
 
-def main():
-
-    osm = OSMElement.xml_wrapping()
-    print etree.tostring(osm,
-                   pretty_print=True,
-                   encoding="utf-8",
-                   xml_declaration=True)
-
-    return
-
-    # Try some useful examples:
-
-    example_relation_ids = (
-        '375982', # Orkney - relation contains sub-relations for islands
-        '1711291', # Guernsey
-        '295353') # South Cambridgeshire - has an hole (inner ways)
-
-    for relation_id in example_relation_ids:
-
-        print "Fetching the relation", relation_id
-        parsed_relation = fetch_osm_element('relation', relation_id)
-
-        print "Outer boundaries:"
-        for way in parsed_relation.way_iterator(False):
-            print way
-        print "Inner boundaries:"
-        for way in parsed_relation.way_iterator(True):
-            print way
-
-        inner_ways = list(parsed_relation.way_iterator(True))
-        closed_inner_ways = join_way_soup(inner_ways)
-        print "They made up %d closed inner way(s)" % (len(closed_inner_ways),)
-
-        outer_ways = list(parsed_relation.way_iterator(False))
-        closed_outer_ways = join_way_soup(outer_ways)
-        print "They made up %d closed outer way(s)" % (len(closed_outer_ways),)
+# def main():
+#
+#     # Some useful examples to try:
+#
+#     example_relation_ids = (
+#         '375982', # Orkney - relation contains sub-relations for islands
+#         '1711291', # Guernsey
+#         '295353') # South Cambridgeshire - has an hole (inner ways)
+#
+#     for relation_id in example_relation_ids:
+#
+#         print "Fetching the relation", relation_id
+#         parsed_relation = fetch_osm_element('relation', relation_id)
+#
+#         print "Outer boundaries:"
+#         for way in parsed_relation.way_iterator(False):
+#             print way
+#         print "Inner boundaries:"
+#         for way in parsed_relation.way_iterator(True):
+#             print way
+#
+#         inner_ways = list(parsed_relation.way_iterator(True))
+#         closed_inner_ways = join_way_soup(inner_ways)
+#         print "They made up %d closed inner way(s)" % (len(closed_inner_ways),)
+#
+#         outer_ways = list(parsed_relation.way_iterator(False))
+#         closed_outer_ways = join_way_soup(outer_ways)
+#         print "They made up %d closed outer way(s)" % (len(closed_outer_ways),)
 
 if __name__ == "__main__":
+
     import doctest
     doctest.testmod()
