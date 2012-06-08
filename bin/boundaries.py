@@ -1373,7 +1373,7 @@ class OSMXMLParser(ContentHandler):
             elif name == "nd":
                 self.raise_unless_expected_parent(name, 'way')
                 node = self.get_known_or_fetch('node', attr['ref'])
-                if not node:
+                if node.element_content_missing:
                     if self.fetch_missing:
                          print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
                     node = OSMElement.make_missing_element('node', attr['ref'])
