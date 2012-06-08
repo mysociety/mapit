@@ -1506,6 +1506,7 @@ def parse_xml(filename, fetch_missing=True):
     >>> with NamedTemporaryFile(delete=False) as ntf:
     ...     ntf.write(example_xml)
     >>> parser = parse_xml(ntf.name, fetch_missing=False)
+    >>> os.remove(ntf.name)
     >>> for top_level_element in parser:
     ...     print top_level_element
     Node(id="291974462", lat="55.0548850", lon="-2.9544991")
