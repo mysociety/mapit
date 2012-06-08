@@ -187,9 +187,7 @@ while True:
     print "###### Starting parsing..."
     elements_parsed = 0
 
-    print "At start of run, nodes_needed are:"
-    for k, v in sorted(nodes_needed.items()):
-        print "  ", k, "=>", v
+    print "At start of run, len(nodes_needed) is:", len(nodes_needed)
 
     print "... and incomplete_ways_or_relations are:"
     for element in sorted(incomplete_ways_or_relations):
