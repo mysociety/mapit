@@ -41,14 +41,16 @@ def mkdir_p(path):
         else:
             raise
 
-def get_cache_filename(element_type, element_id):
+def get_cache_filename(element_type, element_id, cache_directory=None):
+    if cache_directory is None:
+        script_directory = os.path.dirname(os.path.abspath(__file__))
+        cache_directory = os.path.join(script_directory,
+                                       '..',
+                                       'data',
+                                       'new-cache')
     element_id = int(element_id, 10)
     subdirectory = "%03d" % (element_id % 1000,)
-    script_directory = os.path.dirname(os.path.abspath(__file__))
-    full_subdirectory = os.path.join(script_directory,
-                                     '..',
-                                     'data',
-                                     'new-cache',
+    full_subdirectory = os.path.join(cache_directory,
                                      element_type,
                                      subdirectory)
     mkdir_p(full_subdirectory)
@@ -1219,7 +1221,7 @@ class OSMXMLParser(ContentHandler):
     IGNORED_TAGS = set(('osm', 'note', 'meta', 'bound'))
     IGNORED_ROLES = set(('subarea', 'defaults', 'apply_to'))
 
-    def __init__(self, fetch_missing=True, callback=None, cache=True):
+    def __init__(self, fetch_missing=True, callback=None, cache=True, cache_directory=None):
         self.top_level_elements = []
         self.current_top_level_element = None
         # These dictionaries map ids to already discovered elements:
@@ -1229,6 +1231,7 @@ class OSMXMLParser(ContentHandler):
         self.fetch_missing = fetch_missing
         self.callback = callback
         self.cache = cache
+        self.cache_directory = cache_directory
 
     def clear_caches(self):
         self.known_nodes.clear()
@@ -1279,7 +1282,7 @@ class OSMXMLParser(ContentHandler):
                 return d[element_id]
         result = None
         # See if it is in the on-disk cache:
-        cache_filename = get_cache_filename(element_type, element_id)
+        cache_filename = get_cache_filename(element_type, element_id, self.cache_directory)
         if os.path.exists(cache_filename):
             parser = parse_xml(cache_filename, fetch_missing=self.fetch_missing)
             for e in parser.top_level_elements:
@@ -1290,7 +1293,7 @@ class OSMXMLParser(ContentHandler):
                 raise Exception, "Failed to find expected element in:" + cache_filename
         if not result:
             if self.fetch_missing:
-                result = fetch_osm_element(element_type, element_id)
+                result = fetch_osm_element(element_type, element_id, self.cache_directory)
                 if not result:
                     return OSMElement.make_missing_element(element_type, element_id)
             else:
@@ -1410,12 +1413,12 @@ class RateLimitedPOST:
             fp.write(response.read())
         RateLimitedPOST.last_post = datetime.datetime.now()
 
-def fetch_cached(element_type, element_id, verbose=False):
+def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     global last_overpass_fetch
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception, "Unknown element type '%s'" % (element_type,)
-    filename = get_cache_filename(element_type, element_id)
+    filename = get_cache_filename(element_type, element_id, cache_directory)
     if not os.path.exists(filename):
         url = "http://www.overpass-api.de/api/interpreter"
         data = '[timeout:3600];(%s(%s);>;);out;' % arguments
@@ -1486,7 +1489,7 @@ def parse_xml(filename, fetch_missing=True):
         xml.sax.parse(fp, parser)
     return parser
 
-def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False):
+def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None):
     """Fetch and parse a particular OSM element recursively
 
     More data is fetched from the API if required.  'element_type'
@@ -1502,7 +1505,7 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     if verbose:
         print "fetch_osm_element(%s, %s)" % (element_type, element_id)
     # Make sure we have the XML file for that relation, node or way:
-    filename = fetch_cached(element_type, element_id, verbose)
+    filename = fetch_cached(element_type, element_id, verbose, cache_directory)
     try:
         parsed = parse_xml(filename, fetch_missing)
     except UnexpectedElementException, e:
