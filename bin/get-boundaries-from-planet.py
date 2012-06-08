@@ -195,7 +195,7 @@ while True:
     for element in sorted(incomplete_ways_or_relations):
         print "  ", element
 
-    parser = OSMXMLParser(fetch_missing=False, callback=deal_with_top_level_element, cache=False)
+    parser = OSMXMLParser(fetch_missing=False, callback=deal_with_top_level_element, cache_in_memory=False)
     with open(planet_filename) as fp:
         xml.sax.parse(fp, parser)
 
