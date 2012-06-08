@@ -1353,7 +1353,9 @@ class OSMXMLParser(ContentHandler):
                 if self.cache_in_memory:
                     self.known_relations[element_id] = self.current_top_level_element
             else:
-                assert "Unhandled top level element %s" % (name,)
+                # A programming error: something's been added to
+                # VALID_TOP_LEVEL_ELEMENTS which isn't dealt with.
+                assert "Unhandled top level element %s" % (name,) # pragma: no cover
         else:
             # These must be sub-elements:
             self.raise_if_top_level(name)
