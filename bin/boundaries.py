@@ -465,6 +465,18 @@ class Way(OSMElement):
     def __len__(self):
         return len(self.nodes)
 
+    def __getitem__(self, val):
+        """Allow access to nodes with array notation
+
+        For example:
+        >>> w = Way('76543', nodes=[Node("12", latitude="52", longitude="1"),
+        ...                         Node("13", latitude="52", longitude="2"),
+        ...                         Node("14", latitude="51", longitude="2")])
+        >>> w[2]
+        Node(id="14", lat="51", lon="2")
+        """
+        return self.nodes.__getitem__(val)
+
     def pretty(self, indent=0):
         """Generate a fuller string representation of this way
 
@@ -846,6 +858,9 @@ class Relation(OSMElement):
     def __iter__(self):
         for c in self.children:
             yield c
+
+    def __getitem__(self, val):
+        return self.children.__getitem__(val)
 
     def add_member(self, new_member, role=''):
         self.children.append((new_member, role))
@@ -1255,6 +1270,9 @@ class OSMXMLParser(ContentHandler):
     def empty(self):
         self.raise_if_callback()
         return 0 == len(self.top_level_elements)
+
+    def __getitem__(self, val):
+        return self.top_level_elements.__getitem__(val)
 
     def raise_if_sub_level(self, name):
         if self.current_top_level_element is not None:
