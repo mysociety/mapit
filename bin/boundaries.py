@@ -123,6 +123,9 @@ class OSMElement(object):
         self.element_type = element_type or "BUG"
         self.missing = element_content_missing
 
+    def __lt__(self, other):
+        return int(self.element_id, 10) < int(other.element_id, 10)
+
     def __eq__(self, other):
         """Define equality of OSMElements as same (OSM) type and ID
 
