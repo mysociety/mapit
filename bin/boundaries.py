@@ -837,7 +837,7 @@ class Way(OSMElement):
             else:
                 # Ask the parser to try to fetch it from its filesystem cache:
                 found_node = parser.get_known_or_fetch('node', node_id)
-            if found_node and not found_node.element_content_missing:
+            if (found_node is not None) and (not found_node.element_content_missing):
                 self.nodes[i] = found_node
             else:
                 still_missing.append(node)
@@ -1205,7 +1205,7 @@ class Relation(OSMElement):
                 if not found_element:
                     # Ask the parser to try to fetch it from its filesystem cache:
                     found_element = parser.get_known_or_fetch(element_type, element_id)
-                if found_element and not found_element.element_content_missing:
+                if (found_element is not None) and (not found_element.element_content_missing):
                     self.children[i] = (found_element, role)
                 else:
                     still_missing.append(member)
@@ -1310,9 +1310,9 @@ class OSMXMLParser(ContentHandler):
                 if e.name_id_tuple() == (element_type, element_id):
                     result = e
                     break
-            if not result:
-                raise Exception, "Failed to find expected element in:" + cache_filename
-        if not result:
+            if result is None:
+                raise Exception, "Failed to find expected element in: " + cache_filename
+        if result is None:
             if self.fetch_missing:
                 result = fetch_osm_element(element_type, element_id, self.cache_directory)
                 if not result:
@@ -1356,13 +1356,7 @@ class OSMXMLParser(ContentHandler):
                     raise "Unknown member type '%s' in <relation>" % (member_type,)
                 if attr['role'] not in OSMXMLParser.IGNORED_ROLES:
                     member = self.get_known_or_fetch(member_type, attr['ref'])
-                    if member:
-                        t = (member, attr['role'])
-                    else:
-                        t = (OSMElement.make_missing_element(member_type, attr['ref']), attr['role'])
-                        if self.fetch_missing:
-                            print >> sys.stderr, "Ignoring member %s(%s) that couldn't be found" % (member_type, attr['ref'])
-                    self.current_top_level_element.children.append(t)
+                    self.current_top_level_element.children.append((member, attr['role']))
             elif name == "nd":
                 self.raise_unless_expected_parent(name, 'way')
                 node = self.get_known_or_fetch('node', attr['ref'])
