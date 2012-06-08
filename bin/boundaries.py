@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import xml.sax, os, errno, urllib, urllib2, sys, datetime, time
+import xml.sax, os, errno, urllib, urllib2, sys, datetime, time, shutil
 from xml.sax.handler import ContentHandler
 from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
@@ -33,7 +33,12 @@ def mkdir_p(path):
     Traceback (most recent call last):
       ...
     OSError: [Errno 13] Permission denied: '/tmp/tmp64Q8MJ/foo/bar/baz'
+
+    Remove the temporary directory created for these doctests:
+    >>> os.chmod(new_directory, 0755)
+    >>> shutil.rmtree(test_directory)
     """
+
     try:
         os.makedirs(path)
     except OSError as exc:
