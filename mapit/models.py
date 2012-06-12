@@ -220,6 +220,7 @@ class Geometry(models.Model):
 class NameType(models.Model):
     code = models.CharField(max_length=10, unique=True)
     description = models.CharField(max_length=200, blank=True)
+    objects = Manager()
 
     def __unicode__(self):
         return '%s (%s)' % (self.description, self.code)
