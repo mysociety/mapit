@@ -1,0 +1,18 @@
+[
+    { "pk": 1, "model": "mapit.country", "fields": { "code": "G", "name": "Global" } },
+
+    { "pk": 1, "model": "mapit.type", "fields": { "code": "O01", "description": "OSM Administrative Boundary Level 1" } },
+    { "pk": 2, "model": "mapit.type", "fields": { "code": "O02", "description": "OSM Administrative Boundary Level 2" } },
+    { "pk": 3, "model": "mapit.type", "fields": { "code": "O03", "description": "OSM Administrative Boundary Level 3" } },
+    { "pk": 4, "model": "mapit.type", "fields": { "code": "O04", "description": "OSM Administrative Boundary Level 4" } },
+    { "pk": 5, "model": "mapit.type", "fields": { "code": "O05", "description": "OSM Administrative Boundary Level 5" } },
+    { "pk": 6, "model": "mapit.type", "fields": { "code": "O06", "description": "OSM Administrative Boundary Level 6" } },
+    { "pk": 7, "model": "mapit.type", "fields": { "code": "O07", "description": "OSM Administrative Boundary Level 7" } },
+    { "pk": 8, "model": "mapit.type", "fields": { "code": "O08", "description": "OSM Administrative Boundary Level 8" } },
+    { "pk": 9, "model": "mapit.type", "fields": { "code": "O09", "description": "OSM Administrative Boundary Level 9" } },
+    { "pk": 10, "model": "mapit.type", "fields": { "code": "O10", "description": "OSM Administrative Boundary Level 10" } },
+    { "pk": 11, "model": "mapit.type", "fields": { "code": "O11", "description": "OSM Administrative Boundary Level 11" } },
+    { "pk": 12, "model": "mapit.type", "fields": { "code": "O12", "description": "OSM Administrative Boundary Level 12" } },
+
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "osm", "description": "OSM" } }
+]
