@@ -228,13 +228,6 @@ class Command(LabelCommand):
 
                     update_or_create()
 
-                # break
-            break
-        return
-
-
-        code_type_n5000 = CodeType.objects.get(code='n5000')
-
 class KML(ContentHandler):
     def __init__(self, *args, **kwargs):
         self.content = ''
