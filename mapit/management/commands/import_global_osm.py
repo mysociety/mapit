@@ -212,7 +212,7 @@ class Command(LabelCommand):
                                 language_name = None
                                 if k == 'name':
                                     lang = 'default'
-                                    language_name = "Default"
+                                    language_name = "OSM Default"
                                 else:
                                     name_match = re.search(r'^name:(.+)$', k)
                                     if name_match:
