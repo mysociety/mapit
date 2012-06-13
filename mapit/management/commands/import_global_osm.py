@@ -108,6 +108,7 @@ class Command(LabelCommand):
         # print json.dumps(language_code_to_name, sort_keys=True, indent=4)
 
         for admin_level in range(2,12):
+
             verbose("Loading admin_level " + str(admin_level))
 
             admin_directory = "al%02d" % (admin_level)
@@ -119,6 +120,9 @@ class Command(LabelCommand):
             verbose("Loading all KML in " + admin_directory)
 
             for e in os.listdir(admin_directory):
+
+                # if 'way-32291128' not in e:
+                #     continue
 
                 if not e.endswith('.kml'):
                     verbose("Ignoring non-KML file: " + e)
@@ -138,9 +142,9 @@ class Command(LabelCommand):
                 kml_data = KML()
                 xml.sax.parse(kml_filename, kml_data)
 
-                print "Got extended data:"
-                import json
-                print json.dumps(kml_data.data, sort_keys=True, indent=4)
+                # print "Got extended data:"
+                # import json
+                # print json.dumps(kml_data.data, sort_keys=True, indent=4)
 
                 if osm_type == 'relation':
                     code_type_osm = CodeType.objects.get(code='osm_rel')
