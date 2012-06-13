@@ -115,3 +115,7 @@ form {
 .olControlAttribution {
     bottom: 3px !important;
 }
+
+.language-name {
+    font-style: italic
+}

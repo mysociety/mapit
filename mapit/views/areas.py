@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.utils.html import escape
 from django.conf import settings
 
-from mapit.models import Area, Generation, Geometry, Code
+from mapit.models import Area, Generation, Geometry, Code, Name
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
@@ -45,13 +45,23 @@ def area(request, area_id, format='json'):
             code_link = 'http://www.openstreetmap.org/browse/way/' + code
         codes.append((code_type, code, code_link))
 
+    # Sort any alternative names by the description of the name (the
+    # English name of the language for global MapIt) and exclude the
+    # default OSM name, since if that exists, it'll already be
+    # displayed as the page title.
+
+    names = Name.objects.filter(area=area).select_related()
+    alternative_names = sorted((n.type.description, n.name) for n in names
+                               if n.type.code != "default")
+
     if format == 'html':
         return render(request, 'mapit/area.html', {
             'area': area,
             'codes': codes,
+            'alternative_names': alternative_names,
             'show_geometry': (area.type.code not in ('EUR', 'SPE', 'WAE'))
         })
-    return output_json( area.as_dict() )
+    return output_json( area.as_dict(names) )
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
