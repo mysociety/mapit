@@ -10,11 +10,20 @@ from mapit import countries
 
 class GenerationManager(models.Manager):
     def current(self):
+        """Return the most recent active generation.
+
+        If there are no active generations, return 0."""
+
         latest_on = self.get_query_set().filter(active=True).order_by('-id')
         if latest_on: return latest_on[0]
         return 0
 
     def new(self):
+        """If the most recent generation is inactive, return it.
+
+        If there are no generations, or the most recent one is active,
+        return None."""
+
         latest = self.get_query_set().order_by('-id')
         if not latest or latest[0].active:
             return None
