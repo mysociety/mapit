@@ -14,5 +14,6 @@
     { "pk": 11, "model": "mapit.type", "fields": { "code": "O11", "description": "OSM Administrative Boundary Level 11" } },
     { "pk": 12, "model": "mapit.type", "fields": { "code": "O12", "description": "OSM Administrative Boundary Level 12" } },
 
-    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "osm", "description": "OSM" } }
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "osm_rel", "description": "OSM relation" } },
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "osm_way", "description": "OSM way" } }
 ]

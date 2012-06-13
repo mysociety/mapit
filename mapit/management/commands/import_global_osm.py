@@ -14,7 +14,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type, CodeType, NameType
+from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from utils import save_polygons
 from glob import glob
 import urllib2
@@ -142,7 +142,12 @@ class Command(LabelCommand):
                 import json
                 print json.dumps(kml_data.data, sort_keys=True, indent=4)
 
-                code_type_osm = CodeType.objects.get(code='osm')
+                if osm_type == 'relation':
+                    code_type_osm = CodeType.objects.get(code='osm_rel')
+                elif osm_type == 'way':
+                    code_type_osm = CodeType.objects.get(code='osm_way')
+                else:
+                    raise Exception, "Unknown OSM element type:", osm_type
 
                 ds = DataSource(kml_filename)
                 layer = ds[0]
@@ -155,27 +160,20 @@ class Command(LabelCommand):
 
                     area_code = 'O%02d' % (admin_level)
 
-                    if osm_type == 'way':
-                        code = 10**11
-                    elif osm_type == 'relation':
-                        code = 2 * 10**11
-                    else:
-                        raise Exception, "Unsupported OSM element type '%s'" % (osm_type,)
-
-                    code += int(osm_id)
-
-                    print "Would use code:", code
-
                     # FIXME: perhaps we could try to find parent areas
                     # via inclusion in higher admin levels
                     parent_area = None
 
+                    try:
+                        osm_code = Code.objects.get(type=code_type_osm, code=osm_id)
+                    except Code.DoesNotExist:
+                        osm_code = None
+
                     def update_or_create():
-                        try:
-                            m = Area.objects.get(id=code)
-                        except Area.DoesNotExist:
+                        if osm_code:
+                            m = osm_code.area
+                        else:
                             m = Area(
-                                id = code,
                                 name = name,
                                 type = Type.objects.get(code=area_code),
                                 country = Country.objects.get(code='G'),
@@ -210,8 +208,9 @@ class Command(LabelCommand):
                                 NameType.objects.update_or_create({'code': lang},
                                                                   {'code': lang,
                                                                    'description': language_name})
-                                m.names.update_or_create({ 'type': NameType.objects.get(code=lang) }, { 'name': v })
-                            m.codes.update_or_create({ 'type': code_type_osm }, { 'code': code })
+                                name_type = NameType.objects.get(code=lang)
+                                m.names.update_or_create({ 'type': name_type }, { 'name': v })
+                            m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
                             save_polygons({ code : (m, poly) })
 
                     update_or_create()
