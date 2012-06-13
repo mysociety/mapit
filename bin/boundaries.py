@@ -1826,9 +1826,15 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     making request to url: http://www.overpass-api.de/api/interpreter
     Relation(id="58446", members=70)
 
+    FIXME: fetching a non-existing element really should produce an
+    exception, but at the moment just returns None
+
+    >>> tmp_cache3 = mkdtemp()
+    >>> fetch_osm_element('relation', '10000000000', cache_directory=tmp_cache3)
+
     Remove the temporary directories created for these doctests:
-    >>> shutil.rmtree(tmp_cache)
-    >>> shutil.rmtree(tmp_cache2)
+    >>> for d in (tmp_cache, tmp_cache2, tmp_cache3):
+    ...     shutil.rmtree(d)
     """
 
     element_id = str(element_id)
