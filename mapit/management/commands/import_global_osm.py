@@ -118,6 +118,11 @@ class Command(LabelCommand):
 
         # print json.dumps(language_code_to_name, sort_keys=True, indent=4)
 
+        skip_up_to = None
+        # skip_up_to = 'relation-80370'
+
+        skipping = bool(skip_up_to)
+
         for admin_level in range(2,12):
 
             verbose("Loading admin_level " + str(admin_level))
@@ -130,10 +135,18 @@ class Command(LabelCommand):
 
             verbose("Loading all KML in " + admin_directory)
 
-            for e in os.listdir(admin_directory):
+            files = sorted(os.listdir(admin_directory))
+            total_files = len(files)
 
-                # if 'way-32291128' not in e:
-                #     continue
+            for i, e in enumerate(files):
+
+                progress = "[%d%% complete] " % ((i * 100) / total_files,)
+
+                if skipping:
+                    if skip_up_to in e:
+                        skipping = False
+                    else:
+                        continue
 
                 if not e.endswith('.kml'):
                     verbose("Ignoring non-KML file: " + e)
@@ -147,7 +160,7 @@ class Command(LabelCommand):
 
                 kml_filename = os.path.join(admin_directory, e)
 
-                verbose("Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
+                verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
 
                 # Need to parse the KML manually to get the ExtendedData
                 kml_data = KML()
