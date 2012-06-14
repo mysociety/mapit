@@ -229,6 +229,11 @@ class Command(LabelCommand):
 
                         if options['commit']:
                             m.save()
+
+                            if name not in kml_data.data:
+                                print json.dumps(kml_data.data, sort_keys=True, indent=4)
+                                raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
+
                             for k, v in kml_data.data[name].items():
                                 language_name = None
                                 if k == 'name':
