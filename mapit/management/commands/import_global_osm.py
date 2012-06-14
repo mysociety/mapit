@@ -37,6 +37,9 @@ def make_missing_none(s):
     else:
         return s
 
+def normalize_whitespace(s):
+    return re.sub('(?us)\s+', ' ', s).strip()
+
 LanguageCodes = namedtuple('LanguageCodes',
                            ['three_letter',
                             'two_letter',
@@ -150,6 +153,14 @@ class Command(LabelCommand):
                 kml_data = KML()
                 xml.sax.parse(kml_filename, kml_data)
 
+                useful_names = [n for n in kml_data.data.keys() if not n.startswith('Boundaries for')]
+                if len(useful_names) == 0:
+                    raise Exception, "No useful names found in KML data"
+                elif len(useful_names) > 1:
+                    raise Exception, "Multiple useful names found in KML data"
+                name = useful_names[0]
+                print " ", name.encode('utf-8')
+
                 if osm_type == 'relation':
                     code_type_osm = CodeType.objects.get(code='osm_rel')
                 elif osm_type == 'way':
@@ -162,9 +173,6 @@ class Command(LabelCommand):
                 if len(layer) != 1:
                     raise Exception, "We only expect one feature in each layer"
                 for feat in layer:
-                    name = feat['Name'].value.decode('utf-8')
-                    name = re.sub('\s+', ' ', name)
-                    print " ", name.encode('utf-8')
 
                     area_code = 'O%02d' % (admin_level)
 
@@ -243,7 +251,7 @@ class KML(ContentHandler):
     def endElement(self, name):
         if name == 'name':
             self.current = {}
-            self.data[self.content.strip()] = self.current
+            self.data[normalize_whitespace(self.content)] = self.current
         elif name == 'value':
             self.current[self.name] = self.content.strip()
             self.name = None
@@ -251,5 +259,4 @@ class KML(ContentHandler):
 
     def startElement(self, name, attr):
         if name == 'Data':
-            self.name = attr['name']
-
+            self.name = normalize_whitespace(attr['name'])
