@@ -117,7 +117,7 @@ Here are the basic instructions to install OS OpenData and ONSPD:
 1. AREA_SRID in conf/general.yml should be 27700 (as Boundary-Line shapes are in OSGB).   
 2. Download the latest Code-Point Open, Boundary-Line and ONSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
-3. Change to the project directory, and create database tables:
+3. Change to the project directory, and create database tables (if you haven't already done this):
    ./manage.py syncdb
    ./manage.py migrate mapit
 4. Run the following in order:
