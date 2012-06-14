@@ -123,16 +123,16 @@ Here are the basic instructions to install OS OpenData and ONSPD:
 4. Run the following in order:
    ./manage.py generation_create --commit --desc "Initial import."
    ./manage.py loaddata uk
-   ./manage.py import_boundary_line --control=mapit.controls.first-gss --commit `ls ../../data/Boundary-Line/*.shp|grep -v high_water`
+   ./manage.py import_boundary_line --control=mapit.controls.first-gss --commit `ls ../data/Boundary-Line/Data/*.shp|grep -v high_water`
    # (You can run without --commit to do a dry run.)
    # first-gss in the above assumes the Boundary Line you're importing is
    # October 2010 or later, and uses the new GSS codes.
    ./manage.py find_parents
-   ./manage.py import_codepoint ../../data/Code-Point-Open/*.csv
-   ./manage.py scilly ../../data/Code-Point-Open/tr.csv
+   ./manage.py import_codepoint ../data/Code-Point-Open/*.csv
+   ./manage.py scilly ../data/Code-Point-Open/tr.csv
    ./manage.py import_nspd_ni_areas
-   ./manage.py import_nspd_ni ../../data/ONSPD.csv
-   ./manage.py import_nspd_crown_dependencies ../../data/ONSPD.csv
+   ./manage.py import_nspd_ni ../data/ONSPD.csv
+   ./manage.py import_nspd_crown_dependencies ../data/ONSPD.csv
    ./manage.py generation_activate --commit
 
 For notes on what was done to create generations as you can see on
