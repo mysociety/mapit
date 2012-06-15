@@ -36,9 +36,19 @@ def area(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
 
+    codes = []
+    for code_type, code in sorted(area.all_codes.items()):
+        code_link = None
+        if code_type in ('osm', 'osm_rel'):
+            code_link = 'http://www.openstreetmap.org/browse/relation/' + code
+        elif code_type == 'osm_way':
+            code_link = 'http://www.openstreetmap.org/browse/way/' + code
+        codes.append((code_type, code, code_link))
+
     if format == 'html':
         return render(request, 'mapit/area.html', {
             'area': area,
+            'codes': codes,
             'show_geometry': (area.type.code not in ('EUR', 'SPE', 'WAE'))
         })
     return output_json( area.as_dict() )
