@@ -182,6 +182,15 @@ time_through = 1
 
 # import pdb; pdb.set_trace()
 
+# FIXME 1: we detect that the file is incomplete in terms of missing
+# unreferenced nodes, but the same is not done for ways and relations
+# that are referenced by a relation.
+
+# FIXME 2: we should detect (and ignore) references to relations that
+# are already in the current tree to avoid non-terminating behaviour.
+# (At the moment, we just rely on excluding particular roles that are
+# known to create loops, which is not robust enough.
+
 while True:
 
     print "###### Starting parsing..."
