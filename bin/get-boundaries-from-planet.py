@@ -201,6 +201,17 @@ while True:
         "Everything found, exiting."
         break
 
+    planet_file_incomplete = False
+
+    for node_id, found_node in nodes_needed.items():
+        if not found_node:
+            print "  The referenced node %s was not found in %s" % (node_id, planet_filename)
+            planet_file_incomplete = True
+
+    if planet_file_incomplete:
+        print >> sys.stderr, "The planet file %s was incomplete" % (planet_filename,)
+        sys.exit(1)
+
     nodes_needed = new_nodes_needed
     new_nodes_needed = {}
 
