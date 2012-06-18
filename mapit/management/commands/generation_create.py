@@ -8,7 +8,7 @@ from mapit.models import Generation
 class Command(NoArgsCommand):
     help = 'Create a new generation'
     option_list = NoArgsCommand.option_list + (
-        make_option('--desc', action='store', dest='desc', help='Description of this generaiton'),
+        make_option('--desc', action='store', dest='desc', help='Description of this generation'),
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
 
