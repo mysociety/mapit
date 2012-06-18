@@ -92,7 +92,7 @@ name_to_code = {
 }
 
 class Command(LabelCommand):
-    help = 'Import OS Boundary-Line Scotish Parliament 2011 in advance'
+    help = 'Import OS Boundary-Line Scottish Parliament 2011 in advance'
     args = '<Boundary-Line SHP files>'
     option_list = LabelCommand.option_list + (
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
