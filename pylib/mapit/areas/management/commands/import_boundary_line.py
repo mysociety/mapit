@@ -99,7 +99,7 @@ class Command(LabelCommand):
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
                     m = check
-                    ons_code = m.codes.get(type=control.code_version())
+                    ons_code = m.codes.get(type=control.code_version()).code
                 elif ons_code:
                     m = Area.objects.get(codes__type=control.code_version(), codes__code=ons_code)
                 elif unit_id:
