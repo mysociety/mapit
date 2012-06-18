@@ -45,19 +45,23 @@ class Command(NoArgsCommand):
             type__code__in=parentmap.keys(),
             generation_low__lte=new_generation, generation_high__gte=new_generation,
         ):
-            polygon = area.polygons.all()[0]
-            try:
-                args = {
-                    'polygons__polygon__contains': polygon.polygon.point_on_surface,
-                    'generation_low__lte': new_generation,
-                    'generation_high__gte': new_generation,
-                }
-                if isinstance(parentmap[area.type.code], str):
-                    args['type__code'] = parentmap[area.type.code]
-                else:
-                    args['type__code__in'] = parentmap[area.type.code]
-                parent = Area.objects.get(**args)
-            except Area.DoesNotExist:
+            parent = None
+            for polygon in area.polygons.all():
+                try:
+                    args = {
+                        'polygons__polygon__contains': polygon.polygon.point_on_surface,
+                        'generation_low__lte': new_generation,
+                        'generation_high__gte': new_generation,
+                    }
+                    if isinstance(parentmap[area.type.code], str):
+                        args['type__code'] = parentmap[area.type.code]
+                    else:
+                        args['type__code__in'] = parentmap[area.type.code]
+                    parent = Area.objects.get(**args)
+                    break
+                except Area.DoesNotExist:
+                    continue
+            if not parent:
                 raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
             if area.parent_area != parent:
                 print "Parent for %s was %s, is now %s" % (self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent))
