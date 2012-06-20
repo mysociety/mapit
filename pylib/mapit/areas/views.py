@@ -267,7 +267,17 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     if format=='kml':
         out = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
+    <Style id="transBluePoly">
+        <LineStyle>
+            <color>70ff0000</color>
+            <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>3dff5500</color>
+        </PolyStyle>
+    </Style>
     <Placemark>
+        <styleUrl>#transBluePoly</styleUrl>
         <name>%s</name>
         %s
     </Placemark>
