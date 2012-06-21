@@ -305,6 +305,25 @@ def areas_geometry(request, area_ids):
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
+def area_from_code(request, code_type, code_value, format='json'):
+    generation = request.REQUEST.get('generation',
+                                     Generation.objects.current())
+    if not generation:
+        generation = Generation.objects.current()
+    try:
+        area = Area.objects.get(codes__type__code=code_type,
+                                codes__code=code_value,
+                                generation_low__lte=generation,
+                                generation_high__gte=generation)
+    except Area.DoesNotExist, e:
+        message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
+        return output_error(format, message, 404)
+    except Area.MultipleObjectsReturned, e:
+        message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
+        return output_error(format, message, 500)
+    return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
+
+@ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     type = request.REQUEST.get('type', '')
     generation = request.REQUEST.get('generation', Generation.objects.current())
