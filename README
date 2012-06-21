@@ -1,11 +1,3 @@
-**********
-Note: As part of opendataday.org, this codebase has recently been restructured
-in order to make it more of a component (packaging coming soon), to increase
-extensibility and hopefully encourage reuse. However, it's possible these
-changes have introduced bugs (though hopefully not!) - if you have issues
-installing or running, please do get in touch at <mapit@mysociety.org>.
-**********
-
 MapIt
 =====
 
