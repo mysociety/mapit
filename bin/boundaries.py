@@ -2125,7 +2125,7 @@ if __name__ == "__main__":
     kml, bbox = get_kml_for_osm_element(element_type, element_id)
 
     if kml:
-        print kml.encode('utf-8')
+        print kml
         sys.exit(0)
     else:
         sys.exit(1)
