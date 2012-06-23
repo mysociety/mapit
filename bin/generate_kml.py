@@ -386,5 +386,22 @@ def get_kml_for_osm_element(element_type, element_id):
 
 if __name__ == "__main__":
 
-    import doctest
-    doctest.testmod()
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("--test", dest="doctest",
+                      default=False, action='store_true',
+                      help="Run all doctests in this file")
+
+    (options, args) = parser.parse_args()
+
+    if args:
+        parser.print_help(file=sys.stderr)
+        sys.exit(1)
+
+    if options.doctest:
+        import doctest
+        failure_count, test_count = doctest.testmod()
+        sys.exit(0 if failure_count == 0 else 1)
+    else:
+        parser.print_help(file=sys.stderr)
+        sys.exit(1)

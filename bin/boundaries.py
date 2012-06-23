@@ -2081,5 +2081,51 @@ def join_way_soup(ways):
 
 if __name__ == "__main__":
 
-    import doctest
-    doctest.testmod()
+    from optparse import OptionParser
+    parser = OptionParser()
+    parser.add_option("--test", dest="doctest",
+                      default=False, action='store_true',
+                      help="Run all doctests in this file")
+    parser.add_option("--relation", dest="relation",
+                      metavar="<RELATION_ID>",
+                      help="Output KML for the OSM relation <RELATION_ID>")
+    parser.add_option("--way", dest="way",
+                      metavar="<WAY_ID>",
+                      help="Output KML for the OSM way <WAY_ID>")
+
+    (options, args) = parser.parse_args()
+
+    if args:
+        parser.print_help(file=sys.stderr)
+        sys.exit(1)
+
+    # These options are all mutually exclusive:
+    exclusive_options = (options.doctest,
+                         options.relation,
+                         options.way)
+
+    if sum(bool(x) for x in exclusive_options) != 1:
+        print >> sys.stderr, "You must specify exactly one of --test, --relation or --way"
+        sys.exit(1)
+
+    if options.doctest:
+        import doctest
+        failure_count, test_count = doctest.testmod()
+        sys.exit(0 if failure_count == 0 else 1)
+
+    if options.relation:
+        element_type = 'relation'
+        element_id = options.relation
+    elif options.way:
+        element_type = 'way'
+        element_id = options.way
+
+    from generate_kml import *
+
+    kml, bbox = get_kml_for_osm_element(element_type, element_id)
+
+    if kml:
+        print kml.encode('utf-8')
+        sys.exit(0)
+    else:
+        sys.exit(1)
