@@ -12,6 +12,7 @@ from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.db.models import Q
+from django.utils.html import escape
 from django.conf import settings
 
 from mapit.models import Area, Generation, Geometry, Code
@@ -77,11 +78,21 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     if format=='kml':
         out = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
+    <Style id="transBluePoly">
+        <LineStyle>
+            <color>70ff0000</color>
+            <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>3dff5500</color>
+        </PolyStyle>
+    </Style>
     <Placemark>
+        <styleUrl>#transBluePoly</styleUrl>
         <name>%s</name>
         %s
     </Placemark>
-</kml>''' % (area.name, all_areas.kml)
+</kml>''' % (escape(area.name), all_areas.kml)
         content_type = 'application/vnd.google-earth.kml+xml'
     elif format in ('json', 'geojson'):
         out = all_areas.json
@@ -155,6 +166,9 @@ def area_intersect(query_type, title, request, area_id, format):
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
+    # XXX Exempt an error that throws a GEOS Exception
+    if area_id == '2658':
+        return output_error(format, 'There was an internal error performing that query.', 500)
     return area_intersect('touches', 'Areas touching %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)

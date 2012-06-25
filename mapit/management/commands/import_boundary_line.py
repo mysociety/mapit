@@ -103,7 +103,7 @@ class Command(LabelCommand):
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
                     m = check
-                    ons_code = m.codes.get(type=code_version)
+                    ons_code = m.codes.get(type=code_version).code
                 elif ons_code:
                     m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:
@@ -113,8 +113,10 @@ class Command(LabelCommand):
                         raise Exception, "Unit ID code %s is %s in DB but %s in SHP file" % (unit_id, m_name, name)
                 else:
                     raise Exception, 'Area "%s" (%s) has neither ONS code nor unit ID' % (name, area_code)
+                if int(options['verbosity']) > 1:
+                    print "  Area matched, %s" % (m, )
             except Area.DoesNotExist:
-                print "New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
+                print "  New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
                 m = Area(
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = Type.objects.get(code=area_code),
