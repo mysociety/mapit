@@ -1,0 +1,129 @@
+#api-docs{
+    @include full_grid;
+    @include clearfix;
+    padding: 0.625em;
+    padding-bottom: 5em;
+    
+    header{
+        width: 13.75em;
+        padding: 0.625em;
+        float: left;
+        background-color: #333333;
+        color: #fff;
+        margin-top: -5em;
+        
+        h2{
+            font-size: 1.875em;
+            font-family: 'MuseoSlab500', sans-serif;
+            font-weight: normal;
+        }
+        
+        a{
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        ol,ul{
+            @include resetlist;
+            display: block;
+            padding-bottom: 1.5em;
+        }
+        
+        p{
+            margin: 0;
+            color: #797979;
+        }
+
+    }
+    
+    section{
+        width: 43.75em;
+        float: right;
+        clear: right;
+        line-height: 1.5em;
+        
+        &>p{
+            clear: left;
+        }
+        
+        h3{
+            font-family: 'MuseoSlab500', sans-serif;
+            font-weight: normal;
+            font-size: 1.5em;
+            width: 10em;
+            float: left;
+            color: #333;
+            padding: 0.4em;
+            
+            em{
+                color: #999;
+                display: block;
+                font-size: 0.5em;
+                font-style: normal;
+            }
+        }
+        
+        dl{
+            line-height: 1.5em;
+            width: 28.75em;
+            float: right;
+            color: #666666;
+            padding: 2.5em 0.625em 0.625em 0.625em;
+            
+            dt{
+                font-weight: bold;
+                color: #99cc33;
+            }
+            
+            dd{
+                margin: 0 0 1.5em 0;
+                p{
+                    margin: 0;
+                    margin-bottom: 1.5em;
+                }
+            }
+            
+            a{
+                color: #333;
+                font-weight: bold;
+                text-decoration: none;
+                &:hover{
+                    text-decoration: underline;
+                }
+            }
+            
+        }
+                
+    }
+    
+    a[href="#api-by_postcode"]:hover,
+    #api-by_postcode dt
+    { color: #cc9933; }
+    
+    
+    a[href="#api-by_partial_postcode"]:hover,
+    #api-by_partial_postcode dt
+    { color: #99cc33; }
+    
+    
+    a[href="#api-by_point"]:hover,
+    #api-by_point dt
+    { color: #33ccbf; }
+    
+    
+    a[href="#api-by_area_id"]:hover,
+    #api-by_area_id dt
+    { color: #3369cc; }
+    
+    
+    a[href="#api-multiple_areas"]:hover,
+    #api-multiple_areas dt
+    { color: #8d33cc; }
+    
+    
+    a[href="#api-generations"]:hover,
+    #api-generations dt
+    { color: #cc3369; }
+    
+}

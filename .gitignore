@@ -9,3 +9,6 @@
 /dist
 *~
 /.coverage
+
+.sass-cache
+/mapit/static/mapit/css

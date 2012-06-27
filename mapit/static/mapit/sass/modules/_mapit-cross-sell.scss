@@ -1,0 +1,36 @@
+a.mapit-cross-sell{
+    display: block;
+    min-width: 8.75em;
+    text-align: center;
+    padding: 1em 0.5em;
+    background-color: #373436;
+    float: right;
+    margin: 0;
+    box-shadow: 0 0 0 rgba(238,218,181,0.8);
+    @include transition(box-shadow 0.5s ease-in);
+    @include border-radius(0.625em);
+    
+    &:hover{
+        box-shadow: 0 0 2em rgba(238,218,181,0.8);
+    }
+    &.global:hover{
+        background-color: #094263;
+        box-shadow: 0 0 2em rgba(238,218,181,0.8);
+    }
+    &.uk{
+        @include transition(background-position 0.8s ease-out);
+        background-image: url(../img/union_flag2.jpg);
+        background-position: center 0%;
+        &:hover{
+            background-color: #094263;
+            box-shadow: 0 0 2em rgba(238,218,181,0.8);
+            background-position: center 75%;
+        }
+    }
+    
+    
+    img{
+        vertical-align: top;
+    }
+    
+}
