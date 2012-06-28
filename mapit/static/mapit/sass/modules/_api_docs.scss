@@ -5,12 +5,24 @@
     padding-bottom: 5em;
     
     header{
-        width: 13.75em;
-        padding: 0.625em;
-        float: left;
+        margin-left: -0.625em;
+        margin-right: -0.625em;
+        margin-top: -0.625em;
+        padding: 0.625em 1.25em;
+        @media (min-width : 40em) {
+            padding: 0.625em;
+            width: 12em;
+            margin: 0;
+            float: left;
+        }
+        @media (min-width : 60em) {
+            width: 13.75em;
+            float: left;
+            margin-top: -5em;
+        }
+        
         background-color: #333333;
         color: #fff;
-        margin-top: -5em;
         
         h2{
             font-size: 1.875em;
@@ -38,7 +50,18 @@
     }
     
     section{
-        width: 43.75em;
+        @media (min-width : 40em) {
+            width: 26.5em;
+        }
+        @media (min-width : 50em) {
+            width: 36.5em;
+        }
+        @media (min-width : 55em) {
+            width: 41.5em;
+        }
+        @media (min-width : 60em) {
+            width: 43.75em;
+        }
         float: right;
         clear: right;
         line-height: 1.5em;
@@ -51,10 +74,12 @@
             font-family: 'MuseoSlab500', sans-serif;
             font-weight: normal;
             font-size: 1.5em;
-            width: 10em;
-            float: left;
             color: #333;
             padding: 0.4em;
+            @media (min-width : 60em) {
+                width: 10em;
+                float: left;
+            }
             
             em{
                 color: #999;
@@ -63,13 +88,20 @@
                 font-style: normal;
             }
         }
-        
+        &>p{
+            padding: 0.625em;
+            color: #666666;
+        }
         dl{
             line-height: 1.5em;
-            width: 28.75em;
-            float: right;
+            padding: 0 0.625em 0.625em 0.625em;
+            @media (min-width : 60em) {
+                width: 28.75em;
+                float: right;
+                padding: 2.5em 0.625em 0.625em 0.625em;
+            }
             color: #666666;
-            padding: 2.5em 0.625em 0.625em 0.625em;
+            
             
             dt{
                 font-weight: bold;

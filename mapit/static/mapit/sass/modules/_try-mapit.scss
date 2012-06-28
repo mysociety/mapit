@@ -1,7 +1,10 @@
 #try-mapit{
     @include full_grid(25em, 0.625em);
     background-color: #948994;
-    padding: 1em 0.625em 1em 25em;
+    padding: 1em 0.625em;
+    @media (min-width : 60em) {
+        padding: 1em 0.625em 1em 25em;
+    }
     color: #383838;
     form{
         padding: 0 0.625em;

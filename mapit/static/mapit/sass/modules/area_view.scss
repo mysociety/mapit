@@ -13,19 +13,57 @@
         margin-top: 0;
     }
     
+    header.area_info{
+        padding: 2.5em 0 1em 0;
+        @media (min-width : 30em) {
+            float: right;
+            width: 50%;
+        }
+        display: block;
+    }
+    
     section.map{
-        width: 30em;
-        padding:2.5em 0.625em;
+        padding: 1em 0;
+        @media (min-width : 30em) {
+        	width: 50%;
+        	padding: 2.5em 0.625em;
+        }
+        
+        @media (min-width : 60em) {
+        	width: 28.75em;
+            padding:2.5em 0em;
+        }
+        max-width: 100%;
         float: left;
+        &>*{
+            max-width: 100%;
+            height: auto;
+        }
     }
     
     section.details{
-        width: 30em;
-        padding: 2.5em 0.625em;
-        float: right;
+        padding: 1em 0 2.5em 0;
+        clear: both;
+        
+/*
+        @media (min-width : 30em) {
+        	width: 50%;
+        	clear: none;
+        	float: right;
+        	padding: 1em 0.625em 2.5em 0.625em;
+        }
+*/
+        
+        @media (min-width : 60em) {
+            float: right;
+            clear: none;
+        	width: 28.75em;
+            padding:1em 0 2.5em 0;
+        }
+        max-width: 100%;
         &>ul{
             @include resetlist;
-            margin-top: 2.5em;
+            //margin-top: 2.5em;
             &>li{
                 display: block;
                 width: 13.75em;

@@ -3,7 +3,7 @@ html{ background: #1f1f1f url(../img/page-top-grad.png) repeat-x scroll left top
 #mysociety-org-bar{
     @include full_grid;
     background-color: transparent;
-    text-align: right;
+    text-align: center;
     
     a{
         padding: 0;
@@ -13,10 +13,19 @@ html{ background: #1f1f1f url(../img/page-top-grad.png) repeat-x scroll left top
             padding: 0;
             margin: 0;
             vertical-align: top;
+            max-width: 100%;
         }
-        
-        &.mysociety-home-link img{
-            float: left;
+        &.mysociety-donate-link{
+            display: none;
+        }
+        @media (min-width : 32.625em) {
+            text-align: right;
+            &.mysociety-home-link img{
+                float: left;
+            }
+            &.mysociety-donate-link{
+                display: block;
+            }
         }
     }
 }

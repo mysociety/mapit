@@ -1,11 +1,14 @@
 a.mapit-cross-sell{
     display: block;
-    min-width: 8.75em;
+    margin: 0 auto 2em auto;
+    @media (min-width : 28em) {
+        margin: 0;
+        min-width: 8.75em;
+        float: right;
+    }
     text-align: center;
     padding: 1em 0.5em;
     background-color: #373436;
-    float: right;
-    margin: 0;
     box-shadow: 0 0 0 rgba(238,218,181,0.8);
     @include transition(box-shadow 0.5s ease-in);
     @include border-radius(0.625em);

@@ -7,11 +7,16 @@
     
     h1{
         display: block;
-        width: 4.583em;
-        float: left;
+        padding: 0.21em;
+        @media (min-width : 60em) {
+            width: 4.583em;
+            float: left;
+            padding: 1em 0.21em;
+        }
+        max-width: 100%;
+        
         font-family: 'MuseoSlab500', sans-serif;
         font-size: 3em;
-        padding: 1em 0.21em;
         margin: 0;
         font-weight: normal;
         color: #ffffff;
@@ -32,8 +37,10 @@
     
     .database-credits{
         display: block;
-        float: right;
-        width: 43.75em;
+        @media (min-width : 60em) {
+            float: right;
+            width: 43.75em;
+        }
         p{
             font-size: 0.875em;
         }
