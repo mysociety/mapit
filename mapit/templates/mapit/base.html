@@ -1,50 +1,64 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en-gb">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<title>{% block fulltitle %}{% block title %}{% endblock %} - MapIt{% endblock %}</title>
-<script src="http://www.openlayers.org/api/OpenLayers.js"></script>
-<link type="text/css" href="/static/mapit/css.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="imagetoolbar" content="false">
+    <meta name="description" content="Mapit: a web service that maps postcodes and geographical points to administrative areas.">
+
+    <title>{% block fulltitle %}{% block title %}{% endblock %} - Mapit{% endblock %}</title>
+
+    <link href="/static/mapit/css/mapit.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/mapit/leaflet/leaflet.css" />
+    <!--[if lte IE 8]>
+        <link rel="stylesheet" href="/static/mapit/leaflet/leaflet.ie.css" />
+        <script src="/static/mapit/js/html5shiv.min.js"></script>
+    <![endif]-->
+    <script src="/static/mapit/js/reqwest.min.js"></script>
+    <script src="/static/mapit/leaflet/leaflet.js"></script>
+
 {% if norobots %}
 <meta name="robots" content="noindex, follow">
 {% endif %}
 </head>
-<body>
+<body id="mapit-mysociety-org" class="">
 
-<div id="header" role="banner">
-<a href="http://www.mysociety.org/"><img id="logo" border=0 src="/static/mapit/mysociety_smT.png" alt="mySociety"></a>
+    <!-- mySociety top strip -->
+    <div id="mysociety-org-bar">
 
-<blockquote>
-&ldquo;Gentlemen, we can rebuild him. We have the technology. We can make him better than he was before. Better. Stronger. Faster.&rdquo;
-</blockquote>
+        <a class="mysociety-home-link" href="http://www.mysociety.org/">
+            <img src="/static/mapit/img/page-top-mysociety.png" alt="Mapit is a charitable project from mySociety" width="362" height="32">
+        </a>
 
-<h1>{{ request.META.HTTP_HOST|default:"MapIt" }}</h1>
-<span><a href="{% url mapit_index %}">Documentation</a></span>
-</div>
+        <a class="mysociety-donate-link" href="http://www.mysociety.org/donate/">
+            <img src="/static/mapit/img/page-top-donate.png" alt="Keep us online, Donate Now" width="160" height="32">
+        </a>
 
-<div id="content" role="main">
-{% block content %}
-{% endblock %}
-</div>
+    </div>
 
-<div id="footer" role="contentinfo">
-Built by Matthew Somerville. Pictures from Wikimedia Commons
-(<a href="http://commons.wikimedia.org/wiki/File:Liquid_filled_compass.jpg">background</a>).
-Hosted by M247.
-<br>
-<a href="http://www.djangoproject.com/"><img align="middle" src="http://media.djangopony.com/img/small/badge.png" border="0" alt="Django powered"></a>
+    {% if request.path != '/' %}
+    <header class="header">
+        <a class="docs_link" href="/"><img src="/static/mapit/img/home-icon.png" alt="" width="16" height="14" /> Home &amp; Documentation</a>
+        <h1><a href="/">Map<em>it</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
+    </header>
 
-<p>This database contains Ordnance Survey data © Crown copyright and database right 2010;
-<br>Royal Mail data © Royal Mail copyright and database right 2010 (Code-Point Open);
-<br>Office for National Statistics data © Crown copyright and database right 2010 (ONSPD) and © Crown copyright 2004 (Super Output Areas).
-<br>Great Britain non-SOA data may be used under the terms of the
-<a href="http://www.ordnancesurvey.co.uk/oswebsite/opendata/licence/">OS OpenData licence</a> (PDF).
-<br>Northern Ireland data may be used under the terms of the
-<a href="http://www.ons.gov.uk/ons/guide-method/geography/products/postcode-directories/-nspp-/onspd-open-licence.doc">ONSPD licence</a> (Word).
-<br>Super Output Area data may presumably be used under OS OpenData and the
-<a href="http://www.nationalarchives.gov.uk/doc/open-government-licence/open-government-licence.htm">Open Government Licence</a>.
+    <article class="content">
+    {% endif %}
+    {% block content %}
+    {% endblock %}
+    {% if request.path != '/' %}
+    </article>
+    {% endif %}
 
-</div>
+    <footer class="footer" role="contentinfo">
+        <h1>Map<em>it</em><em class="mapit-type">: {% include "mapit/country.html" %}</em>
+            <!-- <a href="http://www.djangoproject.com/"><img align="middle" src="http://media.djangopony.com/img/small/badge.png" border="0" alt="Django powered"></a> -->
+        </h1>
+
+        <div class="database-credits">
+            {% include "mapit/copyright.html" %}
+        </div>
+
+    </footer>
 
 </body>
 </html>

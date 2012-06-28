@@ -5,7 +5,8 @@
 {% block content %}
 
 <h2>{{ title|safe }}</h2>
-<a href="{{ json_url }}">JSON of this data</a>
+
+<p>Get <a href="{{ json_url }}">this data as JSON</a></p>
 
 {% include "mapit/areas.html" %}
 

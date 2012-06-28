@@ -1,0 +1,81 @@
+{% extends "mapit/base.html" %}
+
+{% block fulltitle %}
+    Mapit : map postcodes and geographical points to administrative areas
+{% endblock %}
+
+{% block content %}
+
+    <!-- Main header -->
+    <header class="header homepage">
+
+        <a class="mapit-cross-sell uk" href="http://mapit.mysociety.org/">
+            <img src="/static/mapit/img/uk-cross_sell.png" alt="also Available Mapit UK">
+        </a>
+
+        <h1>Map<em>it</em><em class="mapit-type">: Global</em></h1>
+
+        <p>Mapit is a service that maps geographical points to
+        administrative areas. It&rsquo;s useful for anyone who needs to turn a
+        longitude/latitude into the name or boundaries of a
+        council, constituency, region, or more. </p>
+
+        <p>Non-commercial, low-volume use of this service is free &ndash;
+        <a href="#usage-licence">read the licence</a>. You can also
+        <a href="https://github.com/mysociety/mapit">download the source
+         on Github</a>. Need a commercial licence?
+        <a href="http://www.mysociety.org/contact/">Get in touch</a>.</p>
+
+    </header>
+
+    <!-- Try out Mapit postcode bar -->
+    <div id="try-mapit">
+        <form method="post" action="/postcode/">
+            <label for="try-mapit-pc">Try it out, enter a long/lat:</label>
+            <input type="text" name="latlon" id="try-mapit-pc" value="51.5010096116, -0.14158706711">
+            <input class="btn" type="submit" value="Look up">
+        </form>
+    </div>
+
+    <article id="api-docs">
+
+        <header>
+
+            <h2>Mapit API</h2>
+
+            <nav class="toc">
+
+                <p>Lookups</p>
+                <ol>
+                    <li><a href="#api-by_point">by <strong>Point</strong></a></li>
+                    <li><a href="#api-by_area_id">by Area ID</a></li>
+                    <li><a href="#api-multiple_areas"><strong>Multiple Areas</strong></a></li>
+                    <li><a href="#api-generations"><strong>Generations</strong></a></li>
+                </ol>
+
+                <p>Information</p>
+                <ul>
+                    <li><a href="#about-mapit"><strong>About Mapit</strong></a></li>
+                    <li><a href="#usage-licence"><strong>Usage &amp; Licence</strong></a></li>
+                    <li><a href="http://github.com/mysociety/mapit/"><strong>Source Code</strong></a></li>
+                </ul>
+
+            </nav>
+
+        </header>
+
+
+         <section id="about-mapit">
+            <h3>About Mapit</h3>
+        </section>
+
+
+        <section id="usage-licence">
+            <h3>Usage &amp; Licence</h3>
+            <p>
+            </p>
+        </section>
+
+    </article>
+
+{% endblock %}

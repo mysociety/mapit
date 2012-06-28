@@ -1,12 +1,15 @@
-<ul>
+<ol class="area_list">
 {% for area in areas %}
-<li><a href="{% url mapit_index %}area/{{ area.id }}.html">{{ area.name }}</a> <small>(id {{ area.id }})</small>, {{ area.type.description }}
-    <small>({{ area.type.code }})</small>{% ifequal area.type.code 'EUR' %}, {{ area.country }}{% endifequal %}
-{% if area.parent_area %}
-<br><small>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></small>
-{% endif %}
+    <li>
+        <h3><a href="{% url mapit_index %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
+        <p>ID {{ area.id }}, {{ area.type.description }}
+            <small>({{ area.type.code }})</small>, {{ area.country }}</p>
+        {% if area.parent_area %}
+        <p>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></p>
+        {% endif %}
+    </li>
 {% empty %}
-<li>No matching areas found.
+    <li>No matching areas found.</li>
 {% endfor %}
-</ul>
+</ol>
 

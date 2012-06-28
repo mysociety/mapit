@@ -4,72 +4,94 @@
 
 {% block content %}
 
-<h2>{{ area.name }}</h2>
-<a href="{% url mapit_index %}area/{{ area.id }}">JSON of this data</a>
+    <header class="area_info">
+        <h2>{{ area.name }} <em class="area_id">ID {{ area.id }}</em></h2>
+        <ul>
+            <li>Type: {{ area.type.description }} <small>({{ area.type.code }})</small></li>
+            <li>Exists in generations: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
+            <li>Country: {{ area.country }}</li>
+            {% if area.parent_area %}
+            <li>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
+            {% endif %}
+            {% if area.polygons.count or area.postcodes.count %}
+            <li><a href="{% url mapit_index %}area/{{ area.id }}/example_postcode.html">Example postcode</a></li>
+            {% endif %}
+            {% if area.children.count %}
+            <li><a href="{% url mapit_index %}area/{{ area.id }}/children.html">Children</a></li>
+            {% endif %}
+        </ul>
+        <p>Get <a href="{% url mapit_index %}area/{{ area.id }}">this data as JSON</a></p>
+    </header>
 
 {% if area.polygons.count and show_geometry %}
-<div id="mapBox"><div id="map"></div></div>
+<div id="map"></div>
 <script>
-    var map = new OpenLayers.Map("map");
-    map.addLayer(new OpenLayers.Layer.OSM());
-    var area = new OpenLayers.Layer.Vector("KML", {
-        strategies: [ new OpenLayers.Strategy.Fixed() ],
-        protocol: new OpenLayers.Protocol.HTTP({
-            url: "{% url mapit_index %}area/{{ area.id }}.kml?simplify_tolerance=0.0001",
-            format: new OpenLayers.Format.KML()
-        })
+    var map = new L.Map("map");
+    var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors',
+        maxZoom: 18
     });
-    map.addLayer(area);
-    area.events.register('loadend', null, function(a,b,c) {
-    	map.zoomToExtent(area.getDataExtent());
+    map.addLayer(osm);
+
+    reqwest({
+        url: "{% url mapit_index %}area/{{ area.id }}.geojson?simplify_tolerance=0.0001",
+        type: 'json',
+        success: function(data) {
+            var area = new L.GeoJSON(data);
+            map.addLayer(area);
+
+            var bounds;
+            area._iterateLayers(function (layer) {
+                bounds = layer.getBounds();
+            }, area);
+            map.fitBounds(bounds);
+        }
     });
 
 </script>
 {% endif %}
 
-<p>ID {{ area.id }},
-generations {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }},
-type {{ area.type.description }} <small>({{ area.type.code }})</small>,
-{{ area.country }}.
-{% if area.parent_area %}
-A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.
-{% endif %}
-</p>
-
-<p>
-{% if area.polygons.count or area.postcodes.count %}
-<a href="{% url mapit_index %}area/{{ area.id }}/example_postcode.html">Example postcode</a>
-{% endif %}
+    <section class="details">
+        <ul>
+            <li>
 {% if area.polygons.count and show_geometry %}
-| <a href="{% url mapit_index %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a>
-| <a href="{% url mapit_index %}area/{{ area.id }}.wkt">WKT</a>,
-<a href="{% url mapit_index %}area/{{ area.id }}.geojson">GeoJSON</a>,
-<a href="{% url mapit_index %}area/{{ area.id }}.kml">KML</a>
-(<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url mapit_index %}area/{{ area.id }}.kml">on a Google Map</a>)
+                <h3>Geometry:</h3>
+                <ul>
+                    <li><a href="{% url mapit_index %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a></li>
+                    <li><a href="{% url mapit_index %}area/{{ area.id }}.wkt">WKT</a></li>
+                    <li><a href="{% url mapit_index %}area/{{ area.id }}.geojson">GeoJSON</a></li>
+                    <li><a href="{% url mapit_index %}area/{{ area.id }}.kml">KML</a>
+                    (<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url mapit_index %}area/{{ area.id }}.kml">on a Google Map</a>)</li>
+                </ul>
 {% endif %}
-{% if area.children.count %}
-| <a href="{% url mapit_index %}area/{{ area.id }}/children.html">Children</a>
-{% endif %}
+            </li>
+            <li>
 {% if area.polygons.count and show_geometry %}
-<br>Areas: <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html">Touching</a>
-| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html">Overlapping</a>
-| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html">Covered</a>
-| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covered by</a>
-| <a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html">Covered or overlapping</a>
+                <h3>Areas:</h3>
+                <ul>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html">Touching this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html">Overlapping this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covering this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html">Covered by this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html">Covered by or overlapping this area</a></li>
+                </ul>
 {% endif %}
-
-<h3>Codes</h3>
-
-<ul>
+            </li>
+            <li>
+                <h3>Codes:</h3>
+                <ul>
 {% for type, code in area.all_codes.items %}
 <li>{{ type }}: {% ifequal type.code 'osm' %}
 <a href="http://www.openstreetmap.org/browse/relation/{{ code }}">{{ code }}</a>
 {% else %}
 {{ code }}
 {% endifequal %}
+</li>
 {% empty %}
-<li>No codes found.
+<li>No codes found.</li>
 {% endfor %}
-</ul>
+                </ul>
+
+    </section>
 
 {% endblock %}

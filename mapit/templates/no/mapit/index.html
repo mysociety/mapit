@@ -1,58 +1,78 @@
 {% extends "mapit/base.html" %}
 
-{% block fulltitle %}MapIt{% endblock %}
+{% block fulltitle %}
+    Mapit : map postcodes and geographical points to administrative areas
+{% endblock %}
 
 {% block content %}
 
-<p>MapIt is a database and web service that maps points to
-administrative area information and polygons for Norway (see
-<a href="http://mapit.mysociety.org/">the UK version</a>). The source code is
-<a href="http://github.com/mysociety/mapit">available on GitHub</a>.
+    <!-- Main header -->
+    <header class="header homepage">
+
+        <a class="mapit-cross-sell uk" href="http://mapit.mysociety.org/">
+            <img src="/static/mapit/img/uk-cross_sell.png" alt="also Available Mapit UK">
+        </a>
+
+        <h1>Map<em>it</em><em class="mapit-type">: Norway</em></h1>
+
+        <p>Mapit is a service that maps postcodes and geographical points to
+        administrative areas in Norway. It&rsquo;s useful for anyone who needs to turn a
+        postcode or longitude/latitude into the name or boundaries of a
+        fylke, kommune, or more.</p>
+
+        <p>Non-commercial, low-volume use of this service is free &ndash;
+        <a href="#usage-licence">read the licence</a>. You can also
+        <a href="https://github.com/mysociety/mapit">download the source
+         on Github</a>. Need a commercial licence?
+        <a href="http://www.mysociety.org/contact/">Get in touch</a>.</p>
 
 <p id="donate">NUUG is a member organisation for people interested in free
 software, open standards and UNIX-like operating systems. Please
 <a href="http://www.nuug.no/innmelding.shtml">become a member</a> if you want
 to keep NUUG going.
-<br>mySociety is run by a registered charity &ndash; please
-<a href="http://www.mysociety.org/donate/">donate</a> to help keep mySociety going and
-to be able to continue to do things like this!</p>
 
-<p><form method="post" action="/postcode/">
-    <label for="pc">Postcode:</label>
-    <input type="text" name="pc" id="pc" size="8">
-    <input type="submit" value="Go">
-</form></p>
+    </header>
 
-<p>This site is filled with only open data, so you can be secure that
-you can reuse the data from this site under the minimal terms of the
-licences given below. It is based on Kommune and Fylkes area info from
-<a href="http://www.openstreetmap.org/">OpenStreetMap</a> and
-Norwegian post code coordinates from
-<a href="http://www.erikbolstad.no/geo/">Erik Bolstad</a>.
+    <!-- Try out Mapit postcode bar -->
+    <div id="try-mapit">
+        <form method="post" action="/postcode/">
+            <label for="try-mapit-pc">Try it out, enter a postcode:</label>
+            <input type="text" name="pc" id="try-mapit-pc">
+            <input class="btn" type="submit" value="Look up">
+        </form>
+    </div>
 
-<p id="copyright">This database contains OpenStreetMap data &copy;
-<a href="http://www.openstreetmap.org/">OpenStreetMap</a> and contributors,
-<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA-2.0</a>.
-The post code coordinate data is &copy; Erik Bolstad
-(<a href="http://creativecommons.org/licenses/by/3.0/">CC-BY-3.0</a>)</p>
+    <article id="api-docs">
 
-<h2>API</h2>
+        <header>
 
-<p>Non-commercial, low-volume use of this service is free. You will need to attribute
-data sources as per their licenses, and please do attribute us too :) For commercial or
-high-volume usage, please <a href="http://www.mysociety.org/contact/">contact us</a>
-about using the service, by licensing or by helping you install your own version.</p>
+            <h2>Mapit API</h2>
 
-<p>All calls below are made to http://{{ request.META.HTTP_HOST }}/ and return JSON
-(on some calls, stick .html on the end for an HTML version). By default, calls
-will return active areas; for some calls you may specify a previous generation
-to look up instead.
+            <nav class="toc">
 
-Whenever an area is returned from MapIt, it is as a dictionary with the
-following keys: id, name, country, type, parent_area, generation_low,
-generation_high, codes.</p>
+                <p>Lookups</p>
+                <ol>
+                    <li><a href="#api-by_postcode">by <strong>Postcode</strong></a></li>
+                    <li><a href="#api-by_partial_postcode">by <strong>Partial Postcode</strong></a></li>
+                    <li><a href="#api-by_point">by <strong>Point</strong></a></li>
+                    <li><a href="#api-by_area_id">by Area ID</a></li>
+                    <li><a href="#api-multiple_areas"><strong>Multiple Areas</strong></a></li>
+                    <li><a href="#api-generations"><strong>Generations</strong></a></li>
+                </ol>
 
-<div id="col1">
+                <p>Information</p>
+                <ul>
+                    <li><a href="#about-mapit"><strong>About Mapit</strong></a></li>
+                    <li><a href="#usage-licence"><strong>Usage &amp; Licence</strong></a></li>
+                    <li><a href="http://github.com/mysociety/mapit/"><strong>Source Code</strong></a></li>
+                </ul>
+
+            </nav>
+
+        </header>
+
+        <section>
+
 <h3>By postcode</h3>
 
 <ul>
@@ -104,9 +124,6 @@ areas starting &ldquo;As&rdquo;</a>.
 <ul>
 <li>/generations &ndash; return a list of all generations.
 </ul>
-
-</div>
-<div id="col2">
 
 <h3>By point</h3>
 
@@ -161,6 +178,28 @@ You can specify a simplify_tolerance parameter to return a simplified polygon.
 
 </ul>
 
-</div>
+</section>
+
+         <section id="about-mapit">
+            <h3>About Mapit</h3>
+<p>All calls below are made to http://{{ request.META.HTTP_HOST }}/ and return JSON
+(on some calls, stick .html on the end for an HTML version). By default, calls
+will return active areas; for some calls you may specify a previous generation
+to look up instead.
+
+Whenever an area is returned from Mapit, it is as a dictionary with the
+following keys: id, name, country, type, parent_area, generation_low,
+generation_high, codes.</p>
+
+        </section>
+
+
+        <section id="usage-licence">
+            <h3>Usage &amp; Licence</h3>
+            <p>
+            </p>
+        </section>
+
+</article>
 
 {% endblock %}

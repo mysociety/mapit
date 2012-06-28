@@ -1,6 +1,26 @@
-a{
+a {
     color: #336699;
-    &:hover{
+    &:hover {
         color: #4b89c6;
     }
+}
+
+h1 {
+    font-family: 'MuseoSlab500', sans-serif;
+    font-size: 3em;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+h2 {
+    font-family: 'MuseoSlab500', sans-serif;
+    font-size: 1.875em;
+    font-weight: normal;
+    color: #333;
+}
+
+h3 {
+    font-family: 'MuseoSlab500', sans-serif;
+    font-weight: normal;
+    color: #333;
 }

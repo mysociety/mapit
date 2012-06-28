@@ -24,12 +24,10 @@
         background-color: #333333;
         color: #fff;
         
-        h2{
-            font-size: 1.875em;
-            font-family: 'MuseoSlab500', sans-serif;
-            font-weight: normal;
+        h2 {
+            color: #fff;
         }
-        
+
         a{
             color: #fff;
             text-decoration: none;
@@ -71,10 +69,7 @@
         }
         
         h3{
-            font-family: 'MuseoSlab500', sans-serif;
-            font-weight: normal;
             font-size: 1.5em;
-            color: #333;
             padding: 0.4em;
             @media (min-width : 60em) {
                 width: 10em;

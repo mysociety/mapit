@@ -7,67 +7,38 @@ $indentation: 2.5%; // ~ 10px
 // Full width of list
 $list_width: 33.75em;
 
-.area_list{
+.area_list {
     
-    @include full_grid;
-    @include clearfix;
-    padding: 0.625em;
-    padding-bottom: 2.5em;
+    @include resetlist;
+    display: block;
+    width: $list_width;
+    max-width: 100%;
     
-    h2{
-        font-size: 1.875em;
-        font-family: 'MuseoSlab500', sans-serif;
-        color: #333;
-        font-weight: normal;
-        
-        .area_id{
-            font-style: normal;
-            color: #666666;
-            font-size: 0.5em;
-            font-weight: bold;
-            font-family: 'Verdana', sans-serif;
-        }
-    }
-    
-    ol{
-        @include resetlist;
+    li {
         display: block;
-        width: $list_width;
-        max-width: 100%;
+        background-color: #e5e5e5;
+        padding: 0.625em;
+        @include border-radius(0.625em);
+        margin-bottom: 0.625em;
         
-        li{
-            display: block;
-            background-color: #e5e5e5;
-            padding: 0.625em;
-            @include border-radius(0.625em);
-            margin-bottom: 0.625em;
-            
-            h3{
-                margin: 0;
-                font-size: 1.125em;
-                font-family: 'MuseoSlab500', sans-serif;
-                font-weight: normal;
-            }
-            p{
-                margin: 0;
-                font-size: 0.75em;
-                color: #666666;
-            }
+        h3 {
+            margin: 0;
+            font-size: 1.125em;
+        }
+        p {
+            margin: 0;
+            font-size: 0.75em;
+            color: #666666;
         }
     }
-    
-    
 }
-
-
-
-
+    
 // Creates area_level_1 to area_level_10
 // optionally add to list items to add indentation suggesting hierarchy
 
 @while $area_level > 0 {
         
-    .area_list ol > li.area_level_#{$area_level} {
+    .area_list > li.area_level_#{$area_level} {
         $area_level: $area_level - 1;
         margin-left: $indentation * $area_level;
         width: 100% - ($indentation * $area_level);
