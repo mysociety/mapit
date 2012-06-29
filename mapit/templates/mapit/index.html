@@ -21,20 +21,30 @@
 
 <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></h1>
 
-<p>MapIt is a service that maps
-{% if country == 'GB' %}UK postcodes and
-{% else %}{% if country == 'NO' %}postcodes and
-{% endif %}{% endif %}
-        geographical points to
-        administrative areas. It&rsquo;s useful for anyone who needs to turn a
-        longitude/latitude {% if country == 'GB' %} or a postcode {% endif %}
-        into the name or boundaries of a
-        {% if country == 'NO' %}
-        fylke, kommune,
-        {% else %}
-        council, constituency, region,
-        {% endif %}
-        or more. </p>
+<p>
+{% if country == 'GB' %}
+MapIt is a service that maps UK postcodes and geographical points to
+administrative areas. It&rsquo;s useful for anyone who has a postcode or
+co-ordinates of a point in the UK, and needs to find out what region,
+constituency, or council it lies within. It&rsquo;s also great for looking up
+the shapes of all those boundaries.
+{% endif %}
+{% if country == 'NO' %}
+MapIt is a service that maps postcodes and geographical points to
+administrative areas. It&rsquo;s useful for anyone who has a postcode or
+co-ordinates of a point in Norway, and needs to find out what fylke,
+kommune, or more it lies within. It&rsquo;s also great for looking up
+the shapes of all those boundaries.
+{% endif %}
+{% if country == 'Global' %}
+MapIt is a service that maps geographical points to administrative areas.
+It&rsquo;s useful for anyone who has the co-ordinates of a point on Earth, and
+who needs to find out what country, region, city, constituency, or state it
+lies within. It&rsquo;s also great for looking up the shapes of all those
+boundaries. The source data is from the totally amazing
+<a href="http://www.openstreetmap.org/">OpenStreetMap</a>.
+{% endif %}
+</p>
 
         <p>Non-commercial, low-volume use of this service is free &ndash;
         <a href="#usage-licence">read more</a>.<br>You can
