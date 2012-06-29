@@ -23,9 +23,9 @@
         council, constituency, region, or more. </p>
 
         <p>Non-commercial, low-volume use of this service is free &ndash;
-        <a href="#usage-licence">read the licence</a>. You can also
+        <a href="#usage-licence">read more</a>.<br>You can
         <a href="https://github.com/mysociety/mapit">download the source
-         on Github</a>. Need a commercial licence?
+        on Github</a>.<br>Need a commercial licence?
         <a href="http://www.mysociety.org/contact/">Get in touch</a>.</p>
 
     </header>
@@ -49,19 +49,22 @@
 
                 <p>Lookups</p>
                 <ol>
-                    <li><a href="#api-by_postcode">by <strong>Postcode</strong></a></li>
-                    <li><a href="#api-by_partial_postcode">by <strong>Partial Postcode</strong></a></li>
-                    <li><a href="#api-by_point">by <strong>Point</strong></a></li>
-                    <li><a href="#api-by_area_id">by Area ID</a></li>
-                    <li><a href="#api-multiple_areas"><strong>Multiple Areas</strong></a></li>
-                    <li><a href="#api-generations"><strong>Generations</strong></a></li>
+                    <li><a href="#api-by_postcode">Postcode</a></li>
+                    <li><a href="#api-by_partial_postcode">Partial postcode</a></li>
+                    <li><a href="#api-by_point">Point</a></li>
+                    <li><a href="#api-nearest">Nearest postcode</a></li>
+                    <li><a href="#api-by_area_id">Area</a></li>
+                    <li><a href="#api-related_areas">Related areas</a></li>
+                    <li><a href="#api-multiple_areas">Multiple areas</a></li>
+                    <li><a href="#api-generations">Generations</a></li>
                 </ol>
 
                 <p>Information</p>
                 <ul>
-                    <li><a href="#about-mapit"><strong>About MapIt</strong></a></li>
-                    <li><a href="#usage-licence"><strong>Usage &amp; Licence</strong></a></li>
-                    <li><a href="http://github.com/mysociety/mapit/"><strong>Source Code</strong></a></li>
+                    <li><a href="#general">General information</a></li>
+                    <li><a href="#about-mapit">About MapIt</a></li>
+                    <li><a href="#usage-licence">Usage &amp; licence</a></li>
+                    <li><a href="https://github.com/mysociety/mapit">Source code</a></li>
                 </ul>
 
             </nav>
@@ -109,45 +112,257 @@
 
                 <dt>Returns:</dt>
                 <dd>
-                    <p>The same as <a href="#api-by_postcode">by Postcode</a> except information is based on the centroid of a postcode band rather than a specific address.</p>
+                    <p>Geographical details for the centroid of the partial postcode specified.</p>
                 </dd>
 
                 <dt>Example:</dt>
                 <dd>
-                    <p>If your postcode was <em>SW1A 1AA</em> you would load <br>
-                        <a href="{% url mapit_index %}postcode/SW1A1AA">/postcode/SW1A1AA</a>
-                    </p>
-                    <p>
-                        By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url <br>
-                        <a href="{% url mapit_index %}postcode/SW1A1AA.html">/postcode/SW1A1AA.html</a>
-                    </p>
+                    <ul>
+                        <li>JSON: <a href="{% url mapit_index %}postcode/partial/SW1A">/postcode/partial/SW1A</a>
+                        <li>HTML: <a href="{% url mapit_index %}postcode/partial/SW1A.html">/postcode/partial/SW1A.html</a>
+                    </ul>
                 </dd>
+            </dl>
+        </section>
+
+        <section id="api-by_point">
+            <h3><em>lookup by</em> point</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i></li>
+                    <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box</li>
+                </ul>
+                <dt>Parameters:</dt>
+                <dd>
+                <p><i>SRID</i> is a unique number referring to a particular
+                co-ordinate system; the ones you probably are interested in are
+                27700 for British National Grid, 4326 for WGS84 lon/lat, and
+                29902 for the Irish National Grid.</p>
+                <p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-ordinate
+                system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>
+                </dd>
+                <dt>Optional query parameters:</dt>
+                <dd>
+        <ul>
+            <li><i>type</i>, to restrict results to a particular area type or types (multiple types separated by commas);
+            <li><i>generation</i>, to return results for a previous generation.
+        </ul>
+                </dd>
+
+                <dt>Returns:</dt>
+                <dd>
+                <p>A hash of the areas that the point is contained within. If
+                the /box version is used, only the area bounding boxes are
+                considered.
+                </p>
+
+                <dt>Example:</dt>
+                <dd>
+                    <a href="{% url mapit_index %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.
+                </dd>
+            </dl>
+        </section>
+
+        <section id="api-nearest">
+            <h3><em>lookup</em>nearest postcode</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd> /nearest/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> </dd>
+                <dt>Parameters:</dt>
+                <dd>Same as for <a href="#api-by_point">by point</a>.</dd>
+                <dt>Returns:</dt>
+                <dd>The postcode closest to the particular point.
+                <dt>Example</dt>
+                <dd>
+                    <a href="{% url mapit_index %}nearest/27700/400000,300000.html">Example of postcode nearest to (400000,300000)</a>.
+                </dd>
+            </dl>
+        </section>
+
+        <section id="api-by_area_id">
+            <h3><em>lookup</em> by area</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    <li>/area/<i>[area ID or ONS code]</i>
+                    <li>/area/<i>[area ID]</i>/example_postcode
+                    <li>/area/<i>[area ID]</i>/geometry
+                    <li>/area/<i>[area ID]</i>.<i>[kml or geojson or wkt]</i>
+                    <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml or json or wkt]</i>
+                </ul></dd>
+                <dt>Optional query parameters:</dt>
+                <dd><i>simplify_tolerance</i>, a floating point parameter to simplify the polygons returned.</dd>
+                <dt>Returns:</dt>
+                <dd>Information on a particular area, including name, type, parent, and any associated codes
+                (see <a href="#general">below for details</a>).
+                example_postcode returns a random postcode within the area specified.
+                geometry returns centroid, extent and area of the area.
+                </dd>
+                <dt>Examples:</dt>
+                <dd><ul>
+                    <li>Information held on Birmingham City Council:
+                    <a href="{% url mapit_index %}area/2514.html">/area/2514.html</a>
+                    <li>An example postcode in Birmingham City Council:
+                    <a href="{% url mapit_index %}area/2514/example_postcode.html">/area/2514/example_postcode.html</a>
+                    <li>A KML file of the Isle of Wight Council:
+                    <a href="{% url mapit_index %}area/2636.kml">/area/2636.kml</a>
+                    (on a <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/2636.kml">Google Map</a>)
+                </ul></dd>
+
+            </dl>
+
+            </section>
+            <section id="api-related_areas">
+
+            <h3><em>lookup</em> related areas</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    <li>/area/<i>[area ID]</i>/children
+                    <li>/area/<i>[area ID]</i>/touches
+                    <li>/area/<i>[area ID]</i>/overlaps
+                    <li>/area/<i>[area ID]</i>/covers
+                    <li>/area/<i>[area ID]</i>/covered
+                    <li>/area/<i>[area ID]</i>/coverlaps
+                </ul></dd>
+                <dt>Optional query parameters:</dt>
+                <dd><i>type</i>, to restrict results to a particular type or types.
+                <dt>Returns:</dt>
+                <dd>A hash of areas that match the requested lookup.
+                <dt>Examples:</dt>
+                <dd><ul>
+                    <li>All electoral divisions of a county council:
+                    <a href="{% url mapit_index %}area/2236/children.html">/area/2236/children.html</a>
+                    <li>All the constituencies touching Witney:
+                    <a rel="nofollow" href="{% url mapit_index %}area/65622/touches.html?type=WMC">/area/65622/touches.html?type=WMC</a>
+                    <li>All areas overlapping Barking and Dagenham council:
+                    <a rel="nofollow" href="{% url mapit_index %}area/2511/overlaps.html">/area/2511/overlaps.html</a>
+                    <li>All parish councils covered by Witney:
+                    <a rel="nofollow" href="{% url mapit_index %}area/65622/covers.html?type=CPC">/area/65622/covers.html?type=CPC</a>
+                    <li>All areas covering Witney:
+                    <a rel="nofollow" href="{% url mapit_index %}area/65622/covered.html">/area/65622/covered.html</a>
+                    <li>All constituencies covered by or overlapping Barking and Dagenham:
+                    <a rel="nofollow" href="{% url mapit_index %}area/2511/coverlaps.html?type=WMC">/area/2511/coverlaps.html?type=WMC</a>
+                </ul></dd>
+            </dl>
+        </section>
+
+    <section id="api-multiple_areas">
+        <h3><em>lookup</em> multiple areas</h3>
+        <dl>
+            <dt>URL:</dt>
+            <dd><ul>
+                <li>/areas/<i>[area IDs]</i>
+                <li>/areas/<i>[area IDs]</i>/geometry
+                <li>/areas/<i>[type(s)]</i>
+                <li>/areas/<i>[name prefix]</i>
+            </ul></dd>
+            <dt>Parameters:</dt>
+            <dd>Separate multiple parameters with commas.
+            Name prefix means it will return any area that starts with the string given.
+            The current area types are:
+         <small>CTY (county council), CED (county ward), COI (Isles of Scilly), COP (Isles of Scilly parish),
+             CPC (civil parish), DIS (district council), DIW (district ward), EUR (Euro region),
+             GLA (London Assembly), LAC (London Assembly constituency), LBO (London borough),
+             LBW (London ward), LGD (NI council), LGE (NI electoral area), LGW (NI ward),
+             MTD (Metropolitan district), MTW (Metropolitan ward), NIE (NI Assembly constituency),
+             OLF (Lower Layer Super Output Area, Full), OLG (Lower Layer Super Output Area, Generalised),
+             OMF (Middle Layer Super Output Area, Full), OMG (Middle Layer Super Output Area, Generalised),
+             SPC (Scottish Parliament constituency), SPE (Scottish Parliament region),
+             UTA (Unitary authority), UTE (Unitary authority electoral division),
+             UTW (Unitary authority ward), WAC (Welsh Assembly constituency),
+             WAE (Welsh Assembly region), WMC (UK Parliamentary constituency)</small>.
+            </dd>
+            <dt>Optional query parameters:</dt>
+            <dd><ul>
+                <li><i>min_generation</i>, to return areas since that generation (type and name lookups only).</li>
+                <li><i>type</i>, to restrict results to a type or types (multiple separated by commas; name lookup only).</li>
+            </ul></dd>
+
+            <dt>Returns:</dt>
+            <dd>
+            <p>Information on multiple areas that match the parameters provided, as a dictionary indexed by area ID.
+            The geometry argument lets you fetch multiple single area geometry results at once.
+            </p>
+            </dd>
+            <dt>Examples:</dt>
+            <dd><ul>
+                <li>All areas starting &ldquo;Bourn&rdquo;: <a href="{% url mapit_index %}areas/Bourn.html">/areas/Bourn.html</a>
+                <li>Information on areas 2636 and 2637: <a href="{% url mapit_index %}areas/2636,2637.html">/areas/2636,2637.html</a>
+                <li>All county council (CTY) areas: <a href="{% url mapit_index %}areas/CTY.html">/areas/CTY.html</a>
+            </ul></dd>
+        </dl>
+    </section>
+
+    <section id="api-generations">
+        <h3>Generations</h3>
+        <dl>
+            <dt>URL:</dt>
+            <dd>/generations</dd>
+            <dt>Returns:</dt>
+            <dd>A list of all generations. Note that only generations from 12
+            upwards actually exist, apart from some council names in generation
+            10 in order for
+            <a href="http://www.fixmystreet.com/">FixMyStreet</a> to show
+            expired councils on its All Reports page.
+        </dl>
+    </section>
+
+        <section id="general">
+            <h3>General information</h3>
+            <dl>
+                <dt>Format</dt>
+                <dd>
+                <p>All calls return JSON, you can generally get an HTML representation
+                by sticking .html on the end.</p>
+                <p>Whenever an area is returned from MapIt, it is as a
+                dictionary with the following keys: id, name, country, type,
+                parent_area, generation_low, generation_high, codes.</p>
+                </dd>
+                <dt>Historical areas</dt>
+                <dd>By default, calls will return active areas; for some calls
+                you may specify a previous generation to look up instead. The
+                main difference in generation 12 is that it contains the
+                pre-2010 England and Wales Parliamentary constituencies;
+                generation 14 contains the pre-2011 Scottish Parliament
+                constituencies. Only current Northern Ireland constituencies
+                are present; if you need pre-2010 UK Parliament NI
+                constituencies, or pre-2011 Northern Ireland Assembly
+                constituencies, you can work it out from the wards and the 2003
+                SNAC file in the data/ directory.
+
             </dl>
         </section>
 
         <section id="about-mapit">
             <h3>About MapIt</h3>
-
-            <p>All calls below are made to http://mapit.mysociety.org/ and return JSON
-            (on some calls, stick .html on the end for an HTML version). By default, calls
-            will return active areas; for some calls you may specify a previous generation
-            to look up instead. The main difference in generation 12 is that it contains
-            the pre-2010 England and Wales Parliamentary constituencies; generation 14
-            contains the pre-2011 Scottish Parliament constituencies. Only current Northern
-            Ireland constituencies are present; if you need pre-2010 UK Parliament NI
-            constituencies, or pre-2011 Northern Ireland Assembly constituencies, you can
-            work it out from the wards and the 2003 SNAC file in the data/ directory.
-
-            Whenever an area is returned from MapIt, it is as a dictionary with the
-            following keys: id, name, country, type, parent_area, generation_low,
-            generation_high, codes.</p>
-
+            <p>MapIt was written back in 2003 as a postcode lookup to power the
+            original <a href="http://www.mysociety.org/">mySociety</a> sites
+            such as <a href="http://www.writetothem.com/">WriteToThem</a>. Over
+            time it gained features such as point lookup (for <a
+                href="http://www.fixmystreet.com/">FixMyStreet</a>), and when
+            Ordnance Survey data became freely available in 2010, it was
+            rewritten and made public. Versions have appeard in other countries,
+            such as <a href="http://mapit.nuug.no/">Norway</a>, and in 2012 we
+            released a <a href="">global version</a> based on OpenStreetMap data.</p>
         </section>
 
         <section id="usage-licence">
             <h3>Usage &amp; Licence</h3>
-            <p>
+
+            <p>As a charity, we can only provide this service on a non-commercial basis.
+            Any commercial use must be paid for, to prevent us being seen as subsidizing
+            commercial activity. We also use this service for all our own services, so
+            cannot provide the service as-is to someone wanting to make a million lookups
+            a day. In both those cases, please <a
+                href="http://www.mysociety.org/contact/">get in touch</a> so we can discuss
+            how we can provide you with the service you require.
             </p>
+
+        <p>Any use of this service will require attribution of OS/RM/ONS as per
+        their licences, and please do attribute us too.</p>
+
         </section>
 
     </article>

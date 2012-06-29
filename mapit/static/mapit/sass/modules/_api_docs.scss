@@ -114,10 +114,6 @@
             a{
                 color: #333;
                 font-weight: bold;
-                text-decoration: none;
-                &:hover{
-                    text-decoration: underline;
-                }
             }
             
         }
@@ -135,12 +131,16 @@
     
     
     a[href="#api-by_point"]:hover,
-    #api-by_point dt
+    #api-by_point dt,
+    a[href="#api-nearest"]:hover,
+    #api-nearest dt
     { color: #33ccbf; }
     
     
     a[href="#api-by_area_id"]:hover,
-    #api-by_area_id dt
+    #api-by_area_id dt,
+    a[href="#api-related_areas"]:hover,
+    #api-related_areas dt
     { color: #3369cc; }
     
     
