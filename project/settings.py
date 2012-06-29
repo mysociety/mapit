@@ -159,11 +159,13 @@ if django.get_version() >= '1.2':
     TEMPLATE_CONTEXT_PROCESSORS = (
         'django.core.context_processors.request',
         'django.contrib.auth.context_processors.auth',
+        'mapit.context_processors.country',
     )
 else:
     TEMPLATE_CONTEXT_PROCESSORS = (
         'django.core.context_processors.request',
         'django.core.context_processors.auth',
+        'mapit.context_processors.country',
         #'django.core.context_processors.debug',
         #'django.core.context_processors.i18n',
         #'django.core.context_processors.media',

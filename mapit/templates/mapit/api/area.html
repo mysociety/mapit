@@ -1,0 +1,125 @@
+        <section id="api-by_area_id">
+            <h3><em>lookup</em> by area</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    {% if country == 'GB' %}
+                    <li>/area/<i>[area ID or ONS code]</i>
+                    {% else %}
+                    <li>/area/<i>[area ID]</i>
+                    {% endif %}
+                    {% ifnotequal country 'Global' %}
+                    <li>/area/<i>[area ID]</i>/example_postcode
+                    {% endifnotequal %}
+                    <li>/area/<i>[area ID]</i>/geometry
+                    <li>/area/<i>[area ID]</i>.<i>[kml or geojson or wkt]</i>
+                    <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml or json or wkt]</i>
+                </ul></dd>
+                <dt>Optional query parameters:</dt>
+                <dd><i>simplify_tolerance</i>, a floating point parameter to simplify the polygons returned.</dd>
+                <dt>Returns:</dt>
+                <dd>Information on a particular area, including name, type, parent, and any associated codes
+                (see <a href="#general">below for details</a>).
+                {% ifnotequal country 'Global' %}
+                example_postcode returns a random postcode within the area specified.
+                {% endifnotequal %}
+                geometry returns centroid, extent and area of the area.
+                </dd>
+                <dt>Examples:</dt>
+                <dd>
+{% if country == 'GB' %}
+<ul>
+    <li>Information held on Birmingham City Council:
+    <a href="{% url mapit_index %}area/2514.html">/area/2514.html</a>
+    <li>An example postcode in Birmingham City Council:
+    <a href="{% url mapit_index %}area/2514/example_postcode.html">/area/2514/example_postcode.html</a>
+    <li>A KML file of the Isle of Wight Council:
+    <a href="{% url mapit_index %}area/2636.kml">/area/2636.kml</a>
+    (on a <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/2636.kml">Google Map</a>)
+</ul>
+{% endif %}
+{% if country == 'NO' %}
+<ul>
+    <li>Information held on an individual area:
+    <a href="{% url mapit_index %}area/1811.html">/area/1811.html</a>
+    <li>A KML file of an area:
+    <a href="{% url mapit_index %}area/118.kml">/area/118.kml</a>
+    (on a <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">Google Map</a>)
+</ul>
+{% endif %}
+{% if country == 'Global' %}
+<ul>
+    <li>Information held on Paris:
+    <a href="{% url mapit_index %}area/29746.html">/area/29746.html</a>
+    <li>A KML file of Paris:
+    <a href="{% url mapit_index %}area/29746.kml">/area/29746.kml</a>
+    (on a <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/29746.kml">Google Map</a>)
+</ul>
+{% endif %}
+                </dd>
+            </dl>
+
+        </section>
+        <section id="api-related_areas">
+
+            <h3><em>lookup</em> related areas</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    <li>/area/<i>[area ID]</i>/children
+                    <li>/area/<i>[area ID]</i>/touches
+{% if country != 'NO' %}
+                    <li>/area/<i>[area ID]</i>/overlaps
+                    <li>/area/<i>[area ID]</i>/covers
+                    <li>/area/<i>[area ID]</i>/covered
+                    <li>/area/<i>[area ID]</i>/coverlaps
+{% endif %}
+                </ul></dd>
+                <dt>Optional query parameters:</dt>
+                <dd><i>type</i>, to restrict results to a particular type or types.
+                <dt>Returns:</dt>
+                <dd>A hash of areas that match the requested lookup.
+                <dt>Examples:</dt>
+                <dd>
+{% if country == 'GB' %}
+<ul>
+    <li>All electoral divisions of a county council:
+    <a href="{% url mapit_index %}area/2236/children.html">/area/2236/children.html</a>
+    <li>All the constituencies touching Witney:
+    <a rel="nofollow" href="{% url mapit_index %}area/65622/touches.html?type=WMC">/area/65622/touches.html?type=WMC</a>
+    <li>All areas overlapping Barking and Dagenham council:
+    <a rel="nofollow" href="{% url mapit_index %}area/2511/overlaps.html">/area/2511/overlaps.html</a>
+    <li>All parish councils covered by Witney:
+    <a rel="nofollow" href="{% url mapit_index %}area/65622/covers.html?type=CPC">/area/65622/covers.html?type=CPC</a>
+    <li>All areas covering Witney:
+    <a rel="nofollow" href="{% url mapit_index %}area/65622/covered.html">/area/65622/covered.html</a>
+    <li>All constituencies covered by or overlapping Barking and Dagenham:
+    <a rel="nofollow" href="{% url mapit_index %}area/2511/coverlaps.html?type=WMC">/area/2511/coverlaps.html?type=WMC</a>
+</ul>
+{% endif %}
+{% if country == 'NO' %}
+<ul>
+    <li>All kommune with Akershus: <a href="{% url mapit_index %}area/02/children.html">/area/02/children.html</a>.
+    <li>All areas touching Oslo: <a rel="nofollow" href="{% url mapit_index %}area/0301/touches.html">/area/0301/touches.html</a>.
+</ul>
+{% endif %}
+{% if country == 'Global' %}
+<ul>
+    <li>All children of Cambridgeshire:
+    <a href="{% url mapit_index %}area/25495/children.html">/area/25495/children.html</a>
+    <li>All the areas touching Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/touches.html">/area/25495/touches.html</a>
+    <li>All areas overlapping Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/overlaps.html">/area/25495/overlaps.html</a>
+    <li>All areas covered by Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/covers.html">/area/25495/covers.html</a>
+    <li>All areas covering Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/covered.html">/area/25495/covered.html</a>
+    <li>All areas covered by or overlapping Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/coverlaps.html">/area/25495/coverlaps.html</a>
+</ul>
+{% endif %}
+                </dd>
+            </dl>
+        </section>
+

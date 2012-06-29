@@ -1,0 +1,75 @@
+        <section id="api-by_point">
+            <h3><em>lookup by</em> point</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd><ul>
+                    <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i></li>
+                    <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box</li>
+                </ul>
+                <dt>Parameters:</dt>
+                <dd>
+                <p><i>SRID</i> is a unique number referring to a particular
+                co-ordinate system;
+{% if country == 'GB' %}
+                the ones you probably are interested in are
+                27700 for British National Grid, 4326 for WGS84 lon/lat, and
+                29902 for the Irish National Grid.
+{% else %}
+                the one you probably are interested in is
+                4326 for WGS84 normal lon/lat.
+{% endif %}
+                </p>
+                <p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-ordinate
+                system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>
+                </dd>
+                <dt>Optional query parameters:</dt>
+                <dd>
+        <ul>
+            <li><i>type</i>, to restrict results to a particular area type or types (multiple types separated by commas);
+            <li><i>generation</i>, to return results for a previous generation.
+        </ul>
+                </dd>
+
+                <dt>Returns:</dt>
+                <dd>
+                <p>A hash of the areas that the point is contained within. If
+                the /box version is used, only the area bounding boxes are
+                considered.
+                </p>
+
+                <dt>Example:</dt>
+{% if country == 'GB' %}
+<dd><a href="{% url mapit_index %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.</dd>
+{% endif %}
+{% if country == 'NO' %}
+<dd><a href="{% url mapit_index %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
+{% endif %}
+{% if country == 'Global' %}
+<dd><a href="{% url mapit_index %}point/4326/8.55,47.366667.html">Example of areas containing (47.366667,8.55)</a>.</dd>
+{% endif %}
+            </dl>
+        </section>
+
+{% ifnotequal country 'Global' %}
+        <section id="api-nearest">
+            <h3><em>lookup</em>nearest postcode</h3>
+            <dl>
+                <dt>URL:</dt>
+                <dd> /nearest/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> </dd>
+                <dt>Parameters:</dt>
+                <dd>Same as for <a href="#api-by_point">by point</a>.</dd>
+                <dt>Returns:</dt>
+                <dd>The postcode closest to the particular point.
+                <dt>Example</dt>
+{% if country == 'GB' %}
+                <dd><a href="{% url mapit_index %}nearest/27700/400000,300000.html">Example of postcode nearest to (400000,300000)</a>.</dd>
+{% endif %}
+{% if country == 'NO' %}
+                <dd><a href="{% url mapit_index %}nearest/4326/10,59.html">Example of postcode nearest to (59,10)</a>.</dd>
+{% endif %}
+{% if country == 'Global' %}
+                <dd><a href="{% url mapit_index %}nearest/4326/8.55,47.366667.html">Example of postcode nearest to (47.366667,8.55)</a>.</dd>
+{% endif %}
+            </dl>
+        </section>
+{% endifnotequal %}

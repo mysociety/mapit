@@ -1,0 +1,18 @@
+<section id="api-generations">
+    <h3>Generations</h3>
+    <dl>
+        <dt>URL:</dt>
+        <dd>/generations</dd>
+
+        <dt>Returns:</dt>
+        <dd>A list of all generations in this installation of MapIt.
+
+{% if country == 'GB' %}
+Note that only generations from 12 upwards actually exist, apart from some
+council names in generation 10 in order for
+<a href="http://www.fixmystreet.com/">FixMyStreet</a> to show expired councils
+on its All Reports page.
+{% endif %}
+
+    </dl>
+</section>
