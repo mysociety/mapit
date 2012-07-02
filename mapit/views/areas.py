@@ -16,7 +16,7 @@ from django.utils.html import escape
 from django.conf import settings
 from django.shortcuts import redirect
 
-from mapit.models import Area, Generation, Geometry, Code
+from mapit.models import Area, Generation, Geometry, Code, Name
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
@@ -37,12 +37,32 @@ def area(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
 
+    codes = []
+    for code_type, code in sorted(area.all_codes.items()):
+        code_link = None
+        if code_type in ('osm', 'osm_rel'):
+            code_link = 'http://www.openstreetmap.org/browse/relation/' + code
+        elif code_type == 'osm_way':
+            code_link = 'http://www.openstreetmap.org/browse/way/' + code
+        codes.append((code_type, code, code_link))
+
+    # Sort any alternative names by the description of the name (the
+    # English name of the language for global MapIt) and exclude the
+    # default OSM name, since if that exists, it'll already be
+    # displayed as the page title.
+
+    names = Name.objects.filter(area=area).select_related()
+    alternative_names = sorted((n.type.description, n.name) for n in names
+                               if n.type.code != "default")
+
     if format == 'html':
         return render(request, 'mapit/area.html', {
             'area': area,
+            'codes': codes,
+            'alternative_names': alternative_names,
             'show_geometry': (area.type.code not in ('EUR', 'SPE', 'WAE'))
         })
-    return output_json( area.as_dict() )
+    return output_json( area.as_dict(names) )
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
@@ -294,6 +314,25 @@ def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
     out = dict( (id, _area_geometry(id)) for id in area_ids )
     return output_json(out)
+
+@ratelimit(minutes=3, requests=100)
+def area_from_code(request, code_type, code_value, format='json'):
+    generation = request.REQUEST.get('generation',
+                                     Generation.objects.current())
+    if not generation:
+        generation = Generation.objects.current()
+    try:
+        area = Area.objects.get(codes__type__code=code_type,
+                                codes__code=code_value,
+                                generation_low__lte=generation,
+                                generation_high__gte=generation)
+    except Area.DoesNotExist, e:
+        message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
+        return output_error(format, message, 404)
+    except Area.MultipleObjectsReturned, e:
+        message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
+        return output_error(format, message, 500)
+    return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):

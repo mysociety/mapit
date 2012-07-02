@@ -201,7 +201,8 @@ class Area(models.Model):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type.code, name)
 
-    def as_dict(self):
+    def as_dict(self, all_names=None):
+        all_names = all_names or []
         return {
             'id': self.id,
             'name': self.name,
@@ -213,6 +214,7 @@ class Area(models.Model):
             'generation_low': self.generation_low_id,
             'generation_high': self.generation_high_id,
             'codes': self.all_codes,
+            'all_names': dict(n.as_tuple() for n in all_names),
         }
 
 class Geometry(models.Model):
@@ -277,6 +279,10 @@ class Name(models.Model):
             self.area.save()
         except:
             pass
+
+    def as_tuple(self):
+        return (self.type.code, [self.type.description,
+                                 self.name])
 
 class CodeType(models.Model):
     code = models.CharField(max_length=10, unique=True)

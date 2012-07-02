@@ -80,12 +80,13 @@
             <li>
                 <h3>Codes:</h3>
                 <ul>
-{% for type, code in area.all_codes.items %}
-<li>{{ type }}: {% ifequal type.code 'osm' %}
-<a href="http://www.openstreetmap.org/browse/relation/{{ code }}">{{ code }}</a>
+{% for code_type, code, code_link in codes %}
+<li>{{ code_type }}:
+{% if code_link %}
+<a href="{{ code_link }}">{{ code }}</a>
 {% else %}
 {{ code }}
-{% endifequal %}
+{% endif %}
 </li>
 {% empty %}
 <li>No codes found.</li>
@@ -93,5 +94,15 @@
                 </ul>
 
     </section>
+
+<h3>Alternative Names</h3>
+
+<ul>
+{% for language, name in alternative_names %}
+<li>{{ name }} in <span class="language-name">{{ language }}</span></li>
+{% empty %}
+<li>No alternative names found.
+{% endfor %}
+</ul>
 
 {% endblock %}

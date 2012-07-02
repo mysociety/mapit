@@ -38,4 +38,5 @@ urlpatterns = patterns('',
     (r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, 'mapit.views.areas.areas_by_type'),
     (r'^areas/(?P<name>.+?)%s$' % format_end, 'mapit.views.areas.areas_by_name'),
     (r'^areas$', 'mapit.views.areas.deal_with_POST', { 'call': 'areas' }),
+    (r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, 'mapit.views.areas.area_from_code'),
 )
