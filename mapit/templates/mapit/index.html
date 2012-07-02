@@ -63,15 +63,13 @@ to keep NUUG going.
 
     <!-- Try out MapIt postcode bar -->
     <div id="try-mapit">
-        <form method="post" action="{% url mapit_index %}postcode/">
+        <form method="post" action="{% url mapit_index %}{% if country == 'Global' %}point{% else %}postcode{% endif %}/">
             <label for="try-mapit-pc">
-                {% if country == 'GB' %}
-                Try it out, enter a UK postcode:
-                {% else %}{% if country == 'NO' %}
-                Try it out, enter a postcode:
-                {% endif %}{% endif %}
+                {% if country == 'GB' %}Try it out, enter a UK postcode:{% endif %}
+                {% if country == 'NO' %}Try it out, enter a postcode:{% endif %}
+                {% if country == 'Global' %}Try it out, enter a lat/lon:{% endif %}
             </label>
-            <input type="text" name="pc" id="try-mapit-pc">
+            <input type="text" name="pc" id="try-mapit-pc"{% if country == 'Global' %} placeholder="latitude,longitude"{% endif %}>
             <input class="btn" type="submit" value="Look up">
         </form>
     </div>

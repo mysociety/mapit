@@ -14,6 +14,7 @@ from django.core.urlresolvers import resolve, reverse
 from django.db.models import Q
 from django.utils.html import escape
 from django.conf import settings
+from django.shortcuts import redirect
 
 from mapit.models import Area, Generation, Geometry, Code
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
@@ -348,6 +349,18 @@ def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False, format=''):
     return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (e, n, "/box" if bb else '', '.%s' % format if format else ''))
+
+def point_form_submitted(request):
+    latlon = request.POST.get('pc', None)
+    if not request.method == 'POST' or not latlon:
+        return redirect('/')
+    try:
+        lat, lon = re.split('\s*,\s*', latlon)
+    except:
+        return redirect('/')
+    return redirect('mapit.views.areas.areas_by_point',
+        srid=4326, x=lon, y=lat, format='html'
+    )
 
 # ---
 

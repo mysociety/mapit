@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', 'mapit.views.areas.area_polygon'),
     (r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|geojson|wkt)$', 'mapit.views.areas.area_polygon'),
 
+    (r'^point/$', 'mapit.views.areas.point_form_submitted'),
     (r'^point/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point'),
     (r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point_latlon'),
     (r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point_osgb'),
