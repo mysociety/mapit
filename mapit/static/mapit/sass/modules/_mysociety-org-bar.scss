@@ -18,7 +18,7 @@ html{ background: #1f1f1f url(../img/page-top-grad.png) repeat-x scroll left top
         &.mysociety-donate-link{
             display: none;
         }
-        @media (min-width : 32.625em) {
+        @media (min-width: 32.625em) {
             text-align: right;
             &.mysociety-home-link img{
                 float: left;

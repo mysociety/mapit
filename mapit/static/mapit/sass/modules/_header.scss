@@ -9,7 +9,7 @@
     padding-bottom: 1em;
     background-color: #bfb9c8;
     
-    @media (min-width : 55em) {
+    @media (min-width: 55em) {
         padding-top: 2em;
         background: #bfb9c8 url(../img/global-header.jpg) no-repeat scroll right 87%;
         padding-left: 20em;
@@ -39,7 +39,7 @@
 /*
         background: #bfb9c8 url(../img/global-header.jpg) no-repeat scroll center bottom;
         border-bottom: none;
-        @media (min-width : 60em) {
+        @media (min-width: 60em) {
             padding-top: 1.5em;
             padding-left: 25em;
             padding-right: 5em;
@@ -56,21 +56,21 @@
         padding-right: 2em;
         padding-bottom: 2em;
         
-        @media (min-width : 32.8125em) {
+        @media (min-width: 32.8125em) {
             background: #bfb9c8 url(../img/global-header-large.jpg) no-repeat scroll center 74%;
             padding-top: 2em;
             padding-left: 13em;
             padding-right: 2em;
         }
         
-        @media (min-width : 43.5em) {
+        @media (min-width: 43.5em) {
             padding-top: 1.5em;
             padding-left: 18.75em;
             padding-right: 2em;
             padding-bottom: 2em;
         }
         
-        @media (min-width : 55em) {
+        @media (min-width: 55em) {
             padding-top: 1.5em;
             padding-left: 25em;
             padding-right: 5em;
@@ -120,7 +120,7 @@
         }
     }
     
-    @media (min-width : 32.8125em) {
+    @media (min-width: 32.8125em) {
     	a.docs_link{
             float: right;
             clear: none;

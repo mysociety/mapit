@@ -23,7 +23,7 @@ h3 {
 }
 
 header.area_info {
-    @media (min-width : 30em) {
+    @media (min-width: 30em) {
         float: right;
         width: 50%;
         // To not stick to the map at middle widths
@@ -34,12 +34,12 @@ header.area_info {
 
 #map {
     margin: 1em 0;
-    @media (min-width : 30em) {
+    @media (min-width: 30em) {
         width: 50%;
         margin: 1.25em 0;
     }
     
-    @media (min-width : 60em) {
+    @media (min-width: 60em) {
         width: 28.75em;
     }
     width: 100%;
@@ -57,7 +57,7 @@ header.area_info {
     clear: both;
     
 /*
-    @media (min-width : 30em) {
+    @media (min-width: 30em) {
         width: 50%;
         clear: none;
         float: right;
@@ -65,7 +65,7 @@ header.area_info {
     }
 */
 
-    @media (min-width : 60em) {
+    @media (min-width: 60em) {
         float: right;
         clear: none;
         width: 28.75em;

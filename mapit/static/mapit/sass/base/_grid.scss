@@ -5,10 +5,10 @@
 }
 
 @mixin full_grid($initial_padding_left:0, $initial_padding_right:0){
-    @media (min-width : 60em) {
+    @media (min-width: 60em) {
     	width: 60em;
     }
-    @media (min-width : 63.75em) {
+    @media (min-width: 63.75em) {
     	width: 63.75em;
     	padding-left: $initial_padding_left + 1.875em;
     	padding-right: $initial_padding_right + 1.875em;
