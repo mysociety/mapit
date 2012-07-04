@@ -1,7 +1,14 @@
+* {
+         -o-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+}
 
-@mixin full_page{
-    width: 100%;
-    clear: both;
+html {
+    color: #222;
+    background: #1f1f1f url(../img/page-top-grad.png) repeat-x scroll left top;
 }
 
 body {

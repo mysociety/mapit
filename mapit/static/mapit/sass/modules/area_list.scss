@@ -8,19 +8,19 @@ $indentation: 2.5%; // ~ 10px
 $list_width: 33.75em;
 
 .area_list {
-    
+
     @include resetlist;
     display: block;
     width: $list_width;
     max-width: 100%;
-    
+
     li {
         display: block;
         background-color: #e5e5e5;
         padding: 0.625em;
         @include border-radius(0.625em);
         margin-bottom: 0.625em;
-        
+
         h3 {
             margin: 0;
             font-size: 1.125em;
@@ -28,16 +28,15 @@ $list_width: 33.75em;
         p {
             margin: 0;
             font-size: 0.75em;
-            color: #666666;
         }
     }
 }
-    
+
 // Creates area_level_1 to area_level_10
 // optionally add to list items to add indentation suggesting hierarchy
 
 @while $area_level > 0 {
-        
+
     .area_list > li.area_level_#{$area_level} {
         $area_level: $area_level - 1;
         margin-left: $indentation * $area_level;

@@ -1,10 +1,10 @@
-#api-docs{
+#api-docs {
     @include full_grid;
     @include clearfix;
     padding: 0.625em;
     padding-bottom: 5em;
-    
-    header{
+
+    header {
         margin-left: -0.625em;
         margin-right: -0.625em;
         margin-top: -0.625em;
@@ -20,34 +20,34 @@
             float: left;
             margin-top: -5em;
         }
-        
+
         background-color: #333333;
         color: #fff;
-        
+
         h2 {
             color: #fff;
         }
 
-        a{
+        a {
             color: #fff;
             text-decoration: none;
             font-weight: bold;
         }
-        
-        ol,ul{
+
+        ol,ul {
             @include resetlist;
             display: block;
             padding-bottom: 1.5em;
         }
-        
-        p{
+
+        p {
             margin: 0;
             color: #797979;
         }
 
     }
-    
-    section{
+
+    section {
         @media (min-width: 40em) {
             width: 26.5em;
         }
@@ -63,94 +63,82 @@
         float: right;
         clear: right;
         line-height: 1.5em;
-        
-        &>p{
+
+        &>p {
             clear: left;
         }
-        
-        h3{
+
+        h3 {
             font-size: 1.5em;
-            padding: 0.4em;
             @media (min-width: 60em) {
                 width: 10em;
                 float: left;
             }
-            
-            em{
+
+            em {
                 color: #999;
                 display: block;
                 font-size: 0.5em;
                 font-style: normal;
             }
         }
-        &>p{
-            padding: 0.625em;
-            color: #666666;
-        }
-        dl{
+        dl {
             line-height: 1.5em;
             padding: 0 0.625em 0.625em 0.625em;
             @media (min-width: 60em) {
                 width: 28.75em;
                 float: right;
-                padding: 2.5em 0.625em 0.625em 0.625em;
+                padding: 1.5em 0.625em 0.625em 0.625em;
             }
-            color: #666666;
-            
-            
-            dt{
+
+            dt {
                 font-weight: bold;
                 color: #99cc33;
             }
-            
-            dd{
+
+            dd {
                 margin: 0 0 1.5em 0;
-                p{
+                p {
                     margin: 0;
                     margin-bottom: 1.5em;
                 }
             }
-            
-            a{
+
+            a {
                 color: #333;
                 font-weight: bold;
             }
-            
+
         }
-                
+
     }
-    
+
     a[href="#api-by_postcode"]:hover,
     #api-by_postcode dt
     { color: #cc9933; }
-    
-    
+
     a[href="#api-by_partial_postcode"]:hover,
     #api-by_partial_postcode dt
     { color: #99cc33; }
-    
-    
+
     a[href="#api-by_point"]:hover,
     #api-by_point dt,
     a[href="#api-nearest"]:hover,
     #api-nearest dt
     { color: #33ccbf; }
-    
-    
+
     a[href="#api-by_area_id"]:hover,
     #api-by_area_id dt,
     a[href="#api-related_areas"]:hover,
     #api-related_areas dt
     { color: #3369cc; }
-    
-    
+
     a[href="#api-multiple_areas"]:hover,
     #api-multiple_areas dt
     { color: #8d33cc; }
-    
-    
+
     a[href="#api-generations"]:hover,
     #api-generations dt
     { color: #cc3369; }
-    
+
 }

@@ -80,16 +80,10 @@ button,
 input,
 select,
 textarea {
-    font-family: 'myriad-pro', 'Myriad Pro', 'MyriadPro-Regular', 'Droid Sans', sans-serif;
+    // font-family: sans-serif;
+    font-family: 'myriad-pro', 'Myriad Pro', 'MyriadPro-Regular', 'Droid Sans', Helmet, Freesans, sans-serif;
 }
-html.no-js,
-html.no-js body,
-html.no-js button,
-html.no-js input,
-html.no-js select,
-html.no-js textarea{
-    font-family: 'Droid Sans', sans-serif;
-}
+
 /*
  * Addresses margins handled incorrectly in IE6/7
  */
@@ -142,6 +136,7 @@ h2 {
 }
 
 h3 {
+    // font-size: 1.17em;
     font-size: 1.5em;
     margin: 1em 0;
 }
@@ -175,7 +170,7 @@ abbr[title] {
 
 b,
 strong {
-    font-weight: 600;
+    font-weight: bold;
 }
 
 blockquote {
@@ -508,16 +503,4 @@ textarea {
 table {
     border-collapse: collapse;
     border-spacing: 0;
-}
-
-*{
-         -o-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-        -ms-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
-}
-
-#content{
-    clear: both;
 }

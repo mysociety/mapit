@@ -4,9 +4,8 @@
     padding: 0.625em;
     padding-bottom: 2.5em;
     line-height: 1.5em;
-    color: #222222;
 }
-  
+
 h2 {
     .area_id {
         font-style: normal;
@@ -15,11 +14,6 @@ h2 {
         font-weight: bold;
         font-family: 'Verdana', sans-serif;
     }
-}
-
-h3 {
-    font-size: 1.3125em;
-    margin-top: 0;
 }
 
 header.area_info {
@@ -38,7 +32,7 @@ header.area_info {
         width: 50%;
         margin: 1.25em 0;
     }
-    
+
     @media (min-width: 60em) {
         width: 28.75em;
     }
@@ -55,7 +49,7 @@ header.area_info {
 .details {
     padding: 1em 0 2.5em 0;
     clear: both;
-    
+
 /*
     @media (min-width: 30em) {
         width: 50%;
@@ -72,15 +66,21 @@ header.area_info {
         padding:1em 0 2.5em 0;
     }
     max-width: 100%;
-    &>ul{
+
+    h3 {
+        font-size: 1.3125em;
+        margin-top: 0;
+    }
+
+    &>ul {
         @include resetlist;
         //margin-top: 2.5em;
-        &>li{
+        &>li {
             display: block;
             width: 13.75em;
             float: left;
         }
-        ul{
+        ul {
             list-style-position: outside;
             list-style-type: disc;
             margin-left: 0em;

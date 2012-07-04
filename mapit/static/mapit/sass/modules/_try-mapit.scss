@@ -1,4 +1,4 @@
-#try-mapit{
+#try-mapit {
     @include full_grid(25em, 0.625em);
     background-color: #948994;
     padding: 1em 0.625em;
@@ -6,10 +6,10 @@
         padding: 1em 0.625em 1em 25em;
     }
     color: #383838;
-    form{
+    form {
         padding: 0 0.625em;
     }
-    input{
+    input {
         padding: (0.625em/2);
         margin-left: 0.625em;
         display: inline-block;
@@ -17,13 +17,13 @@
         @include border-radius(0.625em/2);
         vertical-align: middle;
     }
-    
-    .btn{
+
+    .btn {
         background-color: #333333;
         border-top: 1px solid #333;
         color: #fff;
         padding: (0.625em/2) 0.625em*2;
         font-family: 'MuseoSlab500', sans-serif;
     }
-    
+
 }

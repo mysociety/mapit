@@ -103,17 +103,17 @@
 <li>No codes found.</li>
 {% endfor %}
                 </ul>
-
-    </section>
-
-<h3>Alternative Names</h3>
-
-<ul>
+            </li>
+            <li>
+                <h3>Alternative Names</h3>
+                <ul>
 {% for language, name in alternative_names %}
 <li>{{ name }} in <span class="language-name">{{ language }}</span></li>
 {% empty %}
 <li>No alternative names found.</li>
 {% endfor %}
-</ul>
+
+                </ul>
+    </section>
 
 {% endblock %}
