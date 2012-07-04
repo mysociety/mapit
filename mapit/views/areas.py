@@ -209,7 +209,7 @@ def area_covered(request, area_id, format='json'):
     return area_intersect('covers', 'Areas that cover %s', request, area_id, format)
 
 def add_codes(areas):
-    codes = Code.objects.filter(area__in=areas)
+    codes = Code.objects.select_related('type').filter(area__in=areas)
     lookup = {}
     for code in codes:
         lookup.setdefault(code.area_id, []).append(code)
@@ -269,7 +269,7 @@ def areas_by_name(request, name, format='json'):
     elif type:
         args['type__code'] = type
 
-    areas = add_codes(Area.objects.filter(**args))
+    areas = add_codes(Area.objects.select_related('type', 'country').filter(**args))
     areas = countries.sorted_areas(areas)
     out = dict( ( area.id, area.as_dict() ) for area in areas )
     if format == 'html': return output_html(request, 'Areas starting with %s' % name, areas)
