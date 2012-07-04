@@ -1,6 +1,6 @@
 <ol class="area_list">
 {% for area in areas %}
-    <li>
+    <li class="{{ area.css_class }}">
         <h3><a href="{% url mapit_index %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
         <p>ID {{ area.id }}, {{ area.type.description }}
             <small>({{ area.type.code }})</small>, {{ area.country }}</p>
