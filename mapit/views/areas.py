@@ -167,16 +167,9 @@ def area_intersect(query_type, title, request, area_id, format):
         args['type__code'] = area.type.code
 
     set_timeout(format)
-    areas = list(Area.objects.intersect(query_type, area).filter(**args).distinct())
-    areas = add_codes(areas)
-
     try:
-        if format == 'html':
-            return output_html(request,
-                title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name)),
-                areas, norobots=True
-            )
-        return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+        areas = list(Area.objects.intersect(query_type, area).filter(**args).distinct())
+        areas = add_codes(areas)
     except QueryCanceledError:
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
@@ -185,6 +178,13 @@ def area_intersect(query_type, title, request, area_id, format):
         return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except InternalError:
         return output_error(format, 'There was an internal error performing that query.', 500)
+
+    if format == 'html':
+        return output_html(request,
+            title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name)),
+            areas, norobots=True
+        )
+    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
