@@ -167,7 +167,8 @@ def area_intersect(query_type, title, request, area_id, format):
         args['type__code'] = area.type.code
 
     set_timeout(format)
-    areas = Area.objects.intersect(query_type, area).exclude(id=area.id).filter(**args).distinct()
+    areas = list(Area.objects.intersect(query_type, area).filter(**args).distinct())
+    areas = add_codes(areas)
 
     try:
         if format == 'html':
@@ -269,7 +270,7 @@ def areas_by_name(request, name, format='json'):
     elif type:
         args['type__code'] = type
 
-    areas = add_codes(Area.objects.select_related('type', 'country').filter(**args))
+    areas = add_codes(Area.objects.filter(**args))
     if format == 'html': return output_html(request, 'Areas starting with %s' % name, areas)
     out = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)

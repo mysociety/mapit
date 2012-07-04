@@ -66,6 +66,9 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 class AreaManager(models.GeoManager):
+    def get_query_set(self):
+        return super(AreaManager, self).get_query_set().select_related('type', 'country')
+
     def by_location(self, location, generation=None):
         if generation is None: generation = Generation.objects.current()
         if not location: return []
@@ -191,7 +194,7 @@ class Area(models.Model):
     @property
     def all_codes(self):
         if not getattr(self, 'code_list', None):
-            self.code_list = self.codes.all()
+            self.code_list = self.codes.select_related('type')
         codes = {}
         for code in self.code_list:
             codes[code.type.code] = code.code
