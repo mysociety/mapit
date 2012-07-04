@@ -49,24 +49,18 @@
 
     section {
         @media (min-width: 40em) {
-            width: 26.5em;
-        }
-        @media (min-width: 50em) {
-            width: 36.5em;
-        }
-        @media (min-width: 55em) {
-            width: 41.5em;
+            padding-left: 13.5em;
         }
         @media (min-width: 60em) {
+            float: right;
+            clear: right;
             width: 43.75em;
+            padding-left: 0;
+            & > p {
+                clear: left;
+            }
         }
-        float: right;
-        clear: right;
         line-height: 1.5em;
-
-        &>p {
-            clear: left;
-        }
 
         h3 {
             font-size: 1.5em;
@@ -88,7 +82,7 @@
             @media (min-width: 60em) {
                 width: 28.75em;
                 float: right;
-                padding: 1.5em 0.625em 0.625em 0.625em;
+                padding: 1.5em 0 0.625em 0;
             }
 
             dt {
