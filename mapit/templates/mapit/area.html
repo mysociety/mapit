@@ -42,9 +42,18 @@
             var area = new L.GeoJSON(data);
             map.addLayer(area);
 
-            var bounds;
+            var bounds = new L.LatLngBounds();
             area._iterateLayers(function (layer) {
-                bounds = layer.getBounds();
+                if (layer instanceof L.MultiPolygon) {
+                    layer._iterateLayers(function(layer2) {
+                        var new_bounds = layer2.getBounds();
+                        bounds.extend(new_bounds.getSouthWest());
+                        bounds.extend(new_bounds.getNorthEast());
+                    });
+                }
+                if (layer instanceof L.Polygon) {
+                    bounds = layer.getBounds();
+                }
             }, area);
             map.fitBounds(bounds);
         }
