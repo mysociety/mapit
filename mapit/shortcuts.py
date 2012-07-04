@@ -36,6 +36,7 @@ def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.path.replace('.html', '')
     kwargs['title'] = title
     kwargs['areas'] = sorted_areas(areas)
+    kwargs['indent_areas'] = kwargs.get('indent_areas', False)
     return render(request, 'mapit/data.html', kwargs)
 
 def output_error(format, message, code):

@@ -220,7 +220,7 @@ class Area(models.Model):
             'all_names': dict(n.as_tuple() for n in all_names),
         }
 
-    def css_class(self):
+    def css_indent_class(self):
         """Get a CSS class for use on <li> representations of this area
 
         Currently this is only used to indicate the indentation level
