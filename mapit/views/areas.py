@@ -167,7 +167,7 @@ def area_intersect(query_type, title, request, area_id, format):
         args['type__code'] = area.type.code
 
     set_timeout(format)
-    areas = Area.objects.intersect(query_type, area).exclude(id=area.id).filter(**args).distinct()
+    areas = Area.objects.intersect(query_type, area).select_related('type', 'country').exclude(id=area.id).filter(**args).distinct()
 
     try:
         if format == 'html':
@@ -221,7 +221,7 @@ def add_codes(areas):
 @ratelimit(minutes=3, requests=100)
 def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
-    areas = add_codes(Area.objects.filter(id__in=area_ids))
+    areas = add_codes(Area.objects.select_related('type', 'country').filter(id__in=area_ids))
     if format == 'html': return output_html(request, 'Areas ID lookup', areas)
     return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
 
@@ -240,11 +240,11 @@ def areas_by_type(request, type, format='json'):
         args['type__code'] = type
 
     if min_generation == -1:
-        areas = add_codes(Area.objects.filter(**args))
+        areas = add_codes(Area.objects.select_related('type', 'country').filter(**args))
     else:
         args['generation_low__lte'] = generation
         args['generation_high__gte'] = min_generation
-        areas = add_codes(Area.objects.filter(**args))
+        areas = add_codes(Area.objects.select_related('type', 'country').filter(**args))
     if format == 'html':
         return output_html(request, 'Areas in %s' % type, areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
@@ -377,7 +377,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         else:
             geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
             args['polygons__in'] = geoms
-        areas = Area.objects.filter(**args)
+        areas = Area.objects.select_related('type', 'country').filter(**args)
 
     areas = countries.sorted_areas(areas)
 
