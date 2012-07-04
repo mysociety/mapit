@@ -16,8 +16,3 @@ def is_valid_partial_postcode(pc):
     if hasattr(countries, 'is_valid_partial_postcode'):
         return countries.is_valid_partial_postcode(pc)
     return False
-
-def sorted_areas(areas):
-    if hasattr(countries, 'sorted_areas'):
-        return countries.sorted_areas(areas)
-    return list(areas)

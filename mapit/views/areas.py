@@ -270,9 +270,8 @@ def areas_by_name(request, name, format='json'):
         args['type__code'] = type
 
     areas = add_codes(Area.objects.select_related('type', 'country').filter(**args))
-    areas = countries.sorted_areas(areas)
-    out = dict( ( area.id, area.as_dict() ) for area in areas )
     if format == 'html': return output_html(request, 'Areas starting with %s' % name, areas)
+    out = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
@@ -378,8 +377,6 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
             geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
             args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
-
-    areas = countries.sorted_areas(areas)
 
     if format == 'html': return output_html(request, 'Areas containing (%s,%s)' % (x,y), areas)
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )

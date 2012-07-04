@@ -25,10 +25,17 @@ def render(request, template_name, context=None):
         template_name, context, context_instance = RequestContext(request)
     )
 
+def sorted_areas(areas):
+    # In here to prevent a circular dependency
+    from mapit import countries
+    if hasattr(countries, 'sorted_areas'):
+        return countries.sorted_areas(areas)
+    return list(areas)
+
 def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.path.replace('.html', '')
     kwargs['title'] = title
-    kwargs['areas'] = areas
+    kwargs['areas'] = sorted_areas(areas)
     return render(request, 'mapit/data.html', kwargs)
 
 def output_error(format, message, code):
