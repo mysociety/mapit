@@ -9,7 +9,9 @@
         <ul>
             <li>Type: {{ area.type.description }} <small>({{ area.type.code }})</small></li>
             <li>Exists in generations: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
+            {% if country != 'Global' %}
             <li>Country: {{ area.country }}</li>
+            {% endif %}
             {% if area.parent_area %}
             <li>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
             {% endif %}
