@@ -77,7 +77,7 @@ class Command(LabelCommand):
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = area_type,
                     country = country,
-                    parent_area = parent,
+                    parent_area_id = parent,
                     generation_low = new_generation,
                     generation_high = new_generation,
                 )
