@@ -96,6 +96,8 @@ def get_name_from_tags(tags, element_type=None, element_id=None):
         return tags['name']
     elif 'name:en' in tags:
         return tags['name:en']
+    elif 'place_name' in tags:
+        return tags['place_name']
     elif element_type and element_id:
         return "Unknown name for %s with ID %s" % (element_type, element_id)
     else:
