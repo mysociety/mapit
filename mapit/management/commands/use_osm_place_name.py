@@ -42,7 +42,7 @@ class Command(LabelCommand):
 
         unknown_names_before = Area.objects.filter(name__startswith='Unknown name').count()
 
-        for admin_level in (2,10):
+        for admin_level in range(2,12):
 
             verbose("Loading admin_level " + str(admin_level))
 
