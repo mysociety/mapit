@@ -79,12 +79,12 @@ class Command(LabelCommand):
                 verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
 
                 tree = etree.parse(kml_filename)
-                place_name_value = tree.find('//kml:Placemark/kml:ExtendedData/kml:Data[@name="place_name"]/kml:value',
-                                             {'kml': 'http://earth.google.com/kml/2.1'} )
+                place_name_values = tree.xpath('//kml:Placemark/kml:ExtendedData/kml:Data[@name="place_name"]/kml:value',
+                                               namespaces={'kml': 'http://earth.google.com/kml/2.1'} )
 
-                if place_name_value is not None:
+                if len(place_name_values) > 0:
 
-                    place_name = place_name_value.text
+                    place_name = place_name_values[0].text
 
                     verbose(u"Found a better name: " + place_name)
 
