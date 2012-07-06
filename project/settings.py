@@ -143,6 +143,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'mapit.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
+    'mapit.middleware.ViewExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'urls'

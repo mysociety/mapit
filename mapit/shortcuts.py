@@ -6,7 +6,6 @@ from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
-from django.template.loader import render_to_string
 from django.template import RequestContext
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
@@ -39,19 +38,6 @@ def output_html(request, title, areas, **kwargs):
     kwargs['indent_areas'] = kwargs.get('indent_areas', False)
     return render(request, 'mapit/data.html', kwargs)
 
-def output_error(format, message, code):
-    if format=='html':
-        types = {
-            400: http.HttpResponseBadRequest,
-            404: http.HttpResponseNotFound,
-            500: http.HttpResponseServerError,
-        }
-        response_type = types.get(code, http.HttpResponse)
-        return response_type(render_to_string('mapit/%s.html' % code, {
-            'error': message,
-        }))
-    return output_json({ 'error': message }, code=code)
-
 def output_json(out, code=200):
     types = {
         400: http.HttpResponseBadRequest,
@@ -75,7 +61,8 @@ def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
     except http.Http404, e:
-        return output_error(format, str(e), 404)
+        from mapit.middleware import ViewException
+        raise ViewException(format, str(e), 404)
 
 def json_500(request):
     return output_json({ 'error': "Sorry, something's gone wrong." }, code=500)

@@ -14,7 +14,8 @@ from django.contrib.gis.measure import D
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
-from mapit.shortcuts import output_json, get_object_or_404, output_error, set_timeout
+from mapit.shortcuts import output_json, get_object_or_404, set_timeout
+from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
 
@@ -37,13 +38,10 @@ enclosing_areas = {
     'EUR': [ EUP_AREA_ID ],
 }
 
-def bad_request(format, message):
-    return output_error(format, message, 400)
-
 def check_postcode(format, postcode):
     postcode = re.sub('[^A-Z0-9]', '', postcode.upper())
     if not is_valid_postcode(postcode):
-        return bad_request(format, "Postcode '%s' is not valid." % postcode)
+        raise ViewException(format, "Postcode '%s' is not valid." % postcode, 400)
     postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
     return postcode
 
@@ -100,7 +98,7 @@ def partial_postcode(request, postcode, format='json'):
     if is_valid_postcode(postcode):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
-        return bad_request(format, "Partial postcode '%s' is not valid." % postcode)
+        raise ViewException(format, "Partial postcode '%s' is not valid." % postcode, 400)
     try:
         postcode = Postcode(
             postcode = postcode,
@@ -109,7 +107,7 @@ def partial_postcode(request, postcode, format='json'):
             ).collect().centroid
         )
     except:
-        return output_error(format, 'Postcode not found', 404)
+        raise ViewException(format, 'Postcode not found', 404)
 
     if format == 'html':
         return render_to_response('mapit/postcode.html', {
@@ -130,10 +128,10 @@ def example_postcode_for_area(request, area_id, format='json'):
         try:
             pc = Postcode.objects.filter_by_area(area).order_by()[0]
         except QueryCanceledError:
-            return output_error(format, 'That query was taking too long to compute.', 500)
+            raise ViewException(format, 'That query was taking too long to compute.', 500)
         except DatabaseError, e:
             if 'canceling statement due to statement timeout' not in e.args[0]: raise
-            return output_error(format, 'That query was taking too long to compute.', 500)
+            raise ViewException(format, 'That query was taking too long to compute.', 500)
         except:
             pc = None
     if pc: pc = pc.get_postcode_display()
@@ -154,12 +152,12 @@ def nearest(request, srid, x, y, format='json'):
     try:
         postcode = Postcode.objects.filter(location__distance_gte=( location, D(mi=0) )).distance(location).order_by('distance')[0]
     except QueryCanceledError:
-        return output_error(format, 'That query was taking too long to compute.', 500)
+        raise ViewException(format, 'That query was taking too long to compute.', 500)
     except DatabaseError, e:
         if 'canceling statement due to statement timeout' not in e.args[0]: raise
-        return output_error(format, 'That query was taking too long to compute.', 500)
+        raise ViewException(format, 'That query was taking too long to compute.', 500)
     except:
-        return output_error(format, 'No postcode found near %s,%s (%s)' % (x, y, srid), 404)
+        raise ViewException(format, 'No postcode found near %s,%s (%s)' % (x, y, srid), 404)
 
     if format == 'html':
         return render_to_response('mapit/postcode.html', {

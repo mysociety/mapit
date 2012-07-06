@@ -17,7 +17,8 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 from mapit.models import Area, Generation, Geometry, Code, Name
-from mapit.shortcuts import output_json, output_html, render, get_object_or_404, output_error, set_timeout
+from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
+from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
 
@@ -32,7 +33,7 @@ def area(request, area_id, format='json'):
         if resp: return resp
 
     if not re.match('\d+$', area_id):
-        return output_error(format, 'Bad area ID specified', 400)
+        raise ViewException(format, 'Bad area ID specified', 400)
 
     area = get_object_or_404(Area, format=format, id=area_id)
     if isinstance(area, HttpResponse): return area
@@ -71,7 +72,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         if resp: return resp
 
     if not re.match('\d+$', area_id):
-        return output_error(format, 'Bad area ID specified', 400)
+        raise ViewException(format, 'Bad area ID specified', 400)
 
     if not srid:
         srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
@@ -92,7 +93,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     try:
         simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
     except:
-        return output_error(format, 'Badly specified tolerance', 400)
+        raise ViewException(format, 'Badly specified tolerance', 400)
     if simplify_tolerance:
         all_areas = all_areas.simplify(simplify_tolerance)
 
@@ -150,7 +151,7 @@ def area_intersect(query_type, title, request, area_id, format):
     if isinstance(area, HttpResponse): return area
 
     if not area.polygons.count():
-        return output_error(format, 'No polygons found', 404)
+        raise ViewException(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
     args = {
@@ -171,13 +172,13 @@ def area_intersect(query_type, title, request, area_id, format):
         areas = list(Area.objects.intersect(query_type, area).filter(**args).distinct())
         areas = add_codes(areas)
     except QueryCanceledError:
-        return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+        raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
         # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
         if 'canceling statement due to statement timeout' not in e.args[0]: raise
-        return output_error(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+        raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except InternalError:
-        return output_error(format, 'There was an internal error performing that query.', 500)
+        raise ViewException(format, 'There was an internal error performing that query.', 500)
 
     if format == 'html':
         return output_html(request,
@@ -190,7 +191,7 @@ def area_intersect(query_type, title, request, area_id, format):
 def area_touches(request, area_id, format='json'):
     # XXX Exempt an error that throws a GEOS Exception
     if area_id == '2658':
-        return output_error(format, 'There was an internal error performing that query.', 500)
+        raise ViewException(format, 'There was an internal error performing that query.', 500)
     return area_intersect('touches', 'Areas touching %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
@@ -329,10 +330,10 @@ def area_from_code(request, code_type, code_value, format='json'):
                                 generation_high__gte=generation)
     except Area.DoesNotExist, e:
         message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
-        return output_error(format, message, 404)
+        raise ViewException(format, message, 404)
     except Area.MultipleObjectsReturned, e:
         message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
-        return output_error(format, message, 500)
+        raise ViewException(format, message, 500)
     return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
 
 @ratelimit(minutes=3, requests=100)
@@ -346,7 +347,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     try:
         location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
-        return output_error(format, 'Point outside the area geometry', 400)
+        raise ViewException(format, 'Point outside the area geometry', 400)
 
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
