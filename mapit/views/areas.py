@@ -394,10 +394,10 @@ def point_form_submitted(request):
     latlon = request.POST.get('pc', None)
     if not request.method == 'POST' or not latlon:
         return redirect('/')
-    try:
-        lat, lon = re.split('\s*,\s*', latlon)
-    except:
+    m = re.match('\s*([0-9.-]+)\s*,\s*([0-9.-]+)', latlon)
+    if not m:
         return redirect('/')
+    lat, lon = m.groups()
     return redirect('mapit.views.areas.areas_by_point',
         srid=4326, x=lon, y=lat, format='html'
     )
