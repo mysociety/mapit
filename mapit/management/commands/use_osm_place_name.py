@@ -97,7 +97,11 @@ class Command(LabelCommand):
                     else:
                         raise Exception, "Unknown OSM element type:", osm_type
 
-                    existing_area = Code.objects.get(type=code_type_osm, code=osm_id).area
+                    try:
+                        existing_area = Code.objects.get(type=code_type_osm, code=osm_id).area
+                    except Code.DoesNotExist:
+                        print "WARNING: failed to find Code with code_type %s and code %s" % (code_type_osm, osm_id)
+                        continue
 
                     # Just check that the existing area really does
                     # still have an unknown name:
