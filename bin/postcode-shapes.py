@@ -129,9 +129,11 @@ centroid_y = n_sum / len(y)
 # Now add some "points at infinity" - 200 points in a circle way
 # outside the border of the United Kingdom:
 
+first_infinity_index = len(x)
+
 points_at_infinity = 200
 
-distance_to_infinity = (n_max - n_min) * 4
+distance_to_infinity = (n_max - n_min) * 2
 
 for i in range(0, points_at_infinity):
     angle = (2 * math.pi * i) / float(points_at_infinity)
@@ -171,6 +173,21 @@ for point_index, triangle_indices in enumerate(point_to_triangles):
 
     basename = sorted(postcodes)[0]
 
+    # Find if any neighbouring point in the triangulation was a 'point
+    # at infinity':
+
+    requires_clipping = True
+
+#    requires_clipping = False
+#
+#    for triangle_index in triangle_indices:
+#        for point_index in triangles[triangle_index]:
+#            if point_index >= first_infinity_index:
+#                requires_clipping = True
+#                break
+#        if requires_clipping:
+#            break
+
     def compare_points(a, b):
         ax = a[0] - centre_x
         ay = a[1] - centre_y
@@ -203,7 +220,7 @@ for point_index, triangle_indices in enumerate(point_to_triangles):
 
     wgs_84_polygon = polygon.transform(4326, clone=True)
 
-    if wgs_84_polygon.area > 0.000001:
+    if requires_clipping:
         clipped_polygon = wgs_84_polygon.intersection(uk_multipolygon)
     else:
         clipped_polygon = wgs_84_polygon
