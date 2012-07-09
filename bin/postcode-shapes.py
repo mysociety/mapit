@@ -89,9 +89,6 @@ position_to_postcodes = defaultdict(set)
 total_postcodes = 0
 
 for e in os.listdir(data_directory):
-    # if e != "sw.csv":
-    if e != "ab.csv":
-        continue
     csv_path = os.path.join(data_directory, e)
     with open(csv_path) as fp:
         area_postcodes = len(fp.readlines())
