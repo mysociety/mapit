@@ -86,13 +86,21 @@ y = np.array([])
 
 position_to_postcodes = defaultdict(set)
 
+total_postcodes = 0
+
 for e in os.listdir(data_directory):
     # if e != "sw.csv":
     if e != "ab.csv":
         continue
-    with open(os.path.join(data_directory, e)) as fp:
+    csv_path = os.path.join(data_directory, e)
+    with open(csv_path) as fp:
+        area_postcodes = len(fp.readlines())
+    total_postcodes += area_postcodes
+    with open(csv_path) as fp:
         reader = csv.reader(fp)
-        for row in reader:
+        for i, row in enumerate(reader):
+            if i > 0 and (i % 1000 == 0):
+                print "%s %d%%" % (e, int((100 * i) / float(area_postcodes)))
             pc = row[0]
             m = postcode_matcher.search(pc)
             if not m:
@@ -143,6 +151,9 @@ for i, triangle in enumerate(triangles):
 # Now generating KML:
 
 for point_index, triangle_indices in enumerate(point_to_triangles):
+
+    if point_index > 0 and (point_index % 100 == 0):
+        print "%d%%" % (int((100 * point_index) / float(total_postcodes)),)
 
     centre_x = x[point_index]
     centre_y = y[point_index]
