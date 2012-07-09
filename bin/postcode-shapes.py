@@ -1,29 +1,133 @@
 #!/usr/bin/env python
 
-from collections import defaultdict
+import os
+import sys
+import csv
 import math
+import errno
+import re
+import json
+from collections import defaultdict
 
-# Example from: http://glowingpython.blogspot.co.uk/2011/05/delaunay-triangulation-with-matplotlib.html
-
+import numpy as np
 from matplotlib.delaunay import delaunay
-import matplotlib.pyplot as plt
-import numpy
-from matplotlib.patches import Polygon
 
-# 4 random points (x,y) in the plane
+from django.contrib.gis.geos import Polygon
+from django.contrib.gis.gdal import DataSource
 
-# x = numpy.array([-10, -8, 9, 0, -7])
-# y = numpy.array([-8, 7, -4, -2, -1])
+# Read all the postcode data:
 
-x,y = numpy.array(numpy.random.standard_normal((2, 40)))
+script_directory = os.path.dirname(os.path.abspath(__file__))
 
-points_at_infinity = 30
-distance_to_infinity = 50
+data_directory = os.path.realpath(os.path.join(script_directory,
+                                               '..',
+                                               'data',
+                                               'Code-Point-Open',
+                                               'Data'))
+
+output_directory = os.path.realpath(os.path.join(script_directory,
+                                                 '..',
+                                                 'data',
+                                                 'cache',
+                                                 'postcode-kml'))
+
+# ------------------------------------------------------------------------
+
+# Get the geometry of the UK from OpenStreetMap, so that we can
+# restrict the regions at the edges of the diagram:
+
+uk_boundary_filename = os.path.realpath(os.path.join(script_directory,
+                                                     '..',
+                                                     'data',
+                                                     'relation-62149-United Kingdom.kml'))
+
+uk_ds = DataSource(uk_boundary_filename)
+
+if len(uk_ds) != 1:
+    raise Exception, "Expected the UK border to only have one layer"
+
+uk_layer = uk_ds[0]
+uk_geometries = uk_layer.get_geoms(geos=True)
+
+if len(uk_geometries) != 1:
+    raise Exception, "Expected the UK layer to only have one MultiPolygon"
+
+uk_multipolygon = uk_geometries[0]
+
+# ------------------------------------------------------------------------
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:
+        if exc.errno == errno.EEXIST:
+            pass
+        else:
+            raise
+
+mkdir_p(output_directory)
+
+# A modified version of one of the regular expressions suggested here:
+#    http://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom
+
+postcode_matcher = re.compile(r'^([A-PR-UWYZ]([0-9][0-9A-HJKPS-UW]?|[A-HK-Y][0-9][0-9ABEHMNPRV-Y]?)) ?([0-9][ABD-HJLNP-UW-Z]{2})$')
+
+e_sum = 0
+n_sum = 0
+
+e_min = sys.maxint
+n_min = sys.maxint
+
+e_max = -sys.maxint - 1
+n_max = -sys.maxint - 1
+
+x = np.array([])
+y = np.array([])
+
+position_to_postcodes = defaultdict(set)
+
+for e in os.listdir(data_directory):
+    # if e != "sw.csv":
+    if e != "ab.csv":
+        continue
+    with open(os.path.join(data_directory, e)) as fp:
+        reader = csv.reader(fp)
+        for row in reader:
+            pc = row[0]
+            m = postcode_matcher.search(pc)
+            if not m:
+                raise Exception, "Couldn't parse postcode:", pc
+            # Normalize the postcode's format to put a space in the
+            # right place:
+            pc = m.group(1) + " " + m.group(3)
+            eastings, northings = row[2:4]
+            eastings = int(eastings, 10)
+            northings = int(northings, 10)
+            e_min = min(e_min, eastings)
+            n_min = min(n_min, eastings)
+            e_max = max(n_max, northings)
+            n_max = max(n_max, northings)
+            e_sum += eastings
+            n_sum += northings
+            position_tuple = (eastings, northings)
+            position_to_postcodes[position_tuple].add(pc)
+            if len(position_to_postcodes[position_tuple]) == 1:
+                x = np.append(x, eastings)
+                y = np.append(y, northings)
+
+# Now add some "points at infinity" - 200 points in a circle way
+# outside the border of the United Kingdom:
+
+points_at_infinity = 200
+
+distance_to_infinity = (n_max - n_min) * 4
 
 for i in range(0, points_at_infinity):
     angle = (2 * math.pi * i) / float(points_at_infinity)
-    x = numpy.append(x, math.cos(angle) * distance_to_infinity)
-    y = numpy.append(y, math.sin(angle) * distance_to_infinity)
+    x = np.append(x, math.cos(angle) * distance_to_infinity)
+    y = np.append(y, math.sin(angle) * distance_to_infinity)
+
+print "Calculating the Delaunay Triangulation..."
 
 ccs, edges, triangles, neighbours = delaunay(x, y)
 
@@ -33,24 +137,31 @@ for i, triangle in enumerate(triangles):
     for point_index in triangle:
         point_to_triangles[point_index].append(i)
 
-# for t in triangles:
-#     # t[0], t[1], t[2] are the points indexes of the triangle
-#     t_i = [t[0], t[1], t[2], t[0]]
-#    plt.plot(x[t_i], y[t_i])
-
-plt.plot(x, y, 'ro')
-
-import math
+# Now generating KML:
 
 for point_index, triangle_indices in enumerate(point_to_triangles):
+
     centre_x = x[point_index]
     centre_y = y[point_index]
+    position_tuple = centre_x, centre_y
+
+    if len(triangle_indices) < 3:
+        print "Skipping a point with fewer than 3 triangle_indices:", position_tuple
+        continue
+
+    if position_tuple not in position_to_postcodes:
+        print "The position tuple had no postcodes - must be a 'point at infinity'"
+        continue
+
+    postcodes = position_to_postcodes[position_tuple]
+
+    basename = sorted(postcodes)[0]
+
     def compare_points(a, b):
         ax = a[0] - centre_x
         ay = a[1] - centre_y
         bx = b[0] - centre_x
         by = b[1] - centre_y
-        # result = ay * bx - ax * by
         angle_a = math.atan2(ay, ax)
         angle_b = math.atan2(by, bx)
         result = angle_b - angle_a
@@ -61,15 +172,42 @@ for point_index, triangle_indices in enumerate(point_to_triangles):
         return 0
 
     circumcentres = [ccs[i] for i in triangle_indices]
-    sccs = numpy.array(sorted(circumcentres, cmp=compare_points))
-    # xy = numpy.array(ccs[i] for i in triangle_indices)
+    sccs = np.array(sorted(circumcentres, cmp=compare_points))
     xs = [cc[0] for cc in sccs]
     ys = [cc[1] for cc in sccs]
-    # polygon = Polygon(xy)
-    # print "created polygon:", polygon
-    # plt.fill(polygon)
-    # plt.plot(xs, ys)
-    plt.fill(xs, ys, closed=True)
-    plt.plot(x[point_index], y[point_index], 'yo')
 
-plt.show()
+    border = []
+    for i in range(0, len(sccs) + 1):
+        index_to_use = i
+        if i == len(sccs):
+            index_to_use = 0
+        cc = (float(xs[index_to_use]),
+              float(ys[index_to_use]))
+        border.append(cc)
+
+    polygon = Polygon(border, srid=27700)
+
+    wgs_84_polygon = polygon.transform(4326, clone=True)
+
+    if wgs_84_polygon.area > 0.000001:
+        clipped_polygon = wgs_84_polygon.intersection(uk_multipolygon)
+    else:
+        clipped_polygon = wgs_84_polygon
+
+    if len(postcodes) > 1:
+        json_leafname = basename + ".json"
+        with open(os.path.join(output_directory, json_leafname), "w") as fp:
+            json.dump(list(postcodes), fp)
+
+    leafname = basename + ".kml"
+
+    with open(os.path.join(output_directory, leafname), "w") as fp:
+        fp.write('''<?xml version='1.0' encoding='utf-8'?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+  <Folder>
+    <name>Example KML file for testing...</name>
+    <Placemark>
+      %s
+    </Placemark>
+  </Folder>
+</kml>''' % (clipped_polygon.kml,))
