@@ -115,6 +115,9 @@ for e in os.listdir(data_directory):
                 x = np.append(x, eastings)
                 y = np.append(y, northings)
 
+centroid_x = e_sum / len(x)
+centroid_y = n_sum / len(y)
+
 # Now add some "points at infinity" - 200 points in a circle way
 # outside the border of the United Kingdom:
 
@@ -124,8 +127,8 @@ distance_to_infinity = (n_max - n_min) * 4
 
 for i in range(0, points_at_infinity):
     angle = (2 * math.pi * i) / float(points_at_infinity)
-    x = np.append(x, math.cos(angle) * distance_to_infinity)
-    y = np.append(y, math.sin(angle) * distance_to_infinity)
+    x = np.append(x, centroid_x + math.cos(angle) * distance_to_infinity)
+    y = np.append(y, centroid_y + math.sin(angle) * distance_to_infinity)
 
 print "Calculating the Delaunay Triangulation..."
 
