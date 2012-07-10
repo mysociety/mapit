@@ -71,7 +71,7 @@ mkdir_p(output_directory)
 # A modified version of one of the regular expressions suggested here:
 #    http://en.wikipedia.org/wiki/Postcodes_in_the_United_Kingdom
 
-postcode_matcher = re.compile(r'^([A-PR-UWYZ]([0-9][0-9A-HJKPS-UW]?|[A-HK-Y][0-9][0-9ABEHMNPRV-Y]?)) ?([0-9][ABD-HJLNP-UW-Z]{2})$')
+postcode_matcher = re.compile(r'^([A-PR-UWYZ]([0-9][0-9A-HJKPS-UW]?|[A-HK-Y][0-9][0-9ABEHMNPRV-Y]?)) *([0-9][ABD-HJLNP-UW-Z]{2})$')
 
 e_sum = 0
 n_sum = 0
