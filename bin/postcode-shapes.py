@@ -155,9 +155,6 @@ for i, triangle in enumerate(triangles):
 
 for point_index, triangle_indices in enumerate(point_to_triangles):
 
-    if point_index > 0 and (point_index % 100 == 0):
-        print "%d%%" % (int((100 * point_index) / float(total_postcodes)),)
-
     centre_x = x[point_index]
     centre_y = y[point_index]
     position_tuple = centre_x, centre_y
@@ -174,58 +171,6 @@ for point_index, triangle_indices in enumerate(point_to_triangles):
 
     basename = sorted(postcodes)[0]
 
-    # Find if any neighbouring point in the triangulation was a 'point
-    # at infinity':
-
-    requires_clipping = True
-
-#    requires_clipping = False
-#
-#    for triangle_index in triangle_indices:
-#        for point_index in triangles[triangle_index]:
-#            if point_index >= first_infinity_index:
-#                requires_clipping = True
-#                break
-#        if requires_clipping:
-#            break
-
-    def compare_points(a, b):
-        ax = a[0] - centre_x
-        ay = a[1] - centre_y
-        bx = b[0] - centre_x
-        by = b[1] - centre_y
-        angle_a = math.atan2(ay, ax)
-        angle_b = math.atan2(by, bx)
-        result = angle_b - angle_a
-        if result > 0:
-            return 1
-        elif result < 0:
-            return -1
-        return 0
-
-    circumcentres = [ccs[i] for i in triangle_indices]
-    sccs = np.array(sorted(circumcentres, cmp=compare_points))
-    xs = [cc[0] for cc in sccs]
-    ys = [cc[1] for cc in sccs]
-
-    border = []
-    for i in range(0, len(sccs) + 1):
-        index_to_use = i
-        if i == len(sccs):
-            index_to_use = 0
-        cc = (float(xs[index_to_use]),
-              float(ys[index_to_use]))
-        border.append(cc)
-
-    polygon = Polygon(border, srid=27700)
-
-    wgs_84_polygon = polygon.transform(4326, clone=True)
-
-    if requires_clipping:
-        clipped_polygon = wgs_84_polygon.intersection(uk_multipolygon)
-    else:
-        clipped_polygon = wgs_84_polygon
-
     if len(postcodes) > 1:
         json_leafname = basename + ".json"
         with open(os.path.join(output_directory, json_leafname), "w") as fp:
@@ -233,8 +178,77 @@ for point_index, triangle_indices in enumerate(point_to_triangles):
 
     leafname = basename + ".kml"
 
-    with open(os.path.join(output_directory, leafname), "w") as fp:
-        fp.write('''<?xml version='1.0' encoding='utf-8'?>
+    kml_filename = os.path.join(output_directory, leafname)
+
+    if not os.path.exists(kml_filename):
+
+        if point_index > 0 and (point_index % 10000 == 0):
+            print "%d%%" % (int((100 * point_index) / float(total_postcodes)),)
+
+        # Find if any neighbouring point in the triangulation was a 'point
+        # at infinity':
+
+        requires_clipping = True
+
+    #    requires_clipping = False
+    #
+    #    for triangle_index in triangle_indices:
+    #        for point_index in triangles[triangle_index]:
+    #            if point_index >= first_infinity_index:
+    #                requires_clipping = True
+    #                break
+    #        if requires_clipping:
+    #            break
+
+        def compare_points(a, b):
+            ax = a[0] - centre_x
+            ay = a[1] - centre_y
+            bx = b[0] - centre_x
+            by = b[1] - centre_y
+            angle_a = math.atan2(ay, ax)
+            angle_b = math.atan2(by, bx)
+            result = angle_b - angle_a
+            if result > 0:
+                return 1
+            elif result < 0:
+                return -1
+            return 0
+
+        circumcentres = [ccs[i] for i in triangle_indices]
+        sccs = np.array(sorted(circumcentres, cmp=compare_points))
+        xs = [cc[0] for cc in sccs]
+        ys = [cc[1] for cc in sccs]
+
+        border = []
+        for i in range(0, len(sccs) + 1):
+            index_to_use = i
+            if i == len(sccs):
+                index_to_use = 0
+            cc = (float(xs[index_to_use]),
+                  float(ys[index_to_use]))
+            border.append(cc)
+
+        polygon = Polygon(border, srid=27700)
+
+        wgs_84_polygon = polygon.transform(4326, clone=True)
+
+        if requires_clipping:
+            try:
+                if wgs_84_polygon.intersects(uk_multipolygon):
+                    clipped_polygon = wgs_84_polygon.intersection(uk_multipolygon)
+                else:
+                    print "There was no intersection for postcode", basename
+                    clipped_polygon = wgs_84_polygon
+            except Exception, e:
+                print "Got exception when generating:", kml_filename
+                print "The exception was:", e
+                print "The polygon's KML was:", wgs_84_polygon.kml
+                clipped_polygon = wgs_84_polygon
+        else:
+            clipped_polygon = wgs_84_polygon
+
+        with open(kml_filename, "w") as fp:
+            fp.write('''<?xml version='1.0' encoding='utf-8'?>
 <kml xmlns="http://earth.google.com/kml/2.1">
   <Folder>
     <name>Example KML file for testing...</name>
