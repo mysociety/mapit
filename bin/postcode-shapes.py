@@ -25,11 +25,12 @@ data_directory = os.path.realpath(os.path.join(script_directory,
                                                'Code-Point-Open',
                                                'Data'))
 
-output_directory = os.path.realpath(os.path.join(script_directory,
+cache_directory = os.path.realpath(os.path.join(script_directory,
                                                  '..',
                                                  'data',
-                                                 'cache',
-                                                 'postcode-kml'))
+                                                 'cache'))
+
+output_directory = os.path.join(cache_directory, 'postcode-kml'))
 
 # ------------------------------------------------------------------------
 
