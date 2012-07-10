@@ -82,8 +82,8 @@ n_min = sys.maxint
 e_max = -sys.maxint - 1
 n_max = -sys.maxint - 1
 
-x = np.array([])
-y = np.array([])
+x = []
+y = []
 
 position_to_postcodes = defaultdict(set)
 
@@ -118,8 +118,8 @@ for e in os.listdir(data_directory):
             position_tuple = (eastings, northings)
             position_to_postcodes[position_tuple].add(pc)
             if len(position_to_postcodes[position_tuple]) == 1:
-                x = np.append(x, eastings)
-                y = np.append(y, northings)
+                x.append(eastings)
+                y.append(northings)
 
 centroid_x = e_sum / len(x)
 centroid_y = n_sum / len(y)
@@ -135,8 +135,11 @@ distance_to_infinity = (n_max - n_min) * 2
 
 for i in range(0, points_at_infinity):
     angle = (2 * math.pi * i) / float(points_at_infinity)
-    x = np.append(x, centroid_x + math.cos(angle) * distance_to_infinity)
-    y = np.append(y, centroid_y + math.sin(angle) * distance_to_infinity)
+    x.append(centroid_x + math.cos(angle) * distance_to_infinity)
+    y.append(centroid_y + math.sin(angle) * distance_to_infinity)
+
+x = np.array(x)
+y = np.array(y)
 
 print "Calculating the Delaunay Triangulation..."
 
