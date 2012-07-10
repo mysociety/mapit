@@ -14,7 +14,6 @@ def area_code_lookup(area_id, format):
     if not area_code:
         return None
     area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
-    if isinstance(area, HttpResponse): return area
     return HttpResponseRedirect('/area/%d%s' % (area.id, '.%s' % format if format else ''))
 
 def is_special_postcode(pc):

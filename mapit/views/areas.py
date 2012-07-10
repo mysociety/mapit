@@ -36,7 +36,6 @@ def area(request, area_id, format='json'):
         raise ViewException(format, 'Bad area ID specified', 400)
 
     area = get_object_or_404(Area, format=format, id=area_id)
-    if isinstance(area, HttpResponse): return area
 
     codes = []
     for code_type, code in sorted(area.all_codes.items()):
@@ -79,7 +78,6 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     srid = int(srid)
 
     area = get_object_or_404(Area, id=area_id)
-    if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all()
     if len(all_areas) > 1:
         all_areas = all_areas.collect()
@@ -127,8 +125,6 @@ def area_polygon(request, srid='', area_id='', format='kml'):
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
-    if isinstance(area, HttpResponse): return area
-
     generation = Generation.objects.current()
     args = {
         'generation_low__lte': generation,
@@ -148,8 +144,6 @@ def area_children(request, area_id, format='json'):
 
 def area_intersect(query_type, title, request, area_id, format):
     area = get_object_or_404(Area, format=format, id=area_id)
-    if isinstance(area, HttpResponse): return area
-
     if not area.polygons.count():
         raise ViewException(format, 'No polygons found', 404)
 
@@ -284,7 +278,6 @@ def area_geometry(request, area_id):
 
 def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
-    if isinstance(area, HttpResponse): return area
     all_areas = area.polygons.all().collect()
     if not all_areas:
         return output_json({ 'error': 'No polygons found' }, code=404)

@@ -48,7 +48,6 @@ def check_postcode(format, postcode):
 @ratelimit(minutes=3, requests=100)
 def postcode(request, postcode, format='json'):
     postcode = check_postcode(format, postcode)
-    if isinstance(postcode, HttpResponse): return postcode
     try:
         generation = int(request.REQUEST['generation'])
     except:
@@ -120,7 +119,6 @@ def partial_postcode(request, postcode, format='json'):
 @ratelimit(minutes=3, requests=100)
 def example_postcode_for_area(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
-    if isinstance(area, HttpResponse): return area
     try:
         pc = Postcode.objects.filter(areas=area).order_by()[0]
     except:
