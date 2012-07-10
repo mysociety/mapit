@@ -30,7 +30,7 @@ cache_directory = os.path.realpath(os.path.join(script_directory,
                                                  'data',
                                                  'cache'))
 
-output_directory = os.path.join(cache_directory, 'postcode-kml'))
+output_directory = os.path.join(cache_directory, 'postcode-kml')
 
 # ------------------------------------------------------------------------
 
