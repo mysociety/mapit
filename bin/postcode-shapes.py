@@ -121,8 +121,8 @@ for e in os.listdir(data_directory):
                 x.append(eastings)
                 y.append(northings)
 
-centroid_x = e_sum / len(x)
-centroid_y = n_sum / len(y)
+centroid_x = e_sum / float(len(x))
+centroid_y = n_sum / float(len(y))
 
 # Now add some "points at infinity" - 200 points in a circle way
 # outside the border of the United Kingdom:
