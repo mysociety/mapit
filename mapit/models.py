@@ -7,6 +7,7 @@ from django.db import connection
 
 from mapit.managers import Manager, GeoManager
 from mapit import countries
+from mapit.djangopatch import NoValidateRawQuerySet
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -133,20 +134,41 @@ class AreaManager(models.GeoManager):
             )
         ))
 
-    def intersect(self, query_type, area):
+    # In order for this query to be performant, we have to do it ourselves.
+    # We force the non-geographical part of the query to be done first, because
+    # if a type is specified, that greatly speeds it up.
+    def intersect(self, query_type, area, types, generation):
         if not isinstance(query_type, list): query_type = [ query_type ]
 
-        where = [
-            'mapit_geometry.area_id = mapit_area.id',
-            'mapit_geometry.polygon && (select st_collect(polygon) from mapit_geometry where area_id=%s)',
-        ]
-        where.append('(' + ' OR '.join([ 'ST_%s(mapit_geometry.polygon, (select st_collect(polygon) from mapit_geometry where area_id=%%s))' % type for type in query_type ]) + ')')
+        params = [ area.id, area.id, generation.id, generation.id ]
 
-        return Area.objects.exclude(id=area.id).extra(
-            tables = [ 'mapit_geometry' ],
-            where = where,
-            params = [ area.id ] * ( 1 + len(query_type) ),
-        )
+        if types:
+            params.append( tuple(types) )
+            query_area_type = ' AND mapit_area.type_id IN (SELECT id FROM mapit_type WHERE code IN %s) '
+        else:
+            query_area_type = ''
+
+        query_geo = ' OR '.join([ 'ST_%s(geometry.polygon, target.polygon)' % type for type in query_type ])
+
+        query = '''
+WITH
+    target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
+    geometry AS (
+        SELECT mapit_geometry.*
+          FROM mapit_geometry, mapit_area, target
+         WHERE mapit_geometry.area_id = mapit_area.id
+               AND mapit_geometry.polygon && target.polygon
+               AND mapit_area.id != %%s
+               AND mapit_area.generation_low_id <= %%s
+               AND mapit_area.generation_high_id >= %%s
+               %s
+    )
+SELECT DISTINCT mapit_area.*
+  FROM mapit_area, geometry, target
+ WHERE geometry.area_id = mapit_area.id AND (%s)
+''' % (query_area_type, query_geo)
+        # Monkeypatched self.raw() here to prevent needless SQL validation (removed from Django 1.3)
+        return NoValidateRawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
         current_generation = Generation.objects.current()

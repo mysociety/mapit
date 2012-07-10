@@ -148,23 +148,11 @@ def area_intersect(query_type, title, request, area_id, format):
         raise ViewException(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
-    args = {
-        'generation_low__lte': generation,
-        'generation_high__gte': generation,
-    }
-
-    type = request.REQUEST.get('type', '')
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
-    elif area.type.code in ('EUR'):
-        args['type__code'] = area.type.code
+    types = filter( None, request.REQUEST.get('type', '').split(',') )
 
     set_timeout(format)
     try:
-        areas = list(Area.objects.intersect(query_type, area).filter(**args).distinct())
-        areas = add_codes(areas)
+        areas = add_codes(Area.objects.intersect(query_type, area, types, generation))
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
