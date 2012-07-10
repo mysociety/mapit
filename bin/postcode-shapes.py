@@ -102,7 +102,7 @@ for e in os.listdir(data_directory):
             pc = row[0]
             m = postcode_matcher.search(pc)
             if not m:
-                raise Exception, "Couldn't parse postcode:", pc
+                raise Exception, "Couldn't parse postcode:" + pc
             # Normalize the postcode's format to put a space in the
             # right place:
             pc = m.group(1) + " " + m.group(3)
