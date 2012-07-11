@@ -152,7 +152,10 @@ def area_intersect(query_type, title, request, area_id, format):
 
     set_timeout(format)
     try:
-        areas = add_codes(Area.objects.intersect(query_type, area, types, generation))
+        # Cast to list so that it's evaluated here, and add_codes doesn't get
+        # confused with a RawQuerySet
+        areas = list(Area.objects.intersect(query_type, area, types, generation))
+        areas = add_codes(areas)
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
