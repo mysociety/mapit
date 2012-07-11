@@ -17,6 +17,7 @@ from mapit.utils import is_valid_postcode, is_valid_partial_postcode
 from mapit.shortcuts import output_json, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
+from mapit.views.areas import add_codes
 from mapit import countries
 
 # Stupid fixed IDs from old MaPit
@@ -53,7 +54,7 @@ def postcode(request, postcode, format='json'):
     except:
         generation = Generation.objects.current()
     if not hasattr(countries, 'is_special_postcode') or not countries.is_special_postcode(postcode.postcode):
-        areas = Area.objects.by_postcode(postcode, generation)
+        areas = add_codes(Area.objects.by_postcode(postcode, generation))
     else:
         areas = []
 
