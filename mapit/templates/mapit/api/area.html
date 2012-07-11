@@ -8,9 +8,12 @@
                     {% else %}
                     <li>/area/<i>[area ID]</i>
                     {% endif %}
-                    {% ifnotequal country 'Global' %}
+                    {% if country == 'Global' %}
+                    <li>/code/osm_rel/<i>[OSM relation ID]</i>
+                    <li>/code/osm_way/<i>[OSM way ID]</i>
+                    {% else %}
                     <li>/area/<i>[area ID]</i>/example_postcode
-                    {% endifnotequal %}
+                    {% endif %}
                     <li>/area/<i>[area ID]</i>/geometry
                     <li>/area/<i>[area ID]</i>.<i>[kml or geojson or wkt]</i>
                     <li>/area/<i>[SRID]</i>/<i>[area ID]</i>.<i>[kml or json or wkt]</i>
@@ -19,7 +22,7 @@
                 <dd><i>simplify_tolerance</i>, a floating point parameter to simplify the polygons returned.</dd>
                 <dt>Returns:</dt>
                 <dd>Information on a particular area, including name, type, parent, and any associated codes
-                (see <a href="#general">below for details</a>).
+                (see <a href="#general">below for details</a>). The code lookups redirect to the area URI.
                 {% ifnotequal country 'Global' %}
                 example_postcode returns a random postcode within the area specified.
                 {% endifnotequal %}
