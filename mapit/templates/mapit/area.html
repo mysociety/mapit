@@ -27,7 +27,7 @@
         <p>Get <a href="{% url mapit_index %}area/{{ area.id }}">this data as JSON</a></p>
     </header>
 
-{% if area.polygons.count and show_geometry %}
+{% if area.polygons.count %}
 <div id="map"></div>
 <script>
     var map = new L.Map("map");
@@ -67,7 +67,7 @@
     <section class="details">
         <ul>
             <li>
-{% if area.polygons.count and show_geometry %}
+{% if area.polygons.count %}
                 <h3>Geometry:</h3>
                 <ul>
                     <li><a href="{% url mapit_index %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a></li>
@@ -79,7 +79,7 @@
 {% endif %}
             </li>
             <li>
-{% if area.polygons.count and show_geometry %}
+{% if area.polygons.count %}
                 <h3>Areas:</h3>
                 <ul>
                     <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html">Touching this area</a></li>

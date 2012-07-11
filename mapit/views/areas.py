@@ -60,7 +60,6 @@ def area(request, area_id, format='json'):
             'area': area,
             'codes': codes,
             'alternative_names': alternative_names,
-            'show_geometry': (area.type.code not in ('EUR', 'SPE', 'WAE'))
         })
     return output_json( area.as_dict(names) )
 
