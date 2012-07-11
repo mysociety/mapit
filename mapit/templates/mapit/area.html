@@ -82,11 +82,11 @@
 {% if area.polygons.count %}
                 <h3>Areas:</h3>
                 <ul>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html">Touching this area</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html">Overlapping this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html{{ geotype.touches.0 }}">Touching this area{{ geotype.touches.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html{{ geotype.overlaps.0 }}">Overlapping this area{{ geotype.overlaps.1 }}</a></li>
                     <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covering this area</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html">Covered by this area</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html">Covered by or overlapping this area</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">Covered by this area{{ geotype.covers.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html{{ geotype.coverlaps.0 }}">Covered by or overlapping this area{{ geotype.coverlaps.1 }}</a></li>
                 </ul>
 {% endif %}
             </li>

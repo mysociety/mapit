@@ -92,3 +92,25 @@ def augment_postcode(postcode, result):
     result['easting'] = int(round(loc[0]))
     result['northing'] = int(round(loc[1]))
 
+# Hacky function to restrict certain geographical links in the HTML pages to
+# types to make them more likely to return results.
+def restrict_geo_html(area):
+    geotype = {}
+    if area.type.code == 'EUR':
+        geotype = { 'touches': ['EUR'], 'overlaps': ['UTA'], 'covers': ['UTA'], 'coverlaps': ['UTA'] }
+    elif area.type.code in ('CTY', 'UTA'):
+        geotype = { 'touches': ['CTY','DIS','MTD','LBO','COI','UTA'], 'overlaps': ['WMC'], 'covers': ['CED','DIW','MTW','LBW','UTE','UTW'], 'coverlaps': ['CED','DIW','MTW','LBW','UTE','UTW'] }
+    elif area.type.code == 'COI':
+        geotype = { 'covers': ['CPC'], 'coverlaps': ['CPC'] }
+    elif area.type.code == 'LGD':
+        geotype = { 'overlaps': ['LGE','LGW'], 'coverlaps': ['LGE','LGW'] }
+    elif area.type.code == 'GLA':
+        geotype = { 'touches': ['CTY','UTA'], 'overlaps': ['WMC'], 'covers': ['LBO'], 'coverlaps': ['WMC'] }
+    elif area.type.code == 'SPE':
+        geotype = { 'touches': ['SPE'], 'overlaps': ['UTA'], 'covers': ['UTA'], 'coverlaps': ['UTA'] }
+    elif area.type.code == 'WAE':
+        geotype = { 'touches': ['WAE'], 'overlaps': ['UTA'], 'covers': ['UTA'], 'coverlaps': ['UTA'] }
+    for k, v in geotype.items():
+        geotype[k] = [ '?type=%s' % ','.join(v), ' (%s)' % ', '.join(v) ]
+    return geotype
+

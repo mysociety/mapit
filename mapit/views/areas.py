@@ -55,11 +55,16 @@ def area(request, area_id, format='json'):
     alternative_names = sorted((n.type.description, n.name) for n in names
                                if n.type.code != "default")
 
+    geotype = {}
+    if hasattr(countries, 'restrict_geo_html'):
+        geotype = countries.restrict_geo_html(area)
+
     if format == 'html':
         return render(request, 'mapit/area.html', {
             'area': area,
             'codes': codes,
             'alternative_names': alternative_names,
+            'geotype': geotype,
         })
     return output_json( area.as_dict(names) )
 
