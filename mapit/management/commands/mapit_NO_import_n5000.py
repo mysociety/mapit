@@ -13,7 +13,7 @@ from django.core.management.base import LabelCommand
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
-from utils import save_polygons
+from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import N5000 Kommunes'

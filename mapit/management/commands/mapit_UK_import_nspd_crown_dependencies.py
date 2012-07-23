@@ -3,7 +3,7 @@
 # http://www.ons.gov.uk/about-statistics/geography/products/geog-products-postcode/nspd/
 
 import csv
-from utils import PostcodeCommand
+from mapit.management.command_utils import PostcodeCommand
 
 class Command(PostcodeCommand):
     help = 'Imports Crown Dependency postcodes from the NSPD'

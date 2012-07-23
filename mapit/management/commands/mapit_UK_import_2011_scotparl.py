@@ -5,7 +5,7 @@ from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
-from utils import save_polygons
+from mapit.management.command_utils import save_polygons
 
 name_to_code = {
     'Aberdeen Central P Const': 'S16000074',

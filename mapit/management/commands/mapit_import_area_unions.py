@@ -13,7 +13,7 @@ from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import GEOSGeometry
 from mapit.models import Area, Generation, Geometry, Country, Type
-from utils import save_polygons
+from mapit.management.command_utils import save_polygons
 
 # CSV format is
 # ID;code;name;area1,area2,...;email;categories

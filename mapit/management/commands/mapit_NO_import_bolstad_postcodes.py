@@ -9,7 +9,7 @@
 
 import csv
 from django.contrib.gis.geos import Point
-from utils import PostcodeCommand
+from mapit.management.command_utils import PostcodeCommand
 
 class Command(PostcodeCommand):
     help = 'Import Norwegian postcodes from the Erik Bolstad data set'

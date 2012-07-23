@@ -17,7 +17,7 @@ import csv
 from django.contrib.gis.geos import Point
 from django.db import transaction
 from mapit.models import Area
-from utils import PostcodeCommand
+from mapit.management.command_utils import PostcodeCommand
 
 class Command(PostcodeCommand):
     help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'

@@ -23,7 +23,7 @@ from django.core.management.base import LabelCommand
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
-from utils import save_polygons
+from mapit.management.command_utils import save_polygons
 from glob import glob
 import urllib2
 from BeautifulSoup import BeautifulSoup
