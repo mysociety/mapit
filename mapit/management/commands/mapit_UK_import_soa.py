@@ -2,7 +2,7 @@
 # from the ONS's CD-ROM of Super Output Areas for England and Wales.  
 # Information about the CD-ROM here: http://bit.ly/63bX97
 
-# Run as: ./manage.py import_soa shapefile.shp
+# Run as: ./manage.py mapit_UK_import_soa shapefile.shp
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
