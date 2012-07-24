@@ -111,6 +111,6 @@ the admin interface and they will automatically work in the API-based front
 end.
 
 However, if you have some bulk data you wish to import (which will make
-easier), you will need to import this data into MapIt. See the `country
-specific READMEs <./README.rst#country-specific-readmes>`_ for instructions on
-their bulk imports, which should show the general format for how it's done.
+easier), you will need to import this data into MapIt. See the country specific
+READMEs section in ``README.rst`` for instructions on their bulk imports, which
+should show the general format for how it's done.

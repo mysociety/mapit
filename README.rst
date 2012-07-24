@@ -33,16 +33,16 @@ Installation
 ------------
 
 MapIt can be installed as a Django app, or as a standalone server. Full details
-are in `INSTALL.rst <./INSTALL.rst>`_.
+are in ``INSTALL.rst``.
 
 Country specific READMEs
 ------------------------
 
 These are extensive notes for some of the countries that MapIt has been set up
-to serve. These are in the `docs <./docs>`_ folder:
+to serve. These are in the ``docs`` folder:
 
-  * `UK <./docs/README-UK.rst>`_
-  * `Norway <./docs/README-NORWAY.rst>`_
+  * UK: ``docs/README-UK.rst``
+  * Norway: ``docs/README-NORWAY.rst``
 
 Improvements / patches
 ----------------------
