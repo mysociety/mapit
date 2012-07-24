@@ -1,10 +1,28 @@
 MapIt
 =====
 
-The mapit directory is a standard GeoDjango app, and the project directory is
-an example GeoDjango project using that app. Other top-level things are mostly
-to fit within mySociety's standard deployment, or country specific data,
-one-off scripts and so on.
+MapIt is a service that maps geographical points to administrative areas. It is
+useful for anyone who has the co-ordinates of a point on Earth, and who needs
+to find out what country, region, city, constituency, or state it lies within.
+It’s also great for looking up the shapes of all those boundaries.
+
+`mySociety <http://www.mysociety.org>`_ (the UK charity that wrote this code)
+runs several public MapIts that you can use:
+
+    * `MapIt Global <http://global.mapit.mysociety.org/>`_ - global boundaries
+      from the `OSM <http://www.openstreetmap.org/>`_ project.
+    * `MapIt UK <http://mapit.mysociety.org/>`_ - UK boundaries from various
+      sources.
+
+The above are free for non-commercial, low-volume use.
+
+Code Layout
+-----------
+
+The ``mapit`` directory is a standard `GeoDjango <http://geodjango.org/>`_ app,
+and the ``project`` directory is an example GeoDjango project using that app
+Other top-level things are mostly to fit within mySociety's standard
+deployment, or country specific data, one-off scripts and so on.
 
 MapIt has been installed on Debian lenny and squeeze, and on Ubuntu from 10.04
 onwards. If GeoDjango and PostGIS run on it, it should theoretically be okay;
