@@ -11,9 +11,9 @@ for dirpath, dirnames, filenames in os.walk('mapit'):
 
 setup(
     name='django-mapit',
-    version='1.0.0pr2',
+    version='1.0.0pr3',
     description='A web service for mapping postcodes and points to current or past administrative area information and polygons.',
-    long_description=open('README').read(), # TODO: Put this into ReST format
+    long_description=open('README.rst').read(),
     author='mySociety',
     author_email='mapit@mysociety.org',
     url='https://github.com/mysociety/mapit',

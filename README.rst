@@ -19,7 +19,9 @@ why e.g. SpatiaLite could not be used successfully, but it has never been tried.
 
 To install GeoDjango and PostGIS, please follow all the standard instructions
 (including creating the template) at:
+
     http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/#ubuntudebian
+
 And anything else you need to set up Django as normal.
 
 [ Note for UK/Ireland: Not only is the PostGIS that is installed missing SRID
@@ -32,6 +34,8 @@ necessary, depending on your version of PostGIS, but do check. ]
 
 You will also need a couple of other Debian packages, so install them:
 
+::
+
     sudo apt-get install python-yaml memcached python-memcache git-core
 
 You will also need to be using South to manage schema migrations.
@@ -41,17 +45,18 @@ Installation as a Django app
 
 As mapit is a Django app, if you are making a GeoDjango project you can simply
 use mapit from within your project like any normal Django app:
-* Make sure it is on sys.path (a packaged install e.g. with 'pip install
-  django-mapit' does this for you);
-* Add 'mapit' and 'django.contrib.gis' to your INSTALLED_APPS;
-* Add the following settings to settings.py:
-  MAPIT_AREA_SRID - the SRID of your area data (if in doubt, set to 4326)
-  MAPIT_COUNTRY - used to supply country specific functions (such as postcode
-    validation). If you look at the country files in mapit/countries/ you can
-    see how to add specialised country-specific functions.
-  MAPIT_RATE_LIMIT - a list of IP addresses or User Agents excluded from rate limiting
-* Set up a path in your main urls.py to point at mapit.urls.
-* run './manage.py syncdb' and './manage.py migrate' to ensure the db is set up
+
+    * Make sure it is on sys.path (a packaged install e.g. with 'pip install
+      django-mapit' does this for you);
+    * Add 'mapit' and 'django.contrib.gis' to your INSTALLED_APPS;
+    * Add the following settings to settings.py:
+        - MAPIT_AREA_SRID - the SRID of your area data (if in doubt, set to 4326)
+        - MAPIT_COUNTRY - used to supply country specific functions (such as postcode
+          validation). If you look at the country files in mapit/countries/ you can
+          see how to add specialised country-specific functions.
+        - MAPIT_RATE_LIMIT - a list of IP addresses or User Agents excluded from rate limiting
+    * Set up a path in your main urls.py to point at mapit.urls.
+    * run './manage.py syncdb' and './manage.py migrate' to ensure the db is set up
 
 This approach is new, so please let us know if something goes wrong or could be
 improved.
@@ -60,6 +65,8 @@ Installation standalone with the example project
 ------------------------------------------------
 
 A standard git clone will get you the repository:
+
+::
 
     git clone git://github.com/mysociety/mapit.git
 
@@ -81,6 +88,8 @@ the first time I imported overnight and didn't realise).
 
 At this stage, you should be able to set up the database and run the
 development server. Do add an admin user when prompted:
+
+::
 
     cd project
     ./manage.py syncdb
@@ -110,9 +119,16 @@ Here are the basic instructions to install OS OpenData and ONSPD:
 2. Download the latest Code-Point Open, Boundary-Line and ONSPD from
    <http://parlvid.mysociety.org:81/os/>, and save/unzip in the data directory.
 3. Change to the project directory, and create database tables (if you haven't already done this):
+
+::
+
    ./manage.py syncdb
    ./manage.py migrate mapit
+
 4. Run the following in order:
+
+::
+
    ./manage.py mapit_generation_create --commit --desc "Initial import."
    ./manage.py loaddata uk
    ./manage.py mapit_UK_import_boundary_line --control=mapit.controls.first-gss --commit `ls ../data/Boundary-Line/Data/*.shp|grep -v high_water`
@@ -156,9 +172,16 @@ Here are the basic instructions to install data from OSM:
 1. Set AREA_SRID in conf/general.yml to 4326 (as OSM shapes are in WGS84).  
 2. cd bin and run "python osm_to_kml" to fetch OSM XML and convert it to KML.
 3. Change to the project directory, and create database tables:
+
+::
+
    ./manage.py syncdb
    ./manage.py migrate mapit
+
 4. Run the following (you can run anything without --commit to do a dry run):
+
+::
+
    ./manage.py mapit_generation_create --commit --desc "Initial import."
    ./manage.py loaddata norway
    ./manage.py mapit_NO_import_osm --commit ../../data/cache/*.kml
@@ -170,13 +193,20 @@ Please see below for information on where osm_to_kml gets its OSM data from.
 Alternatively, here are the basic instructions to install the N5000 data:
 
 1. Set AREA_SRID in conf/general.yml to 4326 (as we'll put N5000 shapes into WGS84).  
-2. Download N5000 from
-   <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>
+2. Download `N5000
+   <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>`_
    and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
+
+::
+
    ./manage.py syncdb
    ./manage.py migrate mapit
+
 4. Run the following (you can run anything without --commit to do a dry run):
+
+::
+
    ./manage.py mapit_generation_create --commit --desc "Initial import."
    ./manage.py loaddata norway
    ./manage.py mapit_NO_import_n5000 --commit ../../data/N5000\ shape/N5000_AdministrativFlate.shp
@@ -236,17 +266,19 @@ WMC areas for WriteToThem, and manually added our test/fake areas that used to
 be in code but can now happily sit in the database along with everything else.
 You probably don't need any of that for your own install.
 
-# Create inactive generation.
-./manage.py mapit_UK_import_boundary_line --control=mapit.controls.2009-10 `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
-./manage.py mapit_UK_import_codepoint ../../data/Code-Point-Open-2010-05/*.csv
-./manage.py mapit_UK_find_parents
-# Not importing NI here, as that only has the current boundaries.
-./manage.py mapit_UK_scilly ../../data/Code-Point-Open-2010-05/tr.csv
-# Make generation active, add another inactive generation
-./manage.py mapit_UK_import_boundary_line --control=mapit.controls.2010-05 `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
-# mapit_UK_import_codepoint not needed as it's the same and there's no P-in-P tests!
-./manage.py mapit_UK_find_parents
-./manage.py mapit_UK_scilly ../../data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
-./manage.py mapit_UK_import_nspd ../../data/NSPD-2010-05.csv # This is now split into two scripts, see below.
-# Make generation active.
+::
+
+    # Create inactive generation.
+    ./manage.py mapit_UK_import_boundary_line --control=mapit.controls.2009-10 `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
+    ./manage.py mapit_UK_import_codepoint ../../data/Code-Point-Open-2010-05/*.csv
+    ./manage.py mapit_UK_find_parents
+    # Not importing NI here, as that only has the current boundaries.
+    ./manage.py mapit_UK_scilly ../../data/Code-Point-Open-2010-05/tr.csv
+    # Make generation active, add another inactive generation
+    ./manage.py mapit_UK_import_boundary_line --control=mapit.controls.2010-05 `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
+    # mapit_UK_import_codepoint not needed as it's the same and there's no P-in-P tests!
+    ./manage.py mapit_UK_find_parents
+    ./manage.py mapit_UK_scilly ../../data/Code-Point-Open-2010-05/tr.csv # I doubt the boundaries change! But updates the generation.
+    ./manage.py mapit_UK_import_nspd ../../data/NSPD-2010-05.csv # This is now split into two scripts, see below.
+    # Make generation active.
 
