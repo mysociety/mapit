@@ -41,7 +41,7 @@ Prepare the files for import
     cd /tmp/gadm_data
     
     # decompress all the kmz files
-    unzip *.kmz
+    unzip '*.kmz'
 
 
 Work out the area types you'll need
