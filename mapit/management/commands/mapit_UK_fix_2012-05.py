@@ -11,7 +11,7 @@ from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<October 2011 Boundary-Line unitary/district SHP file>'
+    args = '<October 2010 Boundary-Line unitary/district SHP file>'
     option_list = LabelCommand.option_list + (
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
@@ -34,7 +34,7 @@ class Command(LabelCommand):
                     type = Type.objects.get(code=area_code),
                     country = Country.objects.get(code=country),
                     generation_low = Generation.objects.get(id=1),
-                    generation_high = Generation.objects.get(id=16),
+                    generation_high = Generation.objects.get(id=14),
                 )
                 if options['commit']:
                     m.save()
