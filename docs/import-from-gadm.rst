@@ -113,7 +113,15 @@ it. We'll call it as follows:
 
 
 Repeat the above line for all your data files changing the path to the file and
-the ``--area_type_code`` to suit your import.
+the ``--area_type_code`` to suit your import. You may also need to use a different value for ``--generation_id`` if this is not a fresh MapIt install.
 
 If you want to try the import without committing to the database don't specify
 the ``--commit`` switch.
+
+
+Activate the generation
+-----------------------
+
+Once you are happy that the data is correct activate the generation in the admin
+interface.
+
