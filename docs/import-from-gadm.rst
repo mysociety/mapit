@@ -41,10 +41,7 @@ Prepare the files for import
     cd /tmp/gadm_data
     
     # decompress all the kmz files
-    gunzip -S .kmz  *.kmz
-
-    # put the .kml suffix back on all the files (was lost when decompressing)
-    for F in *; do mv $F $F.kml; done
+    unzip *.kmz
 
 
 Work out the area types you'll need
@@ -77,6 +74,9 @@ editor we'll remove that manually as it is not relevant to us. This is done by
 finding the 'Water body' text and then deleting everything from and including
 the '<Placemark>' before it and up to and including the closing '</Placemark>'
 after it.
+
+Alternatively you could import using the steps below and then find it in the
+admin interface and delete it.
 
 
 Prepare the MapIt install for the import
