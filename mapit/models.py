@@ -60,8 +60,16 @@ class Country(models.Model):
         verbose_name_plural='countries'
 
 class Type(models.Model):
-    code = models.CharField(max_length=3, unique=True)
-    description = models.CharField(max_length=200, blank=True)
+
+    # An area type (the Type model) is the type of area. You can see examples
+    # for a few countries in the mapit/fixtures directory. In the UK we have
+    # county councils (CTY), district councils (DIS), constituencies of the UK
+    # Parliament (WMC), Scottish Parliament regions (SPE), and so on. The fact
+    # they are three letter codes is a hangover from the original source data
+    # we used from Ordnance Survey, and could potentially be changed.
+
+    code = models.CharField(max_length=3, unique=True, help_text="A unique three letter code, eg 'CTR', 'CON', etc")
+    description = models.CharField(max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
 
     def __unicode__(self):
         return '%s (%s)' % (self.description, self.code)
@@ -221,8 +229,15 @@ class Geometry(models.Model):
         return u'%s, polygon %d' % (self.area, self.id)
 
 class NameType(models.Model):
-    code = models.CharField(max_length=10, unique=True)
-    description = models.CharField(max_length=200, blank=True)
+
+    # Name types are for storing different types of names. This could have
+    # different uses - in the UK it is used to store names from different
+    # sources, and then one is picked for the canonical name on the Area model
+    # itself; in global MaPit, the different language names are stored here
+    # and displayed in the alternative names section.
+
+    code = models.CharField(max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
+    description = models.CharField(max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
     objects = Manager()
 
     def __unicode__(self):
@@ -277,8 +292,15 @@ class Name(models.Model):
                                  self.name])
 
 class CodeType(models.Model):
-    code = models.CharField(max_length=10, unique=True)
-    description = models.CharField(max_length=200, blank=True)
+
+    # Code types are so you can store different types of code for an area. In
+    # the UK we have "ons" for old style Office of National Statistics codes,
+    # "gss" for new style ONS codes, and unit_id for the Ordnance Survey ID.
+    # This could be extended to a more generic data store of information on an
+    # object, perhaps.
+
+    code = models.CharField(max_length=10, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
+    description = models.CharField(max_length=200, blank=True, help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
 
     def __unicode__(self):
         return '%s (%s)' % (self.description, self.code)
