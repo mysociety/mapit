@@ -129,7 +129,9 @@ def area_polygon(request, srid='', area_id='', format='kml'):
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
-    generation = Generation.objects.current()
+
+    generation = request.REQUEST.get('generation', Generation.objects.current())
+    if not generation: generation = Generation.objects.current()
     args = {
         'generation_low__lte': generation,
         'generation_high__gte': generation,
