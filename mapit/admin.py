@@ -1,5 +1,5 @@
 from django.contrib.gis import admin
-from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, Country
+from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, CodeType, Country
 
 class NameInline(admin.TabularInline):
     model = Name
@@ -37,6 +37,9 @@ class TypeAdmin(admin.OSMGeoAdmin):
 class NameTypeAdmin(admin.OSMGeoAdmin):
     pass
 
+class CodeTypeAdmin(admin.OSMGeoAdmin):
+    pass
+
 class CountryAdmin(admin.OSMGeoAdmin):
     pass
 
@@ -45,5 +48,6 @@ admin.site.register(Geometry, GeometryAdmin)
 admin.site.register(Generation, GenerationAdmin)
 admin.site.register(Postcode, PostcodeAdmin)
 admin.site.register(Type, TypeAdmin)
+admin.site.register(CodeType, CodeTypeAdmin)
 admin.site.register(NameType, NameTypeAdmin)
 admin.site.register(Country, CountryAdmin)
