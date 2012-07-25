@@ -95,13 +95,19 @@ development server. Do add an admin user when prompted:
     source .venv/bin/activate
     pip install -r requirements.txt
 
-    # Setup and run dev server
+    # generate the css from the sass
+    ../bin/make_css
+
+    # Setup django install
     ./manage.py syncdb
     ./manage.py migrate mapit
+
+    # run dev server
     ./manage.py runserver
 
 (Alternatively, set up a live web server however you wish - see the Deployment
-Django documentation for details beyond the scope of this document.)
+Django documentation for details beyond the scope of this document. Remember to
+run ``./manage.py collectstatic`` too if running Django >= 1.3.)
 
 You can then visit http://localhost:8000/ and hopefully see the default MapIt
 homepage. http://localhost:8000/admin/ should show the admin interface.
