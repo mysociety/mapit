@@ -31,9 +31,45 @@ class GenerationManager(models.Manager):
         return latest[0]
         
 class Generation(models.Model):
+
+    # Generations are used so that, theoretically, old versions of the same
+    # data can be stored and accessed when new versions (ie. boundary changes
+    # of some sort) come along. The current generation is the most recent
+    # active generation, and is the default for e.g. postcode and point
+    # lookups (both can be overridden to a different generation with a query
+    # parameter). Inactive generations are so that you can load in new data
+    # without it being returned by normal lookups by everyone using mapit.
+    # 
+    # An Area in the database has a minimum and maximum generation that it is
+    # valid for, so that you can see at which point an area was added and then
+    # removed.
+    # 
+    # As an example, http://mapit.mysociety.org/postcode/EH11BB.html is the
+    # current areas for that postcode, whilst
+    # http://mapit.mysociety.org/postcode/EH11BB.html?generation=14 gives you
+    # the areas before the last Scottish Parliament boundary changes, hence
+    # giving you the different areas involved.
+    # 
+    # The concept works okay for boundary changes of things that have the
+    # notion of being children - e.g. council wards, UK Parliament
+    # constituencies, and so on - which are changed with a clean slate to a
+    # new set (though note that if someone has some sort of alert on a ward
+    # ID, that will stop at a point at which that ward ceases to exist, no
+    # easy solution there). Where it falls down a bit is if the 'parent' has a
+    # boundary change - users of mapit (including us) assume that e.g.
+    # http://mapit.mysociety.org/area/2651.html is and always will be the City
+    # of Edinburgh Council boundary. If the City of Edinburgh Council boundary
+    # were to change, this should get a new ID starting at the new generation.
+    # But that would break some things.
+    # 
+    # Another example, as I've just fixed #32, is
+    # http://mapit.mysociety.org/area/2253/children.html?type=UTW vs
+    # http://mapit.mysociety.org/area/2253/children.html?generation=14;type=UTW
+    # - the wards of Bedford before and after a boundary change.
+
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=255, help_text="Describe this generation, eg '2010 electoral boundaries'")
 
     objects = GenerationManager()
 
