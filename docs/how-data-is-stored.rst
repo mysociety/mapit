@@ -16,7 +16,7 @@ Areas
 store depend on what you want to use MapIt for, but they'll most likely be
 countries, states and other administrative boundaries.
 
-It is possible for an area to have parents and children if you need to reflect a
+It is possible for an area to have a parent and children, if you need to reflect a
 hierarchy. So a 'county' can contain 'constituencies' and so on. Note that this
 is different to one area covering another - it is only intended for defined
 hierarchies. It is possible to search for overlapping, covering and touching
@@ -29,7 +29,8 @@ Geometries
 An ``Area`` is actually made up of one or more ``Geometries`` - which define a
 boundary. Most areas will be defined by a single geometry, but others may
 require several. For example a country boundary may have a geometry for the
-mainland, and then several smaller geometries for outlying islands.
+mainland, and then several smaller geometries for outlying islands. Geometries
+are optional; you can store Areas with no associated geometry.
 
 
 Area Types
@@ -86,11 +87,22 @@ allows you to add them to the system in advance but only activate them when
 you're ready.
 
 
-Points
-------
+Postcodes
+---------
 
-Points are named locations. In the UK we store postcodes such as 'SW1A 1AA' that
-map to latitude and longitude locations (the model in the code is called
-Postcode for this reason).
+Postcodes are named items, that optionally point to a location. In the UK we have
+a large set of postcodes such as 'SW1A 1AA' that map to a latitude and longitude
+(the centroid of all the addresses that use that postcode to be precise); but we
+also hold postcodes of Crown Dependencies for which we do not know the location -
+but we store them anyway, so we can at least say whether an entered postcode is
+e.g. a valid Jersey postcode or not.
 
+The Postcodes model could be used to store any sort of named points, not
+necessarily postcodes or zip codes.
+
+
+There is also a many-to-many table between Postcodes and Areas. This is for the
+case where you have an Area without a geometry, but have some sort of list that
+maps which postcodes are in which area. This is the case in the UK for Northern
+Ireland Parliamentary constituencies, for example.
 
