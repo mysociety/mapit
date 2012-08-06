@@ -92,7 +92,7 @@ def deal_with_top_level_element(element, parser):
     element_tuple = element.name_id_tuple()
     element_type, element_id = element_tuple
 
-    debug = element_id == "139312403"
+    debug = (element_id == "139312403")
 
     # Nodes are a special case - there are too many of them to deal
     # with in the same way as ways / relations, since if we created
