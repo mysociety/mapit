@@ -44,24 +44,33 @@ def wanted_boundary(element):
     if boundary != 'administrative':
         return None
     admin_level = element.tags.get('admin_level', '')
-    # if admin_level != '4':
     if not admin_level:
         return None
     if element.element_type == 'node':
         return None
+    try:
+        admin_level_int = int(admin_level, 10)
+    except ValueError:
+        return None
+    if (admin_level_int < 2) or (admin_level_int > 11):
+        return None
     return admin_level
 
-def write_kml(element, admin_level):
+def get_kml_filename(element, admin_level):
     element_type, element_id = element.name_id_tuple()
     name = get_name_from_tags(element.tags, element_type, element_id)
-    try:
-        basename = "%s-%s-%s" % (element_type,
-                                 element_id,
-                                 replace_slashes(name))
+    basename = "%s-%s-%s" % (element_type,
+                             element_id,
+                             replace_slashes(name))
 
-        level_directory = os.path.join(data_dir, "cache", "planet-al%02d" % (int(admin_level,10),))
-        mkdir_p(level_directory)
-        filename = os.path.join(level_directory, u"%s.kml" % (basename,))
+    level_directory = os.path.join(data_dir, "cache", "planet-al%02d" % (int(admin_level,10),))
+    mkdir_p(level_directory)
+    return os.path.join(level_directory, u"%s.kml" % (basename,))
+
+def write_kml(element, admin_level):
+
+    try:
+        filename = get_kml_filename(element, admin_level)
 
         if not os.path.exists(filename):
 
@@ -147,36 +156,62 @@ def deal_with_top_level_element(element, parser):
             incomplete_ways_or_relations.discard(element_tuple)
             if admin_level:
                 write_kml(element, admin_level)
-    else:
+                currently_wanted_elements.remove(element_tuple)
 
-        if debug: print "wasn't in incomplete_ways_or_relations"
-        # If this is a wanted boundary, it might be one we've never seen before.
-        if admin_level:
+    elif admin_level:
 
-            # If there's a version from the filesystem, that will be
-            # more complete:
-            from_cache = parser.get_known_or_fetch(element_type, element_id)
-            if not from_cache.element_content_missing:
-                element = from_cache
+        # Test early if KML has already been generated for this
+        # element (i.e. it's already been done):
 
-            still_missing = element.reconstruct_missing(parser, nodes_needed)
-            if still_missing:
-                incomplete_ways_or_relations.add(element_tuple)
-                for missing_element in still_missing:
-                    missing_type, missing_id = missing_element.name_id_tuple()
-                    if missing_id == "144804249":
-                        print "  got our one (missing element)!"
-                    if missing_type == 'node':
-                        new_nodes_needed[missing_id] = None
-                    else:
-                        incomplete_ways_or_relations.add(missing_element.name_id_tuple())
-            else: # i.e. it's complete
-                write_element_to_cached_xml(element)
-                write_kml(element, admin_level)
+        if os.path.exists(get_kml_filename(element, admin_level)):
+            return
+
+        # So we want KML for this, but it hasn't already been done,
+        # and it wasn't already in the incomplete list.  Only continue
+        # to deal with it if we haven't reached the limt
+
+        if len(currently_wanted_elements) >= wanted_elements_limit:
+            print "Already considering enough elements, so not adding", element
+            return
+
+        currently_wanted_elements.add(element_tuple)
+
+        # If there's a version from the filesystem, that will be
+        # more complete:
+        from_cache = parser.get_known_or_fetch(element_type, element_id)
+        if not from_cache.element_content_missing:
+            element = from_cache
+
+        still_missing = element.reconstruct_missing(parser, nodes_needed)
+        if still_missing:
+            incomplete_ways_or_relations.add(element_tuple)
+            for missing_element in still_missing:
+                missing_type, missing_id = missing_element.name_id_tuple()
+                if missing_id == "144804249":
+                    print "  got our one (missing element)!"
+                if missing_type == 'node':
+                    new_nodes_needed[missing_id] = None
+                else:
+                    incomplete_ways_or_relations.add(missing_element.name_id_tuple())
+        else: # i.e. it's complete
+            write_element_to_cached_xml(element)
+            write_kml(element, admin_level)
+            currently_wanted_elements.remove(element_tuple)
+
+# We're going to do multiple passes across the planet.osm file.  If we
+# keep track of every way / relation that we want to complete, or
+# require data for, we'll run out of memory at an early stage.
+
+# There are about 230,000 such ways and relations that we want to
+# import, so I'm going to limit the new required elements to 20,000
+# each time.
+
+wanted_elements_limit = 20000
 
 nodes_needed = {}
 new_nodes_needed = {}
 incomplete_ways_or_relations = set()
+currently_wanted_elements = set()
 
 time_through = 1
 
@@ -206,7 +241,7 @@ while True:
     with open(planet_filename) as fp:
         xml.sax.parse(fp, parser)
 
-    if not (new_nodes_needed or incomplete_ways_or_relations):
+    if not (new_nodes_needed or incomplete_ways_or_relations or parser.limit_reached):
         "Everything found, exiting."
         break
 
