@@ -164,7 +164,9 @@ def nearest(request, srid, x, y, format='json'):
             'json': '/postcode/',
         })
 
+    pc = postcode.as_dict()
+    pc['distance'] = round(postcode.distance.m)
     return output_json({
-        'postcode': postcode.as_dict(),
+        'postcode': pc,
     })
 
