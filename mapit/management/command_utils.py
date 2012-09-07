@@ -1,10 +1,36 @@
 # Shared functions for postcode and area importing.
 
+import re
 import sys
+from xml.sax.handler import ContentHandler
 
 from django.core.management.base import LabelCommand
 from django.conf import settings
 from mapit.models import Postcode
+
+class KML(ContentHandler):
+    def __init__(self, *args, **kwargs):
+        self.content = ''
+        self.data = {}
+
+    def characters(self, content):
+        self.content += content
+
+    def normalize_whitespace(s):
+        return re.sub('(?us)\s+', ' ', s).strip()
+
+    def endElement(self, name):
+        if name == 'name':
+            self.current = {}
+            self.data[self.normalize_whitespace(self.content)] = self.current
+        elif name == 'value':
+            self.current[self.name] = self.content.strip()
+            self.name = None
+        self.content = ''
+
+    def startElement(self, name, attr):
+        if name == 'Data':
+            self.name = self.normalize_whitespace(attr['name'])
 
 def save_polygons(lookup):
     for shape in lookup.values():

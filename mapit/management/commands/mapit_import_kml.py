@@ -5,14 +5,13 @@
 
 import re 
 import xml.sax
-from xml.sax.handler import ContentHandler
 from optparse import make_option
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from mapit.models import Area, Generation, Type, NameType, Country
-from mapit.management.command_utils import save_polygons
+from mapit.management.command_utils import save_polygons, KML
 
 from pprint import pprint
 
@@ -119,24 +118,3 @@ class Command(LabelCommand):
                 m.names.update_or_create({ 'type': name_type }, { 'name': name })
                 save_polygons({ m.id : (m, poly) })
 
-
-class KML(ContentHandler):
-    def __init__(self, *args, **kwargs):
-        self.content = ''
-        self.data = {}
-
-    def characters(self, content):
-        self.content += content
-
-    def endElement(self, name):
-        if name == 'name':
-            self.current = {}
-            self.data[self.content.strip()] = self.current
-        elif name == 'value':
-            self.current[self.name] = self.content.strip()
-            self.name = None
-        self.content = ''
-
-    def startElement(self, name, attr):
-        if name == 'Data':
-            self.name = attr['name']

@@ -16,14 +16,13 @@
 import os
 import re
 import xml.sax
-from xml.sax.handler import ContentHandler
 from optparse import make_option
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
-from mapit.management.command_utils import save_polygons
+from mapit.management.command_utils import save_polygons, KML
 from glob import glob
 import urllib2
 from BeautifulSoup import BeautifulSoup
@@ -36,9 +35,6 @@ def make_missing_none(s):
         return None
     else:
         return s
-
-def normalize_whitespace(s):
-    return re.sub('(?us)\s+', ' ', s).strip()
 
 LanguageCodes = namedtuple('LanguageCodes',
                            ['three_letter',
@@ -258,23 +254,3 @@ class Command(LabelCommand):
 
                     update_or_create()
 
-class KML(ContentHandler):
-    def __init__(self, *args, **kwargs):
-        self.content = ''
-        self.data = {}
-
-    def characters(self, content):
-        self.content += content
-
-    def endElement(self, name):
-        if name == 'name':
-            self.current = {}
-            self.data[normalize_whitespace(self.content)] = self.current
-        elif name == 'value':
-            self.current[self.name] = self.content.strip()
-            self.name = None
-        self.content = ''
-
-    def startElement(self, name, attr):
-        if name == 'Data':
-            self.name = normalize_whitespace(attr['name'])
