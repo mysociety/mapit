@@ -119,7 +119,8 @@ class Command(LabelCommand):
             try:
                 name = feat[name_field].value
             except:
-                print "Could not find name using name field '%s' - should it be something else? Specify it with --name_field" % name_field
+                choices = ', '.join(layer.fields)
+                print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
                 sys.exit(1)
             try:
                 name = name.decode(encoding)
