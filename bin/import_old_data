@@ -21,7 +21,7 @@ my $insert_code = $mapit->prepare('INSERT INTO areas_code
     (area_id, type, code) VALUES (?, ?, ?)');
 
 my $csv = new Text::CSV_XS();
-open my $fp, '../data/old-data.csv' or die $!;
+open my $fp, '../data/UK/old-data.csv' or die $!;
 $csv->getline($fp); # header row
 while (my $row = $csv->getline($fp)) {
     my ($id, $parent, $unit_id, $ons_code, $type, $country, $gl, $gh, $name) = @$row;

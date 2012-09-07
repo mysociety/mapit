@@ -13,7 +13,7 @@ class Command(NoArgsCommand):
         current_generation = Generation.objects.current()
 
         # Read in ward name -> electoral area name/area
-        mapping = csv.reader(open('../data/BL-2010-10-code-change.csv'))
+        mapping = csv.reader(open('../data/UK/BL-2010-10-code-change.csv'))
         mapping.next()
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]

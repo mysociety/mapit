@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
         euro_area.names.get_or_create(type=name_type, name='Northern Ireland')
 
         # Read in ward name -> electoral area name/area
-        ni_eas = csv.reader(open('../data/ni-electoral-areas.csv'))
+        ni_eas = csv.reader(open('../data/UK/ni-electoral-areas.csv'))
         ni_eas.next()
         ward_to_electoral_area = {}
         e = {}
@@ -50,7 +50,7 @@ class Command(NoArgsCommand):
             ward_to_electoral_area.setdefault(district, {})[ward] = e[electoral_area]
 
         # Read in new ONS code to names
-        snac = csv.reader(open('../data/snac-2009-ni-cons2ward.csv'))
+        snac = csv.reader(open('../data/UK/snac-2009-ni-cons2ward.csv'))
         snac.next()
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
