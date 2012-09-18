@@ -7,14 +7,21 @@ the co-ordinates of a point on Earth, and who needs to find out what country,
 region, city, constituency, or state it lies within. It’s also great for
 looking up the shapes of all those boundaries.
 
-It was created in 2003 by [mySociety](http://www.mysociety.org/) for use by
-their various tools needing admin area lookup.
+It was created in 2003 by `mySociety <http://www.mysociety.org/>`_, a UK
+charity, for use by their various tools needing admin area lookup.
+
+Installation
+------------
+
+MapIt can be installed as a Django app, or as a standalone server. For full
+details, please see our site at http://code.mapit.mysociety.org/ for help
+and documentation.
 
 Examples
 --------
 
-`mySociety <http://www.mysociety.org>`_ (the UK charity that wrote this code)
-runs public installations of MapIt that you might be able to use:
+`mySociety <http://www.mysociety.org>`_ runs public installations of MapIt that
+you might be able to use:
 
     * `MapIt Global <http://global.mapit.mysociety.org/>`_ - global boundaries
       from the `OpenStreetMap <http://www.openstreetmap.org/>`_ project.
@@ -22,11 +29,4 @@ runs public installations of MapIt that you might be able to use:
       sources.
 
 The above are free for non-commercial, low-volume use.
-
-Installation
-------------
-
-MapIt can be installed as a Django app, or as a standalone server. For full
-details, please see our site at <http://code.mapit.mysociety.org/> for help
-and documentation.
 
