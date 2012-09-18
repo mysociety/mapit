@@ -1,10 +1,11 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400italic,700italic,400,700);
 
 body {
   padding:50px;
-  font:14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
-  color:#777;
-  font-weight:300;
+  font-family: Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: #222;
+  font-weight: 300;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -21,10 +22,11 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size:28px;
+  font-size: 175%;
 }
 
 h2 {
+  margin-top: 1.5em;
   color:#393939;
 }
 
@@ -35,19 +37,29 @@ h3, h4, h5, h6 {
 a {
   color:#39c;
   font-weight:400;
-  text-decoration:none;
+}
+header a {
+    text-decoration: none;
+}
+
+a:hover {
+  color:#069;
 }
 
 a small {
-  font-size:11px;
+  font-size: 70%;
   color:#777;
   margin-top:-0.6em;
   display:block;
 }
 
+a:hover small {
+  color:#777;
+}
+
 .wrapper {
-  width:860px;
-  margin:0 auto;
+  max-width: 60em;
+  margin: 0 auto;
 }
 
 blockquote {
@@ -58,9 +70,9 @@ blockquote {
 }
 
 code, pre {
-  font-family:Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
-  color:#333;
-  font-size:12px;
+  font-family: Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
+  color: #333;
+  font-size: 87.5%;
 }
 
 pre {
@@ -95,13 +107,13 @@ img {
   max-width:100%;
 }
 
-header {
-  width:270px;
-  float:left;
-  position:fixed;
+.side {
+  width: 20em;
+  float: left;
+  position: fixed;
 }
 
-header ul {
+ul.buttons {
   list-style:none;
   height:40px;
   
@@ -121,52 +133,75 @@ header ul {
   width:270px;
 }
 
-header li {
+ul.buttons li {
   width:89px;
   float:left;
   border-right:1px solid #d2d2d2;
   height:40px;
 }
 
-header ul a {
+ul.buttons li:first-child a {
+  border-radius:5px 0 0 5px;
+}
+
+ul.buttons li:last-child a {
+  border-radius:0 5px 5px 0;
+}
+
+ul.buttons a {
   line-height:1;
-  font-size:11px;
+  font-size: 70%;
   color:#999;
   display:block;
   text-align:center;
   padding-top:6px;
-  height:40px;
+  height:34px;
+}
+
+ul.buttons a:hover {
+  color:#999;
+  background: -moz-linear-gradient(top, #fff 0%, #ddd 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fff), color-stop(100%,#ddd));
+  background: -webkit-linear-gradient(top, #fff 0%,#ddd 100%);
+  background: -o-linear-gradient(top, #fff 0%,#ddd 100%);
+  background: -ms-linear-gradient(top, #fff 0%,#ddd 100%);
+  background: linear-gradient(top, #fff 0%,#ddd 100%);
+}
+
+ul.buttons a:active {
+  -webkit-box-shadow: inset 0px 2px 2px 0px #ddd;
+  -moz-box-shadow: inset 0px 2px 2px 0px #ddd;
+  box-shadow: inset 0px 2px 2px 0px #ddd;
 }
 
 strong {
-  color:#222;
   font-weight:700;
 }
 
-header ul li + li {
+ul.buttons li + li {
   width:88px;
   border-left:1px solid #fff;
 }
 
-header ul li + li + li {
+ul.buttons li + li + li {
   border-right:none;
   width:89px;
 }
 
-header ul a strong {
-  font-size:14px;
+ul.buttons a strong {
+  font-size: 125%;
   display:block;
   color:#222;
 }
 
 section {
-  width:500px;
-  float:right;
-  padding-bottom:50px;
+  padding-left: 23em;
+  float: right;
+  padding-bottom: 3em;
 }
 
 small {
-  font-size:11px;
+  font-size: 70%;
 }
 
 hr {
@@ -176,13 +211,6 @@ hr {
   margin:0 0 20px;
 }
 
-footer {
-  width:270px;
-  float:left;
-  position:fixed;
-  bottom:50px;
-}
-
 @media print, screen and (max-width: 960px) {
   
   div.wrapper {
@@ -190,14 +218,10 @@ footer {
     margin:0;
   }
   
-  header, section, footer {
+  .side, section {
     float:none;
     position:static;
     width:auto;
-  }
-  
-  header {
-    padding-right:320px;
   }
   
   section {
@@ -211,7 +235,7 @@ footer {
     display:inline;
   }
   
-  header ul {
+  ul.buttons {
     position:absolute;
     right:50px;
     top:52px;
@@ -227,7 +251,7 @@ footer {
     padding:0;
   }
   
-  header ul, header p.view {
+  ul.buttons, header p.view {
     position:static;
   }
   
@@ -241,7 +265,7 @@ footer {
     padding:15px;
   }
   
-  header ul {
+  ul.buttons {
     display:none;
   }
 }
@@ -253,3 +277,4 @@ footer {
     color:#444;
   }
 }
+
