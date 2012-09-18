@@ -67,6 +67,7 @@ class PostcodeCommand(LabelCommand):
     help = 'Import postcodes in some way; subclass this!'
     args = '<data files>'
     count = { 'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0 }
+    often = 1000
 
     def print_stats(self):
         print "Imported %d (%d new, %d changed, %d same)" % (
@@ -77,7 +78,7 @@ class PostcodeCommand(LabelCommand):
     # Want to compare co-ordinates so can't use straightforward
     # update_or_create
     def do_postcode(self, postcode, location):
-	try:
+        try:
             pc = Postcode.objects.get(postcode=postcode)
             if location:
                 curr_location = ( pc.location[0], pc.location[1] )
