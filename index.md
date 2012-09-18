@@ -3,19 +3,20 @@ layout: default
 title: Welcome
 ---
 
-MapIt
-=====
+Welcome to MapIt
+================
 
-MapIt is a service that maps geographical points to administrative areas. It is
-useful for anyone who has the co-ordinates of a point on Earth, and who needs
-to find out what country, region, city, constituency, or state it lies within.
-It’s also great for looking up the shapes of all those boundaries.
+MapIt is a web service that maps geographical points to administrative areas.
+It is useful for anyone who has the co-ordinates of a point on Earth, and who
+needs to find out what country, region, city, constituency, or state it lies
+within. It’s also great for looking up the shapes of all those boundaries.
 
-[mySociety][] (the UK charity that wrote this code) runs several public MapIts
-that you can use:
+**This site is about how to install your own copy of MapIt on your own server,
+and how to import data into it.** [mySociety][] (the UK charity that wrote this
+code) runs public installations of MapIt that you might be able to use:
 
-* [MapIt Global] - global boundaries from the [OSM] project.
-* [MapIt UK] - UK boundaries from various sources.
+* [MapIt Global] &ndash; global boundaries from the [OpenStreetMap] project.
+* [MapIt UK] &ndash; UK boundaries from various sources.
 
 The above are free for non-commercial, low-volume use.
 
@@ -34,17 +35,15 @@ do let us know of any problems.
 Installation
 ------------
 
-MapIt can be installed as a Django app, or as a standalone server. Full details
-are in `INSTALL.rst`.
+MapIt can be installed as a Django app, or as a standalone server. For full
+details, see the [installation documentation](install/).
 
-Country specific READMEs
-------------------------
+Importing data
+--------------
 
-These are extensive notes for some of the countries that MapIt has been set up
-to serve. These are in the `docs` folder:
-
-* UK: `docs/README-UK.rst`
-* Norway: `docs/README-NORWAY.rst`
+There are various ways to import data into MapIt, ranging from manually to
+importing KML files. We have also supplied notes for some of the countries
+that MapIt has been set up for; see the links in the navigation.
 
 Contact
 -------
@@ -61,7 +60,7 @@ You can also chat to us on IRC: #mschat on [irc.mysociety.org](http://www.irc.my
 [mySociety]: http://www.mysociety.org/
 [MapIt Global]: http://global.mapit.mysociety.org/
 [MapIt UK]: http://mapit.mysociety.org/
-[OSM]: http://www.openstreetmap.org/
+[OpenStreetMap]: http://www.openstreetmap.org/
 [GeoDjango]: http://geodjango.org/
 [PostGIS]: http://postgis.refractions.net/
 
