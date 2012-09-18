@@ -1,6 +1,6 @@
 safe: true
 pygments: true
-baseurl: /
+baseurl: /mapit/
 auto: true
 server: true
 permalink: pretty
