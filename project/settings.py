@@ -35,6 +35,9 @@ MAPIT_COUNTRY = config.get('COUNTRY', '')
 # limiting. Optional.
 MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
 
+# A GA code for analytics
+GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
+
 # Django settings for mapit project.
 
 DEBUG = config.get('DEBUG', True)
@@ -161,12 +164,14 @@ if django.get_version() >= '1.2':
         'django.core.context_processors.request',
         'django.contrib.auth.context_processors.auth',
         'mapit.context_processors.country',
+        'mapit.context_processors.analytics',
     )
 else:
     TEMPLATE_CONTEXT_PROCESSORS = (
         'django.core.context_processors.request',
         'django.core.context_processors.auth',
         'mapit.context_processors.country',
+        'mapit.context_processors.analytics',
         #'django.core.context_processors.debug',
         #'django.core.context_processors.i18n',
         #'django.core.context_processors.media',
