@@ -8,13 +8,13 @@ except:
 
 from django.template import loader
 from django.http import HttpResponse
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import redirect
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
-from mapit.shortcuts import output_json, get_object_or_404, set_timeout
+from mapit.shortcuts import output_json, get_object_or_404, set_timeout, render
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit.views.areas import add_codes
@@ -81,7 +81,7 @@ def postcode(request, postcode, format='json'):
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
  
     if format == 'html':
-        return render_to_response('mapit/postcode.html', {
+        return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'areas': areas,
             'json': '/postcode/',
@@ -110,7 +110,7 @@ def partial_postcode(request, postcode, format='json'):
         raise ViewException(format, 'Postcode not found', 404)
 
     if format == 'html':
-        return render_to_response('mapit/postcode.html', {
+        return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'json': '/postcode/partial/',
         })
@@ -135,7 +135,7 @@ def example_postcode_for_area(request, area_id, format='json'):
             pc = None
     if pc: pc = pc.get_postcode_display()
     if format == 'html':
-        return render_to_response('mapit/example-postcode.html', { 'area': area, 'postcode': pc })
+        return render(request, 'mapit/example-postcode.html', { 'area': area, 'postcode': pc })
     return output_json(pc)
 
 def form_submitted(request):
@@ -159,7 +159,7 @@ def nearest(request, srid, x, y, format='json'):
         raise ViewException(format, 'No postcode found near %s,%s (%s)' % (x, y, srid), 404)
 
     if format == 'html':
-        return render_to_response('mapit/postcode.html', {
+        return render( request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'json': '/postcode/',
         })
