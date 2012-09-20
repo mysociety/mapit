@@ -47,6 +47,7 @@ def output_json(out, code=200):
     response_type = types.get(code, http.HttpResponse)
     response = response_type(content_type='application/json; charset=utf-8')
     response['Access-Control-Allow-Origin'] = '*'
+    response['Cache-Control'] = 'max-age=2419200' # 4 weeks
     if code != 200:
         out['code'] = code
     indent = None
