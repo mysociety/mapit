@@ -14,19 +14,19 @@
 #   classification, Pre October 2006 PCO
 
 import csv
-from django.contrib.gis.geos import Point
 from django.db import transaction
 from mapit.models import Area
-from mapit.management.command_utils import PostcodeCommand
+from mapit.management.commands.mapit_import_postal_codes import Command
 
-class Command(PostcodeCommand):
+class Command(Command):
     help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'
     args = '<NSPD CSV file>'
-    often = 10000
+    option_defaults = { 'strip': True, 'srid': 29902, 'coord-field-lon': 10, 'coord-field-lat': 11 }
 
     @transaction.commit_manually
     def handle_label(self, file, **options):
-        euro_area = Area.objects.get(country__code='N', type__code='EUR')
+        # First set up the areas needed (as we have to match to postcode manually)
+        self.euro_area = Area.objects.get(country__code='N', type__code='EUR')
 
         # Read in new ONS code to names, look up existing wards and Parliamentary constituencies
         snac = csv.reader(open('../data/UK/snac-2009-ni-cons2ward.csv'))
@@ -53,38 +53,45 @@ class Command(PostcodeCommand):
                 )
                 code_to_area['NIE' + parl_code] = nia_area
                 code_to_area['NIE' + gss_code] = nia_area
+        self.code_to_area = code_to_area
 
-        for row in csv.reader(open(file)):
-            if row[4]: continue # Terminated postcode
-            if row[11] == '9': continue # PO Box etc.
+        # Start the main import process
+        self.process(file, options)
 
-            postcode = row[0].strip().replace(' ', '')
-            if postcode[0:2] != 'BT': continue # Only importing NI from NSPD
+    def pre_row(self, row, options):
+        if row[4]: return False # Terminated postcode
+        if row[11] == '9': return False # PO Box etc.
+        if self.code[0:2] != 'BT': return False # Only importing NI from NSPD
 
-            # NSPD (now ONSPD) started using GSS codes for Parliament in February 2011
-            # Detect this here; although they're still using old codes for council/wards
-            gss = True if len(row[7]) == 6 else False
+        # NSPD (now ONSPD) started using GSS codes for Parliament in February 2011
+        # Detect this here; although they're still using old codes for council/wards
+        gss = True if len(row[7]) == 6 else False
 
-            # Create/update the areas
-            if gss:
-                ons_code = row[7].replace(' ', '')
-                parl_code = row[17]
-            else:
-                ons_code = ''.join(row[5:8])
-                parl_code = row[17].replace('N', '7')
-            output_area = row[33]
-            super_output_area = row[44]
+        # Create/update the areas
+        if gss:
+            ons_code = row[7].replace(' ', '')
+            parl_code = row[17]
+        else:
+            ons_code = ''.join(row[5:8])
+            parl_code = row[17].replace('N', '7')
+        #output_area = row[33]
+        #super_output_area = row[44]
 
-            ward = code_to_area[ons_code]
-            electoral_area = ward.parent_area
-            council = electoral_area.parent_area
-            nia_area = code_to_area['NIE' + parl_code]
-            parl_area = code_to_area[parl_code]
+        ward = self.code_to_area[ons_code]
+        electoral_area = ward.parent_area
+        self.areas = [
+            ward,
+            electoral_area,
+            electoral_area.parent_area, # Council
+            self.code_to_area['NIE' + parl_code], # Assembly
+            self.code_to_area[parl_code], # Parliament
+            self.euro_area,
+        ]
 
-            # Create/update the postcode
-            location = Point(map(float, row[9:11]), srid=29902) # Irish Grid SRID
-            pc = self.do_postcode(postcode, location)
-            pc.areas.clear()
-            pc.areas.add(ward, electoral_area, council, nia_area, parl_area, euro_area)
-            transaction.commit()
+        return True
+
+    def post_row(self, pc):
+        pc.areas.clear()
+        pc.areas.add(*self.areas)
+        transaction.commit()
 

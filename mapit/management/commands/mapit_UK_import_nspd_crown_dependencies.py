@@ -3,19 +3,14 @@
 # http://www.ons.gov.uk/about-statistics/geography/products/geog-products-postcode/nspd/
 
 import csv
-from mapit.management.command_utils import PostcodeCommand
+from mapit.management.commands.mapit_import_postal_codes import Command
 
-class Command(PostcodeCommand):
+class Command(Command):
     help = 'Imports Crown Dependency postcodes from the NSPD'
     args = '<NSPD CSV file>'
-    often = 1000
+    option_defaults = { 'strip': True, 'no-location': True }
 
-    def handle_label(self, file, **options):
-        for row in csv.reader(open(file)):
-            if row[4]: continue # Terminated postcode
-
-            postcode = row[0].strip().replace(' ', '')
-            if postcode[0:2] not in ('GY', 'JE', 'IM'): continue # Only importing Crown dependencies from NSPD
-
-            self.do_postcode(postcode, None)
-        self.print_stats()
+    def pre_row(self, row, options):
+        if row[4]: return False # Terminated postcode
+        if self.code[0:2] not in ('GY', 'JE', 'IM'): return False # Only importing Crown dependencies from NSPD
+        return True

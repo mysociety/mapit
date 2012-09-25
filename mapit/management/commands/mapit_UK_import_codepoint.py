@@ -11,19 +11,23 @@
 # health authority, County, District, Ward
 
 import csv
-from django.contrib.gis.geos import Point
-from mapit.management.command_utils import PostcodeCommand
+from mapit.management.commands.mapit_import_postal_codes import Command
 
-class Command(PostcodeCommand):
+class Command(Command):
     help = 'Import OS Code-Point Open postcodes'
     args = '<Code-Point CSV files>'
     often = 10000
+    option_defaults = { 'strip': True, 'srid': 27700 }
 
-    def handle_label(self, file, **options):
-        for row in csv.reader(open(file)):
-            if row[1] == '90': continue # Bad postcode
-            postcode = row[0].strip().replace(' ', '')
-            easting_column = 2 if len(row) == 10 else 10 # A new Code-Point only has 10 columns
-            location = Point(map(float, row[easting_column:easting_column+2]), srid=27700)
-            self.do_postcode(postcode, location)
-        self.print_stats()
+    def pre_row(self, row, options):
+        if row[1] == '90':
+            return False # Bad postcode
+        # A new Code-Point only has 10 columns
+        if len(row) == 10:
+            options['coord-field-lon'] = 3
+            options['coord-field-lat'] = 4
+        else:
+            options['coord-field-lon'] = 11
+            options['coord-field-lat'] = 12
+        return True
+
