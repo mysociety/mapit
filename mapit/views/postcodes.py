@@ -39,16 +39,18 @@ enclosing_areas = {
     'EUR': [ EUP_AREA_ID ],
 }
 
-def check_postcode(format, postcode):
-    postcode = re.sub('[^A-Z0-9]', '', postcode.upper())
+@ratelimit(minutes=3, requests=100)
+def postcode(request, postcode, format=None):
+    if hasattr(countries, 'canonical_postcode'):
+        canon_postcode = countries.canonical_postcode(postcode)
+        postcode = canon_postcode
+        #if (postcode != canon_postcode and format is None) or format == 'json':
+        #    return redirect('mapit.views.postcodes.postcode', postcode=canon_postcode)
+    if format is None:
+        format = 'json'
     if not is_valid_postcode(postcode):
         raise ViewException(format, "Postcode '%s' is not valid." % postcode, 400)
     postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
-    return postcode
-
-@ratelimit(minutes=3, requests=100)
-def postcode(request, postcode, format='json'):
-    postcode = check_postcode(format, postcode)
     try:
         generation = int(request.REQUEST['generation'])
     except:

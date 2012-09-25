@@ -16,6 +16,10 @@ def area_code_lookup(area_id, format):
     area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
     return HttpResponseRedirect('/area/%d%s' % (area.id, '.%s' % format if format else ''))
 
+def canonical_postcode(pc):
+    pc = re.sub('[^A-Z0-9]', '', pc.upper())
+    return pc
+
 def is_special_postcode(pc):
     if pc in (
         'ASCN1ZZ', # Ascension Island
