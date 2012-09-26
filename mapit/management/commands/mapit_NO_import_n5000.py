@@ -1,7 +1,15 @@
 # import_norway_n5000.py:
 # This script is used to import information from the N5000 datset available at
-# http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/
+# http://www.statkart.no/?module=Articles;action=Article.publicShow;ID=15305
 #
+# This script can now be done using the generic import script, as follows:
+# python manage.py loaddata norway # Optional, will load in types
+# python manage.py mapit_import --generation_id <new-gen-id> \
+#   --area_type_code NKO --name_type_code M --country_code O \
+#   --name_field NAVN --encoding iso-8859-1 \
+#   --code_field KOMM --id_type_code n5000 --commit \
+#   N5000_AdministrativFlate.shp
+
 # Copyright (c) 2011 UK Citizens Online Democracy. All rights reserved.
 # Email: matthew@mysociety.org; WWW: http://www.mysociety.org
 

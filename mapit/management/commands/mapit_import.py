@@ -11,7 +11,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Type, NameType, Country
+from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
@@ -49,10 +49,22 @@ class Command(LabelCommand):
             help='Which name type should be used (specify using code)',
         ),
         make_option(
+            '--code_type',
+            action="store",
+            dest='code_type',
+            help='Which code type should be used (specify using its code)',
+        ),
+        make_option(
             '--name_field',
             action="store",
             dest='name_field',
             help="The field name containing the area's name"
+        ),
+        make_option(
+            '--code_field',
+            action="store",
+            dest='code_field',
+            help="The field name containing the area's ID code"
         ),
         make_option(
             '--encoding',
@@ -77,12 +89,17 @@ class Command(LabelCommand):
         name_type_code = options['name_type_code']
         country_code = options['country_code']
         name_field = options['name_field'] or 'Name'
+        code_field = options['code_field']
+        code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
 
         if len(area_type_code)>3:
             print "Area type code must be 3 letters or fewer, sorry"
             sys.exit(1)
 
+        if (code_field and not code_type_code) or (not code_field and code_type_code):
+            print "You must specify both code_field and code_type, or neither."
+            sys.exit(1)
         try:
             area_type = Type.objects.get(code=area_type_code)
         except:
@@ -103,6 +120,14 @@ class Command(LabelCommand):
             country_name = raw_input('Please give the name for country code %s: ' % country_code)
             country = Country(code=country_code, name=country_name)
             if options['commit']: country.save()
+
+        if code_type_code:
+            try:
+                code_type = CodeType.objects.get(code=code_type_code)
+            except:
+                code_desc = raw_input('Please give a description for code type %s: ' % code_type_code)
+                code_type = CodeType(code=code_type_code, description=code_desc)
+                if options['commit']: code_type.save()
 
         print "Importing from %s" % filename
 
@@ -132,11 +157,23 @@ class Command(LabelCommand):
             if not name:
                 raise Exception( "Could not find a name to use for area" )
 
-            print "  looking at '%s'" % name.encode('utf-8')
+            code = None
+            if code_field:
+                try:
+                    code = feat[code_field].value
+                except:
+                    choices = ', '.join(layer.fields)
+                    print "Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices)
+                    sys.exit(1)
+
+            print "  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' )
 
             try:
-                # Assumes unique names. Should have optional ID field tag.
-                m = Area.objects.get(name=name, type=area_type)
+                if code:
+                    m = Area.objects.get(codes__code=code, codes__type=code_type)
+                else:
+                    # Assumes unique names if no code column used
+                    m = Area.objects.get(name=name, type=area_type)
             except Area.DoesNotExist:
                 m = Area(
                     name            = name,
@@ -159,5 +196,7 @@ class Command(LabelCommand):
             if options['commit']:
                 m.save()
                 m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                if code:
+                    m.codes.update_or_create({ 'type': code_type }, { 'code': code })
                 save_polygons({ m.id : (m, poly) })
 
