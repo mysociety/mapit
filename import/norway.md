@@ -29,7 +29,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
 1. Set AREA_SRID in conf/general.yml to 4326 (as we'll put N5000 shapes into
    the WGS84 co-ordinate system).
 2. Download `N5000
-   <http://www.statkart.no/nor/Land/Kart_og_produkter/N5000_-_gratis_oversiktskart/>`_
+   <http://www.statkart.no/?module=Articles;action=Article.publicShow;ID=15305>`_
    and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
 
@@ -40,7 +40,10 @@ Alternatively, here are the basic instructions to install the N5000 data:
 
        ./manage.py mapit_generation_create --commit --desc "Initial import."
        ./manage.py loaddata norway
-       ./manage.py mapit_NO_import_n5000 --commit \
+       ./manage.py mapit_import --generation_id <new-gen-id> \
+           --area_type_code NKO --name_type_code M --country_code O \
+           --name_field NAVN --encoding iso-8859-1 \
+           --code_field KOMM --id_type_code n5000 --commit \
            ../../data/N5000\ shape/N5000_AdministrativFlate.shp
        ./manage.py mapit_import_area_unions --commit data/norway/regions.csv
        ./manage.py mapit_generation_activate --commit

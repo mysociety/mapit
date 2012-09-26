@@ -93,3 +93,16 @@ the area, and specify it with the `--name_field` parameter. If you run without
 this parameter and 'Name' doesn't work, the program will output a list of
 possible choices that it could be.
 
+Areas with IDs
+--------------
+
+If your Shapefile contains a key containing a code associated with each area,
+then the import script can include that. The associated command line arguments
+are:
+
+* `--code_field` -- as with `--name_field`, this specifies the field in the
+  shapefile containing the code. The script will list possible choices if it
+  can't find the one you provide.
+* `--code_type` -- the code for the type of ID this is (e.g. if it was the
+  Ordnance Survey's ID for this area, we could use 'OS' here).
+
