@@ -21,13 +21,17 @@ class Command(NoArgsCommand):
             geometry = Geometry.objects.filter(**args)
             p = geometry.unionagg()
             if options['commit']:
-                area.polygons.all().delete()
+                area.polygons.clear()
                 if p.geom_type == 'Polygon':
                     shapes = [ p ]
                 else:
                     shapes = p
                 for g in shapes:
-                    area.polygons.create(polygon=g)
+                    try:
+                        existing = Geometry.objects.get(polygon__equals=g)
+                        area.polygons.add(existing)
+                    except Geometry.DoesNotExist:
+                        area.polygons.create(polygon=g)
             done.append(area.id)
             print 'done'
 

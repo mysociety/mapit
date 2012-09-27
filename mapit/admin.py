@@ -22,7 +22,7 @@ class AreaAdmin(admin.OSMGeoAdmin):
     geometries_link.allow_tags = True
 
 class GeometryAdmin(admin.OSMGeoAdmin):
-    raw_id_fields = ('area',)
+    raw_id_fields = ('areas',)
 
 class GenerationAdmin(admin.OSMGeoAdmin):
     list_display = ('id', 'active', 'created', 'description')

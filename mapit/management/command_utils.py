@@ -3,6 +3,7 @@
 import re
 import sys
 from xml.sax.handler import ContentHandler
+from mapit.models import Geometry
 
 class KML(ContentHandler):
     def __init__(self, *args, **kwargs):
@@ -36,7 +37,7 @@ def save_polygons(lookup):
         sys.stdout.write(".")
         sys.stdout.flush()
         #g = OGRGeometry(OGRGeomType('MultiPolygon'))
-        m.polygons.all().delete()
+        m.polygons.clear()
         for p in poly:
             if p.geom_name == 'POLYGON':
                 shapes = [ p ]
@@ -53,7 +54,11 @@ def save_polygons(lookup):
                 # the only easy solution appears to be removing the altitude
                 # directly from the WKT before using it.
                 must_be_two_d = g.wkt.replace(' 0,', ',')
-                m.polygons.create(polygon=must_be_two_d)
+                try:
+                    existing = Geometry.objects.get(polygon__equals=must_be_two_d)
+                    m.polygons.add(existing)
+                except Geometry.DoesNotExist:
+                    m.polygons.create(polygon=must_be_two_d)
         #m.polygon = g.wkt
         #m.save()
         poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
