@@ -52,6 +52,8 @@
     { "pk": 39, "model": "mapit.type", "fields": { "code": "OMG", "description": "Middle Layer Super Output Area (Generalised)" } },
     { "pk": 40, "model": "mapit.type", "fields": { "code": "OUA", "description": "Output Area" } },
 
+    { "pk": 41, "model": "mapit.type", "fields": { "code": "PFL", "description": "Police force (from legislation)" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
     { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
