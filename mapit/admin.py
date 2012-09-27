@@ -26,7 +26,7 @@ class AreaAdmin(admin.OSMGeoAdmin):
 
 
 class GeometryAdmin(admin.OSMGeoAdmin):
-    raw_id_fields = ('area',)
+    raw_id_fields = ('areas',)
 
 
 class GenerationAdmin(admin.OSMGeoAdmin):

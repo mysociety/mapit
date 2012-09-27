@@ -6,6 +6,7 @@ from xml.sax.handler import ContentHandler
 import shapely.ops
 import shapely.wkt
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
+from mapit.models import Geometry
 
 
 class KML(ContentHandler):
@@ -42,7 +43,7 @@ def save_polygons(lookup):
         sys.stdout.write(".")
         sys.stdout.flush()
         # g = OGRGeometry(OGRGeomType('MultiPolygon'))
-        m.polygons.all().delete()
+        m.polygons.clear()
         for p in poly:
             if p.geom_name == 'POLYGON':
                 shapes = [p]
@@ -56,7 +57,11 @@ def save_polygons(lookup):
                     continue
                 # Make sure it is two-dimensional
                 g.coord_dim = 2
-                m.polygons.create(polygon=g.wkb)
+                try:
+                    existing = Geometry.objects.get(polygon__equals=g.wkb)
+                    m.polygons.add(existing)
+                except Geometry.DoesNotExist:
+                    m.polygons.create(polygon=g.wkb)
         # m.polygon = g.wkt
         # m.save()
         # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
