@@ -41,4 +41,21 @@ Then you should then restart the MapIt Django server with:
     mapit@ip-10-58-191-98:~/mapit$ logout
     ubuntu@ip-10-58-191-98:~$ sudo /etc/init.d/mapit restart
 
+You will need to create an admin user if you want to be able to use
+MapIt's web admin interface.  To create an admin user, you need to use
+the `createsuperuser` Django admin command, similar to the following
+example:
+
+    ubuntu@ip-10-64-6-199:~$ sudo su - mapit
+    mapit@ip-10-64-6-199:~$ cd mapit/project/
+    mapit@ip-10-64-6-199:~/mapit/project$ ./manage.py createsuperuser
+    Username (Leave blank to use 'mapit'): mapitadmin
+    E-mail address: whoever@example.org
+    Password:
+    Password (again):
+    Superuser created successfully.
+
+... and check that you can now login to the admin interface by
+visiting `/admin` on your site.
+
 Now you will probably want to carry on to [import some data](import).
