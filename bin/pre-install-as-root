@@ -284,16 +284,6 @@ install_sysvinit_script
 
 add_website_to_nginx "$UNIX_USER" "$HOST" "$REPOSITORY"
 
-if [ $DEFAULT_SERVER = true ] && [ x != x$EC2_HOSTNAME ]
-then
-    # If we're setting up as the default on an EC2 instance,
-    # make sure the ec2-rewrite-conf script is called from
-    # /etc/rc.local
-    overwrite_rc_local
-fi
-
-# Tell the user what to do next:
-
 echo Installation complete - you should now be able to view the site at:
 echo   http://$HOST/
 
