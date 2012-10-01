@@ -65,6 +65,9 @@ REPOSITORY="$DIRECTORY/$SITE"
 REPOSITORY_URL=git://github.com/mysociety/$SITE.git
 BRANCH=master
 
+DISTRIBUTION="$(lsb_release -i -s)"
+VERSION="$(lsb_release -c -s)"
+
 IP_ADDRESS_FOR_HOST="$(dig +short $HOST)"
 
 if [ x = x"$IP_ADDRESS_FOR_HOST" ]
@@ -117,8 +120,6 @@ add_postgresql_user() {
 }
 
 update_apt_sources() {
-    DISTRIBUTION="$(lsb_release -i -s)"
-    VERSION="$(lsb_release -c -s)"
     if [ x"$DISTRIBUTION" = x"Ubuntu" ] && [ x"$VERSION" = x"precise" ]
     then
         cat > /etc/apt/sources.list.d/mysociety-extra.list <<EOF
