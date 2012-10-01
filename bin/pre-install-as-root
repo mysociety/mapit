@@ -183,6 +183,22 @@ install_nginx() {
 install_postgis() {
     POSTGIS_SCRIPT='https://docs.djangoproject.com/en/dev/_downloads/create_template_postgis-debian.sh'
     su -l -c "curl '$POSTGIS_SCRIPT' | bash -s" postgres
+    # According to Matthew's installation instructions, these two SRID
+    # may be missing the appropriate +datum from the proj4text column,
+    # depending on what PostGIS version is being used.  Check whether
+    # they are missing, and if so, update the column.
+    for T in 27700:+datum=OSGB36 29902:+datum=ire65
+    do
+        SRID="${T%%:*}"
+        DATUM="${T##*:}"
+        EXISTING="$(echo "select proj4text from spatial_ref_sys where srid = '$SRID'" | su -l -c "psql -t -P 'format=unaligned' mapit" postgres)"
+        if ! echo "$EXISTING" | grep -- "$DATUM"
+        then
+            echo Adding $DATUM to the proj4text column of spatial_ref_sys for srid $SRID
+            NEW_VALUE="${EXISTING% } $DATUM "
+            echo "UPDATE spatial_ref_sys SET proj4text = '$NEW_VALUE' WHERE srid = '$SRID'" | su -l -c 'psql mapit' postgres
+        fi
+    done
 }
 
 add_website_to_nginx() {
