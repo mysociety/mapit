@@ -6,14 +6,13 @@
 # the GPL.  Based on import_norway_osm.py by Matthew Somerville
 
 import csv
-
-from django.core.management.base import LabelCommand
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.db.models import Union
 from django.utils.six import Iterator
 
 from mapit.models import Area, Generation, Geometry, Country, Type
 from mapit.management.command_utils import save_polygons
+from mapit.management.commands.mapit_create_area_unions import Command
 
 
 # CSV format is
@@ -36,13 +35,10 @@ class CommentedFile(Iterator):
         return self
 
 
-class Command(LabelCommand):
+class Command(Command):
     help = 'Import region data'
     label = '<CSV file listing name and which existing areas to combine into regions>'
-
-    def add_arguments(self, parser):
-        super(Command, self).add_arguments(parser)
-        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+    country = Country.objects.get(code='O')
 
     def handle_label(self, filename, **options):
         current_generation = Generation.objects.current()
@@ -66,68 +62,14 @@ class Command(LabelCommand):
                 # Look up areas using the names, find their geometry
                 # and build a geometric union to set as the geometry
                 # of the region.
-                geometry = None
-                for name in area_names.split(','):
-                    name.strip()
-                    name.lstrip()
+                area_names.insert(0, regionid)
+                area_names.insert(0, regionname)
+                self.handle_row( area_names, {
+                    'region-name': True,
+                    'region-id': True,
+                    'unionagg': True,
+                    'commit': options['commit'],
+                })
 
-                    try:
-                        # Use this to allow '123 Name' in area definition
-                        areaidnum = int(name.split()[0])
-                        print("Looking up ID '%d'" % areaidnum)
-                        args = {
-                            'id__exact': areaidnum,
-                            'generation_low__lte': current_generation,
-                            'generation_high__gte': new_generation,
-                            }
-                    except (ValueError, IndexError):
-                        print("Looking up name '%s'" % name)
-                        args = {
-                            'name__iexact': name,
-                            'generation_low__lte': current_generation,
-                            'generation_high__gte': new_generation,
-                            }
-                    area_id = Area.objects.filter(**args).only('id')
-                    if 1 < len(area_id):
-                        raise Exception("More than one Area named %s, use area ID as well" % name)
-                    try:
-                        print("ID: %d" % area_id[0].id)
-                        args = {
-                            'area__exact': area_id[0].id,
-                            }
-                        if geometry:
-                            geometry = geometry | Geometry.objects.filter(**args)
-                        else:
-                            geometry = Geometry.objects.filter(**args)
-                    except:
-                        raise Exception("Area or geometry with name %s was not found!" % name)
-                    unionoutline = geometry.aggregate(Union('polygon'))['polygon__union']
-
-                def update_or_create():
-                    try:
-                        m = Area.objects.get(id=int(regionid))
-                        print("Updating area %s with id %d" % (regionname, int(regionid)))
-                    except Area.DoesNotExist:
-                        print("Creating new area %s with id %d" % (regionname, int(regionid)))
-                        m = Area(
-                            id=int(regionid),
-                            name=regionname,
-                            type=Type.objects.get(code=area_type),
-                            country=Country.objects.get(code='O'),
-                            generation_low=new_generation,
-                            generation_high=new_generation,
-                            )
-
-                    if m.generation_high and current_generation \
-                            and m.generation_high.id < current_generation.id:
-                        raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
-                    m.generation_high = new_generation
-
-                    poly = [GEOSGeometry(unionoutline).ogr]
-                    if options['commit']:
-                        m.save()
-                        save_polygons({regionid: (m, poly)})
-
-                update_or_create()
             else:
                 raise Exception("No area names found for region with name %s!" % regionname)
