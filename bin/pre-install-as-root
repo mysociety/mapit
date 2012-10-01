@@ -219,7 +219,12 @@ install_sysvinit_script() {
 }
 
 install_website_packages() {
-    PACKAGES_FILE="$1/conf/packages.debian-squeeze"
+    if [ x"$DISTRIBUTION" = x"Ubuntu" ]
+    then
+        PACKAGES_FILE="$1/conf/packages.ubuntu-precise"
+    else
+        PACKAGES_FILE="$1/conf/packages.debian-squeeze"
+    fi
     xargs -a "$PACKAGES_FILE" apt-get -y install
 }
 
