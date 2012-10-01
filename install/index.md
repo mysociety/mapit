@@ -6,6 +6,17 @@ title: Installation
 Installation
 ============
 
+There are several options for installing MapIt.  The rest of this page
+describes how to do this manually, for people who are used to setting
+up web applications, but there are two other options that may be
+easier:
+
+* [A MapIt AMI for Amazon EC2](ami)
+* [An install script for Debian squeeze or Ubuntu precise servers](install-script)
+
+If you prefer to set up each required component of MapIt yourself,
+proceed with the instructions below.
+
 General notes
 -------------
 
