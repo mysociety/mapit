@@ -280,10 +280,8 @@ fi
 
 su -l -c "$REPOSITORY/bin/install-as-user $DEFAULT_PARAMETER '$UNIX_USER' '$HOST'" "$UNIX_USER"
 
-# FIXME: check
 install_sysvinit_script
 
-# FIXME: check
 add_website_to_nginx "$UNIX_USER" "$HOST" "$REPOSITORY"
 
 if [ $DEFAULT_SERVER = true ] && [ x != x$EC2_HOSTNAME ]
