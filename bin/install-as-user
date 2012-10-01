@@ -1,0 +1,99 @@
+#!/bin/sh
+
+set -e
+set -x
+
+DEFAULT_SERVER=false
+if [ x"$1" = x"--default" ]
+then
+    DEFAULT_SERVER=true
+    shift
+fi
+
+if [ $# -ne 2 ]
+then
+    cat >&2 <<EOUSAGE
+Usage: $0 [--default] <UNIX-USER> <HOST>
+--default means to install as the default site for this server,
+rather than a virtualhost for HOST.
+EOUSAGE
+    exit 1
+fi
+
+UNIX_USER="$1"
+HOST="$2"
+DB_NAME="mapit"
+
+# Check that the arguments we've been passed are sensible:
+
+IP_ADDRESS_FOR_HOST="$(dig +short $HOST)"
+
+if [ x = x"$IP_ADDRESS_FOR_HOST" ]
+then
+    echo "The hostname $HOST didn't resolve to an IP address"
+    exit 1
+fi
+
+if ! id "$UNIX_USER" 2> /dev/null > /dev/null
+then
+    echo "The user '$UNIX_USER' didn't exist."
+    echo "(You should have run \"sudo pre-install-as-root '$UNIX_USER' '$HOST'\" before this.)"
+    exit 1
+fi
+
+if [ "$(whoami)" != "$UNIX_USER" ]
+then
+    echo "This script should be run by the user '$UNIX_USER'."
+    exit 1
+fi
+
+if [ $DEFAULT_SERVER = true ]
+then
+    DIRECTORY="/var/www/mapit"
+else
+    DIRECTORY="/var/www/$HOST"
+fi
+REPOSITORY="$DIRECTORY/mapit"
+LINK_DESTINATION="$HOME/mapit"
+
+ln -sfn "$REPOSITORY" $LINK_DESTINATION
+cd "$REPOSITORY"
+
+# Install the compass gem locally - it's required for generating the
+# CSS:
+
+export GEM_HOME="$DIRECTORY/gems"
+mkdir -p "$GEM_HOME"
+export GEM_PATH=
+export PATH="$GEM_HOME/bin:$PATH"
+
+gem install --no-ri --no-rdoc compass
+
+# Use compass to generate the CSS, if it doesn't seem to already
+# exist:
+
+if [ ! -f web/cobrands/default/base.css ]
+then
+    bin/make_css
+fi
+
+# Write sensible values into the config file:
+
+RANDOM_STRING=$(< /dev/urandom tr -dc A-Za-z0-9 | head -c32)
+
+sed -r \
+    -e "s,^( *MAPIT_DB_NAME:).*,\\1 '$DB_NAME'," \
+    -e "s,^( *MAPIT_DB_USER:).*,\\1 '$UNIX_USER'," \
+    -e "s,^( *COUNTRY:).*,\\1 ''," \
+    -e "s,^( *AREA_SRID:).*,\\1 4326," \
+    -e "s,^( *DJANGO_SECRET_KEY:).*,\\1 '$RANDOM_STRING'," \
+    conf/general.yml-example > conf/general.yml
+
+# Create the database if it doesn't exist:
+if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
+then
+    createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
+    cd $REPOSITORY/project
+    ./manage.py syncdb --noinput
+    ./manage.py migrate mapit
+fi

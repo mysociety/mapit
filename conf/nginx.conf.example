@@ -1,0 +1,33 @@
+# An example configuration for running MapIt under nginx.  You
+# will also need to set up the MapIt Django backend with gunicorn.
+# An example sysvinit script to help with this is shown given in the file
+# sysvinit.example in this directory.
+
+# Copyright (c) 2012 UK Citizens Online Democracy. All rights reserved.
+# Email: team@mysociety.org
+# WWW: http://www.mysociety.org
+
+server {
+
+    access_log /var/www/mapit/logs/access.log;
+    error_log /var/www/mapit/logs/error.log;
+
+    listen 80;
+    root /var/www/mapit/mapit/web;
+    error_page 503 /down.html;
+
+    location /static {
+        root /var/www/mapit/mapit/mapit;
+    }
+
+    location / {
+        proxy_pass_header Server;
+        proxy_set_header Host $http_host;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_connect_timeout 10;
+        proxy_read_timeout 10;
+        proxy_pass http://localhost:8000/;
+    }
+}
