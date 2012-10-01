@@ -6,13 +6,7 @@
 # the GPL.  Based on import_norway_osm.py by Matthew Somerville
 
 import csv
-import sys
-import re
-from optparse import make_option
-from django.contrib.gis.gdal import *
-from django.contrib.gis.geos import GEOSGeometry
-from mapit.models import Area, Generation, Geometry, Country, Type
-from mapit.management.command_utils import save_polygons
+from mapit.models import Country
 from mapit.management.commands.mapit_create_area_unions import Command
 
 # CSV format is
@@ -36,16 +30,9 @@ class Command(Command):
     help = 'Import region data'
     args = '<CSV file listing name and which existing areas to combine into regions>'
     country = Country.objects.get(code='O')
+    option_defaults = { 'region-name-field': 1, 'region-id-field': 2, 'area-type-field': 3, 'unionagg': True }
 
-    def handle_label(self, filename, **options):
-        current_generation = Generation.objects.current()
-        new_generation = Generation.objects.new()
-        if not new_generation:
-            print "Using current generation %d" % current_generation.id
-            new_generation = current_generation
-        else:
-            print "Using new generation %d" % new_generation.id
-
+    def process(self, filename, options):
         print "Loading file %s" % filename
         region_line = csv.reader(CommentedFile(open(filename, "rb")),
                                  delimiter=';')
@@ -54,19 +41,9 @@ class Command(Command):
             print "Building region '%s'" % regionname
             if (-2147483648 > int(regionid) or 2147483647 < int(regionid)):
                 raise Exception, "Region ID %d is outside range of 32-bit integer" % regionid
-
-            if area_names:
-                # Look up areas using the names, find their geometry
-                # and build a geometric union to set as the geometry
-                # of the region.
-                area_names.insert(0, regionid)
-                area_names.insert(0, regionname)
-                self.handle_row( area_names, {
-                    'region-name': True,
-                    'region-id': True,
-                    'unionagg': True,
-                    'commit': options['commit'],
-                })
-
-            else:
+            if not area_names:
                 raise Exception, "No area names found for region with name %s!" % regionname
+
+            row = [ regionname, regionid, area_type ]
+            row.extend(area_names.split(','))
+            self.handle_row( row, options )

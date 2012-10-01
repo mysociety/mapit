@@ -15,6 +15,8 @@ from mapit.management.command_utils import save_polygons
 class Command(LabelCommand):
     help = 'Create areas from existing areas'
     args = '<CSV file listing IDs that make up new areas>'
+    country = None
+    option_defaults = {}
     option_list = LabelCommand.option_list + (
         make_option(
             '--commit',
@@ -23,9 +25,15 @@ class Command(LabelCommand):
             help='Actually update the database'
         ),
         make_option(
-            '--area_type_code',
+            '--generation-id',
             action="store",
-            dest='area_type_code',
+            dest='generation-id',
+            help='Which generation ID should be used',
+        ),
+        make_option(
+            '--area-type-code',
+            action="store",
+            dest='area-type-code',
             help='Which area type should be used (specify using code)',
         ),
         make_option(
@@ -36,23 +44,27 @@ class Command(LabelCommand):
             help = 'Set if the CSV file has a header row'
         ),
         make_option(
-            '--region-name',
-            action = 'store_true',
-            dest = 'region-name',
-            default = False,
-            help = 'Set if the first column of the CSV file is the union name'
+            '--region-name-field',
+            action = 'store',
+            dest = 'region-name-field',
+            help = 'Set to the column of the CSV with the union name if present'
         ),
         make_option(
-            '--region-id',
-            action = 'store_true',
-            dest = 'region-id',
-            default = False,
-            help = 'Set if the first column of the CSV file is the union ID'
+            '--region-id-field',
+            action = 'store',
+            dest = 'region-id-field',
+            help = 'Set to the column of the CSV with the union ID if present'
         ),
         make_option(
-            '--country_code',
+            '--area-type-field',
+            action = 'store',
+            dest = 'area-type-field',
+            help = 'Set to the column of the CSV with the area type code, if present'
+        ),
+        make_option(
+            '--country-code',
             action="store",
-            dest='country_code',
+            dest='country-code',
             default = None,
             help = 'Set if you want to specify country of the regions'
         ),
@@ -83,24 +95,32 @@ class Command(LabelCommand):
             raise Exception, "Area with name %s was not found!" % name
 
     def handle_label(self, filename, **options):
+        options.update(self.option_defaults)
+
         self.current_generation = Generation.objects.current()
-        self.new_generation = Generation.objects.new()
-        if not self.new_generation:
-            raise Exception, "No new generation to be used for import!"
+        if not self.current_generation:
+            self.current_generation = Generation.objects.new()
+        if options['generation-id']:
+            self.new_generation = Generation.objects.get(id=options['generation-id'])
+        else:
+            self.new_generation = Generation.objects.new()
+            if not self.new_generation:
+                raise Exception, "No new generation to be used for import!"
 
-        area_type_code = options['area_type_code']
-        if len(area_type_code)>3:
-            print "Area type code must be 3 letters or fewer, sorry"
-            sys.exit(1)
-        try:
-            self.area_type = Type.objects.get(code=area_type_code)
-        except:
-            type_desc = raw_input('Please give a description for area type code %s: ' % area_type_code)
-            self.area_type = Type(code=area_type_code, description=type_desc)
-            if options['commit']:
-                self.area_type.save()
+        area_type_code = options['area-type-code']
+        if area_type_code:
+            if len(area_type_code)>3:
+                print "Area type code must be 3 letters or fewer, sorry"
+                sys.exit(1)
+            try:
+                self.area_type = Type.objects.get(code=area_type_code)
+            except:
+                type_desc = raw_input('Please give a description for area type code %s: ' % area_type_code)
+                self.area_type = Type(code=area_type_code, description=type_desc)
+                if options['commit']:
+                    self.area_type.save()
 
-        country_code = options['country_code']
+        country_code = options['country-code']
         if country_code:
             try:
                 self.country = Country.objects.get(code=country_code)
@@ -109,6 +129,9 @@ class Command(LabelCommand):
                 self.country = Country(code=country_code, name=country_name)
                 if options['commit']: self.country.save()
 
+        self.process(filename, options)
+
+    def process(self, filename, options):
         print 'Loading file %s' % filename
         reader = csv.reader(open(filename))
         if options['header-row']: next(reader)
@@ -118,14 +141,23 @@ class Command(LabelCommand):
     def handle_row(self, row, options):
         region_id = None
         region_name = None
-        if options['region-name']:
-            region_name = row.pop(0)
-        if options['region-id']:
-            region_id = row.pop(0)
+        if options['region-name-field']:
+            region_name = row[int(options['region-name-field'])-1]
+        if options['region-id-field']:
+            region_id = row[int(options['region-id-field'])-1]
+
+        if options['area-type-field']:
+            area_type = Type.objects.get(code=row[int(options['area-type-field'])-1])
+        else:
+            area_type = self.area_type
 
         areas = []
-        for name in row:
-            areas.append( self.find_area(name) )
+        for pos in range(0, len(row)):
+            if (options['region-name-field'] and pos == int(options['region-name-field'])-1) \
+                or (options['region-id-field'] and pos == int(options['region-id-field'])-1) \
+                or (options['area-type-field'] and pos == int(options['area-type-field'])-1):
+                continue
+            areas.append( self.find_area(row[pos]) )
 
         if region_name is None:
             region_name = ' / '.join( [ area.name for area in areas ] )
@@ -137,13 +169,13 @@ class Command(LabelCommand):
 
         try:
             if region_id:
-                area = Area.objects.get(id=int(region_id), type=self.area_type)
+                area = Area.objects.get(id=int(region_id), type=area_type)
             else:
-                area = Area.objects.get(name=region_name, type=self.area_type)
+                area = Area.objects.get(name=region_name, type=area_type)
         except Area.DoesNotExist:
             area = Area(
                 name            = region_name,
-                type            = self.area_type,
+                type            = area_type,
                 generation_low  = self.new_generation,
                 generation_high = self.new_generation,
             )
