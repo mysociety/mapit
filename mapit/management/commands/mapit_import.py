@@ -67,6 +67,12 @@ class Command(LabelCommand):
             help="The field name containing the area's ID code"
         ),
         make_option(
+            '--use_code_as_id',
+            action="store_true",
+            dest='use_code_as_id',
+            help="Set to use the code from code_field as the MapIt ID"
+        ),
+        make_option(
             '--encoding',
             action="store",
             dest='encoding',
@@ -183,6 +189,8 @@ class Command(LabelCommand):
                     generation_low  = new_generation,
                     generation_high = new_generation,
                 )
+                if options['use_code_as_id'] and code:
+                    m.id = int(code)
 
             # check that we are not about to skip a generation
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
