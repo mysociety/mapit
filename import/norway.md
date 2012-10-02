@@ -42,8 +42,13 @@ Alternatively, here are the basic instructions to install the N5000 data:
        ./manage.py mapit_import --generation_id <new-gen-id> \
            --area_type_code NKO --name_type_code M --country_code O \
            --name_field NAVN --encoding iso-8859-1 \
-           --code_field KOMM --id_type_code n5000 --commit \
-           ../../data/N5000\ shape/N5000_AdministrativFlate.shp
+           --code_field KOMM --code_type n5000 --use_code_as_id --commit \
+           ../data/N5000\ shape/N5000_AdministrativFlate.shp
+       # Import Fylke here XXX
+       # Perhaps, when 7-area-unions branch is merged, with
+       #   ./manage.py mapit_create_area_unions --area-type-code NFY \
+       #     --region-id-field 1 --region-name-field 2 --country O \
+       #     --commit ../data/norway/kommune2fylke.csv
        ./manage.py mapit_import_area_unions --commit data/norway/regions.csv
        ./manage.py mapit_generation_activate --commit
 
