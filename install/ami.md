@@ -15,7 +15,7 @@ Micro instance which will be [free for a
 year](http://aws.amazon.com/free/).
 
 The AMI can be found in the **EU West (Ireland)** region, with the ID
-`ami-d3a7a6a7` and name "Basic MapIt installation 2012-10-02".
+`ami-fda8a989` and name "Basic MapIt installation 2012-10-02b".
 
 When you create an EC2 instance based on that AMI, make sure that you
 choose Security Groups that allows at least inbound HTTP, HTTPS and
