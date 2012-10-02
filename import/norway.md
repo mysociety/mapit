@@ -28,8 +28,7 @@ Alternatively, here are the basic instructions to install the N5000 data:
 
 1. Set AREA_SRID in conf/general.yml to 4326 (as we'll put N5000 shapes into
    the WGS84 co-ordinate system).
-2. Download `N5000
-   <http://www.statkart.no/?module=Articles;action=Article.publicShow;ID=15305>`_
+2. Download [N5000](http://www.statkart.no/?module=Articles;action=Article.publicShow;ID=15305)
    and save/unzip in the data directory.
 3. Change to the project directory, and create database tables:
 
