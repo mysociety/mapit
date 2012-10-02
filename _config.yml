@@ -5,3 +5,9 @@ auto: true
 server: true
 permalink: pretty
 
+authors:
+  mark:
+    display_name: Mark
+  matthew:
+    display_name: Matthew
+
