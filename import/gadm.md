@@ -73,7 +73,7 @@ start of the line in the number of occurrences.
 Note that there is a single 'Water Body' in one of the kml files - using a text
 editor we'll remove that manually as it is not relevant to us. This is done by
 finding the 'Water body' text and then deleting everything from and including
-the '<Placemark>' before it and up to and including the closing '</Placemark>'
+the `<Placemark>` before it and up to and including the closing `</Placemark>`
 after it.
 
 Alternatively you could import using the steps below and then find it in the
