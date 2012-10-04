@@ -3,25 +3,17 @@
 set -e
 set -x
 
-DEFAULT_SERVER=false
-if [ x"$1" = x"--default" ]
-then
-    DEFAULT_SERVER=true
-    shift
-fi
-
-if [ $# -ne 2 ]
+if [ $# -ne 3 ]
 then
     cat >&2 <<EOUSAGE
-Usage: $0 [--default] <UNIX-USER> <HOST>
---default means to install as the default site for this server,
-rather than a virtualhost for HOST.
+Usage: $0 <UNIX-USER> <HOST> <INSTALLATION-DIRECTORY>
 EOUSAGE
     exit 1
 fi
 
 UNIX_USER="$1"
 HOST="$2"
+DIRECTORY="$3"
 DB_NAME="mapit"
 
 # Check that the arguments we've been passed are sensible:
@@ -37,7 +29,6 @@ fi
 if ! id "$UNIX_USER" 2> /dev/null > /dev/null
 then
     echo "The user '$UNIX_USER' didn't exist."
-    echo "(You should have run \"sudo pre-install-as-root '$UNIX_USER' '$HOST'\" before this.)"
     exit 1
 fi
 
@@ -47,12 +38,6 @@ then
     exit 1
 fi
 
-if [ $DEFAULT_SERVER = true ]
-then
-    DIRECTORY="/var/www/mapit"
-else
-    DIRECTORY="/var/www/$HOST"
-fi
 REPOSITORY="$DIRECTORY/mapit"
 LINK_DESTINATION="$HOME/mapit"
 
