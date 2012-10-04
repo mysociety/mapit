@@ -14,9 +14,10 @@ make significant changes to your server's setup, including modifying
 your nginx setup, creating a user account, creating a database,
 installing new packages etc.*
 
-The script to run is `pre-install-as-root`, whose usage is as follows:
+The script to run is called [`install-site.sh`, in our `commonlib` repository](https://raw.github.com/mysociety/commonlib/master/bin/install-site.sh).
+That script's usage is as follows:
 
-    Usage: ./pre-install-as-root [--default] <UNIX-USER> [HOST]
+    Usage: ./install-site.sh [--default] <SITE-NAME> <UNIX-USER> [HOST]
     HOST is only optional if you are running this on an EC2 instance.
     --default means to install as the default site for this server,
     rather than a virtualhost for HOST.
@@ -34,13 +35,13 @@ For example, if you wish to use a new user called `mapit` and the
 hostname `mapit.example.org`, creating a virtualhost just for that
 hostname, you could download and run the script with:
 
-    curl https://raw.github.com/mysociety/mapit/master/bin/pre-install-as-root | \
-        sudo sh -s mapit mapit.example.org
+    curl https://raw.github.com/mysociety/commonlib/master/bin/install-site.sh | \
+        sudo sh -s mapit mapit mapit.example.org
 
 Or, if you want to set this up as the default site on an EC2 instance,
 you could download the script and then invoke it with:
 
-    sudo pre-install-as-root --default mapit
+    sudo ./install-site.sh --default mapit mapit
 
 When the script has finished, you should have a working copy of the
 website, accessible via the hostname you supplied to the script.
