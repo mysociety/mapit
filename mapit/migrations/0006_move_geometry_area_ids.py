@@ -8,13 +8,13 @@ from django.conf import settings
 class Migration(DataMigration):
 
     def forwards(self, orm):
-        for g in orm.Geometry.objects.all():
+        for g in orm.Geometry.objects.all().iterator():
             g.areas.add( g.area )
             g.save()
 
 
     def backwards(self, orm):
-        for g in orm.Geometry.objects.all():
+        for g in orm.Geometry.objects.all().iterator():
             g.area = g.areas.all()[0]
             g.save()
 
