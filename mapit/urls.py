@@ -7,6 +7,8 @@ format_end = '(?:\.(?P<format>html|json))?'
 
 urlpatterns = patterns('',
     (r'^$', direct_to_template, { 'template': 'mapit/index.html' }, 'mapit_index' ),
+    (r'^licensing$', direct_to_template, { 'template': 'mapit/licensing.html' } ),
+    (r'^overview$', direct_to_template, { 'template': 'mapit/overview.html' } ),
 
     (r'^generations$', 'mapit.views.areas.generations'),
 

@@ -51,11 +51,12 @@ boundaries.
 {% endif %}
 </p>
 
-        <p>Non-commercial, low-volume use of this service is free &ndash;
-        <a href="#usage-licence">read more</a>.<br>You can
+        <p>Charitable, low volume use of this service is free &ndash;
+        <a href="/licensing">read more</a>.<br>You can
         <a href="https://github.com/mysociety/mapit">download the source
-        on Github</a>.<br>Need a commercial licence?
-        <a href="http://www.mysociety.org/contact/">Get in touch</a>.</p>
+        on Github</a>.<br>Need a licence?
+        <a href="/licensing">Read more</a> or
+        <a href="http://www.mysociety.org/contact/">get in touch</a>.</p>
 
         {% if country == 'NO' %}
 <p id="donate">NUUG is a member organisation for people interested in free
@@ -191,23 +192,21 @@ to keep NUUG going.
             <h3>Usage &amp; Licence</h3>
 
             {% if country != 'NO' %}
-            <p>As a UK registered charity we can only allow this service to be used
-            free of charge by other registered charities, or individuals working
-            on non-profit projects. This is because our legal status does not
-            allow us to subsidise profit-making activities.
-            Also, in order to maintain quality of service for our own websites,
-            as well as our API users, this service is rate limited to an
-            average of one request every two seconds.</p>
+            <p>As a UK registered charity our legal status only allows this
+            service to be used free of charge by other registered charities, or
+            individuals working unpaid on non-profit projects. The free usage
+            limit for non-profit users is 50,000 calls to the API per year. All
+            other uses need to acquire a licence.</p>
 
-            <p>Any other use must be paid for. We offer a range of payment options,
-            from rate-limited use of this service, to unlimited usage of versions
-            we can deploy to virtual servers for you.</p>
-
-            <p>For all licensing enquiries, please <a
+            <p><a href="/licensing">Find out if you need a licence</a> or <a
                 href="http://www.mysociety.org/contact/">get in touch</a> so we
             can discuss how we can provide you with the service you require.</p>
 
-            <p>Any use of this service will require attribution of
+            <p>To maintain quality of service for our own websites, as well as our
+            API users, this service is rate limited to an average of 1 call per
+            second in a rolling 3 minute period.</p>
+
+            <p>If you use this service, you must attribute
             {% if country == 'GB' %}
             OS/RM/ONS
             {% else %}
@@ -215,7 +214,8 @@ to keep NUUG going.
             {% endif %}
             as
             per their licences. We also ask that all non-profit users attribute
-            mySociety on your sites or apps &ndash; please include a link to this page.
+            MapIt at the point of use on sites or apps. Attribution should use
+            the text &ldquo;Powered by MapIt&rdquo;, with a link back to this page.
             {% endif %}
             </p>
 

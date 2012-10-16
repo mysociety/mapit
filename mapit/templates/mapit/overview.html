@@ -1,0 +1,75 @@
+{% extends "mapit/base.html" %}
+
+{% block title %}MapIt for non-developers{% endblock title %}
+
+{% block content %}
+
+<h2>MapIt for non-developers</h2>
+
+<p>MapIt is a system that sends data about administrations and other
+location-related data in response to requests from a website or service. This
+is useful if you are building services that require these data, for example, to
+identify which ward a postcode is in, what the nearest postcode is to a point
+on a map, or what the boundaries of an administrative area are &ndash; and many, many
+others.</p>
+
+<p>MapIt can be used for all sorts of websites and applications. For example,
+<a href="http://www.fixmystreet.com/">FixMyStreet</a> is mySociety&rsquo;s
+street problem reporting service, which uses MapIt to find the right area on
+the map when the user enters their postcode, and to assign problem reports to
+the correct local authority when the user drops a pin on the map to show the
+problem’s location. It also relies on MapIt to
+<a href="http://www.fixmystreet.com/reports/Bromley">plot local authority boundaries</a>.
+
+<p>In technical terms MapIt is classed as an API which stands for Application
+Programming Interface. It allows an external service to query data held in a
+database and return results. This removes the need to build such a database
+yourself &ndash; you can simply use MapIt in your application or site.
+
+<p>MapIt can be used for the following:
+
+<ul>
+
+    <li>For a postcode: find the National Grid and latitude and longitude
+    co-ordinates for a postcode, and which administrative areas it belongs to,
+    such as ward, the local authority area, super output areas, the
+    parliamentary constituency, and the European region.
+
+    <li>Partial postcode such as SW1A: find the national grid and
+    latitude/longitude co-ordinates for the centre of that partial postcode.
+
+    <li>Point: find out which administrative areas a point (expressed as a
+    latitude/longitude) is contained in.
+
+    <li>Nearest postcode: find the nearest postcode to a point on the map.
+
+    <li>By area: find data on an administrative area, such as its boundaries,
+    or an example postcode in this area. You can also get “digital boundaries”
+    to map the area, in e.g. WKT, GeoJSON or KML formats, for use with maps
+    and/or geographic information systems.
+
+    <li>Related areas: look up which administrative areas are contained within
+    an area (e.g. all wards of a council), which areas it borders with, covers
+    and/or overlaps with.
+
+    <li>Multiple areas: get information about several areas at once, by type
+    of area (e.g. city council) or area name.
+
+    <li>Generations: shows a list of updates to MapIt information, with a
+    unique number for each update (or “generation”). This helps with instances
+    where you want to query historical data, for example.
+
+</ul>
+
+<h3>Rate limiting</h3>
+
+<p>The service has an automatic counter that tracks the number of requests sent
+to it by a user, and limits requests if they reach a certain volume. This is
+set at an average of 1 call per second in a rolling 3 minute period. The reason
+to do this is to make sure the service does not get overwhelmed by huge
+requests volumes which could risk it going down for all users.</p>
+
+<p>Where the limit is exceeded, the service will stop sending data until the
+average goes back within the set limit.</p>
+
+{% endblock %}
