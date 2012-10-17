@@ -304,7 +304,12 @@ def _area_geometry(area_id):
 @ratelimit(minutes=3, requests=100)
 def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
-    out = dict( (id, _area_geometry(id)) for id in area_ids )
+    out = {}
+    for id in area_ids:
+        area = _area_geometry(id)
+        if isinstance(area, HttpResponse):
+            area = {}
+        out[id] = area
     return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
