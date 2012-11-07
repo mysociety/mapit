@@ -12,7 +12,7 @@ from boundaries import *
 from generate_kml import *
 
 if len(sys.argv) > 2:
-    print >> sys.stderr, "Usage: %s [LARGEST-ADMIN-LEVEL]" % (sys.argv[0],)
+    print >> sys.stderr, "Usage: %s [INITIAL-ADMIN-LEVEL]" % (sys.argv[0],)
     sys.exit(1)
 
 start_admin_level = 2
