@@ -22,19 +22,6 @@ if len(sys.argv) == 2:
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
 
-timeout = '[timeout:3600];'
-
-def overpass_post_request(data, filename):
-    """Make an Overpass API call and write to filename (if it doesn't exist)"""
-    if not os.path.exists(filename):
-        url = 'http://www.overpass-api.de/api/interpreter'
-        values = {'data': data}
-        encoded_values = urllib.urlencode(values)
-        request = urllib2.Request(url, encoded_values)
-        response = urllib2.urlopen(request)
-        with open(filename, "w") as fp:
-            fp.write(response.read())
-
 def replace_slashes(s):
     return re.sub(r'/', '_', s)
 
@@ -42,15 +29,10 @@ for admin_level in range(start_admin_level, 12):
 
     print "Fetching data at admin level", admin_level
 
-    predicate = '["boundary"="administrative"]'
-    predicate += '["admin_level"="%d"]' % (admin_level,)
-    data = timeout + '(relation%s;way%s;);out body;' % (predicate, predicate)
-
-    print "data is:", data
-
     file_basename = "admin-level-%02d-worldwide.xml" % (admin_level,)
     xml_filename = os.path.join(data_dir, "cache", file_basename)
-    overpass_post_request(data, xml_filename)
+    admin_level_query = get_query_boundaries(admin_level)
+    get_osm3s(admin_level_query, xml_filename)
 
     level_directory = os.path.join(data_dir, "cache", "al%02d" % (admin_level,))
     mkdir_p(level_directory)

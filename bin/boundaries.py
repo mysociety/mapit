@@ -5,6 +5,9 @@ from xml.sax.handler import ContentHandler
 from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
 from StringIO import StringIO
+from subprocess import Popen, PIPE
+
+osm3s_db_directory = "/home/overpass/db/"
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -46,6 +49,43 @@ def mkdir_p(path):
             pass
         else:
             raise
+
+def get_query_relation_and_dependents(element_type, element_id):
+    return """<osm-script timeout="3600">
+  <union into="_">
+    <id-query into="_" ref="%s" type="%s"/>
+    <recurse from="_" into="_" type="down"/>
+  </union>
+  <print from="_" limit="" mode="body" order="id"/>
+</osm-script>
+""" % (element_id, element_type)
+
+def get_query_boundaries(admin_level):
+    return """<osm-script timeout="3600">
+  <union into="_">
+    <query into="_" type="relation">
+      <has-kv k="boundary" modv="" v="administrative"/>
+      <has-kv k="admin_level" modv="" v="%s"/>
+    </query>
+    <query into="_" type="way">
+      <has-kv k="boundary" modv="" v="administrative"/>
+      <has-kv k="admin_level" modv="" v="%s"/>
+    </query>
+  </union>
+  <print from="_" limit="" mode="body" order="id"/>
+</osm-script>""" % (admin_level, admin_level)
+
+def get_osm3s(query_xml, filename):
+    if not os.path.exists(filename):
+        with open(filename, 'w') as file_output:
+            p = Popen(["osm3s_query",
+                       "--concise",
+                       "--db-dir=" + osm3s_db_directory],
+                      stdin=PIPE,
+                      stdout=file_output)
+            p.communicate(query_xml)
+            if p.returncode != 0:
+                raise Exception, "The osm3s_query failed"
 
 def get_cache_filename(element_type, element_id, cache_directory=None):
     if cache_directory is None:
@@ -1685,27 +1725,6 @@ def get_total_seconds(td):
     """A replacement for timedelta.total_seconds(), that's only in Python >= 2.7"""
     return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
 
-class RateLimitedPOST:
-
-    last_post = None
-    min_time_between = datetime.timedelta(seconds=0.5)
-
-    @staticmethod
-    def request(url, values, filename, verbose=False):
-        if RateLimitedPOST.last_post:
-            since_last = datetime.datetime.now() - RateLimitedPOST.last_post
-            if since_last < RateLimitedPOST.min_time_between:
-                difference = RateLimitedPOST.min_time_between - since_last
-                time.sleep(get_total_seconds(difference))
-        encoded_values = urllib.urlencode(values)
-        request = urllib2.Request(url, encoded_values)
-        if verbose:
-            print "making request to url:", url
-        response = urllib2.urlopen(request)
-        with open(filename, "w") as fp:
-            fp.write(response.read())
-        RateLimitedPOST.last_post = datetime.datetime.now()
-
 def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     """Get an OSM element from the Overpass API, with caching on disk
 
@@ -1731,10 +1750,8 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
         raise Exception, "Unknown element type '%s'" % (element_type,)
     filename = get_cache_filename(element_type, element_id, cache_directory)
     if not os.path.exists(filename):
-        url = "http://www.overpass-api.de/api/interpreter"
-        data = '[timeout:3600];(%s(%s);>;);out;' % arguments
-        values = {'data': data}
-        RateLimitedPOST.request(url, values, filename, verbose)
+        all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
+        get_osm3s(all_dependents_query, filename)
     return filename
 
 def parse_xml_minimal(filename, element_handler):
@@ -1825,7 +1842,6 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     >>> tmp_cache2 = mkdtemp()
     >>> fetch_osm_element("relation", "58446", verbose=True, cache_directory=tmp_cache2)
     fetch_osm_element(relation, 58446)
-    making request to url: http://www.overpass-api.de/api/interpreter
     Relation(id="58446", members=70)
 
     FIXME: fetching a non-existing element really should produce an
