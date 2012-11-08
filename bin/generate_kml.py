@@ -352,6 +352,9 @@ def get_kml_for_osm_element(element_type, element_id):
             <Data name="type">
               <value>boundary</value>
             </Data>
+            <Data name="wikipedia">
+              <value>en:South Cambridgeshire</value>
+            </Data>
           </ExtendedData>
           <MultiGeometry>
             <Polygon>
