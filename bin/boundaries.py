@@ -1450,7 +1450,10 @@ class OSMXMLParser(ContentHandler):
     ...   <node id="291974462" lat="55.0548850" lon="-2.9544991"/>
     ...   <node id="312203528" lat="54.4600000" lon="-5.0596341"/>
     ... </osm>'''
-    >>> parser = parse_xml_string(reordered_xml, fetch_missing=False)
+    >>> tmp_cache = mkdtemp()
+    >>> parser = parse_xml_string(reordered_xml,
+    ...                           fetch_missing=False,
+    ...                           cache_directory=tmp_cache)
     >>> for e in parser:
     ...     print e
     Relation(id="3123205528", members=1)
