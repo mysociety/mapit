@@ -181,76 +181,77 @@ class Command(LabelCommand):
                 layer = ds[0]
                 if len(layer) != 1:
                     raise Exception, "We only expect one feature in each layer"
-                for feat in layer:
 
-                    area_code = 'O%02d' % (admin_level)
+                feat = layer[0]
 
-                    # FIXME: perhaps we could try to find parent areas
-                    # via inclusion in higher admin levels
-                    parent_area = None
+                area_code = 'O%02d' % (admin_level)
 
-                    try:
-                        osm_code = Code.objects.get(type=code_type_osm, code=osm_id)
-                    except Code.DoesNotExist:
-                        osm_code = None
+                # FIXME: perhaps we could try to find parent areas
+                # via inclusion in higher admin levels
+                parent_area = None
 
-                    def update_or_create():
-                        if osm_code:
-                            m = osm_code.area
-                        else:
-                            m = Area(
-                                name = name,
-                                type = Type.objects.get(code=area_code),
-                                country = Country.objects.get(code='G'),
-                                parent_area = parent_area,
-                                generation_low = new_generation,
-                                generation_high = new_generation,
-                            )
+                try:
+                    osm_code = Code.objects.get(type=code_type_osm, code=osm_id)
+                except Code.DoesNotExist:
+                    osm_code = None
 
-                        if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                            raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
-                        m.generation_high = new_generation
+                def update_or_create():
+                    if osm_code:
+                        m = osm_code.area
+                    else:
+                        m = Area(
+                            name = name,
+                            type = Type.objects.get(code=area_code),
+                            country = Country.objects.get(code='G'),
+                            parent_area = parent_area,
+                            generation_low = new_generation,
+                            generation_high = new_generation,
+                        )
 
-                        g = feat.geom.transform(4326, clone=True)
+                    if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
+                        raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                    m.generation_high = new_generation
 
-                        # In generating the data we should have
-                        # excluded any "polygons" with less than four
-                        # points (the final one being the same as the
-                        # first), but just in case:
-                        for polygon in g:
-                            if g.num_points < 4:
-                                return
+                    g = feat.geom.transform(4326, clone=True)
 
-                        poly = [ g ]
+                    # In generating the data we should have
+                    # excluded any "polygons" with less than four
+                    # points (the final one being the same as the
+                    # first), but just in case:
+                    for polygon in g:
+                        if g.num_points < 4:
+                            return
 
-                        if options['commit']:
-                            m.save()
+                    poly = [ g ]
 
-                            if name not in kml_data.data:
-                                print json.dumps(kml_data.data, sort_keys=True, indent=4)
-                                raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
+                    if options['commit']:
+                        m.save()
 
-                            for k, v in kml_data.data[name].items():
-                                language_name = None
-                                if k == 'name':
-                                    lang = 'default'
-                                    language_name = "OSM Default"
-                                else:
-                                    name_match = re.search(r'^name:(.+)$', k)
-                                    if name_match:
-                                        lang = name_match.group(1)
-                                        if lang in language_code_to_name:
-                                            language_name = language_code_to_name[lang]
-                                if not language_name:
-                                    continue
-                                # Otherwise, make sure that a NameType for this language exists:
-                                NameType.objects.update_or_create({'code': lang},
-                                                                  {'code': lang,
-                                                                   'description': language_name})
-                                name_type = NameType.objects.get(code=lang)
-                                m.names.update_or_create({ 'type': name_type }, { 'name': v })
-                            m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
-                            save_polygons({ code : (m, poly) })
+                        if name not in kml_data.data:
+                            print json.dumps(kml_data.data, sort_keys=True, indent=4)
+                            raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
 
-                    update_or_create()
+                        for k, v in kml_data.data[name].items():
+                            language_name = None
+                            if k == 'name':
+                                lang = 'default'
+                                language_name = "OSM Default"
+                            else:
+                                name_match = re.search(r'^name:(.+)$', k)
+                                if name_match:
+                                    lang = name_match.group(1)
+                                    if lang in language_code_to_name:
+                                        language_name = language_code_to_name[lang]
+                            if not language_name:
+                                continue
+                            # Otherwise, make sure that a NameType for this language exists:
+                            NameType.objects.update_or_create({'code': lang},
+                                                              {'code': lang,
+                                                               'description': language_name})
+                            name_type = NameType.objects.get(code=lang)
+                            m.names.update_or_create({ 'type': name_type }, { 'name': v })
+                        m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
+                        save_polygons({ code : (m, poly) })
+
+                update_or_create()
 
