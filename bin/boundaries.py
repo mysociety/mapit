@@ -1835,14 +1835,14 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
 
     >>> tmp_cache = mkdtemp()
     >>> fetch_osm_element("relation", "58446", cache_directory=tmp_cache)
-    Relation(id="58446", members=70)
+    Relation(id="58446", members=71)
 
     Or do the same, more verbosely, with:
 
     >>> tmp_cache2 = mkdtemp()
     >>> fetch_osm_element("relation", "58446", verbose=True, cache_directory=tmp_cache2)
     fetch_osm_element(relation, 58446)
-    Relation(id="58446", members=70)
+    Relation(id="58446", members=71)
 
     FIXME: fetching a non-existing element really should produce an
     exception, but at the moment just returns None
