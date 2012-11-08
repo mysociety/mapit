@@ -800,7 +800,7 @@ class Way(OSMElement):
 
         >>> xe = etree.Element('example-with-nodes')
         >>> w.to_xml(xe, include_node_dependencies=True) #doctest: +ELLIPSIS
-        <Element example-with-nodes at 0x...>
+        <Element example-with-nodes at ...>
         >>> print etree.tostring(xe, pretty_print=True),
         <example-with-nodes>
           <node lat="52" lon="1" id="12"/>
@@ -1126,7 +1126,7 @@ class Relation(OSMElement):
 
         >>> xe = etree.Element('example-with-nodes')
         >>> r.to_xml(xe, include_node_dependencies=True) #doctest: +ELLIPSIS
-        <Element example-with-nodes at 0x...>
+        <Element example-with-nodes at ...>
         >>> print etree.tostring(xe, pretty_print=True),
         <example-with-nodes>
           <node lat="52" lon="0.3" id="76542"/>
