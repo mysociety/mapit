@@ -2039,6 +2039,11 @@ def join_way_soup(ways):
     >>> result
     [Way(id="None", nodes=5)]
 
+    If the way soup includes any missing ways, then just ignore them:
+    >>> missing = OSMElement.make_missing_element('way', '7')
+    >>> join_way_soup([w, ne, s, missing])
+    [Way(id="None", nodes=5)]
+
     The nodes in the joined way should be the same as all the corners
     of the square (with one repeated once to join up again):
 
@@ -2076,6 +2081,8 @@ def join_way_soup(ways):
     closed_ways = []
     endpoints_to_ways = EndpointToWayMap()
     for way in ways:
+        if way.element_content_missing:
+            continue
         if way.closed():
             closed_ways.append(way)
             continue
