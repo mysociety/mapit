@@ -1534,14 +1534,15 @@ class OSMXMLParser(ContentHandler):
     Node(id="1000000000000", missing)
     Node(id="1000000000001", missing)
 
-    However, the second time, we find an empty file in the cache, and
-    an exception is thrown - this is inconsistent, and thus a FIXME:
+    A second time, we find an empty file in the cache, which should
+    give the same result.
 
     >>> parser = parse_xml_string(xml_with_fictitious_refs,
     ...                           cache_directory=tmp_cache) # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-      ...
-    Exception: Failed to find expected element in: ...
+    >>> for e in parser[0]:
+    ...     print e
+    Node(id="1000000000000", missing)
+    Node(id="1000000000001", missing)
 
     Remove the temporary directory created for these doctests:
     >>> shutil.rmtree(tmp_cache)
@@ -1625,7 +1626,13 @@ class OSMXMLParser(ContentHandler):
                     result = e
                     break
             if result is None:
-                raise Exception, "Failed to find expected element in: " + cache_filename
+                if len(parser) == 0:
+                    # If it's an empty file, just return a missing element:
+                    return OSMElement.make_missing_element(element_type, element_id)
+                else:
+                    # However, if there's the wrong data in the file,
+                    # that's worth looking into:
+                    raise Exception, "Failed to find expected element in: " + cache_filename
         if result is None:
             if self.fetch_missing:
                 result = fetch_osm_element(element_type,
