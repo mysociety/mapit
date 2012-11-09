@@ -12,6 +12,7 @@ class KML(ContentHandler):
     def characters(self, content):
         self.content += content
 
+    @staticmethod
     def normalize_whitespace(s):
         return re.sub('(?us)\s+', ' ', s).strip()
 
