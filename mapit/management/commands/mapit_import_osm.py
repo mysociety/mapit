@@ -219,7 +219,7 @@ class Command(LabelCommand):
                     # points (the final one being the same as the
                     # first), but just in case:
                     for polygon in g:
-                        if g.num_points < 4:
+                        if polygon.num_points < 4:
                             return
 
                     poly = [ g ]
