@@ -214,14 +214,6 @@ class Command(LabelCommand):
 
                     g = feat.geom.transform(4326, clone=True)
 
-                    # In generating the data we should have
-                    # excluded any "polygons" with less than four
-                    # points (the final one being the same as the
-                    # first), but just in case:
-                    for polygon in g:
-                        if polygon.num_points < 4:
-                            return
-
                     poly = [ g ]
 
                     if options['commit']:

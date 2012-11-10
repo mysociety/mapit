@@ -44,6 +44,11 @@ def save_polygons(lookup):
             else:
                 shapes = p
             for g in shapes:
+                # Ignore any shape with fewer than four points, to
+                # avoid introducing invalid polygons into the
+                # database.
+                if g.point_count < 4:
+                    continue
                 # XXX Using g.wkt directly when importing Norway KML works fine
                 # with Django 1.1, Postgres 8.3, PostGIS 1.3.3 but fails with
                 # Django 1.2, Postgres 8.4, PostGIS 1.5.1, saying that the
