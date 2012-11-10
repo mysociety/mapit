@@ -89,9 +89,11 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
 
     Any Way object that has too few points is ignored:
 
-    >>> too_small_a = Way('4', nodes=[Node('22', latitude=53, longitude=0)])
-    >>> too_small_b = Way('5', nodes=[Node('23', latitude=53, longitude=0),
-    ...                               Node('24', latitude=51, longitude=2)])
+    >>> too_small_a = Way('4', nodes=[Node('22', latitude=53, longitude=0),
+    ...                               Node('23', latitude=53, longitude=2),
+    ...                               Node('24', latitude=53, longitude=0)])
+    >>> too_small_b = Way('5', nodes=[Node('25', latitude=53, longitude=0),
+    ...                               Node('26', latitude=51, longitude=2)])
     >>> outers.append(too_small_a)
     >>> inners.insert(0, too_small_b)
     >>> grouped_with_invalid_ways = group_boundaries_into_polygons(outers, inners)
@@ -107,13 +109,13 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
     inner_ways_left = inner_ways[:]
 
     for outer_way in outer_ways:
-        if len(outer_way) < 3:
+        if len(outer_way) <= 3:
             continue
         polygon = { 'outer': [outer_way],
                     'inner': [] }
         for i in range(len(inner_ways_left) - 1, -1, -1):
             inner_way = inner_ways_left[i]
-            if len(inner_way) < 3:
+            if len(inner_way) <= 3:
                 del inner_ways_left[i]
                 continue
             if ways_overlap(inner_way, outer_way):
