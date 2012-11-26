@@ -112,6 +112,8 @@ class Command(LabelCommand):
                 for c in codes:
                     language_code_to_name[c] = english_name
 
+        global_country = Country.objects.get(code='G')
+
         # print json.dumps(language_code_to_name, sort_keys=True, indent=4)
 
         skip_up_to = None
@@ -184,66 +186,108 @@ class Command(LabelCommand):
 
                 feat = layer[0]
 
+                g = feat.geom.transform(4326, clone=True)
+
+                if g.geom_count == 0:
+                    # Just ignore any KML files that have no polygons in them:
+                    verbose('    Ignoring that file - it contained no polygons')
+                    continue
+
+                # Nowadays, in generating the data we should have
+                # excluded any "polygons" with less than four pointsv
+                # (the final one being the same as the first), but
+                # just in case:
+                for polygon in g:
+                    if g.num_points < 4:
+                        raise Exception, "%s contained a polygon with less than 4 points"
+
                 area_code = 'O%02d' % (admin_level)
+                area_type = Type.objects.get(code=area_code)
 
                 # FIXME: perhaps we could try to find parent areas
                 # via inclusion in higher admin levels
                 parent_area = None
 
                 try:
-                    osm_code = Code.objects.get(type=code_type_osm, code=osm_id)
+                    osm_code = Code.objects.get(type=code_type_osm,
+                                                code=osm_id,
+                                                area__generation_high__lte=current_generation,
+                                                area__generation_high__gte=current_generation)
                 except Code.DoesNotExist:
+                    verbose('    No area existed in the current generation with that OSM element type and ID')
                     osm_code = None
 
-                def update_or_create():
-                    if osm_code:
-                        m = osm_code.area
-                    else:
-                        m = Area(
-                            name = name,
-                            type = Type.objects.get(code=area_code),
-                            country = Country.objects.get(code='G'),
-                            parent_area = parent_area,
-                            generation_low = new_generation,
-                            generation_high = new_generation,
-                        )
+                was_the_same_in_current = False
 
-                    if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                        raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                if osm_code:
+                    m = osm_code.area
+
+                    # First, we need to check if the polygons are
+                    # still the same as in the previous generation:
+                    previous_geos_geometry = m.polygons.collect()
+                    if previous_geos_geometry is None:
+                        verbose('    In the current generation, that area was empty - skipping')
+                    else:
+                        # Simplify it to make sure the polygons are valid:
+                        previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
+                        new_geos_geometry = g.geos.simplify(tolerance=0)
+                        if previous_geos_geometry.equals(new_geos_geometry):
+                            was_the_same_in_current = True
+                        else:
+                            verbose('    In the current generation, the boundary was different')
+
+                if was_the_same_in_current:
+                    # Extend the high generation to the new one:
+                    verbose('    The boundary was identical in the previous generation; raising generation_high')
                     m.generation_high = new_generation
 
-                    g = feat.geom.transform(4326, clone=True)
+                else:
+                    # Otherwise, create a completely new area:
+                    m = Area(
+                        name = name,
+                        type = area_type,
+                        country = global_country,
+                        parent_area = parent_area,
+                        generation_low = new_generation,
+                        generation_high = new_generation,
+                    )
 
-                    poly = [ g ]
+                poly = [ g ]
 
-                    if options['commit']:
-                        m.save()
+                if options['commit']:
+                    m.save()
 
-                        if name not in kml_data.data:
-                            print json.dumps(kml_data.data, sort_keys=True, indent=4)
-                            raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
+                    if name not in kml_data.data:
+                        print json.dumps(kml_data.data, sort_keys=True, indent=4)
+                        raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
 
-                        for k, v in kml_data.data[name].items():
-                            language_name = None
-                            if k == 'name':
-                                lang = 'default'
-                                language_name = "OSM Default"
-                            else:
-                                name_match = re.search(r'^name:(.+)$', k)
-                                if name_match:
-                                    lang = name_match.group(1)
-                                    if lang in language_code_to_name:
-                                        language_name = language_code_to_name[lang]
-                            if not language_name:
-                                continue
-                            # Otherwise, make sure that a NameType for this language exists:
-                            NameType.objects.update_or_create({'code': lang},
-                                                              {'code': lang,
-                                                               'description': language_name})
-                            name_type = NameType.objects.get(code=lang)
-                            m.names.update_or_create({ 'type': name_type }, { 'name': v })
-                        m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
-                        save_polygons({ code : (m, poly) })
+                    old_lang_codes = set(unicode(n.type.code) for n in m.names.all())
 
-                update_or_create()
+                    for k, translated_name in kml_data.data[name].items():
+                        language_name = None
+                        if k == 'name':
+                            lang = 'default'
+                            language_name = "OSM Default"
+                        else:
+                            name_match = re.search(r'^name:(.+)$', k)
+                            if name_match:
+                                lang = name_match.group(1)
+                                if lang in language_code_to_name:
+                                    language_name = language_code_to_name[lang]
+                        if not language_name:
+                            continue
+                        old_lang_codes.discard(unicode(lang))
 
+                        # Otherwise, make sure that a NameType for this language exists:
+                        NameType.objects.update_or_create({'code': lang},
+                                                          {'code': lang,
+                                                           'description': language_name})
+                        name_type = NameType.objects.get(code=lang)
+
+                        m.names.update_or_create({ 'type': name_type }, { 'name': translated_name })
+
+                    if old_lang_codes:
+                        verbose('Removing deleted languages codes: ' + ' '.join(old_lang_codes))
+                    m.names.filter(type__code__in=old_lang_codes).delete()
+                    m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
+                    save_polygons({ code : (m, poly) })
