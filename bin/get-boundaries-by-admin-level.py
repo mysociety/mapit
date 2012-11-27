@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# This script fetches all administrative boundaries from OpenStreetMap
-# (at any admin level) and writes them out as KML.
+# This script fetches all administrative and political boundaries from
+# OpenStreetMap and writes them out as KML.
 
 import xml.sax, urllib, os, re, errno, sys
 from xml.sax.handler import ContentHandler
@@ -12,12 +12,12 @@ from boundaries import *
 from generate_kml import *
 
 if len(sys.argv) > 2:
-    print >> sys.stderr, "Usage: %s [INITIAL-ADMIN-LEVEL]" % (sys.argv[0],)
+    print >> sys.stderr, "Usage: %s [FIRST-MAPIT_TYPE]" % (sys.argv[0],)
     sys.exit(1)
 
-start_admin_level = 2
+start_mapit_type = 'O02'
 if len(sys.argv) == 2:
-    start_admin_level = int(sys.argv[1])
+    start_mapit_type = sys.argv[1]
 
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
@@ -25,24 +25,68 @@ data_dir = os.path.join(dir, '..', 'data')
 def replace_slashes(s):
     return re.sub(r'/', '_', s)
 
-for admin_level in range(start_admin_level, 12):
+mapit_type_to_tags = {
+    # Administrative boundaries, each with a numbered admin_level:
+    # http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative
+    'O02': {'boundary': 'administrative', 'admin_level': '2'},
+    'O03': {'boundary': 'administrative', 'admin_level': '3'},
+    'O04': {'boundary': 'administrative', 'admin_level': '4'},
+    'O05': {'boundary': 'administrative', 'admin_level': '5'},
+    'O06': {'boundary': 'administrative', 'admin_level': '6'},
+    'O07': {'boundary': 'administrative', 'admin_level': '7'},
+    'O08': {'boundary': 'administrative', 'admin_level': '8'},
+    'O09': {'boundary': 'administrative', 'admin_level': '9'},
+    'O10': {'boundary': 'administrative', 'admin_level': '10'},
+    'O11': {'boundary': 'administrative', 'admin_level': '11'},
+    # Also do political boundaries:
+    # http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dpolitical
+    'OLC': {'boundary': 'political', 'political_division': 'linguistic_community'},
+    'OIC': {'boundary': 'political', 'political_division': 'insular_council'},
+    'OEC': {'boundary': 'political', 'political_division': 'euro_const'},
+    'OCA': {'boundary': 'political', 'political_division': 'canton'},
+    'OCL': {'boundary': 'political', 'political_division': 'circonscription_législative'},
+    'OPC': {'boundary': 'political', 'political_division': 'parl_const'},
+    'OCD': {'boundary': 'political', 'political_division': 'county_division'},
+    'OWA': {'boundary': 'political', 'political_division': 'ward'},
+}
 
-    print "Fetching data at admin level", admin_level
+if start_mapit_type not in mapit_type_to_tags.keys():
+    print >> sys.stderr, "The type %s isn't known" % (start_mapit_type,)
+    print >> sys.stderr, "The known types are:"
+    for mapit_type in sorted(mapit_type_to_tags.keys()):
+        print >> sys.stderr, " ", mapit_type
+    sys.exit(1)
 
-    file_basename = "admin-level-%02d-worldwide.xml" % (admin_level,)
-    xml_filename = os.path.join(data_dir, "cache", file_basename)
-    admin_level_query = get_query_boundaries(admin_level)
-    get_osm3s(admin_level_query, xml_filename)
+reached_first_mapit_type = False
 
-    level_directory = os.path.join(data_dir, "cache", "al%02d" % (admin_level,))
+for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
+
+    if not reached_first_mapit_type:
+        if mapit_type == start_mapit_type:
+            reached_first_mapit_type = True
+        else:
+            print "Haven't reached the first MapIt type, skipping", mapit_type
+            continue
+
+    print "Fetching data for MapIt type", mapit_type
+
+    file_basename = mapit_type + ".xml"
+    output_directory = os.path.join(data_dir, "cache-with-political")
+    xml_filename = os.path.join(output_directory, file_basename)
+    query = get_query_relations_and_ways(required_tags)
+    get_osm3s(query, xml_filename)
+
+    level_directory = os.path.join(output_directory, mapit_type)
     mkdir_p(level_directory)
 
     def handle_top_level_element(element_type, element_id, tags):
 
-        if 'admin_level' not in tags:
-            return
-        if tags['admin_level'] != str(admin_level):
-            return
+        for required_key, required_value in required_tags.items():
+
+            if required_key not in tags:
+                return
+            if tags[required_key] != required_value:
+                return
 
         name = get_name_from_tags(tags, element_type, element_id)
 

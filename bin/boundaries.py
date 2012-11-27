@@ -60,20 +60,20 @@ def get_query_relation_and_dependents(element_type, element_id):
 </osm-script>
 """ % (element_id, element_type)
 
-def get_query_boundaries(admin_level):
+def get_query_relations_and_ways(required_tags):
+    has_kv = "\n".join('      <has-kv k="%s" modv="" v="%s"/>' % (k,v)
+                       for k, v in required_tags.items())
     return """<osm-script timeout="3600">
   <union into="_">
     <query into="_" type="relation">
-      <has-kv k="boundary" modv="" v="administrative"/>
-      <has-kv k="admin_level" modv="" v="%s"/>
+%s
     </query>
     <query into="_" type="way">
-      <has-kv k="boundary" modv="" v="administrative"/>
-      <has-kv k="admin_level" modv="" v="%s"/>
+%s
     </query>
   </union>
   <print from="_" limit="" mode="body" order="id"/>
-</osm-script>""" % (admin_level, admin_level)
+</osm-script>""" % (has_kv, has_kv)
 
 def get_osm3s(query_xml, filename):
     if not os.path.exists(filename):
