@@ -3,8 +3,8 @@ layout: default
 title: Global (OpenStreetMap)
 ---
 
-Importing data for MapIt Global from OpenStreetMap
-==================================================
+Global
+======
 
 MapIt Global contains boundaries extracted from OpenStreetMap.  In
 order to create your own instance of MapIt Global you will need an
