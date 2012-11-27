@@ -69,13 +69,15 @@ This step assumes that you have already set up an instance of MapIt,
 You should then create a new generation into which we can import the
 data:
 
-    ./manage.py mapit_generation_create --commit --desc "Initial import of MapIt Global data"
+    ./manage.py mapit_generation_create \
+        --commit --desc "Initial import of MapIt Global data"
 
 Then you can actually import the data with the following command.
 (Again, this will take many hours to complete, so running it in GNU
 screen would be a good move.)
 
-    ./manage.py mapit_import_osm --verbose --commit ../data/cache-with-political/
+    ./manage.py mapit_import_osm \
+        --verbose --commit ../data/cache-with-political/
 
 Once that's completed successfully, you need to activate the
 generation with:
