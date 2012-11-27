@@ -65,7 +65,7 @@ Codes
 -----
 
 As well as having names areas often have codes. For example the UK has the [ISO
-3166 alpha 2](http://en.wikipedia.org/wiki/ISO_3166>) code `GB`. It is also
+3166 alpha 2](http://en.wikipedia.org/wiki/ISO_3166) code `GB`. It is also
 common for various bodies to assign codes.
 
 To begin with you can ignore the codes, but like the names they'll probably come
