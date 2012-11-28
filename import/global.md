@@ -26,8 +26,8 @@ If you set up the Overpass API to import daily diffs, then you only
 need to do that step once, whereas the latter two would need to be run
 whenever you want to create a new generation of data.
 
-1. Setting up your own Overpass API server
-------------------------------------------
+1 - Setting up your own Overpass API server
+-------------------------------------------
 
 For this step, you should follow [instructions for setting up the
 Overpass API server on the OpenStreetMap
@@ -37,8 +37,8 @@ the "Static Usage" section.  If you do want to do daily updates, you
 should also complete the "Applying minutely (or hourly, or daily)
 diffs" section.  You don't need to set up the web service.
 
-2. Generating KML files
------------------------
+2 - Generating KML files
+------------------------
 
 Firstly, check that `osm3s_query` is in your `PATH`.  Then edit the
 following line in `bin/boundaries.py` in your MapIt clone to point to
@@ -60,7 +60,7 @@ screen session, since this will take many hours):
 That command will generate KML files in the
 `data/cache-with-political/` subdirectory of your MapIt clone.
 
-3. Import the KML files into MapIt
+3 - Import the KML files into MapIt
 ----------------------------------
 
 This step assumes that you have already set up an instance of MapIt,
