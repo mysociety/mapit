@@ -71,7 +71,10 @@ class Command(LabelCommand):
 
             if unit_id in self.unit_id_to_shape:
                 m, poly = self.unit_id_to_shape[unit_id]
-                m_name = m.names.get(type=name_type).name
+                try:
+                    m_name = m.names.get(type=name_type).name
+                except Name.DoesNotExist:
+                    m_name = m.name # If running without commit for dry run, so nothing being stored in db
                 if name != m_name:
                     raise Exception, "Unit ID code %s is used for %s and %s" % (unit_id, name, m_name)
                 # Otherwise, combine the two shapes for one area
