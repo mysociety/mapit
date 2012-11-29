@@ -8,7 +8,7 @@ from mapit.management.commands.mapit_import_postal_codes import Command
 class Command(Command):
     help = 'Imports Crown Dependency postcodes from the NSPD'
     args = '<NSPD CSV file>'
-    option_defaults = { 'strip': True, 'no-location': True }
+    option_defaults = { 'strip': True, 'location': False }
 
     def pre_row(self, row, options):
         if row[4]: return False # Terminated postcode
