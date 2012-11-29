@@ -47,14 +47,13 @@ When the script has finished, you should have a working copy of the
 website, accessible via the hostname you supplied to the script.
 
 You should take a look at the configuration file in
-`mapit/conf/general.yml`.  In particular, you should set `BUGS_EMAIL`
+`mapit/conf/general.yml` under `/var/www/<host>`. In particular, you should set `BUGS_EMAIL`
 to your email address.  You should also consider the `SRID` and
 `COUNTRY` settings, as described in the [manual installation
 instructions](/install/).
 
 Then you should then restart the MapIt Django server with:
 
-    mapit@ip-10-58-191-98:~/mapit$ logout
     ubuntu@ip-10-58-191-98:~$ sudo /etc/init.d/mapit restart
 
 You will need to create an admin user if you want to be able to use
@@ -63,8 +62,8 @@ the `createsuperuser` Django admin command, similar to the following
 example:
 
     ubuntu@ip-10-64-6-199:~$ sudo su - mapit
-    mapit@ip-10-64-6-199:~$ cd mapit/project/
-    mapit@ip-10-64-6-199:~/mapit/project$ ./manage.py createsuperuser
+    mapit@ip-10-64-6-199:~$ cd /var/www/mapit/mapit/project/
+    mapit@ip-10-64-6-199:/var/www/mapit/mapit/project$ ./manage.py createsuperuser
     Username (Leave blank to use 'mapit'): mapitadmin
     E-mail address: whoever@example.org
     Password:
