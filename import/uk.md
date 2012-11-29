@@ -18,6 +18,10 @@ Here are the basic instructions to install OS OpenData and ONSPD:
        ./manage.py syncdb
        ./manage.py migrate mapit
 
+   Note if you had already done this but only then changed the AREA_SRID, you
+   will need to `./manage.py migrate mapit zero` and then `./manage.py migrate
+   mapit` again to get the right SRID in the database.
+
 4. Run the following in order:
 
 {% highlight bash %}
