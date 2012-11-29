@@ -197,9 +197,15 @@ class Command(LabelCommand):
                 # excluded any "polygons" with less than four pointsv
                 # (the final one being the same as the first), but
                 # just in case:
+                polygons_too_small = 0
                 for polygon in g:
-                    if g.num_points < 4:
-                        raise Exception, "%s contained a polygon with less than 4 points"
+                    if polygon.num_points < 4:
+                        polygons_too_small += 1
+                if polygons_too_small:
+                    message = "%d out of %d polygon(s) were too small" % (polygons_too_small, g.geom_count)
+                    verbose('    Skipping, since ' + message)
+                    continue
+                    # raise Exception, message
 
                 area_code = 'O%02d' % (admin_level)
                 area_type = Type.objects.get(code=area_code)
