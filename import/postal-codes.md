@@ -51,4 +51,10 @@ you would do:
     /tmp/postal-codes.csv
 {% endhighlight %}
 
+Note:
+If you get the error `django.db.utils.DatabaseError: invalid byte sequence for
+encoding "UTF8": 0x00` at some point, you are probably being bitten by [this
+bug](https://code.djangoproject.com/ticket/16778) - the solution is to add
+`standard_conforming_strings = off` to your `postgresql.conf` file, or to apply
+the patch in that ticket.
 
