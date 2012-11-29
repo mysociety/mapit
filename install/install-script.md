@@ -56,8 +56,8 @@ Note if you change the SRID at this point, you will need to revert and then
 re-migrate the database as it will already have been set up with the initial
 SRID:
 
-   ./manage.py migrate mapit zero
-   ./manage.py migrate mapit
+    ./manage.py migrate mapit zero
+    ./manage.py migrate mapit
 
 Then you should then restart the MapIt Django server with:
 
@@ -69,8 +69,8 @@ the `createsuperuser` Django admin command, similar to the following
 example:
 
     ubuntu@ip-10-64-6-199:~$ sudo su - mapit
-    mapit@ip-10-64-6-199:~$ cd /var/www/mapit/mapit/project/
-    mapit@ip-10-64-6-199:/var/www/mapit/mapit/project$ ./manage.py createsuperuser
+    mapit@ip-10-64-6-199:~$ cd mapit/project/
+    mapit@ip-10-64-6-199:~/mapit/project$ ./manage.py createsuperuser
     Username (Leave blank to use 'mapit'): mapitadmin
     E-mail address: whoever@example.org
     Password:
