@@ -66,6 +66,11 @@ That command will generate KML files in the
 This step assumes that you have already set up an instance of MapIt,
 [as described in the main installation instructions](/install/).
 
+First, create some required types in MapIt by loading the `global`
+fixture:
+
+    ./manage.py loaddata global
+
 You should then create a new generation into which we can import the
 data:
 
