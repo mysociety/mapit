@@ -2,6 +2,7 @@
 # containing only the new ones from a modern Boundary-Line.
 
 import csv
+import os.path
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
@@ -26,13 +27,13 @@ class Command(NoArgsCommand):
     help = 'Inserts the old ONS codes into mapit'
 
     def handle_noargs(self, **options):
-        mapping = csv.reader(open('../data/UK/BL-2010-10-code-change.csv'))
+        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/BL-2010-10-code-change.csv'))
         mapping.next()
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]
             process(new_code, old_code)
 
-        mapping = csv.reader(open('../data/UK/BL-2010-10-missing-codes.csv'))
+        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/BL-2010-10-missing-codes.csv'))
         mapping.next()
         for row in mapping:
             type, new_code, old_code, name = row

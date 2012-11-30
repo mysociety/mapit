@@ -14,6 +14,7 @@
 #   classification, Pre October 2006 PCO
 
 import csv
+import os.path
 from django.db import transaction
 from mapit.models import Area
 from mapit.management.commands.mapit_import_postal_codes import Command
@@ -29,7 +30,7 @@ class Command(Command):
         self.euro_area = Area.objects.get(country__code='N', type__code='EUR')
 
         # Read in new ONS code to names, look up existing wards and Parliamentary constituencies
-        snac = csv.reader(open('../data/UK/snac-2009-ni-cons2ward.csv'))
+        snac = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/snac-2009-ni-cons2ward.csv'))
         snac.next()
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
