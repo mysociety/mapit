@@ -85,8 +85,10 @@ class Command(LabelCommand):
 
         os.chdir(directory_name)
 
-        if not glob("al[0-1][0-9]"):
-            raise Exception, "'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,)
+        mapit_type_glob = "[A-Z0-9][A-Z0-9][A-Z0-9]"
+
+        if not glob(mapit_type_glob):
+            raise Exception, "'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,)
 
         def verbose(s):
             if options['verbose']:
@@ -121,19 +123,17 @@ class Command(LabelCommand):
 
         skipping = bool(skip_up_to)
 
-        for admin_level in range(2,12):
+        for type_directory in sorted(glob(mapit_type_glob)):
 
-            verbose("Loading admin_level " + str(admin_level))
+            verbose("Loading type " + type_directory)
 
-            admin_directory = "al%02d" % (admin_level)
-
-            if not os.path.exists(admin_directory):
-                verbose("Skipping the non-existent " + admin_directory)
+            if not os.path.exists(type_directory):
+                verbose("Skipping the non-existent " + type_directory)
                 continue
 
-            verbose("Loading all KML in " + admin_directory)
+            verbose("Loading all KML in " + type_directory)
 
-            files = sorted(os.listdir(admin_directory))
+            files = sorted(os.listdir(type_directory))
             total_files = len(files)
 
             for i, e in enumerate(files):
@@ -156,7 +156,7 @@ class Command(LabelCommand):
 
                 osm_type, osm_id = m.groups()
 
-                kml_filename = os.path.join(admin_directory, e)
+                kml_filename = os.path.join(type_directory, e)
 
                 verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
 
@@ -207,8 +207,7 @@ class Command(LabelCommand):
                     continue
                     # raise Exception, message
 
-                area_code = 'O%02d' % (admin_level)
-                area_type = Type.objects.get(code=area_code)
+                area_type = Type.objects.get(code=type_directory)
 
                 # FIXME: perhaps we could try to find parent areas
                 # via inclusion in higher admin levels
@@ -295,5 +294,12 @@ class Command(LabelCommand):
                     if old_lang_codes:
                         verbose('Removing deleted languages codes: ' + ' '.join(old_lang_codes))
                     m.names.filter(type__code__in=old_lang_codes).delete()
-                    m.codes.update_or_create({ 'type': code_type_osm }, { 'code': osm_id })
+                    # If the boundary was the same, the old Code
+                    # object will still be pointing to the same Area,
+                    # which just had its generation_high incremented.
+                    # In every other case, there's a new area object,
+                    # so create a new Code and save it:
+                    if not was_the_same_in_current:
+                        new_code = Code(area=m, type=code_type_osm, code=osm_id)
+                        new_code.save()
                     save_polygons({ code : (m, poly) })

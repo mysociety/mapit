@@ -14,6 +14,15 @@
     { "pk": 11, "model": "mapit.type", "fields": { "code": "O11", "description": "OSM Administrative Boundary Level 11" } },
     { "pk": 12, "model": "mapit.type", "fields": { "code": "O12", "description": "OSM Administrative Boundary Level 12" } },
 
+    { "pk": 13, "model": "mapit.type", "fields": { "code": "OLC", "description": "OSM Political Boundary (Belgian Linguistic Community)" } },
+    { "pk": 14, "model": "mapit.type", "fields": { "code": "OIC", "description": "OSM Political Boundary (Insular Council)" } },
+    { "pk": 15, "model": "mapit.type", "fields": { "code": "OEC", "description": "OSM Political Boundary (European Constituency)" } },
+    { "pk": 16, "model": "mapit.type", "fields": { "code": "OCA", "description": "OSM Political Boundary (Canton)" } },
+    { "pk": 17, "model": "mapit.type", "fields": { "code": "OCL", "description": "OSM Political Boundary (Circonscription Législative" } },
+    { "pk": 18, "model": "mapit.type", "fields": { "code": "OPC", "description": "OSM Political Boundary (Parliamentary Constituency)" } },
+    { "pk": 19, "model": "mapit.type", "fields": { "code": "OCD", "description": "OSM Political Boundary (County Division)" } },
+    { "pk": 20, "model": "mapit.type", "fields": { "code": "OWA", "description": "OSM Political Boundary (Ward)" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "osm_rel", "description": "OSM relation" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "osm_way", "description": "OSM way" } }
 ]

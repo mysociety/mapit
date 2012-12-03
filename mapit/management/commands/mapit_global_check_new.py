@@ -41,10 +41,6 @@ class Command(LabelCommand):
             raise Exception, "'%s' is not a directory" % (directory_name,)
 
         os.chdir(directory_name)
-
-        if not glob("al[0-1][0-9]"):
-            raise Exception, "'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,)
-
         skip_up_to = None
         # skip_up_to = 'relation-80370'
 
@@ -65,9 +61,10 @@ class Command(LabelCommand):
                                  "GEOSEquals",
                                  "GEOSEqualsExact"])
 
-            for admin_level in range(2,12):
+            for admin_directory in sorted(x for x in os.listdir('.') if os.path.isdir(x)):
 
-                admin_directory = "al%02d" % (admin_level)
+                if not re.search('^[A-Z0-9]{3}$', admin_directory):
+                    print "Skipping a directory that doesn't look like a MapIt type:", admin_directory
 
                 if not os.path.exists(admin_directory):
                     continue
@@ -128,7 +125,7 @@ class Command(LabelCommand):
 
                     feat = layer[0]
 
-                    area_code = 'O%02d' % (admin_level)
+                    area_code = admin_directory
 
                     osm_codes = list(Code.objects.filter(type=code_type_osm, code=osm_id))
                     osm_codes.sort(key=lambda e: e.area.generation_high.created)
