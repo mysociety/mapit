@@ -88,3 +88,9 @@ Once that's completed successfully, you need to activate the
 generation with:
 
     ./manage.py mapit_generation_activate --commit
+
+If you're interested in more about how the boundaries are extracted
+from OpenStreetMap, you may want to read these two blog posts:
+
+* [Extracting Administrative Boundaries from OpenStreetMap – Part 1](http://diy.mysociety.org/2012/06/23/extracting-administrative-boundaries-from-openstreetmap/)
+* [Extracting Boundaries from OpenStreetMap – Part 2](http://diy.mysociety.org/2012/12/04/extracting-boundaries-from-openstreetmap-part-2/)
