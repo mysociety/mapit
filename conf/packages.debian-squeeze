@@ -9,3 +9,4 @@ memcached
 python-memcache
 python-gdal
 python-django-south
+python-beautifulsoup

@@ -1,5 +1,6 @@
 python-yaml
 python-simplejson
+python-beautifulsoup
 python-django
 libapache2-mod-wsgi
 python-psycopg2 
