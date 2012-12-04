@@ -1,13 +1,13 @@
 # import_global_osm.py:
 #
-# This script is used to import administrative boundaries from
-# OpenStreetMap into MaPit.
+# This script is used to import boundaries from OpenStreetMap into
+# MaPit.
 #
 # It takes KML data generated either by
-# get-boundaries-by-admin-level.py or get-boundaries-from-planet.py
-# so you need to have run one of those first.
+# get-boundaries-by-admin-level.py, so you need to have run that
+# script first.
 #
-# This script is heavily based on import_norway_osm.py by Matthew
+# This script was originally based on import_norway_osm.py by Matthew
 # Somerville.
 #
 # Copyright (c) 2011, 2012 UK Citizens Online Democracy. All rights reserved.
@@ -67,7 +67,7 @@ def get_iso639_2_table():
     return result
 
 class Command(LabelCommand):
-    help = 'Import OSM administrative boundary data'
+    help = 'Import OSM boundary data from KML files'
     args = '<KML-DIRECTORY>'
     option_list = LabelCommand.option_list + (
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
@@ -209,10 +209,6 @@ class Command(LabelCommand):
 
                 area_type = Type.objects.get(code=type_directory)
 
-                # FIXME: perhaps we could try to find parent areas
-                # via inclusion in higher admin levels
-                parent_area = None
-
                 try:
                     osm_code = Code.objects.get(type=code_type_osm,
                                                 code=osm_id,
@@ -252,7 +248,7 @@ class Command(LabelCommand):
                         name = name,
                         type = area_type,
                         country = global_country,
-                        parent_area = parent_area,
+                        parent_area = None,
                         generation_low = new_generation,
                         generation_high = new_generation,
                     )
