@@ -27,6 +27,8 @@ e.g. 2: in MapIt Global, find all `admin_level="10"` areas in France:
 [http://www.openstreetmap.org/browse/relation/1403916](France) in your
 MapIt.)
 
+![OSM boundaries at admin_level 10 in Paris](paris-admin-level-10-reduced.png)
+
 To import such CSV files into Google Fusion Tables, and make them
 look good, do the following:
 
