@@ -33,8 +33,8 @@ To import such CSV files into Google Fusion Tables, and make them
 look good, do the following:
 
 1. Go to
-   [http://www.google.com/drive/start/apps.html#fusiontables](Google
-   Fusion Tables) and click "Create a new table"
+   [http://www.google.com/drive/start/apps.html#fusiontables](Google Fusion Tables)
+   and click "Create a new table"
 
 2. Select the CSV file you generated, with the defaults ("comma" as
    the separator and UTF-8 encoding).  Then click "Next".
@@ -45,7 +45,7 @@ look good, do the following:
 4. Put the correct attribution in the "Attribute data to" and the
    "Attribution page link" fields (e.g. "OpenStreetMap contributors
    and MapIt Global" and
-   "[http://global.mapit.mysociety.org/](http://global.mapit.mysociety.org/)").
+   "http://global.mapit.mysociety.org/").
    Then click "Finish".
 
 5. Now click on the "Map of name" tab.  Select "location" from the
