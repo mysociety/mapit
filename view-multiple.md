@@ -24,7 +24,7 @@ e.g. 2: in MapIt Global, find all `admin_level="10"` areas in France:
     ./manage.py mapit_make_fusion_csv --types=O10 --coveredby=28 france-10.csv
 
 (That assumes that 28 is the ID of the area corresponding to
-[http://www.openstreetmap.org/browse/relation/1403916](France) in your
+[France](http://www.openstreetmap.org/browse/relation/1403916) in your
 MapIt.)
 
 ![OSM boundaries at admin_level 10 in Paris](paris-admin-level-10-reduced.png)
@@ -33,7 +33,7 @@ To import such CSV files into Google Fusion Tables, and make them
 look good, do the following:
 
 1. Go to
-   [http://www.google.com/drive/start/apps.html#fusiontables](Google Fusion Tables)
+   [Google Fusion Tables](http://www.google.com/drive/start/apps.html#fusiontables)
    and click "Create a new table"
 
 2. Select the CSV file you generated, with the defaults ("comma" as
