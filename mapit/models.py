@@ -4,6 +4,7 @@ import itertools
 from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
+from django.utils.html import escape
 
 from mapit.managers import Manager, GeoManager
 from mapit import countries
@@ -197,6 +198,9 @@ SELECT DISTINCT mapit_area.*
             area.save()
         return area
 
+class SimplifiedAway(Exception):
+    pass
+
 class Area(models.Model):
     name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
@@ -252,6 +256,85 @@ class Area(models.Model):
             return "area_level_%d" % (level,)
         else:
             return ""
+
+    def export(self,
+               srid,
+               export_format,
+               simplify_tolerance=0,
+               line_colour="70ff0000",
+               fill_colour="3dff5500",
+               kml_type="full"):
+        """Generate a representation of the area in KML, GeoJSON or WKT
+
+        This returns a tuple of (data, content_type), which are
+        strings representing the data itself and its MIME type.  If
+        there are no polygons associated with this area (None, None)
+        is returned.  'export_format' may be one of 'kml', 'wkt,
+        'json' and 'geojson', the last two being synonymous.  The
+        'srid' parameter specifies the coordinate system that the
+        polygons should be transformed into before being exported, if
+        it is different from this MapIt.  simplify_tolerance, if
+        non-zero, is passed to
+        django.contrib.gis.geos.GEOSGeometry.simplify for simplifying
+        the polygon boundary before export.  The line_colour and
+        fill_colour parameters are only used if the export type is KML
+        and kml_type is 'full'.  The 'kml_type' parameter may be
+        either 'full' (in which case a complete, valid KML file is
+        returned) or 'polygon' (in which case just the <Polygon>
+        element is returned).
+
+        If the simplify_tolerance provided is large enough that all
+        the polygons completely disappear under simplification,
+        SimplifiedAway exception is raised.
+        """
+        all_areas = self.polygons.all()
+        if len(all_areas) > 1:
+            all_areas = all_areas.collect()
+        elif len(all_areas) == 1:
+            all_areas = all_areas[0].polygon
+        else:
+            return (None, None)
+
+        if srid != settings.MAPIT_AREA_SRID:
+            all_areas.transform(srid)
+
+        num_points_before_simplification = all_areas.num_points
+        if simplify_tolerance:
+            all_areas = all_areas.simplify(simplify_tolerance)
+            if all_areas.num_points == 0 and num_points_before_simplification > 0:
+                raise SimplifiedAway, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
+
+        if export_format=='kml':
+            if kml_type == "polygon":
+                out = all_areas.kml
+            elif kml_type == "full":
+                out = '''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+    <Style id="ourPolygonStyle">
+        <LineStyle>
+            <color>%s</color>
+            <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+            <color>%s</color>
+        </PolyStyle>
+    </Style>
+    <Placemark>
+        <styleUrl>#ourPolygonStyle</styleUrl>
+        <name>%s</name>
+        %s
+    </Placemark>
+</kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
+            else:
+                raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
+            content_type = 'application/vnd.google-earth.kml+xml'
+        elif export_format in ('json', 'geojson'):
+            out = all_areas.json
+            content_type = 'application/json'
+        elif export_format=='wkt':
+            out = all_areas.wkt
+            content_type = 'text/plain'
+        return (out, content_type)
 
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')

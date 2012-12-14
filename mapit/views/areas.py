@@ -12,11 +12,10 @@ from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.db.models import Q
-from django.utils.html import escape
 from django.conf import settings
 from django.shortcuts import redirect
 
-from mapit.models import Area, Generation, Geometry, Code, Name
+from mapit.models import Area, Generation, Geometry, Code, Name, SimplifiedAway
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
@@ -82,49 +81,20 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     srid = int(srid)
 
     area = get_object_or_404(Area, id=area_id)
-    all_areas = area.polygons.all()
-    if len(all_areas) > 1:
-        all_areas = all_areas.collect()
-    elif len(all_areas) == 1:
-        all_areas = all_areas[0].polygon
-    else:
-        return output_json({ 'error': 'No polygons found' }, code=404)
-    if srid != settings.MAPIT_AREA_SRID:
-        all_areas.transform(srid)
 
     try:
         simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
     except ValueError:
         raise ViewException(format, 'Badly specified tolerance', 400)
-    if simplify_tolerance:
-        all_areas = all_areas.simplify(simplify_tolerance)
 
-    if format=='kml':
-        out = '''<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-    <Style id="transBluePoly">
-        <LineStyle>
-            <color>70ff0000</color>
-            <width>2</width>
-        </LineStyle>
-        <PolyStyle>
-            <color>3dff5500</color>
-        </PolyStyle>
-    </Style>
-    <Placemark>
-        <styleUrl>#transBluePoly</styleUrl>
-        <name>%s</name>
-        %s
-    </Placemark>
-</kml>''' % (escape(area.name), all_areas.kml)
-        content_type = 'application/vnd.google-earth.kml+xml'
-    elif format in ('json', 'geojson'):
-        out = all_areas.json
-        content_type = 'application/json'
-    elif format=='wkt':
-        out = all_areas.wkt
-        content_type = 'text/plain'
-    return HttpResponse(out, content_type='%s; charset=utf-8' % content_type)
+    try:
+        output, content_type = area.export(srid, format, simplify_tolerance=simplify_tolerance)
+        if output is None:
+            return output_json({'error': 'No polygons found'}, code=404)
+    except SimplifiedAway:
+        return output_json({'error': 'Simplifying removed all the polygons'}, code=404)
+
+    return HttpResponse(output, content_type='%s; charset=utf-8' % content_type)
     
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
