@@ -24,13 +24,15 @@ e.g. 2: in MapIt Global, find all `admin_level="10"` areas in France:
     ./manage.py mapit_make_fusion_csv --types=O10 --coveredby=28 france-10.csv
 
 (That assumes that 28 is the ID of the area corresponding to
-http://www.openstreetmap.org/browse/relation/1403916 in your MapIt.)
+[http://www.openstreetmap.org/browse/relation/1403916](France) in your
+MapIt.)
 
 To import such CSV files into Google Fusion Tables, and make them
 look good, do the following:
 
-1. Go to http://www.google.com/drive/start/apps.html#fusiontables
-   and click "Create a new table"
+1. Go to
+   [http://www.google.com/drive/start/apps.html#fusiontables](Google
+   Fusion Tables) and click "Create a new table"
 
 2. Select the CSV file you generated, with the defaults ("comma" as
    the separator and UTF-8 encoding).  Then click "Next".
@@ -40,16 +42,17 @@ look good, do the following:
 
 4. Put the correct attribution in the "Attribute data to" and the
    "Attribution page link" fields (e.g. "OpenStreetMap contributors
-   and MapIt Global" and "http://global.mapit.mysociety.org/").  Then
-   click "Finish".
+   and MapIt Global" and
+   "[http://global.mapit.mysociety.org/](http://global.mapit.mysociety.org/)").
+   Then click "Finish".
 
 5. Now click on the "Map of name" tab.  Select "location" from the
-   "Tools -> Select location" submenu.
+   `Tools -> Select location` submenu.
 
-6. Go to "Tools -> Change map style ...", select Polygons -> Fill
-   color, the Column tab, and specify the "color" column for colours.
+6. Go to `Tools -> Change map style ...`, select `Polygons -> Fill
+   color`, the Column tab, and specify the "color" column for colours.
 
-7. You might need to switch to the "Rows 1" and back to the "Map of
-   name" tab for the areas to be visible.
+7. You might need to switch to the "Rows 1" tab and back to the "Map
+   of name" tab for the areas to be visible.
 
-8. Go to File -> Share and change "Private" to "Anyone with the link"
+8. Go to `File -> Share` and change "Private" to "Anyone with the link"
