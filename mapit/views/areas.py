@@ -28,11 +28,13 @@ def generations(request):
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
     if hasattr(countries, 'area_code_lookup'):
-        resp = countries.area_code_lookup(area_id, format)
+        resp = countries.area_code_lookup(request, area_id, format)
         if resp: return resp
+
 
     if not re.match('\d+$', area_id):
         raise ViewException(format, 'Bad area ID specified', 400)
+
 
     area = get_object_or_404(Area, format=format, id=area_id)
 
@@ -70,7 +72,7 @@ def area(request, area_id, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid and hasattr(countries, 'area_code_lookup'):
-        resp = countries.area_code_lookup(area_id, format)
+        resp = countries.area_code_lookup(request, area_id, format)
         if resp: return resp
 
     if not re.match('\d+$', area_id):

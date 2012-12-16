@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from mapit.shortcuts import get_object_or_404
 
-def area_code_lookup(area_id, format):
+def area_code_lookup(request, area_id, format):
     from mapit.models import Area, CodeType
     area_code = None
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
@@ -14,7 +14,12 @@ def area_code_lookup(area_id, format):
     if not area_code:
         return None
     area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
-    return HttpResponseRedirect('/area/%d%s' % (area.id, '.%s' % format if format else ''))
+    path = '/area/%d%s' % (area.id, '.%s' % format if format else '')
+    # If there was a query string, make sure it's passed on in the
+    # redirect:
+    if request.META['QUERY_STRING']:
+        path += "?" + request.META['QUERY_STRING']
+    return HttpResponseRedirect(path)
 
 def canonical_postcode(pc):
     pc = re.sub('[^A-Z0-9]', '', pc.upper())
