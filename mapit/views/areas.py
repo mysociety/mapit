@@ -167,7 +167,7 @@ def area_covers(request, area_id, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def area_coverlaps(request, area_id, format='json'):
-    return area_intersect(['overlaps', 'coveredby'], 'Areas covered by or overlapping %s', request, area_id, format)
+    return area_intersect(['overlaps', 'coveredby', 'covers'], 'Areas covered by or overlapping %s', request, area_id, format)
 
 @ratelimit(minutes=3, requests=100)
 def area_covered(request, area_id, format='json'):
