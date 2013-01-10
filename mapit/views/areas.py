@@ -173,6 +173,10 @@ def area_coverlaps(request, area_id, format='json'):
 def area_covered(request, area_id, format='json'):
     return area_intersect('covers', 'Areas that cover %s', request, area_id, format)
 
+@ratelimit(minutes=3, requests=100)
+def area_intersects(request, area_id, format='json'):
+    return area_intersect('intersects', 'Areas that intersect %s', request, area_id, format)
+
 def add_codes(areas):
     codes = Code.objects.select_related('type').filter(area__in=areas)
     lookup = {}

@@ -76,6 +76,7 @@
                     <li>/area/<i>[area ID]</i>/covers
                     <li>/area/<i>[area ID]</i>/covered
                     <li>/area/<i>[area ID]</i>/coverlaps
+                    <li>/area/<i>[area ID]</i>/intersects
 {% endif %}
                 </ul></dd>
                 <dt>Optional query parameters:</dt>
@@ -101,6 +102,8 @@
     <a rel="nofollow" href="{% url mapit_index %}area/65622/covered.html">/area/65622/covered.html</a>
     <li>All constituencies covered by or overlapping Barking and Dagenham:
     <a rel="nofollow" href="{% url mapit_index %}area/2511/coverlaps.html?type=WMC">/area/2511/coverlaps.html?type=WMC</a>
+    <li>All areas that intersect Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/2218/intersects.html">/area/2511/intersects.html</a>
 </ul>
 {% endif %}
 {% if country == 'NO' %}
@@ -121,6 +124,8 @@
     <a rel="nofollow" href="{% url mapit_index %}area/25495/covered.html">/area/25495/covered.html</a>
     <li>All areas covered by or overlapping Cambridgeshire:
     <a rel="nofollow" href="{% url mapit_index %}area/25495/coverlaps.html">/area/25495/coverlaps.html</a>
+    <li>All areas that intersect Cambridgeshire:
+    <a rel="nofollow" href="{% url mapit_index %}area/25495/intersects.html">/area/25495/intersects.html</a>
 </ul>
 {% endif %}
                 </dd>

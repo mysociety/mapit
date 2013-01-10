@@ -87,6 +87,7 @@
                     <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covering this area</a></li>
                     <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">Covered by this area{{ geotype.covers.1 }}</a></li>
                     <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html{{ geotype.coverlaps.0 }}">Covered by or overlapping this area{{ geotype.coverlaps.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/intersects.html{{ geotype.intersects.0 }}">Intersects this area{{ geotype.intersects.1 }}</a></li>
                 </ul>
 {% endif %}
             </li>
