@@ -1,5 +1,5 @@
-# This script is used to import geometry information, from a shapefile or KML
-# file, into MapIt.
+# This script is used to import geometry information, from a shapefile, KML
+# or GeoJSON file, into MapIt.
 #
 # Copyright (c) 2011 UK Citizens Online Democracy. All rights reserved.
 # Email: matthew@mysociety.org; WWW: http://www.mysociety.org
@@ -15,8 +15,8 @@ from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
-    help = 'Import geometry data from .shp or .kml files'
-    args = '<SHP/KML files>'
+    help = 'Import geometry data from .shp, .kml or .geojson files'
+    args = '<SHP/KML/GeoJSON files>'
     option_list = LabelCommand.option_list + (
         make_option(
             '--commit',
