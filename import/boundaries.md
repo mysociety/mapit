@@ -99,6 +99,16 @@ the area, and specify it with the `--name_field` parameter. If you run without
 this parameter and 'Name' doesn't work, the program will output a list of
 possible choices that it could be.
 
+GeoJSON
+-------
+
+That import command (`./manage.py mapit_import ...`) also works for
+importing GeoJSON files.  As with shapefiles, you may have to specify
+the key that corresponds to the name of the area by using the
+`--name_field` parameter.  If you run without this parameter and
+'Name' doesn't work, the program will output a list of possible
+choices that it could be.
+
 Areas with IDs
 --------------
 
