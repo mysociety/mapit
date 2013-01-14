@@ -42,7 +42,7 @@ class Command(NoArgsCommand):
                     print " ... deleted."
                 else:
                     print " ... not deleting, since --commit wasn't specified"
-            elif area.generation_low < new and area.generation_high == new:
+            elif area.generation_low.id < new.id and area.generation_high == new:
                 print "  ... still exists in an earlier generation, so lowering generation_high to", previous_generation
                 area.generation_high = previous_generation
                 if options['commit']:
@@ -51,7 +51,7 @@ class Command(NoArgsCommand):
                 else:
                     print "  ... not lowering, since --commit wasn't specified"
 
-            elif area.generation_high > new:
+            elif area.generation_high.id > new.id:
                 # This should never happen - it'd mean the
                 # implementation of Generation.objects.new() has
                 # changed or something else is badly wrong:
