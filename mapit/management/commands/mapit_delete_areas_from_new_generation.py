@@ -1,0 +1,58 @@
+# This script deletes all the areas from the new generation (i.e. the
+# most recent inactive one).
+
+from optparse import make_option
+from django.core.management.base import NoArgsCommand
+from mapit.models import Generation, Area
+
+class Command(NoArgsCommand):
+    help = 'Remove all areas from the new (inactive) generation'
+    args = '<GENERATION-ID>'
+    option_list = NoArgsCommand.option_list + (
+        make_option('--commit', action='store_true', dest='commit',
+                    help='Actually update the database'),)
+
+    def handle(self, **options):
+        new = Generation.objects.new()
+        if not new:
+            raise CommandError, "There's no new inactive generation to delete areas from"
+
+        generations = Generation.objects.all().order_by('id')
+        if len(generation) <= 1:
+            previous_generation = None
+        else:
+            previous_generation = generations[-2]
+
+        for area in Area.objects.filter(generation_low__lte=new, generation_high__gte=new):
+
+            print "Considering", area
+
+            g_low = area.generation_low
+            g_high = area.generation_high
+
+            if g_low not in generations:
+                raise Exception, "area.generation_low was " + g_low + ", which no longer exists!"
+            if g_high not in generations:
+                raise Exception, "area.generation_high was " + g_high + ", which no longer exists!"
+
+            if area.generation_low == new and area.generation_high == new:
+                print "  ... only exists in", new, " so will delete"
+                if options['commit']:
+                    area.delete()
+                    print " ... deleted."
+                else:
+                    print " ... not deleting, since --commit wasn't specified"
+            elif area.generation_low < new and area.generation_high == new:
+                print "  ... still exists in an earlier generation, so lowering generation_high to", previous_generation
+                area.generation_high = previous_generation
+                if options['commit']:
+                    area.save()
+                    print "  ... lowered."
+                else:
+                    print "  ... not lowering, since --commit wasn't specified"
+
+            elif area.generation_high > new:
+                # This should never happen - it'd mean the
+                # implementation of Generation.objects.new() has
+                # changed or something else is badly wrong:
+                raise Exception, "Somehow area.generation_high (" + area.generation_high + ") is after Generation.objects.new() (" + new + ")"
