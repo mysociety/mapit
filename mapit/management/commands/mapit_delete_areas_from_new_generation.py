@@ -17,8 +17,8 @@ class Command(NoArgsCommand):
         if not new:
             raise CommandError, "There's no new inactive generation to delete areas from"
 
-        generations = Generation.objects.all().order_by('id')
-        if len(generation) <= 1:
+        generations = list(Generation.objects.all().order_by('id'))
+        if len(generations) <= 1:
             previous_generation = None
         else:
             previous_generation = generations[-2]
