@@ -73,6 +73,12 @@ class Command(LabelCommand):
             help="Set to use the code from code_field as the MapIt ID"
         ),
         make_option(
+            '--preserve',
+            action="store_true",
+            dest='perserve',
+            help="Create a new area if the name's the same but polygons differ"
+        ),
+        make_option(
             '--encoding',
             action="store",
             dest='encoding',
@@ -174,12 +180,49 @@ class Command(LabelCommand):
 
             print "  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' )
 
+            g = feat.geom.transform(4326, clone=True)
+
             try:
                 if code:
-                    m = Area.objects.get(codes__code=code, codes__type=code_type)
+                    matching_message = "code %s of code type %s" % (code, code_type)
+                    areas = Area.objects.filter(codes__code=code, codes__type=code_type).order_by('-generation_high')
                 else:
-                    # Assumes unique names if no code column used
-                    m = Area.objects.get(name=name, type=area_type)
+                    matching_message = "name %s of area type %s" % (name, area_type)
+                    areas = Area.objects.filter(name=name, type=area_type).order_by('-generation_high')
+                if len(areas) == 0:
+                    raise Area.DoesNotExist
+                m = areas[0]
+                if options['preserve']:
+                    # Find whether we need to create a new Area:
+                    previous_geos_geometry = m.polygons.collect()
+                    if m.generation_high < current_generation.id:
+                        # Then it was missing in current_generation:
+                        create_new_area = True
+                    elif previous_geos_geometry is None:
+                        # It was empty in the previous generation:
+                        create_new_area = True
+                    else:
+                        # Otherwise, create a new Area unless the
+                        # polygons were the same in current_generation:
+                        previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
+                        new_geos_geometry = g.geos.simplify(tolerance=0)
+                        create_new_area = not previous_geos_geometry.equals(new_geos_geometry)
+                    if create_new_area:
+                        m = Area(
+                            name            = name,
+                            type            = area_type,
+                            country         = country,
+                            # parent_area     = parent_area,
+                            generation_low  = new_generation,
+                            generation_high = new_generation
+                        )
+                        if options['use_code_as_id'] and code:
+                            m.id = int(code)
+                else:
+                    # If --preserve is not specified, the code or the name must be unique:
+                    if len(areas) > 1:
+                        raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
+
             except Area.DoesNotExist:
                 m = Area(
                     name            = name,
@@ -196,8 +239,6 @@ class Command(LabelCommand):
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
-
-            g = feat.geom.transform(4326, clone=True)
 
             poly = [ g ]
 
