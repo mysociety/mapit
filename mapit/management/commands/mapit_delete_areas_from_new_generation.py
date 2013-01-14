@@ -55,4 +55,8 @@ class Command(NoArgsCommand):
                 # This should never happen - it'd mean the
                 # implementation of Generation.objects.new() has
                 # changed or something else is badly wrong:
-                raise Exception, "Somehow area.generation_high (" + area.generation_high + ") is after Generation.objects.new() (" + new + ")"
+                message = "Somehow area.generation_high (" + \
+                    str(area.generation_high) + \
+                    ") is after Generation.objects.new() (" + \
+                    str(new) + ")"
+                raise Exception, message
