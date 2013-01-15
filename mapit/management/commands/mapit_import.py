@@ -79,6 +79,12 @@ class Command(LabelCommand):
             help="Create a new area if the name's the same but polygons differ"
         ),
         make_option(
+            '--verbose',
+            action="store_true",
+            dest='verbose',
+            help="Output more verbose progress information"
+        ),
+        make_option(
             '--encoding',
             action="store",
             dest='encoding',
@@ -149,6 +155,10 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation     = Generation.objects.get( id=generation_id )
 
+        def verbose(*args):
+            if options['verbose']:
+                print " ".join(str(a) for a in args)
+
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
@@ -192,14 +202,17 @@ class Command(LabelCommand):
                 if len(areas) == 0:
                     raise Area.DoesNotExist
                 m = areas[0]
+                verbose("    found the area")
                 if options['preserve']:
                     # Find whether we need to create a new Area:
                     previous_geos_geometry = m.polygons.collect()
                     if m.generation_high < current_generation.id:
                         # Then it was missing in current_generation:
+                        verbose("    area existed previously, but was missing from", current_generation)
                         create_new_area = True
                     elif previous_geos_geometry is None:
                         # It was empty in the previous generation:
+                        verbose("    area was empty in", current_generation)
                         create_new_area = True
                     else:
                         # Otherwise, create a new Area unless the
@@ -207,6 +220,10 @@ class Command(LabelCommand):
                         previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
                         new_geos_geometry = g.geos.simplify(tolerance=0)
                         create_new_area = not previous_geos_geometry.equals(new_geos_geometry)
+                        if create_new_area:
+                            verbose("    the area", m, "has changed, creating a new area due to --preserve")
+                        else:
+                            verbose("    the area remained the same")
                     if create_new_area:
                         m = Area(
                             name            = name,
@@ -224,6 +241,7 @@ class Command(LabelCommand):
                         raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
 
             except Area.DoesNotExist:
+                verbose("    the area was not found - creating a new one")
                 m = Area(
                     name            = name,
                     type            = area_type,
