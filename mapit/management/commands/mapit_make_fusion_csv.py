@@ -54,7 +54,7 @@
 import sys
 import csv
 from optparse import make_option
-from random import random
+from random import random, seed
 import colorsys
 
 from django.core.management.base import BaseCommand
@@ -140,6 +140,7 @@ class Command(BaseCommand):
             writer = csv.writer(fp)
             writer.writerow(["name", "color", "location"])
             for i, area in enumerate(areas):
+                seed(area.name)
                 hue = random()
                 line_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.5))
                 fill_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.95))
