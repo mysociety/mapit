@@ -220,6 +220,8 @@ class Command(LabelCommand):
                         previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
                         new_geos_geometry = g.geos.simplify(tolerance=0)
                         create_new_area = not previous_geos_geometry.equals(new_geos_geometry)
+                        p = previous_geos_geometry.sym_difference(new_geos_geometry).area / previous_geos_geometry.area
+                        verbose("    change in area is:", "%.03f%%" % (100 * p,))
                         if create_new_area:
                             verbose("    the area", m, "has changed, creating a new area due to --preserve")
                         else:
