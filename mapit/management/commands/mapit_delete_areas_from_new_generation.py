@@ -36,12 +36,12 @@ class Command(NoArgsCommand):
                 raise Exception, "area.generation_high was " + g_high + ", which no longer exists!"
 
             if area.generation_low == new and area.generation_high == new:
-                print "  ... only exists in", new, " so will delete"
+                print "  ... only exists in", new, "so will delete"
                 if options['commit']:
                     area.delete()
-                    print " ... deleted."
+                    print "  ... deleted."
                 else:
-                    print " ... not deleting, since --commit wasn't specified"
+                    print "  ... not deleting, since --commit wasn't specified"
             elif area.generation_low.id < new.id and area.generation_high == new:
                 print "  ... still exists in an earlier generation, so lowering generation_high to", previous_generation
                 area.generation_high = previous_generation
