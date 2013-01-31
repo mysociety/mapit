@@ -28,5 +28,16 @@ you might be able to use:
     * `MapIt UK <http://mapit.mysociety.org/>`_ - UK boundaries from various
       sources.
 
-The above are free for non-commercial, low-volume use.
+The above are free for non-commercial, low-volume use. For details of
+what constitutes "low-volume", and for commercial licensing arrangements,
+please consult `MapIt Usage and Licensing 
+<http://mapit.mysociety.org/licensing>`_ . 
 
+
+Rate limiting
+-------------
+
+Usage is rate limited by default; clients may be rate limited by IP address
+or by a User Token passed in the User-Agent: header. Clients may be excluded 
+from the effects of rate limiting via the RATE_LIMIT option in the 
+configuration file.
