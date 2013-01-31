@@ -31,7 +31,7 @@ you might be able to use:
 The above are free for non-commercial, low-volume use. For details of
 what constitutes "low-volume", and for commercial licensing arrangements,
 please consult `MapIt Usage and Licensing 
-<http://mapit.mysociety.org/licensing>` . 
+<http://mapit.mysociety.org/licensing>`_ . 
 
 
 Rate limiting
