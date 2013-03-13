@@ -79,6 +79,12 @@ class Command(LabelCommand):
             help="Create a new area if the name's the same but polygons differ"
         ),
         make_option(
+            '--new',
+            action="store_true",
+            dest='new',
+            help="Don't look for existing areas at all, just import everything as new areas"
+        ),
+        make_option(
             '--encoding',
             action="store",
             dest='encoding',
@@ -187,6 +193,8 @@ class Command(LabelCommand):
             g = feat.geom.transform(4326, clone=True)
 
             try:
+                if options['new']: # Always want a new area
+                    raise Area.DoesNotExist
                 if code:
                     matching_message = "code %s of code type %s" % (code, code_type)
                     areas = Area.objects.filter(codes__code=code, codes__type=code_type).order_by('-generation_high')
@@ -194,6 +202,7 @@ class Command(LabelCommand):
                     matching_message = "name %s of area type %s" % (name, area_type)
                     areas = Area.objects.filter(name=name, type=area_type).order_by('-generation_high')
                 if len(areas) == 0:
+                    verbose("    the area was not found - creating a new one")
                     raise Area.DoesNotExist
                 m = areas[0]
                 verbose("    found the area")
@@ -203,11 +212,11 @@ class Command(LabelCommand):
                     if m.generation_high < current_generation.id:
                         # Then it was missing in current_generation:
                         verbose("    area existed previously, but was missing from", current_generation)
-                        create_new_area = True
+                        raise Area.DoesNotExist
                     elif previous_geos_geometry is None:
                         # It was empty in the previous generation:
                         verbose("    area was empty in", current_generation)
-                        create_new_area = True
+                        raise Area.DoesNotExist
                     else:
                         # Otherwise, create a new Area unless the
                         # polygons were the same in current_generation:
@@ -218,26 +227,15 @@ class Command(LabelCommand):
                         verbose("    change in area is:", "%.03f%%" % (100 * p,))
                         if create_new_area:
                             verbose("    the area", m, "has changed, creating a new area due to --preserve")
+                            raise Area.DoesNotExist
                         else:
                             verbose("    the area remained the same")
-                    if create_new_area:
-                        m = Area(
-                            name            = name,
-                            type            = area_type,
-                            country         = country,
-                            # parent_area     = parent_area,
-                            generation_low  = new_generation,
-                            generation_high = new_generation
-                        )
-                        if options['use_code_as_id'] and code:
-                            m.id = int(code)
                 else:
                     # If --preserve is not specified, the code or the name must be unique:
                     if len(areas) > 1:
                         raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
 
             except Area.DoesNotExist:
-                verbose("    the area was not found - creating a new one")
                 m = Area(
                     name            = name,
                     type            = area_type,
