@@ -79,12 +79,6 @@ class Command(LabelCommand):
             help="Create a new area if the name's the same but polygons differ"
         ),
         make_option(
-            '--verbose',
-            action="store_true",
-            dest='verbose',
-            help="Output more verbose progress information"
-        ),
-        make_option(
             '--encoding',
             action="store",
             dest='encoding',
@@ -156,7 +150,7 @@ class Command(LabelCommand):
         new_generation     = Generation.objects.get( id=generation_id )
 
         def verbose(*args):
-            if options['verbose']:
+            if int(options['verbosity']) > 1:
                 print " ".join(str(a) for a in args)
 
         ds = DataSource(filename)

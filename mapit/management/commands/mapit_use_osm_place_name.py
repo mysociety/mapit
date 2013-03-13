@@ -21,7 +21,6 @@ class Command(LabelCommand):
     args = '<KML-DIRECTORY>'
     option_list = LabelCommand.option_list + (
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-        make_option('--verbose', action='store_true', dest='verbose', help='Provide verbose progress reporting')
     )
 
     def handle_label(self, directory_name, **options):
@@ -35,7 +34,7 @@ class Command(LabelCommand):
             raise Exception, "'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,)
 
         def verbose(s):
-            if options['verbose']:
+            if int(options['verbosity']) > 1:
                 print s.encode('utf-8')
 
         verbose("Loading any admin boundaries from " + directory_name)
