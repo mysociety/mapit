@@ -82,7 +82,7 @@ Then you can actually import the data with the following command.
 screen would be a good move.)
 
     ./manage.py mapit_global_import \
-        --verbose --commit ../data/cache-with-political/
+        --verbosity 2 --commit ../data/cache-with-political/
 
 Once that's completed successfully, you need to activate the
 generation with:
