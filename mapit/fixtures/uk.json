@@ -11,9 +11,9 @@
     { "pk": 5, "model": "mapit.type", "fields": { "code": "WMP", "description": "UK Parliament" } },
     { "pk": 6, "model": "mapit.type", "fields": { "code": "WMC", "description": "UK Parliament constituency" } },
 
-    { "pk": 7, "model": "mapit.type", "fields": { "code": "CPC", "description": "Civil Parish" } },
+    { "pk": 7, "model": "mapit.type", "fields": { "code": "CPC", "description": "Civil parish/community" } },
     { "pk": 8, "model": "mapit.type", "fields": { "code": "UTA", "description": "Unitary Authority" } },
-    { "pk": 9, "model": "mapit.type", "fields": { "code": "UTE", "description": "Unitary Authority ward (UTE)" } },
+    { "pk": 9, "model": "mapit.type", "fields": { "code": "UTE", "description": "Unitary Authority electoral division (UTE)" } },
     { "pk": 10, "model": "mapit.type", "fields": { "code": "UTW", "description": "Unitary Authority ward (UTW)" } },
 
     { "pk": 11, "model": "mapit.type", "fields": { "code": "NIA", "description": "Northern Ireland Assembly" } },
@@ -42,7 +42,7 @@
     { "pk": 30, "model": "mapit.type", "fields": { "code": "MTD", "description": "Metropolitan district" } },
     { "pk": 31, "model": "mapit.type", "fields": { "code": "MTW", "description": "Metropolitan district ward" } },
     { "pk": 32, "model": "mapit.type", "fields": { "code": "CTY", "description": "County council" } },
-    { "pk": 33, "model": "mapit.type", "fields": { "code": "CED", "description": "County council ward" } },
+    { "pk": 33, "model": "mapit.type", "fields": { "code": "CED", "description": "County council electoral division" } },
     { "pk": 34, "model": "mapit.type", "fields": { "code": "DIS", "description": "District council" } },
     { "pk": 35, "model": "mapit.type", "fields": { "code": "DIW", "description": "District council ward" } },
 
@@ -51,6 +51,8 @@
     { "pk": 38, "model": "mapit.type", "fields": { "code": "OMF", "description": "Middle Layer Super Output Area (Full)" } },
     { "pk": 39, "model": "mapit.type", "fields": { "code": "OMG", "description": "Middle Layer Super Output Area (Generalised)" } },
     { "pk": 40, "model": "mapit.type", "fields": { "code": "OUA", "description": "Output Area" } },
+
+    { "pk": 41, "model": "mapit.type", "fields": { "code": "CPW", "description": "Civil parish/community ward" } },
 
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },

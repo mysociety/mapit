@@ -40,6 +40,7 @@ class Command(NoArgsCommand):
             #   London borough
             #   Scilly Isles
             'CPC': ('DIS', 'UTA', 'MTD', 'LBO', 'COI'),
+            'CPW': 'CPC',
         }
         for area in Area.objects.filter(
             type__code__in=parentmap.keys(),
