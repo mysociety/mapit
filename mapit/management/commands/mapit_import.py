@@ -75,7 +75,7 @@ class Command(LabelCommand):
         make_option(
             '--preserve',
             action="store_true",
-            dest='perserve',
+            dest='preserve',
             help="Create a new area if the name's the same but polygons differ"
         ),
         make_option(
