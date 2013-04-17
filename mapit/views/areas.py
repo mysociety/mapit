@@ -196,7 +196,9 @@ def areas(request, area_ids, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_type(request, type, format='json'):
-    generation = Generation.objects.current()
+    generation = request.REQUEST.get('generation', Generation.objects.current())
+    if not generation: generation = Generation.objects.current()
+
     try:
         min_generation = int(request.REQUEST['min_generation'])
     except:
@@ -220,7 +222,9 @@ def areas_by_type(request, type, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_name(request, name, format='json'):
-    generation = Generation.objects.current()
+    generation = request.REQUEST.get('generation', Generation.objects.current())
+    if not generation: generation = Generation.objects.current()
+
     try:
         min_generation = int(request.REQUEST['min_generation'])
     except:
