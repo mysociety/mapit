@@ -352,7 +352,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         areas = Area.objects.filter(**args)
 
     areas = add_codes(areas)
-    if format == 'html': return output_html(request, 'Areas containing (%s,%s)' % (x,y), areas, indent_areas=True)
+    if format == 'html': return output_html(request, 'Areas covering the point (%s,%s)' % (x,y), areas, indent_areas=True)
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
 
 @ratelimit(minutes=3, requests=100)
