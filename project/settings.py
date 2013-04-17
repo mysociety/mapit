@@ -194,4 +194,4 @@ INSTALLED_APPS = (
 # as that is the version in the Debian Squeeze package.
 if django.get_version() >= '1.3':
     INSTALLED_APPS += ( 'django.contrib.staticfiles', )
-    STATIC_URL = '/static'
+    STATIC_URL = '/static/'
