@@ -7,7 +7,7 @@
     <header class="area_info">
         <h2>{{ area.name }} <em class="area_id">ID {{ area.id }}</em></h2>
         <ul>
-            <li>Type: {{ area.type.description }} <small>({{ area.type.code }})</small></li>
+            <li>Type: <a href="{% url mapit_index %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
             <li>Exists in generations: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
             {% if country != 'Global' %}
             <li>Country: {{ area.country }}</li>
