@@ -12,11 +12,39 @@ class Migration(DataMigration):
             g.areas.add( g.area )
             g.save()
 
-
     def backwards(self, orm):
-        for g in orm.Geometry.objects.all().iterator():
-            g.area = g.areas.all()[0]
-            g.save()
+        # Going backwards, we're moving from the situation where a
+        # geometry can be in multiple areas, to only being in a single
+        # area.  A couple of notes: (a) this isn't guaranteed to
+        # recreate exactly the same areas and geometries after going
+        # forwards and backwards through this migration, but for most
+        # purposes it'll be functionally the same (b) we don't
+        # explicitly delete geometries that are no longer used, since
+        # they should be deleted via cascades after going backwards
+        # through migration 0005.
+
+        for a in orm.Area.objects.all():
+            geometries_in_multiple_areas = set()
+            g.polygons.clear()
+            for g in a.geometries.all():
+                # If the geometry is only part of a single area, just
+                # set the area on that geometry:
+                number_of_areas = len(g.areas.all())
+                if number_of_areas == 1:
+                    g.area = a
+                    g.save()
+                elif number_of_areas > 1:
+                    geometries_in_multiple_areas.add(g.id)
+                else:
+                    raise Exception, "Found a geometry (%s) in %d areas" % (g, number_of_areas)
+            if geometries_in_multiple_areas:
+                # If there are also geometries in multiple areas, then
+                # unionagg all of these to create a new geometry, and
+                # set the area on that geometry.
+                qs = Geometry.objects.all(id__in=geometries_in_multiple_areas)
+                new_geometry = qs.unionagg()
+                new_geometry.area = a
+                new_geometry.save()
 
     models = {
         'mapit.area': {
