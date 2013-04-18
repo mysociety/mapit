@@ -11,6 +11,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+from django.conf import settings
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons
 
@@ -190,7 +191,7 @@ class Command(LabelCommand):
 
             print "  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' )
 
-            g = feat.geom.transform(4326, clone=True)
+            g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
 
             try:
                 if options['new']: # Always want a new area
