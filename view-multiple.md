@@ -17,11 +17,17 @@ Here are a couple of example invocations of the script.
 
 e.g. 1: in MapIt Global, find all countries:
 
-    ./manage.py mapit_make_fusion_csv --type=O02 --tolerance=0.001 global-countries.csv
+{% highlight bash %}
+./manage.py mapit_make_fusion_csv --type=O02 \
+    --tolerance=0.001 global-countries.csv
+{% endhighlight %}
 
 e.g. 2: in MapIt Global, find all `admin_level="10"` areas in France:
 
-    ./manage.py mapit_make_fusion_csv --types=O10 --coveredby=28 france-10.csv
+{% highlight bash %}
+./manage.py mapit_make_fusion_csv --types=O10 \
+    --coveredby=28 france-10.csv
+{% endhighlight %}
 
 (That assumes that 28 is the ID of the area corresponding to
 [France](http://www.openstreetmap.org/browse/relation/1403916) in your

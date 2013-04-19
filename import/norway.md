@@ -16,10 +16,13 @@ Here are the basic instructions to install data from OSM:
        ./manage.py migrate mapit
 4. Run the following (you can run anything without --commit to do a dry run):
 
-       ./manage.py mapit_generation_create --commit --desc "Initial import."
+       ./manage.py mapit_generation_create \
+           --commit --desc "Initial import."
        ./manage.py loaddata norway
-       ./manage.py mapit_NO_import_osm --commit ../../data/cache/*.kml
-       ./manage.py mapit_import_area_unions --commit data/norway/regions.csv
+       ./manage.py mapit_NO_import_osm \
+           --commit ../../data/cache/*.kml
+       ./manage.py mapit_import_area_unions \
+           --commit data/norway/regions.csv
        ./manage.py mapit_generation_activate --commit
 
 Please see below for information on where osm_to_kml gets its OSM data from.
@@ -37,19 +40,22 @@ Alternatively, here are the basic instructions to install the N5000 data:
 
 4. Run the following (you can run anything without --commit to do a dry run):
 
-       ./manage.py mapit_generation_create --commit --desc "Initial import."
+       ./manage.py mapit_generation_create \
+           --commit --desc "Initial import."
        ./manage.py loaddata norway
        ./manage.py mapit_import --generation_id <new-gen-id> \
            --area_type_code NKO --name_type_code M --country_code O \
            --name_field NAVN --encoding iso-8859-1 \
-           --code_field KOMM --code_type n5000 --use_code_as_id --commit \
+           --code_field KOMM --code_type n5000 --use_code_as_id \
+           --commit \
            ../data/N5000\ shape/N5000_AdministrativFlate.shp
        # Import Fylke here XXX
        # Perhaps, when 7-area-unions branch is merged, with
        #   ./manage.py mapit_create_area_unions --area-type-code NFY \
        #     --region-id-field 1 --region-name-field 2 --country O \
        #     --commit ../data/norway/kommune2fylke.csv
-       ./manage.py mapit_import_area_unions --commit data/norway/regions.csv
+       ./manage.py mapit_import_area_unions \
+           --commit data/norway/regions.csv
        ./manage.py mapit_generation_activate --commit
 
 You should now be able to go to /point/4326/10.756389,59.949444 and have Oslo

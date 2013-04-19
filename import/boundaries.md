@@ -33,7 +33,8 @@ Set things up
    there, with description 'Initial import', or run the following (which does
    the same thing):
 
-        ./manage.py mapit_generation_create --desc='Initial import' --commit
+       ./manage.py mapit_generation_create \
+           --desc='Initial import' --commit
 
    Generations are so you can load in boundary data that changes over time --
    you can import new versions of boundaries without them being actually 'live'

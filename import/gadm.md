@@ -62,10 +62,10 @@ This command will list them all:
 
 For the Nigerian kml files we get this output:
 
-       1 NGA_adm0.kml:<description><![CDATA[NGA]]></description>
-      37 NGA_adm1.kml:<description><![CDATA[State]]></description>
-       1 NGA_adm1.kml:<description><![CDATA[Water body]]></description>
-     775 NGA_adm2.kml:<description><![CDATA[Local Authority]]></description>
+      1 NGA_adm0.kml:<description><![CDATA[NGA]]></description>
+     37 NGA_adm1.kml:<description><![CDATA[State]]></description>
+      1 NGA_adm1.kml:<description><![CDATA[Water body]]></description>
+    775 NGA_adm2.kml:<description><![CDATA[Local Authority]]></descri...
 
 The bit we're looking for is in the `CDATA[[...]]` block. The number at the
 start of the line in the number of occurrences.
@@ -94,7 +94,8 @@ please change the URLs to match your setup.
    there, with description 'GADM version 2.0', or run the following (which does
    the same thing):
 
-        ./manage.py mapit_generation_create --desc='GADM version 2.0' --commit
+        ./manage.py mapit_generation_create \
+            --desc='GADM version 2.0' --commit
 
 5. (optional) You can add the various Types in the admin interface now, or be
    prompted for them when you run the import script. If you want to use the

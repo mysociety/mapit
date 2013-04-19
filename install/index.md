@@ -26,7 +26,7 @@ been tried.
 
 To install GeoDjango and PostGIS, please follow all the standard instructions
 (including creating the template) over on the Django site at
-<http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/#ubuntudebian>.
+[docs.djangoproject.com](http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/#ubuntudebian).
 And anything else you need to set up Django as normal.
 
 \[ Note for UK/Ireland: Not only is the PostGIS that is installed missing SRID
