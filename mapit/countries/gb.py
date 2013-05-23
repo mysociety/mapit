@@ -9,11 +9,20 @@ def area_code_lookup(request, area_id, format):
     area_code = None
     if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_id):
         area_code = CodeType.objects.get(code='ons')
-    if re.match('[ENSW]\d{8}$', area_id):
+    elif re.match('[EW]0[12]\d{6}$', area_id): # LSOA/MSOA have ONS code type
+        area_code = CodeType.objects.get(code='ons')
+    elif re.match('[ENSW]\d{8}$', area_id):
         area_code = CodeType.objects.get(code='gss')
     if not area_code:
         return None
-    area = get_object_or_404(Area, format=format, codes__type=area_code, codes__code=area_id)
+
+    args = { 'format': format, 'codes__type': area_code, 'codes__code': area_id }
+    if re.match('[EW]01', area_id):
+        args['type__code'] = 'OLF'
+    elif re.match('[EW]02', area_id):
+        args['type__code'] = 'OMF'
+
+    area = get_object_or_404(Area, **args)
     path = '/area/%d%s' % (area.id, '.%s' % format if format else '')
     # If there was a query string, make sure it's passed on in the
     # redirect:
