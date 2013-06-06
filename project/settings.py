@@ -43,6 +43,8 @@ GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
 DEBUG = config.get('DEBUG', True)
 TEMPLATE_DEBUG = DEBUG
 
+# (Note that even if DEBUG is true, output_json still sets a
+# Cache-Control header with max-age of 28 days.)
 if DEBUG:
     CACHE_BACKEND = 'dummy://'
     CACHE_MIDDLEWARE_SECONDS = 0
