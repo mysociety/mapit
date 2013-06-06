@@ -2,6 +2,7 @@ import re
 import itertools
 
 from django.contrib.gis.db import models
+from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.db import connection
 from django.utils.html import escape
@@ -198,7 +199,7 @@ SELECT DISTINCT mapit_area.*
             area.save()
         return area
 
-class SimplifiedAway(Exception):
+class TransformError(Exception):
     pass
 
 class Area(models.Model):
@@ -284,8 +285,9 @@ class Area(models.Model):
         element is returned).
 
         If the simplify_tolerance provided is large enough that all
-        the polygons completely disappear under simplification,
-        SimplifiedAway exception is raised.
+        the polygons completely disappear under simplification, or
+        something else goes wrong with the spatial transform, then a
+        TransformError exception is raised.
         """
         all_areas = self.polygons.all()
         if len(all_areas) > 1:
@@ -296,13 +298,16 @@ class Area(models.Model):
             return (None, None)
 
         if srid != settings.MAPIT_AREA_SRID:
-            all_areas.transform(srid)
+            try:
+                all_areas.transform(srid)
+            except (SRSException, OGRException) as e:
+                raise TransformError, "Error with transform: %s" % e
 
         num_points_before_simplification = all_areas.num_points
         if simplify_tolerance:
             all_areas = all_areas.simplify(simplify_tolerance)
             if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise SimplifiedAway, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
+                raise TransformError, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
 
         if export_format=='kml':
             if kml_type == "polygon":

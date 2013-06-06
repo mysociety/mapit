@@ -15,7 +15,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.shortcuts import redirect
 
-from mapit.models import Area, Generation, Geometry, Code, Name, SimplifiedAway
+from mapit.models import Area, Generation, Geometry, Code, Name, TransformError
 from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
@@ -93,8 +93,8 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         output, content_type = area.export(srid, format, simplify_tolerance=simplify_tolerance)
         if output is None:
             return output_json({'error': 'No polygons found'}, code=404)
-    except SimplifiedAway:
-        return output_json({'error': 'Simplifying removed all the polygons'}, code=404)
+    except TransformError as e:
+        return output_json({ 'error': e.args[0] }, code=400)
 
     return HttpResponse(output, content_type='%s; charset=utf-8' % content_type)
     
