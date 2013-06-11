@@ -193,7 +193,7 @@ class Command(LabelCommand):
                     continue
 
                 # Nowadays, in generating the data we should have
-                # excluded any "polygons" with less than four pointsv
+                # excluded any "polygons" with less than four points
                 # (the final one being the same as the first), but
                 # just in case:
                 polygons_too_small = 0
