@@ -6,8 +6,8 @@ from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
 from StringIO import StringIO
 from subprocess import Popen, PIPE
-
-osm3s_db_directory = "/home/overpass/db/"
+import tempfile
+import config
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -80,12 +80,35 @@ def get_osm3s(query_xml, filename):
         with open(filename, 'w') as file_output:
             p = Popen(["osm3s_query",
                        "--concise",
-                       "--db-dir=" + osm3s_db_directory],
+                       "--db-dir=" + config.osm3s_db_directory],
                       stdin=PIPE,
                       stdout=file_output)
             p.communicate(query_xml)
             if p.returncode != 0:
                 raise Exception, "The osm3s_query failed"
+
+def queryToFile(query_xml):
+    fd,filename = tempfile.mkstemp(dir="./")
+    os.write(fd,query_xml)
+    os.close(fd)
+    return filename
+
+def get_remote(query_xml, filename):
+    xml_file = queryToFile(query_xml)
+    basedir = os.path.dirname(filename)
+    if not os.path.exists(basedir):
+        os.mkdir(basedir)
+    if not os.path.exists(filename):
+        p = Popen([config.wget_path,
+                   "-O",
+                   filename,
+                   "-v",
+                   "--post-file=" + xml_file,
+                   config.overpass_server])
+        returncode = Popen.wait(p)
+        os.remove(xml_file)
+        if returncode != 0:
+            raise Exception, "The osm3s_query failed"
 
 def get_cache_filename(element_type, element_id, cache_directory=None):
     if cache_directory is None:
@@ -1761,7 +1784,10 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     filename = get_cache_filename(element_type, element_id, cache_directory)
     if not os.path.exists(filename):
         all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
-        get_osm3s(all_dependents_query, filename)
+        if (config.localserver):
+            get_osm3s(all_dependents_query, filename)
+        else:
+            get_remote(all_dependents_query, filename)
     return filename
 
 def parse_xml_minimal(filename, element_handler):
