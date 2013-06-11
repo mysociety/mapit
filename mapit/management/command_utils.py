@@ -207,6 +207,33 @@ def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
                 return fixed
     return None
 
+def fix_invalid_geos_multipolygon(geos_multipolygon):
+    polygons = list(geos_multipolygon)
+    # If all of the polygons in the KML are individually
+    # valid, then we just need to union them:
+    individually_all_valid = all(p.valid for p in polygons)
+    if individually_all_valid:
+        for_union = geos_multipolygon
+    # Otherwise, try to fix the individually broken
+    # polygons, discard any unfixable ones, and union
+    # the result:
+    else:
+        valid_polygons = []
+        for p in polygons:
+            if p.valid:
+                valid_polygons.append(p)
+            else:
+                fixed = fix_invalid_geos_polygon(p)
+                if fixed is not None:
+                    if fixed.geom_type == 'MultiPolygon':
+                        valid_polygons += list(fixed)
+                    elif fixed.geom_type == 'Polygon':
+                        valid_polygons.append(fixed)
+                    else:
+                        raise "Unknown fixed geometry type:", fixed.geom_type
+        for_union = MultiPolygon(valid_polygons)
+    return for_union.cascaded_union
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
