@@ -21,8 +21,9 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+from django.contrib.gis.geos import MultiPolygon
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
-from mapit.management.command_utils import save_polygons, KML
+from mapit.management.command_utils import save_polygons, KML, fix_invalid_geos_polygon
 from glob import glob
 import urllib2
 from BeautifulSoup import BeautifulSoup
@@ -204,7 +205,39 @@ class Command(LabelCommand):
                     message = "%d out of %d polygon(s) were too small" % (polygons_too_small, g.geom_count)
                     verbose('    Skipping, since ' + message)
                     continue
-                    # raise Exception, message
+
+                g_geos = g.geos
+
+                if not g_geos.valid:
+                    verbose("    Invalid KML:" + kml_filename)
+                    polygons = list(g_geos)
+                    # If all of the polygons in the KML are individually
+                    # valid, then we just need to union them:
+                    individually_all_valid = all(p.valid for p in polygons)
+                    if individually_all_valid:
+                        unioned = g_geos.cascaded_union
+                    # Otherwise, try to fix the individually broken
+                    # polygons, discard any unfixable ones, and union
+                    # the result:
+                    else:
+                        valid_polygons = []
+                        for p in polygons:
+                            if p.valid:
+                                valid_polygons.append(p)
+                            else:
+                                fixed = fix_invalid_geos_polygon(p)
+                                if fixed is not None:
+                                    if fixed.geom_type == 'MultiPolygon':
+                                        valid_polygons += list(fixed)
+                                    elif fixed.geom_type == 'Polygon':
+                                        valid_polygons.append(fixed)
+                                    else:
+                                        raise "Unknown fixed geometry type:", fixed.geom_type
+                        unioned = MultiPolygon(valid_polygons).cascaded_union
+                    if len(unioned) == 0:
+                        verbose("    Invalid polygons couldn't be fixed")
+                        continue
+                    g = unioned.ogr
 
                 area_type = Type.objects.get(code=type_directory)
 
