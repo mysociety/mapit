@@ -5,3 +5,4 @@ psycopg2
 BeautifulSoup
 South
 GDAL
+Shapely
