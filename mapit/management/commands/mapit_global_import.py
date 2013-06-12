@@ -21,8 +21,10 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+from django.contrib.gis.geos import MultiPolygon
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
+from mapit.management.command_utils import fix_invalid_geos_polygon, fix_invalid_geos_multipolygon
 from glob import glob
 import urllib2
 from BeautifulSoup import BeautifulSoup
@@ -204,7 +206,16 @@ class Command(LabelCommand):
                     message = "%d out of %d polygon(s) were too small" % (polygons_too_small, g.geom_count)
                     verbose('    Skipping, since ' + message)
                     continue
-                    # raise Exception, message
+
+                g_geos = g.geos
+
+                if not g_geos.valid:
+                    verbose("    Invalid KML:" + unicode(kml_filename, 'utf-8'))
+                    fixed_multipolygon = fix_invalid_geos_multipolygon(g_geos)
+                    if len(fixed_multipolygon) == 0:
+                        verbose("    Invalid polygons couldn't be fixed")
+                        continue
+                    g = fixed_multipolygon.ogr
 
                 area_type = Type.objects.get(code=type_directory)
 
