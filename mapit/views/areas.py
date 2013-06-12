@@ -96,7 +96,11 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     except TransformError as e:
         return output_json({ 'error': e.args[0] }, code=400)
 
-    return HttpResponse(output, content_type='%s; charset=utf-8' % content_type)
+    response = HttpResponse(content_type='%s; charset=utf-8' % content_type)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Cache-Control'] = 'max-age=2419200' # 4 weeks
+    response.write(output)
+    return response
     
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):

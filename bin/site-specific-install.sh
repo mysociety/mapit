@@ -21,7 +21,7 @@ misuse() {
 [ -z "$DEFAULT_SERVER" ] && misuse DEFAULT_SERVER
 [ -z "$HOST" ] && misuse HOST
 [ -z "$DISTRIBUTION" ] && misuse DISTRIBUTION
-[ -z "$VERSION" ] && misuse VERSION
+[ -z "$DISTVERSION" ] && misuse DISTVERSION
 
 apt-get install -y python-flup gunicorn
 
