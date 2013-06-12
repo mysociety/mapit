@@ -4,9 +4,11 @@ from django import http
 from django.db import connection
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from lxml import etree
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -37,6 +39,38 @@ def output_html(request, title, areas, **kwargs):
     kwargs['areas'] = sorted_areas(areas)
     kwargs['indent_areas'] = kwargs.get('indent_areas', False)
     return render(request, 'mapit/data.html', kwargs)
+
+def output_multiple_kml(request, title, areas):
+    """Return a KML file with a NetworkLink to KML for each area"""
+
+    kml = etree.Element("kml",
+                        nsmap={None: "http://earth.google.com/kml/2.1"})
+    folder = etree.SubElement(kml, "Folder")
+    etree.SubElement(folder, "name").text = title
+    etree.SubElement(folder, "visibility").text = "1"
+    etree.SubElement(folder, "open").text = "0"
+    description = u'A KML file that links to results for ' + title
+    etree.SubElement(folder, "description").text = description
+    for area in areas:
+        network_link = etree.SubElement(folder,
+                                        'NetworkLink',
+                                        attrib={'id': str(area.id)})
+        etree.SubElement(network_link, "name").text = area.name
+        etree.SubElement(network_link, "visibility").text = "1"
+        etree.SubElement(network_link, "open").text = "0"
+        area_description = '%s (MapIt area ID: %d)' % (area.name, area.id)
+        etree.SubElement(network_link, "description").text = area_description
+        etree.SubElement(network_link, "flyToView").text = "0"
+        link = etree.SubElement(network_link, "Link")
+        etree.SubElement(link, "href").text = request.build_absolute_uri(
+            reverse('mapit.views.areas.area',
+                    kwargs={'area_id': area.id}))
+    return http.HttpResponse(
+        etree.tostring(kml,
+                       pretty_print=True,
+                       encoding="utf-8",
+                       xml_declaration=True),
+        content_type='application/vnd.google-earth.kml+xml')
 
 def output_json(out, code=200):
     types = {

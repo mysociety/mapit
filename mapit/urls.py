@@ -3,7 +3,7 @@ from django.views.generic.simple import direct_to_template
 
 handler500 = 'mapit.shortcuts.json_500'
 
-format_end = '(?:\.(?P<format>html|json))?'
+format_end = '(?:\.(?P<format>html|json|kml))?'
 
 urlpatterns = patterns('',
     (r'^$', direct_to_template, { 'template': 'mapit/index.html' }, 'mapit_index' ),

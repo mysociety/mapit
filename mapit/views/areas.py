@@ -16,7 +16,7 @@ from django.conf import settings
 from django.shortcuts import redirect
 
 from mapit.models import Area, Generation, Geometry, Code, Name, TransformError
-from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
+from mapit.shortcuts import output_json, output_html, output_multiple_kml, render, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
@@ -152,6 +152,8 @@ def area_intersect(query_type, title, request, area_id, format):
             title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name)),
             areas, norobots=True
         )
+    elif format == 'kml':
+        return output_multiple_kml(request, title + ' ' + area.name, areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)
@@ -217,8 +219,11 @@ def areas_by_type(request, type, format='json'):
         args['generation_low__lte'] = generation
         args['generation_high__gte'] = min_generation
         areas = add_codes(Area.objects.filter(**args))
+    title = 'Areas in %s' % type
     if format == 'html':
-        return output_html(request, 'Areas in %s' % type, areas)
+        return output_html(request, title, areas)
+    elif format == 'kml':
+        return output_multiple_kml(request, title, areas)
     return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)
@@ -244,7 +249,11 @@ def areas_by_name(request, name, format='json'):
         args['type__code'] = type
 
     areas = add_codes(Area.objects.filter(**args))
-    if format == 'html': return output_html(request, 'Areas starting with %s' % name, areas)
+    title = 'Areas starting with %s' % name
+    if format == 'html':
+        return output_html(request, title, areas)
+    elif format == 'kml':
+        return output_multiple_kml(request, title, areas)
     out = dict( ( area.id, area.as_dict() ) for area in areas )
     return output_json(out)
 
@@ -357,7 +366,11 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         areas = Area.objects.filter(**args)
 
     areas = add_codes(areas)
-    if format == 'html': return output_html(request, 'Areas covering the point (%s,%s)' % (x,y), areas, indent_areas=True)
+    title = 'Areas covering the point (%s,%s)' % (x,y)
+    if format == 'html':
+        return output_html(request, title, areas, indent_areas=True)
+    elif format == 'kml':
+        return output_multiple_kml(request title, areas)
     return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
 
 @ratelimit(minutes=3, requests=100)
