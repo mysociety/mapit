@@ -275,6 +275,35 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
     >>> fixed_mp.equals(expected_polygon)
     True
 
+    If all the polygons are invalid and unfixable, an empty
+    MultiPolygon will be returned.  This example, where the loop
+    around the inner diamond is traversed clockwise as well, seems to
+    be unfixable, so it's a good example for this:
+
+      2  ---x---
+         | / \ |
+         |/   \|
+      1  x     x
+         |\   /|
+         | \ / |
+      0  ---x---
+
+         0  1  2
+
+    Here the points start at the bottom 'x', go right around the
+    outside square clockwise and then go around the inside square
+    clockwise as well.
+
+    >>> coords = [(1, 0), (0, 0), (0, 2), (2, 2), (2, 0), (1, 0),
+    ...           (0, 1), (1, 2), (2, 1), (1, 0)]
+    >>> poly = Polygon(coords)
+    >>> poly.valid
+    False
+    >>> mp = MultiPolygon(poly)
+    >>> fixed = fix_invalid_geos_multipolygon(mp)
+    >>> len(fixed)
+    0
+
     """
 
     polygons = list(geos_multipolygon)
@@ -301,7 +330,15 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
                     else:
                         raise "Unknown fixed geometry type:", fixed.geom_type
         for_union = MultiPolygon(valid_polygons)
-    return for_union.cascaded_union
+    if len(for_union) > 0:
+        result = for_union.cascaded_union
+        # If it have been unioned into a single Polygon, still return
+        # a MultiPolygon, for consistency of return types:
+        if result.geom_type == 'Polygon':
+            result = MultiPolygon(result)
+    else:
+        result = for_union
+    return result
 
 if __name__ == "__main__":
     import doctest
