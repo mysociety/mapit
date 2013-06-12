@@ -5,7 +5,7 @@ import sys
 from xml.sax.handler import ContentHandler
 import shapely.ops
 import shapely.wkt
-from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
+from django.contrib.gis.geos import GEOSGeometry, MultiPolygon, Polygon
 
 class KML(ContentHandler):
     def __init__(self, *args, **kwargs):
@@ -208,6 +208,75 @@ def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
     return None
 
 def fix_invalid_geos_multipolygon(geos_multipolygon):
+    """Try to fix an invalid GEOS MultiPolygon
+
+    Two overlapping valid polyons should be unioned to one shape:
+
+    3  ---------                3  ---------
+       | A     |                   | C     |
+    2  |   ----|----            2  |       -----
+       |   |   |   |   --->        |           |
+    1  ----|----   |            1  -----       |
+           |     B |                   |       |
+    0      ---------            0      ---------
+
+       0   1   2   3               0   1   2   3
+
+    >>> coords_a = [(0, 1), (0, 3), (2, 3), (2, 1), (0, 1)]
+    >>> coords_b = [(1, 0), (1, 2), (3, 2), (3, 0), (1, 0)]
+    >>> coords_c = [(0, 1), (0, 3), (2, 3), (2, 2), (3, 2),
+    ...             (3, 0), (1, 0), (1, 1), (0, 1)]
+
+    >>> mp = MultiPolygon(Polygon(coords_a), Polygon(coords_b))
+    >>> mp.valid
+    False
+
+    >>> fixed_mp = fix_invalid_geos_multipolygon(mp)
+    >>> fixed_mp.valid
+    True
+    >>> expected_polygon = Polygon(coords_c)
+    >>> fixed_mp.equals(expected_polygon)
+    True
+
+    If there's one valid and one fixable invalid polygon in the
+    multipolygon, it should return a multipolygon with the valid one
+    and the fixed version:
+
+      2         -->--
+               | D   |
+               |     |
+      1   --<-----<--       -----
+         |     |           | E   |
+         |     |           |     |
+      0   -->--             -----
+
+         0     1     2     3     4
+
+    >>> coords_d = [(0, 0), (1, 0), (1, 2), (2, 2),
+    ...             (2, 1), (0, 1), (0, 0)]
+    >>> coords_e = [(3, 0), (3, 1), (4, 1), (4, 0), (3, 0)]
+    >>> mp = MultiPolygon(Polygon(coords_d), Polygon(coords_e))
+    >>> mp.valid
+    False
+
+    >>> fixed_mp = fix_invalid_geos_multipolygon(mp)
+    >>> fixed_mp.valid
+    True
+
+    The eventual result should be three squares:
+
+    >>> fixed_mp.num_geom
+    3
+    >>> fixed_mp.area
+    3.0
+    >>> expected_polygon = MultiPolygon(Polygon([(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)]),
+    ...                                 Polygon([(1, 1), (1, 2), (2, 2), (2, 1), (1, 1)]),
+    ...                                 Polygon([(3, 0), (3, 1), (4, 1), (4, 0), (3, 0)]))
+    >>> fixed_mp.equals(expected_polygon)
+    True
+
+    """
+
     polygons = list(geos_multipolygon)
     # If all of the polygons in the KML are individually
     # valid, then we just need to union them:
