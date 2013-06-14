@@ -267,6 +267,7 @@ class Command(LabelCommand):
 
                 if options['commit']:
                     m.save()
+                    verbose('    Area ID: ' + str(m.id))
 
                     if name not in kml_data.data:
                         print json.dumps(kml_data.data, sort_keys=True, indent=4)
