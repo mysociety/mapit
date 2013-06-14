@@ -78,9 +78,12 @@ def fix_with_exterior_union_polygonize(geos_polygon):
     # We want to use GEOSPolygonize which isn't exposed via
     # django.contrib.gis.geos, but is available via shapely:
     shapely_unioned = shapely.wkt.loads(unioned.wkt)
-    reconstructed_geos_polygons = [
-        GEOSGeometry(sp.wkt, geos_polygon.srid) for sp in
-        shapely.ops.polygonize(shapely_unioned)]
+    try:
+        reconstructed_geos_polygons = [
+            GEOSGeometry(sp.wkt, geos_polygon.srid) for sp in
+            shapely.ops.polygonize(shapely_unioned)]
+    except ValueError:
+        reconstructed_geos_polygons = []
     return MultiPolygon(reconstructed_geos_polygons)
 
 def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
