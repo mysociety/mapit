@@ -59,7 +59,7 @@ import colorsys
 
 from django.core.management.base import BaseCommand
 from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType, SimplifiedAway
+from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType, TransformError
 from mapit.views.areas import area_polygon
 
 def hsv_to_rgb(h, s, v):
@@ -150,7 +150,7 @@ class Command(BaseCommand):
                                          'kml',
                                          simplify_tolerance=options['tolerance'],
                                          kml_type="polygon")
-                except SimplifiedAway, e:
+                except TransformError, e:
                     simplified_away.append(area)
                     print "  (the area was simplified away to nothing)"
                     continue
