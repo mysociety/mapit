@@ -79,7 +79,8 @@ for place, coords in sorted_mapping:
     print "  browse on MapIt Global:", mapit_url + ".html"
     r = requests.get(mapit_url, headers={'User-Agent': 'TestingCapitals/1.0'})
     mapit_result = json.loads(r.text)
-    level_2_areas = [a for a in mapit_result.values() if a['type'] == 'O02']
+    area_values = [a for k, a in mapit_result.items() if k != "debug_db_queries"]
+    level_2_areas = [a for a in area_values if a['type'] == 'O02']
     if level_2_areas:
         print "  In these level 2 areas:"
         for a in level_2_areas:
