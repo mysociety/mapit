@@ -22,7 +22,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 def name_from_url(url):
     """Extract everything after the last slash in the URL"""
 
-    url_as_str = url.encode('ascii')
+    url_as_str = url.encode('utf-8')
     unquoted = urllib.unquote(re.sub(r'^.*/', '', url_as_str))
     return unquoted.decode('utf-8')
 
