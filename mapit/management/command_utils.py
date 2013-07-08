@@ -347,3 +347,15 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+
+def fix_invalid_geos_geometry(geos_geometry):
+    """
+    Try to fix a geometry if it is either a polygon or multipolygon.
+    """
+    if geos_geometry.geom_type == 'Polygon':
+        return fix_invalid_geos_polygon(geos_geometry)
+    elif geos_geometry.geom_type == 'MultiPolygon':
+        return fix_invalid_geos_multipolygon(geos_geometry)
+    else:
+        raise Exception("Don't know how to fix an invalid %s" % geos_geometry.geom_type)
