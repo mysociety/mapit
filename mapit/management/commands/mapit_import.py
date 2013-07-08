@@ -62,10 +62,22 @@ class Command(LabelCommand):
             help="The field name containing the area's name"
         ),
         make_option(
+            '--override_name',
+            action="store",
+            dest='override_name',
+            help="The name to use for the area"
+        ),
+        make_option(
             '--code_field',
             action="store",
             dest='code_field',
             help="The field name containing the area's ID code"
+        ),
+        make_option(
+            '--override_code',
+            action="store",
+            dest='override_code',
+            help="The ID code to use for the area"
         ),
         make_option(
             '--use_code_as_id',
@@ -113,7 +125,11 @@ class Command(LabelCommand):
         area_type_code = options['area_type_code']
         name_type_code = options['name_type_code']
         country_code = options['country_code']
-        name_field = options['name_field'] or 'Name'
+        override_name = options['override_name']
+        name_field = options['name_field']
+        if not (override_name or name_field):
+            name_field = 'Name'
+        override_code = options['override_code']
         code_field = options['code_field']
         code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
@@ -122,8 +138,16 @@ class Command(LabelCommand):
             print "Area type code must be 3 letters or fewer, sorry"
             sys.exit(1)
 
-        if (code_field and not code_type_code) or (not code_field and code_type_code):
-            print "You must specify both code_field and code_type, or neither."
+        if name_field and override_name:
+            print "You must not specify both --name_field and --override_name"
+            sys.exit(1)
+        if code_field and override_code:
+            print "You must not specify both --code_field and --override_code"
+            sys.exit(1)
+
+        using_code = (code_field or override_code)
+        if (using_code and not code_type_code) or (not using_code and code_type_code):
+            print "If you want to save a code, specify --code_type and either --code_field or --override_code"
             sys.exit(1)
         try:
             area_type = Type.objects.get(code=area_type_code)
@@ -168,26 +192,37 @@ class Command(LabelCommand):
 
         ds = DataSource(filename)
         layer = ds[0]
+        if (override_name or override_code) and len(layer) > 1:
+            message = "Warning: you have specified an override %s and this file contains more than one feature; multiple areas with the same %s will be created"
+            if override_name:
+                print message % ('name', 'name')
+            if override_code:
+                print message % ('code', 'code')
+
         for feat in layer:
 
-            try:
-                name = feat[name_field].value
-            except:
-                choices = ', '.join(layer.fields)
-                print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
-                sys.exit(1)
-            try:
-                name = name.decode(encoding)
-            except:
-                print "Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding
-                sys.exit(1)
+            if override_name:
+                name = override_name
+            else:
+                try:
+                    name = feat[name_field].value
+                except:
+                    choices = ', '.join(layer.fields)
+                    print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
+                    sys.exit(1)
+                try:
+                    name = name.decode(encoding)
+                except:
+                    print "Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding
+                    sys.exit(1)
 
             name = re.sub('\s+', ' ', name)
             if not name:
                 raise Exception( "Could not find a name to use for area" )
 
-            code = None
-            if code_field:
+            if override_code:
+                code = override_code
+            elif code_field:
                 try:
                     code = feat[code_field].value
                 except:
