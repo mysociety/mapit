@@ -13,7 +13,7 @@ from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from django.conf import settings
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
-from mapit.management.command_utils import save_polygons
+from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 class Command(LabelCommand):
     help = 'Import geometry data from .shp, .kml or .geojson files'
@@ -90,6 +90,12 @@ class Command(LabelCommand):
             action="store",
             dest='encoding',
             help="The encoding of names in this dataset"
+        ),
+        make_option(
+            '--fix_invalid_polygons',
+            action="store_true",
+            dest='fix_invalid_polygons',
+            help="Try to fix any invalid polygons and multipolygons found"
         ),
     )
 
@@ -253,7 +259,18 @@ class Command(LabelCommand):
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
 
-            poly = [ g ]
+            if options['fix_invalid_polygons']:
+                # Make a GEOS geometry only to check for validity:
+                geos_g = g.geos
+                if not geos_g.valid:
+                    geos_g = fix_invalid_geos_geometry(geos_g)
+                    if geos_g is None:
+                        print "The geometry for area %s was invalid and couldn't be fixed" % name
+                        g = None
+                    else:
+                        g = geos_g.ogr
+
+            poly = [ g ] if g is not None else []
 
             if options['commit']:
                 m.save()
