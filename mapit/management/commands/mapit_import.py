@@ -62,6 +62,12 @@ class Command(LabelCommand):
             help="The field name containing the area's name"
         ),
         make_option(
+            '--name_suffix_field',
+            action="store",
+            dest='name_suffix_field',
+            help="An optional field name with data to append to the area's name"
+        ),
+        make_option(
             '--code_field',
             action="store",
             dest='code_field',
@@ -108,6 +114,7 @@ class Command(LabelCommand):
         name_type_code = options['name_type_code']
         country_code = options['country_code']
         name_field = options['name_field'] or 'Name'
+        name_suffix_field = options['name_suffix_field']
         code_field = options['code_field']
         code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
@@ -166,6 +173,8 @@ class Command(LabelCommand):
 
             try:
                 name = feat[name_field].value
+                if name_suffix_field:
+                    name += " " + str(feat[name_suffix_field].value)
             except:
                 choices = ', '.join(layer.fields)
                 print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
