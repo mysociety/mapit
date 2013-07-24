@@ -220,6 +220,7 @@ class Command(LabelCommand):
             if not name:
                 raise Exception( "Could not find a name to use for area" )
 
+            code = None
             if override_code:
                 code = override_code
             elif code_field:
