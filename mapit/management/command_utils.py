@@ -55,13 +55,14 @@ def save_polygons(lookup):
                 # XXX Using g.wkt directly when importing Norway KML works fine
                 # with Django 1.1, Postgres 8.3, PostGIS 1.3.3 but fails with
                 # Django 1.2, Postgres 8.4, PostGIS 1.5.1, saying that the
-                # dimensions constraint fails - because it is trying to import
-                # a shape as 3D as the WKT contains " 0" at the end of every
-                # co-ordinate. Removing the altitudes from the KML, and/or
-                # using altitudeMode makes no difference to the WKT here, so
-                # the only easy solution appears to be removing the altitude
+                # dimensions constraint fails - because it is trying to import a
+                # shape as 3D as the WKT contains an altitude at the end of
+                # every co-ordinate. Removing the altitudes from the KML, and/or
+                # using altitudeMode makes no difference to the WKT here, so the
+                # only easy solution appears to be removing the altitude
                 # directly from the WKT before using it.
-                must_be_two_d = g.wkt.replace(' 0,', ',')
+                dimensions_re = r'([\d.-]+\s+[\d.-]+)(\s+[\d.-]+)(,|\))'
+                must_be_two_d = re.sub(dimensions_re, r'\1\3', g.wkt)
                 m.polygons.create(polygon=must_be_two_d)
         #m.polygon = g.wkt
         #m.save()
@@ -335,7 +336,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
         for_union = MultiPolygon(valid_polygons)
     if len(for_union) > 0:
         result = for_union.cascaded_union
-        # If it have been unioned into a single Polygon, still return
+        # If they have been unioned into a single Polygon, still return
         # a MultiPolygon, for consistency of return types:
         if result.geom_type == 'Polygon':
             result = MultiPolygon(result)
@@ -346,3 +347,15 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+
+
+def fix_invalid_geos_geometry(geos_geometry):
+    """
+    Try to fix a geometry if it is either a polygon or multipolygon.
+    """
+    if geos_geometry.geom_type == 'Polygon':
+        return fix_invalid_geos_polygon(geos_geometry)
+    elif geos_geometry.geom_type == 'MultiPolygon':
+        return fix_invalid_geos_multipolygon(geos_geometry)
+    else:
+        raise Exception("Don't know how to fix an invalid %s" % geos_geometry.geom_type)

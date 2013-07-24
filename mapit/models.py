@@ -432,7 +432,7 @@ class CodeType(models.Model):
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
     type = models.ForeignKey(CodeType, related_name='codes')
-    code = models.CharField(max_length=10)
+    code = models.CharField(max_length=500)
     objects = Manager()
 
     class Meta:
