@@ -3,5 +3,5 @@ v1.0.0pr3, xxxx-xx-xx
   -- prefixed all management commands with mapit
   -- convert README into rst and split up into several files
 
-v1.0.0pr2, 2011-12-08 -- Add South and factored out hard-coded name and code types into separate databae tables.
+v1.0.0pr2, 2011-12-08 -- Add South and factored out hard-coded name and code types into separate database tables.
 v1.0.0pr1, 2011-12-07 -- Initial packaged version.
