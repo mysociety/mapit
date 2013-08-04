@@ -1,14 +1,6 @@
-"""
-This file demonstrates two different styles of tests (one doctest and one
-unittest). These will both pass when you run "manage.py test".
-
-Replace these with more appropriate tests for your application.
-"""
-
 import json
 
 from django.test import TestCase
-from django.test.client import Client
 from django.contrib.gis.geos import Polygon
 
 import settings
@@ -16,8 +8,8 @@ import settings
 from mapit.models import Type, Area, Geometry, Generation
 
 class AreaViewsTest(TestCase):
-    def setUp(self):
-        self.client = Client()
+    @classmethod
+    def setUpClass(self):
         self.old_srid = settings.MAPIT_AREA_SRID
         settings.MAPIT_AREA_SRID = 4326
 
@@ -77,7 +69,8 @@ class AreaViewsTest(TestCase):
         self.assertRedirects(response, '/point/4326/-3.5,51.5.json')
 
     def test_areas_by_point(self):
-        response = self.client.get('/point/4326/-3.5,51.5.json')
+        # Different co-ords to evade any caching
+        response = self.client.get('/point/4326/-3.4,51.5.json')
 
         content = json.loads(response.content)
 
@@ -86,5 +79,6 @@ class AreaViewsTest(TestCase):
             set((x.id for x in (self.big_area, self.small_area_1)))
             )
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         settings.MAPIT_AREA_SRID = self.old_srid
