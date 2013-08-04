@@ -1,14 +1,14 @@
 from django.conf.urls.defaults import *
-from django.views.generic.simple import direct_to_template
+from mapit.shortcuts import render
 
 handler500 = 'mapit.shortcuts.json_500'
 
 format_end = '(?:\.(?P<format>html|json))?'
 
 urlpatterns = patterns('',
-    (r'^$', direct_to_template, { 'template': 'mapit/index.html' }, 'mapit_index' ),
-    (r'^licensing$', direct_to_template, { 'template': 'mapit/licensing.html' } ),
-    (r'^overview$', direct_to_template, { 'template': 'mapit/overview.html' } ),
+    (r'^$', render, { 'template_name': 'mapit/index.html' }, 'mapit_index' ),
+    (r'^licensing$', render, { 'template_name': 'mapit/licensing.html' } ),
+    (r'^overview$', render, { 'template_name': 'mapit/overview.html' } ),
 
     (r'^generations$', 'mapit.views.areas.generations'),
 
