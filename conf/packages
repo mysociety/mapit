@@ -5,7 +5,7 @@ python-django
 libapache2-mod-wsgi
 python-psycopg2 
 
-libgdal1-1.9.0 | libgdal1-1.6.0 | libgdal1-1.5.0
+libgdal1 | libgdal1-1.6.0 | libgdal1-1.5.0
 postgresql
 postgresql-9.1-postgis | postgresql-8.4-postgis | postgresql-8.3-postgis
 
