@@ -9,6 +9,8 @@ libgdal1 | libgdal1-1.6.0 | libgdal1-1.5.0
 postgresql
 postgresql-9.1-postgis | postgresql-8.4-postgis | postgresql-8.3-postgis
 
+ruby-sass
+
 memcached
 python-memcache
 python-gdal
