@@ -1,12 +1,25 @@
+import json
 import re
-from django.utils import simplejson
+import django
 from django import http
 from django.db import connection
 from django.conf import settings
-from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+
+from django.core.serializers.json import DjangoJSONEncoder
+# Assuming at least python 2.6, in Django < 1.6, the above class is either a
+# packaged simplejson subclass if simplejson is installed, or a core json
+# subclass. In Django >= 1.6, it is always a core json subclass. The json.dump
+# call in this file needs to be the same thing that the above class is.
+if django.get_version() < '1.6':
+    try:
+        import simplejson
+        if issubclass(DjangoJSONEncoder, simplejson.JSONEncoder):
+            import simplejson as json
+    except:
+        pass
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
@@ -55,7 +68,7 @@ def output_json(out, code=200):
         if isinstance(out, dict):
             out['debug_db_queries'] = connection.queries
         indent = 4
-    simplejson.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
+    json.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
     return response
 
 def get_object_or_404(klass, format='json', *args, **kwargs):

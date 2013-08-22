@@ -4,7 +4,6 @@
 import urllib
 from optparse import make_option
 from django.core.management.base import LabelCommand
-from django.utils import simplejson
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *

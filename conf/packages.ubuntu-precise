@@ -1,6 +1,5 @@
 python-beautifulsoup
 python-yaml
-python-simplejson
 python-django
 python-psycopg2
 libgdal1-1.7.0
