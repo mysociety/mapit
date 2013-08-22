@@ -1,4 +1,8 @@
-from django.conf.urls.defaults import *
+try:
+    from django.conf.urls import patterns
+except:
+    from django.conf.urls.defaults import patterns
+
 from mapit.shortcuts import render
 
 handler500 = 'mapit.shortcuts.json_500'

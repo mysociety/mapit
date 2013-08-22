@@ -140,13 +140,13 @@ else:
 USE_ETAGS = False
 
 MIDDLEWARE_CLASSES = (
-    'mapit.middleware.gzip.GZipMiddleware',
+    'mapit.middleware.gzip.GZipMiddleware' if django.get_version() < '1.4' else 'django.middleware.gzip.GZipMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
-    'mapit.middleware.cache.UpdateCacheMiddleware',
+    'mapit.middleware.cache.UpdateCacheMiddleware' if django.get_version() < '1.3' else 'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'mapit.middleware.cache.FetchFromCacheMiddleware',
+    'mapit.middleware.cache.FetchFromCacheMiddleware' if django.get_version() < '1.3' else 'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
     'mapit.middleware.ViewExceptionMiddleware',
 )

@@ -1,10 +1,11 @@
 # Django's cache middleware, patched to use get_full_path() as they can be cached.
 
+import hashlib
+
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.cache import patch_response_headers, get_max_age, cc_delim_re
 from django.utils.encoding import iri_to_uri
-from django.utils.hashcompat import md5_constructor
 
 class UpdateCacheMiddleware(object):
     """
@@ -94,18 +95,18 @@ class FetchFromCacheMiddleware(object):
 
 def _generate_cache_key(request, headerlist, key_prefix):
     """Returns a cache key from the headers given in the header list."""
-    ctx = md5_constructor()
+    ctx = hashlib.md5()
     for header in headerlist:
         value = request.META.get(header, None)
         if value is not None:
             ctx.update(value)
-    path = md5_constructor(iri_to_uri(request.get_full_path()))
+    path = hashlib.md5(iri_to_uri(request.get_full_path()))
     return 'views.decorators.cache.cache_page.%s.%s.%s' % (
                key_prefix, path.hexdigest(), ctx.hexdigest())
 
 def _generate_cache_header_key(key_prefix, request):
     """Returns a cache key for the header cache."""
-    path = md5_constructor(iri_to_uri(request.get_full_path()))
+    path = hashlib.md5(iri_to_uri(request.get_full_path()))
     return 'views.decorators.cache.cache_header.%s.%s' % (key_prefix, path.hexdigest())
 
 def get_cache_key(request, key_prefix=None):
