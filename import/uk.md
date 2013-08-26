@@ -29,7 +29,7 @@ Here are the basic instructions to install OS OpenData and ONSPD:
 ./manage.py loaddata uk
 ./manage.py mapit_UK_import_boundary_line \
     --control=mapit.controls.first-gss --commit \
-    `ls ../data/Boundary-Line/Data/*.shp|grep -v high_water`
+    `\ls ../data/Boundary-Line/Data/*.shp|\grep -v high_water`
 # (You can run without --commit to do a dry run.)
 # first-gss in the above assumes the Boundary Line you're importing
 # is October 2010 or later, and uses the new GSS codes.
@@ -86,7 +86,7 @@ You probably don't need any of that for your own install.
 # Create inactive generation.
 ./manage.py mapit_UK_import_boundary_line \
     --control=mapit.controls.2009-10 \
-    `ls ../../data/Boundary-Line/2009-10/*.shp|grep -v high_water`
+    `\ls ../../data/Boundary-Line/2009-10/*.shp|\grep -v high_water`
 ./manage.py mapit_UK_import_codepoint \
     ../../data/Code-Point-Open-2010-05/*.csv
 ./manage.py mapit_UK_find_parents
@@ -95,7 +95,7 @@ You probably don't need any of that for your own install.
 # Make generation active, add another inactive generation
 ./manage.py mapit_UK_import_boundary_line \
     --control=mapit.controls.2010-05 \
-    `ls ../../data/Boundary-Line/2010-05/*.shp|grep -v high_water`
+    `\ls ../../data/Boundary-Line/2010-05/*.shp|\grep -v high_water`
 # mapit_UK_import_codepoint not needed as it's the same
 # and there's no P-in-P tests!
 ./manage.py mapit_UK_find_parents
