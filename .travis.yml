@@ -21,7 +21,7 @@ install:
   - ln -s /usr/lib/python2.7/dist-packages/osgeo ~/virtualenv/python2.7/lib/python2.7/site-packages/
   - ln -s /usr/lib/python2.7/dist-packages/GDAL-1.7.3.egg-info ~/virtualenv/python2.7/lib/python2.7/site-packages/
   - pip install $MODULES --use-mirrors
-  - pip install -r project/requirements.txt --use-mirrors
+  - pip install -r requirements.txt --use-mirrors
   - wget https://docs.djangoproject.com/en/1.5/_downloads/create_template_postgis-debian.sh
   - sudo -u postgres sh create_template_postgis-debian.sh >/dev/null
   - sudo sh -c 'echo "standard_conforming_strings = off" >> /etc/postgresql/9.1/main/postgresql.conf'

@@ -1,39 +1,30 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 
-file_dir = os.path.dirname(__file__)
-if file_dir: os.chdir(file_dir)
+file_dir = os.path.abspath(os.path.dirname(__file__))
 
-packages = []
-for dirpath, dirnames, filenames in os.walk('mapit'):
-    if '__init__.py' in filenames:
-        packages.append(dirpath.replace('/', '.'))
+def read_file(filename):
+    filepath = os.path.join(file_dir, filename)
+    return open(filepath).read()
+
+def install_requires():
+    reqs = read_file('requirements.txt')
+    reqs = reqs.splitlines()
+    reqs = [ x for x in reqs if x and x[0] != '#' and x[0:2] != '-e' ]
+    return reqs
 
 setup(
     name='django-mapit',
-    version='1.0.0pr3',
+    version='1.0.0',
     description='A web service for mapping postcodes and points to current or past administrative area information and polygons.',
-    long_description=open('README.rst').read(),
+    long_description=read_file('README.rst'),
     author='mySociety',
     author_email='mapit@mysociety.org',
     url='https://github.com/mysociety/mapit',
     license='LICENSE.txt',
-
-    # TODO: Use find_packages from setuptools
-    packages=packages,
-
-    # TODO: Use include_package_data=True from setuptools
-    package_data={
-        'mapit': [
-            'templates/mapit/*.html',
-            'templates/*/mapit/*.html',
-            'static/mapit/*',
-            'fixtures/*.json',
-            'sql/*.sql',
-    ] },
-
-    install_requires=[ 'distribute', 'python-memcached', 'Django', 'PyYAML', 'psycopg2', 'South', 'GDAL' ],
-
+    packages=find_packages(exclude=['project']),
+    include_package_data=True,
+    install_requires=install_requires(),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',

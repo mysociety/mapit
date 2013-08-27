@@ -1,5 +1,4 @@
-include LICENSE.txt 
-recursive-include docs *.rst
+include LICENSE.txt README.rst requirements.txt
 include bin/osm_to_kml
 recursive-include project *.py
 recursive-include mapit *.html *.json *.sql 
