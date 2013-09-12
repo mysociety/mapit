@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# make_css:
+# mapit_make_css:
 # Generate CSS files from SCSS files.
 #
 # Requires sass which you can get from http://sass-lang.com/
