@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env python
 #
 # make_css:
 # Generate CSS files from SCSS files.
@@ -8,8 +8,19 @@
 # Copyright (c) 2012 UK Citizens Online Democracy. All rights reserved.
 # Email: matthew@mysociety.org. WWW: http://www.mysociety.org
 
-DIRECTORY=$(cd `dirname $0`/.. && pwd)
+import mapit
+import os
+import subprocess
 
-mkdir -p $DIRECTORY/mapit/static/mapit/css
-sass --scss --style compressed $DIRECTORY/mapit/static/mapit/sass/mapit.scss $DIRECTORY/mapit/static/mapit/css/mapit.css
+directory = os.path.dirname(mapit.__file__)
+
+subprocess.check_call([
+    "mkdir", "-p", "%s/static/mapit/css" % directory
+])
+subprocess.check_call([
+    "sass", "--scss",
+    "--style", "compressed",
+    "%s/static/mapit/sass/mapit.scss" % directory,
+    "%s/static/mapit/css/mapit.css" % directory
+])
 
