@@ -1,3 +1,13 @@
-v1.0.0, 2013-08-27 -- Initial proper PyPI release.
-v1.0.0pr2, 2011-12-08 -- Add South and factored out hard-coded name and code types into separate database tables.
-v1.0.0pr1, 2011-12-07 -- Initial packaged version.
+v1.0.1, 2013-09-16
+* Fix script installation.
+* Link postcode to GeoHack page.
+
+v1.0.0, 2013-08-27
+* Initial proper PyPI release.
+
+v1.0.0pr2, 2011-12-08
+* Add South and factored out hard-coded name and code types into separate
+  database tables.
+
+v1.0.0pr1, 2011-12-07
+* Initial packaged version.

@@ -15,7 +15,7 @@ def install_requires():
 
 setup(
     name='django-mapit',
-    version='1.0.0',
+    version='1.0.1',
     description='A web service for mapping postcodes and points to current or past administrative area information and polygons.',
     long_description=read_file('README.rst'),
     author='mySociety',
@@ -27,7 +27,7 @@ setup(
     include_package_data=True,
     install_requires=install_requires(),
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'License :: OSI Approved :: GNU Affero General Public License v3',
