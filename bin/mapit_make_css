@@ -8,9 +8,16 @@
 # Copyright (c) 2012 UK Citizens Online Democracy. All rights reserved.
 # Email: matthew@mysociety.org. WWW: http://www.mysociety.org
 
-import mapit
 import os
 import subprocess
+
+try:
+    import mapit
+except:
+    import sys
+    parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    sys.path.insert(0, parent_dir)
+    import mapit
 
 directory = os.path.dirname(mapit.__file__)
 
