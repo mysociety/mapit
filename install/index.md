@@ -104,7 +104,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # generate the css from the sass
-../bin/make_css
+../bin/mapit_make_css
 
 # Setup django install
 ./manage.py syncdb
