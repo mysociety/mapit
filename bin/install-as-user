@@ -59,7 +59,7 @@ gem install --no-ri --no-rdoc compass
 
 if [ ! -f web/cobrands/default/base.css ]
 then
-    bin/make_css
+    bin/mapit_make_css
 fi
 
 # Write sensible values into the config file:
