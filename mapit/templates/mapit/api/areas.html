@@ -1,3 +1,4 @@
+{% load url from future %}
     <section id="api-multiple_areas">
         <h3><em>lookup</em> multiple areas</h3>
         <dl>
@@ -27,13 +28,13 @@
              WAE (Welsh Assembly region), WMC (UK Parliamentary constituency)</small>.
 {% endif %}
 {% if country == 'NO' %}
-<small><a href="{% url mapit_index %}areas/NKO.html">NKO</a> (kommune),
-<a href="{% url mapit_index %}areas/NFY.html">NFY</a> (fylke),
-<a href="{% url mapit_index %}areas/NRA.html">NRA</a> (vegvesen),
-<a href="{% url mapit_index %}areas/NPT.html">NPT</a> (kollektivtransportselskap),
-<a href="{% url mapit_index %}areas/NPG.html">NPG</a> (kraftregionselskap),
-<a href="{% url mapit_index %}areas/NRR.html">NRR</a> (jernbaneverk),
-<a href="{% url mapit_index %}areas/NSA.html">NSA</a> (kystverk)</small>.
+<small><a href="{% url "mapit_index" %}areas/NKO.html">NKO</a> (kommune),
+<a href="{% url "mapit_index" %}areas/NFY.html">NFY</a> (fylke),
+<a href="{% url "mapit_index" %}areas/NRA.html">NRA</a> (vegvesen),
+<a href="{% url "mapit_index" %}areas/NPT.html">NPT</a> (kollektivtransportselskap),
+<a href="{% url "mapit_index" %}areas/NPG.html">NPG</a> (kraftregionselskap),
+<a href="{% url "mapit_index" %}areas/NRR.html">NRR</a> (jernbaneverk),
+<a href="{% url "mapit_index" %}areas/NSA.html">NSA</a> (kystverk)</small>.
 {% endif %}
 {% if country == 'Global' %}
     <small>O01 to O12</small>.
@@ -56,22 +57,22 @@
             <dd>
 {% if country == 'GB' %}
 <ul>
-    <li>All areas starting &ldquo;Bourn&rdquo;: <a href="{% url mapit_index %}areas/Bourn.html">/areas/Bourn.html</a>
-    <li>Information on areas 2636 and 2637: <a href="{% url mapit_index %}areas/2636,2637.html">/areas/2636,2637.html</a>
-    <li>All county council (CTY) areas: <a href="{% url mapit_index %}areas/CTY.html">/areas/CTY.html</a>
+    <li>All areas starting &ldquo;Bourn&rdquo;: <a href="{% url "mapit_index" %}areas/Bourn.html">/areas/Bourn.html</a>
+    <li>Information on areas 2636 and 2637: <a href="{% url "mapit_index" %}areas/2636,2637.html">/areas/2636,2637.html</a>
+    <li>All county council (CTY) areas: <a href="{% url "mapit_index" %}areas/CTY.html">/areas/CTY.html</a>
 </ul>
 {% endif %}
 {% if country == 'NO' %}
 <ul>
-    <li>All areas starting &ldquo;As&rdquo;: <a href="{% url mapit_index %}areas/As.html">/areas/As.html</a>
-    <li>Information on areas 814 and 815: <a href="{% url mapit_index %}areas/814,815.html">/areas/814,815.html</a>
+    <li>All areas starting &ldquo;As&rdquo;: <a href="{% url "mapit_index" %}areas/As.html">/areas/As.html</a>
+    <li>Information on areas 814 and 815: <a href="{% url "mapit_index" %}areas/814,815.html">/areas/814,815.html</a>
 </ul>
 {% endif %}
 {% if country == 'Global' %}
             <ul>
-                <li>All areas starting &ldquo;Ven&rdquo;: <a href="{% url mapit_index %}areas/Ven.html">/areas/Ven.html</a>
-                <li>Information on areas 29746 and 25495: <a href="{% url mapit_index %}areas/29746,25495.html">/areas/29746,25495.html</a>
-                <li>All level 2 (O02) areas: <a href="{% url mapit_index %}areas/O02.html">/areas/O02.html</a>
+                <li>All areas starting &ldquo;Ven&rdquo;: <a href="{% url "mapit_index" %}areas/Ven.html">/areas/Ven.html</a>
+                <li>Information on areas 29746 and 25495: <a href="{% url "mapit_index" %}areas/29746,25495.html">/areas/29746,25495.html</a>
+                <li>All level 2 (O02) areas: <a href="{% url "mapit_index" %}areas/O02.html">/areas/O02.html</a>
             </ul>
 {% endif %}
             </dd>

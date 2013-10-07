@@ -8,7 +8,6 @@ notifications:
 
 language: python
 env:
-  - MODULES="Django==1.2.7 psycopg2==2.4.1"
   - MODULES="Django==1.3.7 psycopg2==2.4.1"
   - MODULES="Django>=1.4,<1.5"
   - MODULES="Django>=1.5,<1.6"

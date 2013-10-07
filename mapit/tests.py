@@ -79,6 +79,9 @@ class AreaViewsTest(TestCase):
             set((x.id for x in (self.big_area, self.small_area_1)))
             )
 
+    def test_front_page(self):
+        response = self.client.get('/')
+
     @classmethod
     def tearDownClass(self):
         settings.MAPIT_AREA_SRID = self.old_srid

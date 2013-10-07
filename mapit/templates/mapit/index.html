@@ -1,4 +1,5 @@
 {% extends "mapit/base.html" %}
+{% load url from future %}
 
 {% block fulltitle %}
     MapIt : map postcodes and geographical points to administrative areas
@@ -11,11 +12,11 @@
 
 {% if country == 'GB' %}
         <a class="mapit-cross-sell global" href="http://global.mapit.mysociety.org/">
-            <img src="{% url mapit_index %}static/mapit/img/global-cross_sell.png" alt="Now Available: MapIt Global" width="146" height="32">
+            <img src="{% url "mapit_index" %}static/mapit/img/global-cross_sell.png" alt="Now Available: MapIt Global" width="146" height="32">
         </a>
 {% else %}
         <a class="mapit-cross-sell uk" href="http://mapit.mysociety.org/">
-            <img src="{% url mapit_index %}static/mapit/img/uk-cross_sell.png" alt="also Available MapIt UK">
+            <img src="{% url "mapit_index" %}static/mapit/img/uk-cross_sell.png" alt="also Available MapIt UK">
         </a>
 {% endif %}
 
@@ -69,7 +70,7 @@ to keep NUUG going.
 
     <!-- Try out MapIt postcode bar -->
     <div id="try-mapit">
-        <form method="post" action="{% url mapit_index %}{% if country == 'Global' %}point{% else %}postcode{% endif %}/">
+        <form method="post" action="{% url "mapit_index" %}{% if country == 'Global' %}point{% else %}postcode{% endif %}/">
             <label for="try-mapit-pc">
                 {% if country == 'GB' %}Try it out, enter a UK postcode:{% endif %}
                 {% if country == 'NO' %}Try it out, enter a postcode:{% endif %}
