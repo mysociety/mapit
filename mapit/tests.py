@@ -3,16 +3,11 @@ import json
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon
 
-import settings
-
 from mapit.models import Type, Area, Geometry, Generation
 
 class AreaViewsTest(TestCase):
     @classmethod
     def setUpClass(self):
-        self.old_srid = settings.MAPIT_AREA_SRID
-        settings.MAPIT_AREA_SRID = 4326
-
         self.generation = Generation.objects.create(
             active=True,
             description="Test generation",
@@ -81,7 +76,3 @@ class AreaViewsTest(TestCase):
 
     def test_front_page(self):
         response = self.client.get('/')
-
-    @classmethod
-    def tearDownClass(self):
-        settings.MAPIT_AREA_SRID = self.old_srid

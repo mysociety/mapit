@@ -8,7 +8,6 @@ notifications:
 
 language: python
 env:
-  - MODULES="Django==1.3.7 psycopg2==2.4.1"
   - MODULES="Django>=1.4,<1.5"
   - MODULES="Django>=1.5,<1.6"
   - MODULES="git+https://github.com/django/django.git@stable/1.6.x#egg=django"
@@ -27,4 +26,4 @@ install:
   - sudo /etc/init.d/postgresql reload
   - "echo -e 'MAPIT_DB_NAME: template_postgis\nMAPIT_DB_USER: postgres\nDJANGO_SECRET_KEY: secret' > conf/general.yml"
 script:
-  - python -Wall project/manage.py test mapit
+  - python -Wall manage.py test mapit

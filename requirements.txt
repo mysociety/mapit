@@ -1,5 +1,5 @@
 python-memcached
-Django
+Django>=1.4
 PyYAML
 psycopg2
 BeautifulSoup

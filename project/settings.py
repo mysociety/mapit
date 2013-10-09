@@ -3,23 +3,18 @@ import sys
 import yaml
 import django
 
-# Make sure the application in this repository is on the path
-package_dir = os.path.abspath(os.path.realpath(os.path.dirname(__file__)))
-path = os.path.abspath( os.path.join( package_dir, '..' ) )
-
-# We don't want two copies of this on the path, so remove it if it's
-# already there.
-while path in sys.path:
-    sys.path.remove(path)
-
-sys.path.insert(0, path)
+# Path to here is something like
+# /data/vhost/<vhost>/<repo>/<project_name>/settings.py
+PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, '..'))
+PARENT_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, '..'))
 
 # The mySociety deployment system works by having a conf directory at the root
 # of the repo, containing a general.yml file of options. Use that file if
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
 try:
-    config = yaml.load( open(os.path.normpath(package_dir + "/../conf/general.yml"), 'r') )
+    config = yaml.load( open(os.path.join(PROJECT_ROOT, 'conf', 'general.yml'), 'r') )
 except:
     config = {}
 
@@ -46,13 +41,22 @@ TEMPLATE_DEBUG = DEBUG
 # (Note that even if DEBUG is true, output_json still sets a
 # Cache-Control header with max-age of 28 days.)
 if DEBUG:
-    CACHE_BACKEND = 'dummy://'
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
-    CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=86400'
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+            'TIMEOUT': 86400,
+        }
+    }
     CACHE_MIDDLEWARE_SECONDS = 86400
     CACHE_MIDDLEWARE_KEY_PREFIX = config.get('MAPIT_DB_NAME')
-    CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 if config.get('BUGS_EMAIL'):
     SERVER_EMAIL = config['BUGS_EMAIL']
@@ -74,6 +78,8 @@ DATABASES = {
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
+
+ALLOWED_HOSTS = ['*']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -98,17 +104,52 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join( path, '..', 'collected_static' )
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale.
+USE_L10N = True
 
-# No uploaded media
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = False
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/var/www/example.com/media/"
 MEDIA_ROOT = ''
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://example.com/media/", "http://media.example.com/"
 MEDIA_URL = ''
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/var/www/example.com/static/"
+STATIC_ROOT = os.path.join( PARENT_DIR, 'collected_static' )
+
+# URL prefix for static files.
+# Example: "http://example.com/static/", "http://static.example.com/"
+STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     # Needs adapting to new class version
+    #'django.template.loaders.app_directories.Loader',
     'mapit.loader.load_template_source',
 )
 
@@ -119,7 +160,7 @@ TEMPLATE_LOADERS = (
 USE_ETAGS = False
 
 MIDDLEWARE_CLASSES = (
-    'mapit.middleware.gzip.GZipMiddleware' if django.get_version() < '1.4' else 'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,12 +171,16 @@ MIDDLEWARE_CLASSES = (
     'mapit.middleware.ViewExceptionMiddleware',
 )
 
-ROOT_URLCONF = 'urls'
+ROOT_URLCONF = 'project.urls'
 
-# Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-# Always use forward slashes, even on Windows.
-# Don't forget to use absolute paths, not relative paths.
-TEMPLATE_DIRS = ()
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'project.wsgi.application'
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',

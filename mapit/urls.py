@@ -1,7 +1,4 @@
-try:
-    from django.conf.urls import patterns
-except:
-    from django.conf.urls.defaults import patterns, handler404
+from django.conf.urls import patterns
 
 from mapit.shortcuts import render
 
