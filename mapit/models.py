@@ -103,10 +103,10 @@ class Type(models.Model):
     # for a few countries in the mapit/fixtures directory. In the UK we have
     # county councils (CTY), district councils (DIS), constituencies of the UK
     # Parliament (WMC), Scottish Parliament regions (SPE), and so on. The fact
-    # they are three letter codes is a hangover from the original source data
-    # we used from Ordnance Survey, and could potentially be changed.
+    # these examples are three letter codes is a hangover from the original
+    # source data we used from Ordnance Survey.
 
-    code = models.CharField(max_length=3, unique=True, help_text="A unique three letter code, eg 'CTR', 'CON', etc")
+    code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'CTR', 'CON', etc")
     description = models.CharField(max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
 
     def __unicode__(self):
