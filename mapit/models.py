@@ -88,7 +88,7 @@ class Generation(models.Model):
         }
 
 class Country(models.Model):
-    code = models.CharField(max_length=1, unique=True)
+    code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
 
     def __unicode__(self):
