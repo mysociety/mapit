@@ -36,12 +36,13 @@ hostname `mapit.example.org`, creating a virtualhost just for that
 hostname, you could download and run the script with:
 
 {% highlight bash %}
-curl https://raw.github.com/mysociety/commonlib/master/bin/install-site.sh \
-    | sudo sh -s mapit mapit mapit.example.org
+curl -O https://raw.github.com/mysociety/commonlib/master/bin/install-site.sh
+sudo sh install-site.sh mapit mapit mapit.example.org
 {% endhighlight %}
 
 Or, if you want to set this up as the default site on an EC2 instance,
-you could download the script and then invoke it with:
+you could download the script, make it executable and then invoke it
+as:
 
     sudo ./install-site.sh --default mapit mapit
 
