@@ -43,7 +43,9 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
-            name = unicode(feat['NAME'].value, 'iso-8859-1')
+            name = feat['NAME'].value
+            if not isinstance(name, unicode):
+                name = name.decode('iso-8859-1')
 
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
