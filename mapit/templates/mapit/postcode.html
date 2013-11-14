@@ -17,7 +17,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <li>No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
 {% endif %}
     </ul>
-    <p>Get <a href="{{ json }}{{ postcode.postcode|urlencode }}">this data as JSON</a></p>
+    <p>Get <a href="{% url "mapit.views.postcodes.postcode" postcode=postcode.postcode format="json" %}">this data as JSON</a></p>
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
