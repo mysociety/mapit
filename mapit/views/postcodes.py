@@ -115,6 +115,7 @@ def partial_postcode(request, postcode, format='json'):
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'json': '/postcode/partial/',
+            'partial': True
         })
 
     return output_json(postcode.as_dict())

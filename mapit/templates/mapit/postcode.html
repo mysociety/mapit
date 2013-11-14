@@ -1,4 +1,5 @@
 {% extends "mapit/base.html" %}
+{% load url from future %}
 
 {% block title %}Results for &ldquo;{{ postcode.postcode }}&rdquo;{% endblock title %}
 
@@ -17,7 +18,11 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <li>No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
 {% endif %}
     </ul>
+    {% if partial %}
+    <p>Get <a href="{% url "mapit.views.postcodes.partial_postcode" postcode=postcode.postcode format="json" %}">this data as JSON</a></p>
+    {% else %}
     <p>Get <a href="{% url "mapit.views.postcodes.postcode" postcode=postcode.postcode format="json" %}">this data as JSON</a></p>
+    {% endif %}
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
