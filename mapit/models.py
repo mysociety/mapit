@@ -315,20 +315,22 @@ class Area(models.Model):
             elif kml_type == "full":
                 out = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-    <Style id="ourPolygonStyle">
-        <LineStyle>
-            <color>%s</color>
-            <width>2</width>
-        </LineStyle>
-        <PolyStyle>
-            <color>%s</color>
-        </PolyStyle>
-    </Style>
-    <Placemark>
-        <styleUrl>#ourPolygonStyle</styleUrl>
-        <name>%s</name>
-        %s
-    </Placemark>
+    <Document>
+        <Style id="ourPolygonStyle">
+            <LineStyle>
+                <color>%s</color>
+                <width>2</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>%s</color>
+            </PolyStyle>
+        </Style>
+        <Placemark>
+            <styleUrl>#ourPolygonStyle</styleUrl>
+            <name>%s</name>
+            %s
+        </Placemark>
+    </Document>
 </kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
             else:
                 raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
