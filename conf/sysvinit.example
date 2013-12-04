@@ -21,7 +21,7 @@ test -f $DAEMON || exit 0
 set -e
 
 start_daemon() {
-  cd $SITE_HOME/mapit/project && gunicorn_django \
+  cd $SITE_HOME/mapit && ../virtualenv-mapit/bin/python /usr/bin/gunicorn project.wsgi:application \
                                      --user=$USER \
                                      --group=$USER \
                                      -D \

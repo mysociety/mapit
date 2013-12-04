@@ -1,7 +1,10 @@
 #!/bin/sh
 
 set -e
-set -x
+error_msg() { printf "\033[31m%s\033[0m\n" "$*"; }
+notice_msg() { printf "\033[33m%s\033[0m " "$*"; }
+done_msg() { printf "\033[32m%s\033[0m\n" "$*"; }
+DONE_MSG=$(done_msg done)
 
 if [ $# -ne 3 ]
 then
@@ -22,19 +25,19 @@ IP_ADDRESS_FOR_HOST="$(dig +short $HOST)"
 
 if [ x = x"$IP_ADDRESS_FOR_HOST" ]
 then
-    echo "The hostname $HOST didn't resolve to an IP address"
+    error_msg "The hostname $HOST didn't resolve to an IP address"
     exit 1
 fi
 
 if ! id "$UNIX_USER" 2> /dev/null > /dev/null
 then
-    echo "The user '$UNIX_USER' didn't exist."
+    error_msg "The user '$UNIX_USER' didn't exist."
     exit 1
 fi
 
 if [ "$(whoami)" != "$UNIX_USER" ]
 then
-    echo "This script should be run by the user '$UNIX_USER'."
+    error_msg "This script should be run by the user '$UNIX_USER'."
     exit 1
 fi
 
@@ -44,41 +47,25 @@ LINK_DESTINATION="$HOME/mapit"
 ln -sfn "$REPOSITORY" $LINK_DESTINATION
 cd "$REPOSITORY"
 
-# Install the compass gem locally - it's required for generating the
-# CSS:
-
-export GEM_HOME="$DIRECTORY/gems"
-mkdir -p "$GEM_HOME"
-export GEM_PATH=
-export PATH="$GEM_HOME/bin:$PATH"
-
-gem install --no-ri --no-rdoc compass
-
-# Use compass to generate the CSS, if it doesn't seem to already
-# exist:
-
-if [ ! -f web/cobrands/default/base.css ]
-then
-    bin/mapit_make_css
+# Write sensible values into the config file:
+if [ ! -f conf/general.yml ]; then
+    echo -n "Setting up default conf/general.yml file... "
+    RANDOM_STRING=$(< /dev/urandom tr -dc A-Za-z0-9 | head -c32)
+    sed -r \
+        -e "s,^( *MAPIT_DB_NAME:).*,\\1 '$DB_NAME'," \
+        -e "s,^( *MAPIT_DB_USER:).*,\\1 '$UNIX_USER'," \
+        -e "s,^( *COUNTRY:).*,\\1 ''," \
+        -e "s,^( *AREA_SRID:).*,\\1 4326," \
+        -e "s,^( *DJANGO_SECRET_KEY:).*,\\1 '$RANDOM_STRING'," \
+        conf/general.yml-example > conf/general.yml
+    echo $DONE_MSG
 fi
 
-# Write sensible values into the config file:
-
-RANDOM_STRING=$(< /dev/urandom tr -dc A-Za-z0-9 | head -c32)
-
-sed -r \
-    -e "s,^( *MAPIT_DB_NAME:).*,\\1 '$DB_NAME'," \
-    -e "s,^( *MAPIT_DB_USER:).*,\\1 '$UNIX_USER'," \
-    -e "s,^( *COUNTRY:).*,\\1 ''," \
-    -e "s,^( *AREA_SRID:).*,\\1 4326," \
-    -e "s,^( *DJANGO_SECRET_KEY:).*,\\1 '$RANDOM_STRING'," \
-    conf/general.yml-example > conf/general.yml
-
 # Create the database if it doesn't exist:
+echo -n "Setting up database... "
 if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
 then
     createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
-    cd $REPOSITORY/project
-    ./manage.py syncdb --noinput
-    ./manage.py migrate mapit
 fi
+
+conf/post_deploy_actions.bash

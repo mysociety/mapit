@@ -20,10 +20,6 @@ server {
         root /var/www/mapit/mapit/mapit;
     }
 
-    location /media {
-        root /usr/share/pyshared/django/contrib/admin;
-    }
-
     location / {
         proxy_pass_header Server;
         proxy_set_header Host $http_host;
