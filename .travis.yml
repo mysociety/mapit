@@ -15,14 +15,19 @@ env:
 install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq libgdal1-dev libgdal1-1.7.0 python-gdal
-  - sudo apt-get install -qq postgresql-9.1-postgis libproj-dev gdal-bin binutils
+  - sudo apt-get install -qq libproj-dev gdal-bin binutils
   - ln -s /usr/lib/python2.7/dist-packages/osgeo ~/virtualenv/python2.7/lib/python2.7/site-packages/
   - ln -s /usr/lib/python2.7/dist-packages/GDAL-1.7.3.egg-info ~/virtualenv/python2.7/lib/python2.7/site-packages/
   - pip install $MODULES --use-mirrors
   - pip install -r requirements.txt --use-mirrors
-  - wget https://docs.djangoproject.com/en/1.5/_downloads/create_template_postgis-debian.sh
-  - sudo -u postgres sh create_template_postgis-debian.sh >/dev/null
-  - sudo sh -c 'echo "standard_conforming_strings = off" >> /etc/postgresql/9.1/main/postgresql.conf'
+  - createdb -E UTF8 template_postgis &&
+    ( createlang -d template_postgis -l | grep plpgsql || createlang -d template_postgis plpgsql ) &&
+    psql -d postgres -c "UPDATE pg_database SET datistemplate='true' WHERE datname='template_postgis';" &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/postgis.sql &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/spatial_ref_sys.sql &&
+    psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;" &&
+    psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;" &&
+    psql -d template_postgis -c "GRANT ALL ON geography_columns TO PUBLIC;"
   - sudo /etc/init.d/postgresql reload
   - "echo -e 'MAPIT_DB_NAME: template_postgis\nMAPIT_DB_USER: postgres\nDJANGO_SECRET_KEY: secret' > conf/general.yml"
 script:
