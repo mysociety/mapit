@@ -25,6 +25,7 @@ install:
     psql -d postgres -c "UPDATE pg_database SET datistemplate='true' WHERE datname='template_postgis';" &&
     psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/postgis.sql &&
     psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/spatial_ref_sys.sql &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/legacy_gist.sql &&
     psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;" &&
     psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;" &&
     psql -d template_postgis -c "GRANT ALL ON geography_columns TO PUBLIC;"
