@@ -30,7 +30,7 @@ start_daemon() {
 }
 
 stop_daemon() {
-  pkill -f gunicorn_django || true
+  pkill -f gunicorn || true
 }
 
 case "$1" in
