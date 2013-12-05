@@ -96,27 +96,25 @@ At this stage, you should be able to set up the database and run the
 development server. Do add an admin user when prompted:
 
 {% highlight bash %}
-cd project
-
-# Optionally set up a virtual environment and install requirements
+# Set up a virtual environment and install requirements
 virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
 # generate the css from the sass
-../bin/mapit_make_css
+bin/mapit_make_css
 
 # Setup django install
 ./manage.py syncdb
 ./manage.py migrate mapit
+./manage.py collectstatic
 
 # run dev server
 ./manage.py runserver
 {% endhighlight %}
 
 (Alternatively, set up a live web server however you wish &ndash; see the Deployment
-Django documentation for details beyond the scope of this document. Remember to
-run `./manage.py collectstatic` too if running Django >= 1.3.)
+Django documentation for details beyond the scope of this document.)
 
 You can then visit <http://localhost:8000/> and hopefully see the default MapIt
 homepage. <http://localhost:8000/admin/> should show the admin interface.
