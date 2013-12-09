@@ -1,3 +1,12 @@
+v1.0.2, 2013-12-09
+* Now requires Django 1.4 or higher.
+* Allow $ and . in callback function names.
+* Increased maximum lengths for codes and names.
+* Bugfix: Include required messages framework for admin.
+* Bugfix: Django 1.5+ dealing with DataSource names.
+* Bugfix: Running CSS script when not installed via PyPi.
+* Bugfix: Include required <Document> in KML output.
+
 v1.0.1, 2013-09-16
 * Fix script installation.
 * Link postcode to GeoHack page.
