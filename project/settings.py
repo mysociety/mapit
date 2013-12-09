@@ -166,6 +166,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
     'mapit.middleware.ViewExceptionMiddleware',
@@ -185,6 +186,7 @@ TEMPLATE_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
     'mapit.context_processors.country',
     'mapit.context_processors.analytics',
 )
@@ -192,6 +194,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
