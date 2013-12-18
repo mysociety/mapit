@@ -56,7 +56,7 @@ class Command(LabelCommand):
             patch = self.patch_boundary_line(ons_code, area_code)
             if patch == True: ons_code = None
             elif patch: ons_code = patch
-            
+
             if area_code == 'NCP': continue # Ignore Non Parished Areas
 
             if ons_code in self.ons_code_to_shape:
@@ -112,7 +112,7 @@ class Command(LabelCommand):
                 elif ons_code:
                     m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:
-                    m = Area.objects.get(codes__type=code_type_os, codes__code=unit_id)
+                    m = Area.objects.get(codes__type=code_type_os, codes__code=unit_id, generation_high=current_generation)
                     m_name = m.names.get(type=name_type).name
                     if name != m_name:
                         raise Exception, "Unit ID code %s is %s in DB but %s in SHP file" % (unit_id, m_name, name)
