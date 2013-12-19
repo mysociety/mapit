@@ -40,7 +40,9 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
-            name = feat['Name'].value.decode('utf-8')
+            name = feat['Name'].value
+            if not isinstance(name, unicode):
+                name = name.decode('utf-8')
             name = re.sub('\s+', ' ', name)
             print " ", name.encode('utf-8')
 

@@ -211,7 +211,8 @@ class Command(LabelCommand):
                     print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
                     sys.exit(1)
                 try:
-                    name = name.decode(encoding)
+                    if not isinstance(name, unicode):
+                        name = name.decode(encoding)
                 except:
                     print "Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding
                     sys.exit(1)
