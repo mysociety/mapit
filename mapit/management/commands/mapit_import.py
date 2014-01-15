@@ -116,7 +116,7 @@ class Command(LabelCommand):
         err = False
         for k in ['generation_id','area_type_code','name_type_code','country_code']:
             if options[k]: continue
-            print "Missing argument '--%s'" % k
+            self.stdout.write("Missing argument '--%s'" % k)
             err = True
         if err:
             sys.exit(1)
@@ -135,19 +135,19 @@ class Command(LabelCommand):
         encoding = options['encoding'] or 'utf-8'
 
         if len(area_type_code)>3:
-            print "Area type code must be 3 letters or fewer, sorry"
+            self.stdout.write("Area type code must be 3 letters or fewer, sorry")
             sys.exit(1)
 
         if name_field and override_name:
-            print "You must not specify both --name_field and --override_name"
+            self.stdout.write("You must not specify both --name_field and --override_name")
             sys.exit(1)
         if code_field and override_code:
-            print "You must not specify both --code_field and --override_code"
+            self.stdout.write("You must not specify both --code_field and --override_code")
             sys.exit(1)
 
         using_code = (code_field or override_code)
         if (using_code and not code_type_code) or (not using_code and code_type_code):
-            print "If you want to save a code, specify --code_type and either --code_field or --override_code"
+            self.stdout.write("If you want to save a code, specify --code_type and either --code_field or --override_code")
             sys.exit(1)
         try:
             area_type = Type.objects.get(code=area_type_code)
@@ -178,26 +178,26 @@ class Command(LabelCommand):
                 code_type = CodeType(code=code_type_code, description=code_desc)
                 if options['commit']: code_type.save()
 
-        print "Importing from %s" % filename
+        self.stdout.write("Importing from %s" % filename)
 
         if not options['commit']:
-            print '(will not save to db as --commit not specified)'
+            self.stdout.write('(will not save to db as --commit not specified)')
 
         current_generation = Generation.objects.current()
         new_generation     = Generation.objects.get( id=generation_id )
 
         def verbose(*args):
             if int(options['verbosity']) > 1:
-                print " ".join(str(a) for a in args)
+                self.stdout.write(" ".join(str(a) for a in args))
 
         ds = DataSource(filename)
         layer = ds[0]
         if (override_name or override_code) and len(layer) > 1:
             message = "Warning: you have specified an override %s and this file contains more than one feature; multiple areas with the same %s will be created"
             if override_name:
-                print message % ('name', 'name')
+                self.stdout.write(message % ('name', 'name'))
             if override_code:
-                print message % ('code', 'code')
+                self.stdout.write(message % ('code', 'code'))
 
         for feat in layer:
 
@@ -208,13 +208,13 @@ class Command(LabelCommand):
                     name = feat[name_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
+                    self.stdout.write("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                     sys.exit(1)
                 try:
                     if not isinstance(name, unicode):
                         name = name.decode(encoding)
                 except:
-                    print "Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding
+                    self.stdout.write("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
                     sys.exit(1)
 
             name = re.sub('\s+', ' ', name)
@@ -229,10 +229,10 @@ class Command(LabelCommand):
                     code = feat[code_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    print "Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices)
+                    self.stdout.write("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
                     sys.exit(1)
 
-            print "  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' )
+            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
 
             g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
 
@@ -302,7 +302,7 @@ class Command(LabelCommand):
                 if not geos_g.valid:
                     geos_g = fix_invalid_geos_geometry(geos_g)
                     if geos_g is None:
-                        print "The geometry for area %s was invalid and couldn't be fixed" % name
+                        self.stdout.write("The geometry for area %s was invalid and couldn't be fixed" % name)
                         g = None
                     else:
                         g = geos_g.ogr
