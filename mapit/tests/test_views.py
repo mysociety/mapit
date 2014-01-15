@@ -1,6 +1,7 @@
 import json
 
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.gis.geos import Polygon
 
 from mapit.models import Type, Area, Geometry, Generation
@@ -17,7 +18,7 @@ class AreaViewsTest(TestCase):
             code="BIG",
             description="A large test area",
             )
-        
+
         self.small_type = Type.objects.create(
             code="SML",
             description="A small test area",
@@ -65,7 +66,8 @@ class AreaViewsTest(TestCase):
 
     def test_areas_by_point(self):
         # Different co-ords to evade any caching
-        response = self.client.get('/point/4326/-3.4,51.5.json')
+        url = '/point/{0}/-3.4,51.5.json'.format(settings.MAPIT_AREA_SRID)
+        response = self.client.get(url)
 
         content = json.loads(response.content)
 
