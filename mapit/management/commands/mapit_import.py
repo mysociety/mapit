@@ -7,7 +7,7 @@
 import re
 import sys
 from optparse import make_option
-from django.core.management.base import LabelCommand
+from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
@@ -113,13 +113,16 @@ class Command(LabelCommand):
 
     def handle_label(self, filename, **options):
 
-        err = False
+        missing_options = []
         for k in ['generation_id','area_type_code','name_type_code','country_code']:
-            if options[k]: continue
-            self.stdout.write("Missing argument '--%s'" % k)
-            err = True
-        if err:
-            sys.exit(1)
+            if options[k]:
+                continue
+            else:
+                missing_options.append(k)
+        if missing_options:
+            message_start = "Missing arguments " if len(missing_options) > 1 else "Missing argument "
+            message = message_start + " ".join('--{0}'.format(k) for k in missing_options)
+            raise CommandError(message)
 
         generation_id = options['generation_id']
         area_type_code = options['area_type_code']
@@ -135,20 +138,16 @@ class Command(LabelCommand):
         encoding = options['encoding'] or 'utf-8'
 
         if len(area_type_code)>3:
-            self.stdout.write("Area type code must be 3 letters or fewer, sorry")
-            sys.exit(1)
+            raise CommandError("Area type code must be 3 letters or fewer, sorry")
 
         if name_field and override_name:
-            self.stdout.write("You must not specify both --name_field and --override_name")
-            sys.exit(1)
+            raise CommandError("You must not specify both --name_field and --override_name")
         if code_field and override_code:
-            self.stdout.write("You must not specify both --code_field and --override_code")
-            sys.exit(1)
+            raise CommandError("You must not specify both --code_field and --override_code")
 
         using_code = (code_field or override_code)
         if (using_code and not code_type_code) or (not using_code and code_type_code):
-            self.stdout.write("If you want to save a code, specify --code_type and either --code_field or --override_code")
-            sys.exit(1)
+            raise CommandError("If you want to save a code, specify --code_type and either --code_field or --override_code")
         try:
             area_type = Type.objects.get(code=area_type_code)
         except:
@@ -208,14 +207,12 @@ class Command(LabelCommand):
                     name = feat[name_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    self.stdout.write("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
-                    sys.exit(1)
+                    raise CommandError("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
                     if not isinstance(name, unicode):
                         name = name.decode(encoding)
                 except:
-                    self.stdout.write("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
-                    sys.exit(1)
+                    raise CommandError("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
 
             name = re.sub('\s+', ' ', name)
             if not name:
@@ -229,8 +226,7 @@ class Command(LabelCommand):
                     code = feat[code_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    self.stdout.write("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
-                    sys.exit(1)
+                    raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
             self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
 
