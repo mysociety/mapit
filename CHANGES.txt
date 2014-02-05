@@ -1,3 +1,9 @@
+v1.0.3 2014-02-05
+* Bugfix: Limit area lookups by unit_id to the current generation
+* Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
+* Bugfix: Avoid problems with old versions of pip and setuptools
+
+
 v1.0.2, 2013-12-09
 * Now requires Django 1.4 or higher.
 * Allow $ and . in callback function names.
