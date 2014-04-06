@@ -2,12 +2,15 @@
 
 import xml.sax, os, errno, urllib, urllib2, sys, datetime, time, shutil
 from xml.sax.handler import ContentHandler
+import yaml
 from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
 from StringIO import StringIO
 from subprocess import Popen, PIPE
 
-osm3s_db_directory = "/home/overpass/db/"
+with open(os.path.join(
+        os.path.dirname(__file__), '..', 'conf', 'general.yml')) as f:
+    config = yaml.load(f)
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -75,17 +78,32 @@ def get_query_relations_and_ways(required_tags):
   <print from="_" limit="" mode="body" order="id"/>
 </osm-script>""" % (has_kv, has_kv)
 
-def get_osm3s(query_xml, filename):
+def get_from_overpass(query_xml, filename):
     if not os.path.exists(filename):
-        with open(filename, 'w') as file_output:
-            p = Popen(["osm3s_query",
-                       "--concise",
-                       "--db-dir=" + osm3s_db_directory],
-                      stdin=PIPE,
-                      stdout=file_output)
-            p.communicate(query_xml)
-            if p.returncode != 0:
-                raise Exception, "The osm3s_query failed"
+        if config.get('LOCAL_OVERPASS'):
+            return get_osm3s(query_xml, filename)
+        else:
+            return get_remote(query_xml, filename)
+
+def get_osm3s(query_xml, filename):
+    with open(filename, 'w') as file_output:
+        p = Popen(["osm3s_query",
+                   "--concise",
+                   "--db-dir=" + config['OVERPASS_DB_DIRECTORY']],
+                  stdin=PIPE,
+                  stdout=file_output)
+        p.communicate(query_xml)
+        if p.returncode != 0:
+            raise Exception, "The osm3s_query failed"
+
+def get_remote(query_xml, filename):
+    url = config['OVERPASS_SERVER']
+    values = {'data': query_xml}
+    encoded_values = urllib.urlencode(values)
+    request = urllib2.Request(url, encoded_values)
+    response = urllib2.urlopen(request)
+    with open(filename, "w") as fp:
+        fp.write(response.read())
 
 def get_cache_filename(element_type, element_id, cache_directory=None):
     if cache_directory is None:
@@ -1761,7 +1779,7 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     filename = get_cache_filename(element_type, element_id, cache_directory)
     if not os.path.exists(filename):
         all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
-        get_osm3s(all_dependents_query, filename)
+        get_from_overpass(all_dependents_query, filename)
     return filename
 
 def parse_xml_minimal(filename, element_handler):
