@@ -13,23 +13,26 @@
 # Copyright (c) 2011, 2012 UK Citizens Online Democracy. All rights reserved.
 # Email: mark@mysociety.org; WWW: http://www.mysociety.org
 
+from collections import namedtuple
+import csv
+from glob import glob
+import json
+from optparse import make_option
 import os
 import re
+import urllib2
 import xml.sax
-from optparse import make_option
+
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import MultiPolygon
+import shapely
+
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
 from mapit.management.command_utils import fix_invalid_geos_polygon, fix_invalid_geos_multipolygon
-from glob import glob
-import urllib2
-from BeautifulSoup import BeautifulSoup
-from collections import namedtuple
-import json
 
 def make_missing_none(s):
     """If s is empty (considering Unicode spaces) return None, else s"""
@@ -53,19 +56,16 @@ def get_iso639_2_table():
     returns them as a list of LanguageCodes"""
 
     result = []
-    url = "http://www.loc.gov/standards/iso639-2/php/code_list.php"
-    f = urllib2.urlopen(url)
-    data = f.read()
-    f.close()
-    soup = BeautifulSoup(data, convertEntities=BeautifulSoup.HTML_ENTITIES)
-    table = soup.find('table', {'border': '1'})
-    for row in table.findAll('tr', recursive=False):
-        tds = row.findAll('td', recursive=False)
-        if len(tds) != 4:
-            continue
-        strings = ["".join(td.findAll(text=True)).strip() for td in tds]
-        result_row = LanguageCodes._make(make_missing_none(s) for s in strings)
+    url = "http://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt"
+    for row in csv.reader(urllib2.urlopen(url), delimiter='|'):
+        row = [ cell.decode('utf-8-sig') for cell in row ]
+        bibliographic = [ row[0], row[2], row[3], row[4] ]
+        result_row = LanguageCodes._make(make_missing_none(s) for s in bibliographic)
         result.append(result_row)
+        if row[1]:
+            terminologic = [ row[1], row[2], row[3], row[4] ]
+            result_row = LanguageCodes._make(make_missing_none(s) for s in terminologic)
+            result.append(result_row)
     return result
 
 class Command(LabelCommand):
@@ -107,13 +107,7 @@ class Command(LabelCommand):
                 code = getattr(row, k)
                 if not code:
                     continue
-                # Some of the language codes have a bibliographic or
-                # terminology code, so strip those out:
-                codes = re.findall(r'(\w+) \([BT]\)', code)
-                if not codes:
-                    codes = [code]
-                for c in codes:
-                    language_code_to_name[c] = english_name
+                language_code_to_name[code] = english_name
 
         global_country = Country.objects.get(code='G')
 
@@ -185,7 +179,7 @@ class Command(LabelCommand):
                 if len(layer) != 1:
                     raise Exception, "We only expect one feature in each layer"
 
-                feat = layer[0]
+                feat = layer[1]
 
                 g = feat.geom.transform(4326, clone=True)
 
@@ -240,9 +234,9 @@ class Command(LabelCommand):
                         verbose('    In the current generation, that area was empty - skipping')
                     else:
                         # Simplify it to make sure the polygons are valid:
-                        previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
-                        new_geos_geometry = g.geos.simplify(tolerance=0)
-                        if previous_geos_geometry.equals(new_geos_geometry):
+                        previous_geos_geometry = shapely.wkb.loads(str(previous_geos_geometry.simplify(tolerance=0).ewkb))
+                        new_geos_geometry = shapely.wkb.loads(str(g.geos.simplify(tolerance=0).ewkb))
+                        if previous_geos_geometry.almost_equals(new_geos_geometry, decimal=7):
                             was_the_same_in_current = True
                         else:
                             verbose('    In the current generation, the boundary was different')
@@ -309,4 +303,4 @@ class Command(LabelCommand):
                     if not was_the_same_in_current:
                         new_code = Code(area=m, type=code_type_osm, code=osm_id)
                         new_code.save()
-                    save_polygons({ code : (m, poly) })
+                    save_polygons({ 'dummy': (m, poly) })
