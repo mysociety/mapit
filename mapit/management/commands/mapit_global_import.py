@@ -177,7 +177,7 @@ class Command(LabelCommand):
                 if len(layer) != 1:
                     raise Exception, "We only expect one feature in each layer"
 
-                feat = layer[0]
+                feat = layer[1]
 
                 g = feat.geom.transform(4326, clone=True)
 
