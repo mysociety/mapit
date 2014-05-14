@@ -28,6 +28,8 @@ from django.core.management.base import LabelCommand
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import MultiPolygon
+import shapely
+
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
 from mapit.management.command_utils import fix_invalid_geos_polygon, fix_invalid_geos_multipolygon
@@ -232,9 +234,9 @@ class Command(LabelCommand):
                         verbose('    In the current generation, that area was empty - skipping')
                     else:
                         # Simplify it to make sure the polygons are valid:
-                        previous_geos_geometry = previous_geos_geometry.simplify(tolerance=0)
-                        new_geos_geometry = g.geos.simplify(tolerance=0)
-                        if previous_geos_geometry.equals(new_geos_geometry):
+                        previous_geos_geometry = shapely.wkb.loads(str(previous_geos_geometry.simplify(tolerance=0).ewkb))
+                        new_geos_geometry = shapely.wkb.loads(str(g.geos.simplify(tolerance=0).ewkb))
+                        if previous_geos_geometry.almost_equals(new_geos_geometry, decimal=7):
                             was_the_same_in_current = True
                         else:
                             verbose('    In the current generation, the boundary was different')
