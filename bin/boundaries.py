@@ -12,6 +12,8 @@ with open(os.path.join(
         os.path.dirname(__file__), '..', 'conf', 'general.yml')) as f:
     config = yaml.load(f)
 
+CACHE_VISITED = set()
+
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
     """Create a directory (and parents if necessary) like mkdir -p
@@ -1852,7 +1854,7 @@ def parse_xml_string(s, *parser_args, **parser_kwargs):
     xml.sax.parse(fp, parser)
     return parser
 
-def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None):
+def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None, visited=None):
     """Fetch and parse a particular OSM element recursively
 
     More data is fetched from the API if required.  'element_type'
@@ -1886,6 +1888,17 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     element_id = str(element_id)
     if verbose:
         print "fetch_osm_element(%s, %s)" % (element_type, element_id)
+
+    # Prevent circular inclusion of relations
+    global CACHE_VISITED
+    if visited is not None:
+        CACHE_VISITED = visited
+    if element_id in CACHE_VISITED:
+        print "  SEEN ALREADY..."
+        return None
+    if element_type == 'relation':
+        CACHE_VISITED.add(element_id)
+
     # Make sure we have the XML file for that relation, node or way:
     filename = fetch_cached(element_type, element_id, verbose, cache_directory)
     try:
