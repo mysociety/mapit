@@ -8,7 +8,7 @@ Global
 
 MapIt Global contains boundaries extracted from OpenStreetMap.  In
 order to create your own instance of MapIt Global you will need an
-appreciable amount of free disk space - 500GB would be safe.  You
+appreciable amount of free disk space - 100GB would be safe.  You
 should also bear in mind that this is non-trivial to set up yourself -
 if you're thinking of doing so, then you should strongly consider just
 using [our live service](http://global.mapit.mysociety.org/).
@@ -29,36 +29,43 @@ whenever you want to create a new generation of data.
 1 - Setting up your own Overpass API server
 -------------------------------------------
 
-For this step, you should follow [instructions for setting up the
-Overpass API server on the OpenStreetMap
-wiki](wiki.openstreetmap.org/wiki/Overpass_API/install).  If you don't
-want to update the database with daily diffs, then you can stop after
-the "Static Usage" section.  If you do want to do daily updates, you
-should also complete the "Applying minutely (or hourly, or daily)
-diffs" section.  You don't need to set up the web service.
+For this step, you should follow [instructions for setting up the Overpass API
+server on the OpenStreetMap
+wiki](http://wiki.openstreetmap.org/wiki/Overpass_API/install), though note the
+disc space saving below before populating the database. If you don't want to
+update the database with daily diffs, then you can stop after the "Static
+Usage" section. If you do want to do daily updates, you should also complete
+the "Applying minutely (or hourly, or daily) diffs" section. You don't need to
+set up the web service.
+
+In order to save on disc space, we recommend that you use osmconvert and
+osmfilter to filter out the required boundaries from the planet file before
+importing them into Overpass. So after downloading a planet-latest.osm.bz2
+file, you might want to run something like the following:
+
+    bzcat planet-latest.osm.bz2 | osmconvert - --drop-author --out-o5m > planet.o5m
+    osmfilter planet.o5m --drop-author --keep='boundary=administrative boundary=political' | bzip2 > planet-boundaries.osm.bz2
+
+As of May 2014, the full planet file was 36G, as was the o5m file; the filtered
+file was 757M. The Overpass database was then 15G.
 
 2 - Generating KML files
 ------------------------
 
-Firstly, check that `osm3s_query` is in your `PATH`.  Then edit the
-following line in `bin/boundaries.py` in your MapIt clone to point to
-the Overpass database directory:
-
-    osm3s_db_directory = "/home/overpass/db/"
-
-The script to generate KML files caches the results of API queries in
-`data/new-cache`, so if you've run the script on a previous occasion,
-you may want to delete that with:
-
-    rm -r data/new-cache/*
+Firstly, check that `osm3s_query` is in your `PATH`. Then set the
+`LOCAL_OVERPASS` configuration setting in `conf/general.yml` to True,
+and the `OVERPASS_DB_DIRECTORY` to the location of your Overpass
+database directory, e.g. `"/home/overpass/db/"`.
 
 To generate the KML files, run the following script (possibly in a GNU
 screen session, since this will take many hours):
 
     bin/get-boundaries-by-admin-level.py
 
-That command will generate KML files in the
-`data/cache-with-political/` subdirectory of your MapIt clone.
+You might need to run it with nice and ionice to be nice to others on your
+server. The command will generate KML files in the
+`data/cache-with-political/` subdirectory of your MapIt clone. In May 2014, the
+KML output was 4.5G.
 
 3 - Import the KML files into MapIt
 ----------------------------------
