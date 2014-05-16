@@ -67,4 +67,4 @@ example:
 ... and check that you can now login to the admin interface by
 visiting `/admin` on your site.
 
-Now you will probably want to carry on to [import some data](import).
+Now you will probably want to carry on to [import some data](/import/).
