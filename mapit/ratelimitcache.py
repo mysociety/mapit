@@ -32,7 +32,14 @@ class ratelimit(object):
         if request.META.get('REMOTE_ADDR', '') in self.excluded or \
             ( '/' in request.META.get('HTTP_USER_AGENT', '') and request.META.get('HTTP_USER_AGENT', '') in self.excluded ):
             return fn(request, *args, **kwargs)
-            
+
+        # If we're using the DummyCache backend then no data will
+        # actually be stored in the cache, and as a result cache.incr
+        # for a key will fail even immediately after cache.add.
+        cache_backend = settings.CACHES['default']['BACKEND']
+        if cache_backend == 'django.core.cache.backends.dummy.DummyCache':
+            return fn(request, *args, **kwargs)
+
         counts = self.get_counters(request).values()
         
         # Increment rate limiting counter
