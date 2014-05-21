@@ -94,19 +94,17 @@ you're ready.
 Postcodes
 ---------
 
-Postcodes are named items, that optionally point to a location. In the UK we have
-a large set of postcodes such as 'SW1A 1AA' that map to a latitude and longitude
-(the centroid of all the addresses that use that postcode to be precise); but we
-also hold postcodes of Crown Dependencies for which we do not know the location -
-but we store them anyway, so we can at least say whether an entered postcode is
-e.g. a valid Jersey postcode or not.
+Postcodes are named items, that optionally have or reference geographies. The
+Postcodes model can be used to store any sort of named items, not necessarily
+postcodes or zip codes.
 
-The Postcodes model could be used to store any sort of named points, not
-necessarily postcodes or zip codes.
+The postcode may have a geography: for example, an area (polygon) or a point
+(latitude and longitude). You may additionally use a many-to-many table to
+associate postcodes with areas. For example, you may know that a postcode serves
+multiple electoral boundaries, without knowing the postal code's geography.
 
-
-There is also a many-to-many table between Postcodes and Areas. This is for the
-case where you have an Area without a geometry, but have some sort of list that
-maps which postcodes are in which area. This is the case in the UK for Northern
-Ireland Parliamentary constituencies, for example.
-
+In the UK we have a large set of postcodes such as 'SW1A 1AA' that have a
+latitude and longitude (the centroid of all the addresses that use that postcode
+to be precise); but we also hold postcodes of Crown Dependencies for which we do
+not know the location - but we store them anyway, so we can at least say whether
+an entered postcode is e.g. a valid Jersey postcode or not.
