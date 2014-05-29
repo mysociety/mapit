@@ -7,8 +7,7 @@ from django.contrib.gis.geos import Polygon
 from mapit.models import Type, Area, Geometry, Generation
 
 class AreaViewsTest(TestCase):
-    @classmethod
-    def setUpClass(self):
+    def setUp(self):
         self.generation = Generation.objects.create(
             active=True,
             description="Test generation",
