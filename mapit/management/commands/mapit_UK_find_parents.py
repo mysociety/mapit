@@ -3,11 +3,15 @@
 # system coming in, this could be done from a BIG lookup table; however,
 # I reckon P-in-P tests might be quick enough...
 
+from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area, Generation
 
 class Command(NoArgsCommand):
     help = 'Find parents for shapes'
+    option_list = NoArgsCommand.option_list + (
+        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
+    )
 
     def handle_noargs(self, **options):
         new_generation = Generation.objects.new()
@@ -66,8 +70,9 @@ class Command(NoArgsCommand):
                 raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
             if area.parent_area != parent:
                 print "Parent for %s was %s, is now %s" % (self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent))
-                area.parent_area = parent
-                area.save()
+                if option['commit']:
+                    area.parent_area = parent
+                    area.save()
 
     def pp_area(self, area):
         if not area: return "None"
