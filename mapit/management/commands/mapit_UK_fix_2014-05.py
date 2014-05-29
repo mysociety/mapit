@@ -37,7 +37,7 @@ class Command(NoArgsCommand):
         for ons_code in areas_to_fix:
             area = Area.objects.get(codes__code=ons_code, codes__type=code_version)
             assert area.polygons.count() == 1
-            area_polygon = area.polygons.first()
+            area_polygon = area.polygons.all()[0]
             fixed_polygon = fix_invalid_geos_geometry(area_polygon.polygon)
             if fixed_polygon:
                 print "Fixed polygon {0}".format(area_polygon)
