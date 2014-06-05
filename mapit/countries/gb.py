@@ -132,3 +132,31 @@ def restrict_geo_html(area):
         geotype[k] = [ '?type=%s' % ','.join(v), ' (%s)' % ', '.join(v) ]
     return geotype
 
+def make_friendly_name(name_obj, name):
+    n = re.sub('\s+', ' ', name.name.strip())
+    n = n.replace('St. ', 'St ')
+    if name.type.code == 'M': return n
+    if name.type.code == 'S': return n
+    # Type must be 'O' here
+    n = re.sub(' Euro Region$', '', n) # EUR
+    n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
+    n = re.sub(' P Const$', '', n) # SPC
+    n = re.sub(' PER$', '', n) # SPE
+    n = re.sub(' GL Assembly Const$', '', n) # LAC
+    n = re.sub(' Assembly Const$', '', n) # WAC
+    n = re.sub(' Assembly ER$', '', n) # WAE
+    n = re.sub(' London Boro$', ' Borough', n) # LBO
+    if name_obj.area.country and name_obj.area.country.name == 'Wales': n = re.sub('^.*? - ', '', n) # UTA
+    n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
+    n = re.sub(' District \(B\)$', ' Borough', n) # DIS
+    n = re.sub(' \(B\)$', ' Borough', n) # DIS
+    if name_obj.area.type.code in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'): n += ' Council'
+    n = re.sub(' (ED|CP)$', '', n) # CPC, CED, UTE
+    n = re.sub(' Ward$', '', n) # DIW, LBW, MTW, UTW
+    return n
+
+def name_save_hook(name_obj):
+    name = name_obj.area.names.filter(type__code__in=('M', 'O', 'S')).order_by('type__code')[:1]
+    if name:
+        name_obj.area.name = make_friendly_name(name_obj, name[0])
+        name_obj.area.save()
