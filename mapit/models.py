@@ -203,7 +203,7 @@ class TransformError(Exception):
     pass
 
 class Area(models.Model):
-    name = models.CharField(max_length=2000, editable=False, blank=True) # Automatically set from name children
+    name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.ForeignKey(Type, related_name='areas')
     country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)

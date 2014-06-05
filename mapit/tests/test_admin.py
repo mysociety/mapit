@@ -22,6 +22,7 @@ class AdminViewsTest(TestCase):
     def test_area_admin_page(self):
         admin_url = reverse("admin:mapit_area_add")
         resp = self.client.get(admin_url)
+        self.assertRegexpMatches(resp.content, '<input([^>]*(id="id_name"|name="name"|type="text")){3}')
         self.assertEqual(resp.status_code, 200)
 
     def test_type_admin_page(self):
