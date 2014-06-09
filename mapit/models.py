@@ -406,12 +406,15 @@ class Name(models.Model):
 
     def save(self, *args, **kwargs):
         super(Name, self).save(*args, **kwargs)
-        try:
-            name = self.area.names.filter(type__code__in=('M', 'O', 'S')).order_by('type__code')[0]
-            self.area.name = self.make_friendly_name(name)
-            self.area.save()
-        except:
-            pass
+        name = self.area.names.filter(type__code__in=('M', 'O', 'S')).order_by('type__code')
+        if name:
+            name = name[0]
+        else:
+            # Always fallback to self
+            # This solved the Unknown name problem
+            name = self
+        self.area.name = self.make_friendly_name(name)
+        self.area.save()
 
     def as_tuple(self):
         return (self.type.code, [self.type.description,
