@@ -12,6 +12,8 @@ with open(os.path.join(
         os.path.dirname(__file__), '..', 'conf', 'general.yml')) as f:
     config = yaml.load(f)
 
+CACHE_VISITED = set()
+
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
     """Create a directory (and parents if necessary) like mkdir -p
@@ -79,22 +81,23 @@ def get_query_relations_and_ways(required_tags):
 </osm-script>""" % (has_kv, has_kv)
 
 def get_from_overpass(query_xml, filename):
-    if not os.path.exists(filename):
-        if config.get('LOCAL_OVERPASS'):
-            return get_osm3s(query_xml, filename)
-        else:
+    if config.get('LOCAL_OVERPASS'):
+        return get_osm3s(query_xml)
+    else:
+        if not os.path.exists(filename):
             return get_remote(query_xml, filename)
+        return open(filename).read()
 
-def get_osm3s(query_xml, filename):
-    with open(filename, 'w') as file_output:
-        p = Popen(["osm3s_query",
-                   "--concise",
-                   "--db-dir=" + config['OVERPASS_DB_DIRECTORY']],
-                  stdin=PIPE,
-                  stdout=file_output)
-        p.communicate(query_xml)
-        if p.returncode != 0:
-            raise Exception, "The osm3s_query failed"
+def get_osm3s(query_xml):
+    p = Popen(["osm3s_query",
+               "--concise",
+               "--db-dir=" + config['OVERPASS_DB_DIRECTORY']],
+              stdin=PIPE,
+              stdout=PIPE)
+    out, err = p.communicate(query_xml)
+    if p.returncode != 0:
+        raise Exception, "The osm3s_query failed"
+    return out
 
 def get_remote(query_xml, filename):
     url = config['OVERPASS_SERVER']
@@ -102,8 +105,10 @@ def get_remote(query_xml, filename):
     encoded_values = urllib.urlencode(values)
     request = urllib2.Request(url, encoded_values)
     response = urllib2.urlopen(request)
+    data = response.read()
     with open(filename, "w") as fp:
-        fp.write(response.read())
+        fp.write(data)
+    return data
 
 def get_cache_filename(element_type, element_id, cache_directory=None):
     if cache_directory is None:
@@ -1754,14 +1759,7 @@ def get_total_seconds(td):
     return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
 
 def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
-    """Get an OSM element from the Overpass API, with caching on disk
-
-    >>> tmp_cache = mkdtemp()
-    >>> filename = fetch_cached('relation',
-    ...                         '375982',
-    ...                         cache_directory=tmp_cache)
-    >>> filename # doctest: +ELLIPSIS
-    '.../relation/982/relation-375982.xml'
+    """Get an OSM element from the Overpass API, with caching on disk if remote
 
     If you request an unknown element type, an exception is thrown:
     >>> filename = fetch_cached('nonsense',
@@ -1772,17 +1770,14 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     Exception: Unknown element type 'nonsense'
     """
 
-    global last_overpass_fetch
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception, "Unknown element type '%s'" % (element_type,)
     filename = get_cache_filename(element_type, element_id, cache_directory)
-    if not os.path.exists(filename):
-        all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
-        get_from_overpass(all_dependents_query, filename)
-    return filename
+    all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
+    return get_from_overpass(all_dependents_query, filename)
 
-def parse_xml_minimal(filename, element_handler):
+def parse_xml_minimal(s, element_handler):
     """Parse some OSM XML just to get type, id and tags
 
     >>> def output(type, id, tags):
@@ -1801,17 +1796,15 @@ def parse_xml_minimal(filename, element_handler):
     ...   </relation>
     ... </osm>
     ... '''
-    >>> with NamedTemporaryFile(delete=False) as ntf:
-    ...     ntf.write(example_xml)
-    >>> parse_xml_minimal(ntf.name, output)
+    >>> parse_xml_minimal(example_xml, output)
     type: node id: 291974462 tags: {}
     type: node id: 312203528 tags: {}
     type: way id: 28421671 tags: {}
     type: relation id: 3123205528 tags: {u'name:en': u'Whatever'}
     """
+    fp = StringIO(s)
     parser = MinimalOSMXMLParser(element_handler)
-    with open(filename) as fp:
-        xml.sax.parse(fp, parser)
+    xml.sax.parse(fp, parser)
 
 def parse_xml(filename, fetch_missing=True):
     """Completely parse an OSM XML file
@@ -1852,7 +1845,7 @@ def parse_xml_string(s, *parser_args, **parser_kwargs):
     xml.sax.parse(fp, parser)
     return parser
 
-def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None):
+def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None, visited=None):
     """Fetch and parse a particular OSM element recursively
 
     More data is fetched from the API if required.  'element_type'
@@ -1886,16 +1879,22 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     element_id = str(element_id)
     if verbose:
         print "fetch_osm_element(%s, %s)" % (element_type, element_id)
+
+    # Prevent circular inclusion of relations
+    global CACHE_VISITED
+    if visited is not None:
+        CACHE_VISITED = visited
+    if element_id in CACHE_VISITED:
+        print "  SEEN ALREADY..."
+        return None
+    if element_type == 'relation':
+        CACHE_VISITED.add(element_id)
+
     # Make sure we have the XML file for that relation, node or way:
-    filename = fetch_cached(element_type, element_id, verbose, cache_directory)
+    xml = fetch_cached(element_type, element_id, verbose, cache_directory)
     try:
-        parsed = parse_xml(filename, fetch_missing)
+        parsed = parse_xml_string(xml, fetch_missing)
     except UnexpectedElementException, e:
-        # If we failed to parse the file, move it out of the way (so
-        # for transient errors we can just try again) and re-raise the
-        # exception:
-        new_filename = filename+".broken"
-        os.rename(filename, new_filename)
         raise
     # Sometimes we seem to have an empty element returned, in which
     # case just return None:

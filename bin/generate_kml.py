@@ -382,7 +382,7 @@ def get_kml_for_osm_element(element_type, element_id):
     (None, None)
     """
 
-    e = fetch_osm_element(element_type, element_id)
+    e = fetch_osm_element(element_type, element_id, visited=set())
     if e is None:
         return (None, None)
 
