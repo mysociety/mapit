@@ -1,7 +1,6 @@
+import imp
 import os
-import sys
 import yaml
-import django
 
 # Path to here is something like
 # /data/vhost/<vhost>/<repo>/<project_name>/settings.py
@@ -191,7 +190,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'mapit.context_processors.analytics',
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.messages',
@@ -203,5 +202,12 @@ INSTALLED_APPS = (
 
     'south',
     'mapit',
-)
+]
 
+if MAPIT_COUNTRY:
+    try:
+        c = 'mapit_%s' % MAPIT_COUNTRY.lower()
+        imp.find_module(c)
+        INSTALLED_APPS.append(c)
+    except:
+        pass
