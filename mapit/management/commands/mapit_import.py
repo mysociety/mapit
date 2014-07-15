@@ -230,7 +230,9 @@ class Command(LabelCommand):
 
             self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
 
-            g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
+            g = None
+            if hasattr(feat, 'geom'):
+                g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
 
             try:
                 if options['new']: # Always want a new area
@@ -253,6 +255,12 @@ class Command(LabelCommand):
                         # Then it was missing in current_generation:
                         verbose("    area existed previously, but was missing from", current_generation)
                         raise Area.DoesNotExist
+                    elif g is None:
+                        if previous_geos_geometry is not None:
+                            verbose("    area is now empty")
+                            raise Area.DoesNotExist
+                        else:
+                            verbose("    the area has remained empty")
                     elif previous_geos_geometry is None:
                         # It was empty in the previous generation:
                         verbose("    area was empty in", current_generation)
@@ -292,7 +300,7 @@ class Command(LabelCommand):
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
 
-            if options['fix_invalid_polygons']:
+            if options['fix_invalid_polygons'] and g is not None:
                 # Make a GEOS geometry only to check for validity:
                 geos_g = g.geos
                 if not geos_g.valid:
