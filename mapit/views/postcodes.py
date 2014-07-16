@@ -86,7 +86,7 @@ def postcode(request, postcode, format=None):
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'areas': areas,
-            'json': '/postcode/',
+            'json_view': 'mapit.views.postcodes.postcode',
         })
 
     out = postcode.as_dict()
@@ -114,7 +114,7 @@ def partial_postcode(request, postcode, format='json'):
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
-            'json': '/postcode/partial/',
+            'json_view': 'mapit.views.postcodes.partial_postcode',
         })
 
     return output_json(postcode.as_dict())

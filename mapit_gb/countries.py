@@ -95,7 +95,7 @@ def is_valid_partial_postcode(pc):
     return False
 
 def get_postcode_display(pc):
-    return re.sub('(...)$', r' \1', pc).strip()
+    return re.sub('([0-9]..)$', r' \1', pc).strip()
 
 def augment_postcode(postcode, result):
     pc = postcode.postcode
