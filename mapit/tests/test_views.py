@@ -77,3 +77,9 @@ class AreaViewsTest(TestCase):
 
     def test_front_page(self):
         response = self.client.get('/')
+
+    def test_json_links(self):
+        id = self.big_area.id
+        url = '/area/%d/covers.html?type=SML' % id
+        response = self.client.get(url)
+        self.assertContains(response, '/area/%d/covers?type=SML' % id)
