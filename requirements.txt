@@ -1,8 +1,7 @@
-python-memcached
 Django>=1.4
-PyYAML
-psycopg2
-BeautifulSoup
 South
+psycopg2
+PyYAML
+python-memcached
 GDAL
 Shapely

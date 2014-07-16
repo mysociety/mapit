@@ -1,8 +1,9 @@
 postgresql
-postgresql-8.4-postgis
-libgdal1-1.6.0
+postgresql-9.1-postgis
+libgdal1
 memcached
 python-virtualenv
+ruby-sass
 
 python-django
 python-django-south
