@@ -163,7 +163,7 @@ def nearest(request, srid, x, y, format='json'):
     if format == 'html':
         return render( request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
-            'json': '/postcode/',
+            'json_view': 'mapit.views.postcodes.postcode',
         })
 
     pc = postcode.as_dict()
