@@ -1,5 +1,4 @@
 import re
-import operator
 from psycopg2.extensions import QueryCanceledError
 from psycopg2 import InternalError
 try:
@@ -11,7 +10,6 @@ from osgeo import gdal
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
-from django.db.models import Q
 from django.conf import settings
 from django.shortcuts import redirect
 
@@ -21,9 +19,59 @@ from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
 
+
+def add_codes(areas):
+    codes = Code.objects.select_related('type').filter(area__in=areas)
+    lookup = {}
+    for code in codes:
+        lookup.setdefault(code.area_id, []).append(code)
+    for area in areas:
+        if area.id in lookup:
+            area.code_list = lookup[area.id]
+    return areas
+
+def output_areas(request, title, format, areas, **kwargs):
+    areas = add_codes(areas)
+    if format == 'html':
+        return output_html(request, title, areas, **kwargs)
+    return output_json(dict((area.id, area.as_dict()) for area in areas))
+
+def query_args(request, format, type=None):
+    try:
+        generation = int(request.REQUEST.get('generation', 0))
+    except ValueError:
+        raise ViewException(format, 'Bad generation specified', 400)
+    if not generation:
+        generation = Generation.objects.current()
+
+    try:
+        min_generation = int(request.REQUEST.get('min_generation', 0))
+    except ValueError:
+        raise ViewException(format, 'Bad min_generation specified', 400)
+    if not min_generation:
+        min_generation = generation
+
+    if type is None:
+        type = request.REQUEST.get('type', '')
+
+    args = {}
+    if min_generation > -1:
+        args = {
+            'generation_low__lte': generation,
+            'generation_high__gte': min_generation,
+        }
+    if ',' in type:
+        args['type__code__in'] = type.split(',')
+    elif type:
+        args['type__code'] = type
+
+    return args
+
+
 def generations(request):
     generations = Generation.objects.all()
     return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
+
 
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
@@ -31,10 +79,8 @@ def area(request, area_id, format='json'):
         resp = countries.area_code_lookup(request, area_id, format)
         if resp: return resp
 
-
     if not re.match('\d+$', area_id):
         raise ViewException(format, 'Bad area ID specified', 400)
-
 
     area = get_object_or_404(Area, format=format, id=area_id)
 
@@ -101,28 +147,14 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     response['Cache-Control'] = 'max-age=2419200' # 4 weeks
     response.write(output)
     return response
-    
+
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
+    args = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
+    children = area.children.filter(**args)
+    return output_areas(request, 'Children of %s' % area.name, format, children)
 
-    generation = request.REQUEST.get('generation', Generation.objects.current())
-    if not generation: generation = Generation.objects.current()
-    args = {
-        'generation_low__lte': generation,
-        'generation_high__gte': generation,
-    }
-
-    type = request.REQUEST.get('type', '')
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
-
-    children = add_codes(area.children.filter(**args))
-
-    if format == 'html': return output_html(request, 'Children of %s' % area.name, children)
-    return output_json( dict( (child.id, child.as_dict() ) for child in children ) )
 
 def area_intersect(query_type, title, request, area_id, format):
     area = get_object_or_404(Area, format=format, id=area_id)
@@ -134,10 +166,9 @@ def area_intersect(query_type, title, request, area_id, format):
 
     set_timeout(format)
     try:
-        # Cast to list so that it's evaluated here, and add_codes doesn't get
+        # Cast to list so that it's evaluated here, and output_areas doesn't get
         # confused with a RawQuerySet
         areas = list(Area.objects.intersect(query_type, area, types, generation))
-        areas = add_codes(areas)
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError, e:
@@ -147,12 +178,9 @@ def area_intersect(query_type, title, request, area_id, format):
     except InternalError:
         raise ViewException(format, 'There was an internal error performing that query.', 500)
 
-    if format == 'html':
-        return output_html(request,
-            title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name)),
-            areas, norobots=True
-        )
-    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
+    title = title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name))
+    return output_areas(request, title, format, areas, norobots=True)
+
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
@@ -178,75 +206,28 @@ def area_covered(request, area_id, format='json'):
 def area_intersects(request, area_id, format='json'):
     return area_intersect('intersects', 'Areas that intersect %s', request, area_id, format)
 
-def add_codes(areas):
-    codes = Code.objects.select_related('type').filter(area__in=areas)
-    lookup = {}
-    for code in codes:
-        lookup.setdefault(code.area_id, []).append(code)
-    for area in areas:
-        if area.id in lookup:
-            area.code_list = lookup[area.id]
-    return areas
 
 @ratelimit(minutes=3, requests=100)
 def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
-    areas = add_codes(Area.objects.filter(id__in=area_ids))
-    if format == 'html': return output_html(request, 'Areas ID lookup', areas)
-    return output_json( dict( ( area.id, area.as_dict() ) for area in areas ) )
+    areas = Area.objects.filter(id__in=area_ids)
+    return output_areas(request, 'Areas ID lookup', format, areas)
+
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_type(request, type, format='json'):
-    generation = request.REQUEST.get('generation', Generation.objects.current())
-    if not generation: generation = Generation.objects.current()
+    args = query_args(request, format, type)
+    areas = Area.objects.filter(**args)
+    return output_areas(request, 'Areas in %s' % type, format, areas)
 
-    try:
-        min_generation = int(request.REQUEST['min_generation'])
-    except:
-        min_generation = generation
-
-    args = {}
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
-
-    if min_generation == -1:
-        areas = add_codes(Area.objects.filter(**args))
-    else:
-        args['generation_low__lte'] = generation
-        args['generation_high__gte'] = min_generation
-        areas = add_codes(Area.objects.filter(**args))
-    if format == 'html':
-        return output_html(request, 'Areas in %s' % type, areas)
-    return output_json( dict( (a.id, a.as_dict() ) for a in areas ) )
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_name(request, name, format='json'):
-    generation = request.REQUEST.get('generation', Generation.objects.current())
-    if not generation: generation = Generation.objects.current()
+    args = query_args(request, format)
+    args['name__istartswith'] = name
+    areas = Area.objects.filter(**args)
+    return output_areas(request, 'Areas starting with %s' % name, format, areas)
 
-    try:
-        min_generation = int(request.REQUEST['min_generation'])
-    except:
-        min_generation = generation
-
-    type = request.REQUEST.get('type', '')
-
-    args = {
-        'name__istartswith': name,
-        'generation_low__lte': generation,
-        'generation_high__gte': min_generation,
-    }
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
-
-    areas = add_codes(Area.objects.filter(**args))
-    if format == 'html': return output_html(request, 'Areas starting with %s' % name, areas)
-    out = dict( ( area.id, area.as_dict() ) for area in areas )
-    return output_json(out)
 
 @ratelimit(minutes=3, requests=100)
 def area_geometry(request, area_id):
@@ -293,17 +274,14 @@ def areas_geometry(request, area_ids):
         out[id] = area
     return output_json(out)
 
+
 @ratelimit(minutes=3, requests=100)
 def area_from_code(request, code_type, code_value, format='json'):
-    generation = request.REQUEST.get('generation',
-                                     Generation.objects.current())
-    if not generation:
-        generation = Generation.objects.current()
+    args = query_args(request, format)
+    args['codes__type__code'] = code_type
+    args['codes__code'] = code_value
     try:
-        area = Area.objects.get(codes__type__code=code_type,
-                                codes__code=code_value,
-                                generation_low__lte=generation,
-                                generation_high__gte=generation)
+        area = Area.objects.get(**args)
     except Area.DoesNotExist, e:
         message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 404)
@@ -312,12 +290,9 @@ def area_from_code(request, code_type, code_value, format='json'):
         raise ViewException(format, message, 500)
     return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
 
+
 @ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
-    type = request.REQUEST.get('type', '')
-    generation = request.REQUEST.get('generation', Generation.objects.current())
-    if not generation: generation = Generation.objects.current()
-
     location = Point(float(x), float(y), srid=int(srid))
     gdal.UseExceptions()
     try:
@@ -327,12 +302,8 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
-    args = { 'generation_low__lte': generation, 'generation_high__gte': generation }
-
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
+    args = query_args(request, format)
+    type = request.REQUEST.get('type', '')
 
     if type and method == 'polygon':
         args = dict( ("area__%s" % k, v) for k, v in args.items() )
@@ -356,17 +327,22 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
             args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
-    areas = add_codes(areas)
-    if format == 'html': return output_html(request, 'Areas covering the point (%s,%s)' % (x,y), areas, indent_areas=True)
-    return output_json( dict( (area.id, area.as_dict() ) for area in areas ) )
+    return output_areas(request, 'Areas covering the point (%s,%s)' % (x,y), format, areas, indent_areas=True)
+
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (lon, lat, "/box" if bb else '', '.%s' % format if format else ''))
+    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (
+        lon, lat, "/box" if bb else '', '.%s' % format if format else '')
+    )
+
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False, format=''):
-    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (e, n, "/box" if bb else '', '.%s' % format if format else ''))
+    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (
+        e, n, "/box" if bb else '', '.%s' % format if format else '')
+    )
+
 
 def point_form_submitted(request):
     latlon = request.POST.get('pc', None)
@@ -389,4 +365,3 @@ def deal_with_POST(request, call='areas'):
     view, args, kwargs = resolve('/%s/%s' % (call, url))
     kwargs['request'] = request
     return view(*args, **kwargs)
-
