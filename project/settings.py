@@ -2,18 +2,20 @@ import imp
 import os
 import yaml
 
+import django
+
 # Path to here is something like
-# /data/vhost/<vhost>/<repo>/<project_name>/settings.py
+# .../<repo>/<project_name>/settings.py
 PROJECT_DIR = os.path.abspath(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(PROJECT_DIR, '..'))
-PARENT_DIR = os.path.abspath(os.path.join(PROJECT_ROOT, '..'))
+BASE_DIR = os.path.dirname(PROJECT_DIR)
+PARENT_DIR = os.path.dirname(BASE_DIR)
 
 # The mySociety deployment system works by having a conf directory at the root
 # of the repo, containing a general.yml file of options. Use that file if
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
 try:
-    config = yaml.load( open(os.path.join(PROJECT_ROOT, 'conf', 'general.yml'), 'r') )
+    config = yaml.load( open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') )
 except:
     config = {}
 
@@ -62,7 +64,6 @@ if config.get('BUGS_EMAIL'):
     ADMINS = (
         ('mySociety bugs', config['BUGS_EMAIL']),
     )
-    MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
@@ -96,8 +97,6 @@ elif MAPIT_COUNTRY == 'NO':
 else:
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en'
-
-SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -195,14 +194,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
-    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.gis',
     'django.contrib.staticfiles',
 
-    'south',
     'mapit',
 ]
+if django.VERSION < (1, 7):
+    INSTALLED_APPS.append('south')
 
 if MAPIT_COUNTRY:
     try:

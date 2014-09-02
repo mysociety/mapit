@@ -5,19 +5,23 @@ from django.contrib.gis.db import models
 from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.db import connection
+from django.db.models.query import RawQuerySet
 from django.utils.html import escape
 
 from mapit.managers import Manager, GeoManager
 from mapit import countries
-from mapit.djangopatch import NoValidateRawQuerySet
+from mapit.djangopatch import GetQuerySetMetaclass
+
 
 class GenerationManager(models.Manager):
+    __metaclass__ = GetQuerySetMetaclass
+
     def current(self):
         """Return the most recent active generation.
 
         If there are no active generations, return 0."""
 
-        latest_on = self.get_query_set().filter(active=True).order_by('-id')
+        latest_on = self.get_queryset().filter(active=True).order_by('-id')
         if latest_on: return latest_on[0]
         return 0
 
@@ -27,7 +31,7 @@ class GenerationManager(models.Manager):
         If there are no generations, or the most recent one is active,
         return None."""
 
-        latest = self.get_query_set().order_by('-id')
+        latest = self.get_queryset().order_by('-id')
         if not latest or latest[0].active:
             return None
         return latest[0]
@@ -113,8 +117,10 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 class AreaManager(models.GeoManager):
-    def get_query_set(self):
-        return super(AreaManager, self).get_query_set().select_related('type', 'country')
+    __metaclass__ = GetQuerySetMetaclass
+
+    def get_queryset(self):
+        return super(AreaManager, self).get_queryset().select_related('type', 'country')
 
     def by_location(self, location, generation=None):
         if generation is None: generation = Generation.objects.current()
@@ -166,8 +172,7 @@ SELECT DISTINCT mapit_area.*
   FROM mapit_area, geometry, target
  WHERE geometry.area_id = mapit_area.id AND (%s)
 ''' % (query_area_type, query_geo)
-        # Monkeypatched self.raw() here to prevent needless SQL validation (removed from Django 1.3)
-        return NoValidateRawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
+        return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
         current_generation = Generation.objects.current()
@@ -419,10 +424,12 @@ class Code(models.Model):
 # Postcodes
 
 class PostcodeManager(GeoManager):
-    def get_query_set(self):
+    __metaclass__ = GetQuerySetMetaclass
+
+    def get_queryset(self):
         return self.model.QuerySet(self.model)
     def __getattr__(self, attr, *args):
-        return getattr(self.get_query_set(), attr, *args)
+        return getattr(self.get_queryset(), attr, *args)
 
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)

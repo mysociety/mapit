@@ -42,7 +42,7 @@ def query_args(request, format, type=None):
     except ValueError:
         raise ViewException(format, 'Bad generation specified', 400)
     if not generation:
-        generation = Generation.objects.current()
+        generation = Generation.objects.current().id
 
     try:
         min_generation = int(request.REQUEST.get('min_generation', 0))

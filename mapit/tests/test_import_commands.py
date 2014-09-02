@@ -32,7 +32,7 @@ class MapitImportTest(TestCase):
         )
 
         # Load in the KML file
-        fixtures_dir = os.path.join(settings.PROJECT_ROOT, 'mapit', 'tests', 'fixtures')
+        fixtures_dir = os.path.join(settings.BASE_DIR, 'mapit', 'tests', 'fixtures')
         call_command(
             'mapit_import',
             os.path.join(fixtures_dir, 'example.kml'),

@@ -1,21 +1,23 @@
 import json
 import urllib
 
+from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon, Point
 
 from mapit import utils, models
 
-# Make sure we're using the GB postcode functions here
 from mapit_gb import countries
-utils.countries = countries
-models.countries = countries
 
 def url_postcode(pc):
     return urllib.quote(countries.get_postcode_display(pc))
 
-class AreaViewsTest(TestCase):
+class GBViewsTest(TestCase):
     def setUp(self):
+        # Make sure we're using the GB postcode functions here
+        models.countries = countries
+        utils.countries = countries
+
         self.postcode = models.Postcode.objects.create(
             postcode='SW1A1AA',
             location=Point(-0.141588, 51.501009)
@@ -38,9 +40,10 @@ class AreaViewsTest(TestCase):
             generation_high=self.generation,
         )
 
+        polygon = Polygon(((-5, 50), (-5, 55), (1, 55), (1, 50), (-5, 50)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
         self.shape = models.Geometry.objects.create(
-            area=self.area,
-            polygon=Polygon(((-5, 50), (-5, 55), (1, 55), (1, 50), (-5, 50))),
+            area=self.area, polygon=polygon,
         )
 
     def test_postcode_json(self):

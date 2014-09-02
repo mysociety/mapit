@@ -1,33 +1,29 @@
-from django.db.models.sql import RawQuery
-from django.db.models.query import RawQuerySet
+import django
+import inspect
 
-# This monkeypatches RawQuery/RawQuerySet so that validate_sql (which simply
-# checks the query starts with SELECT) isn't called, as it isn't for our query
-# and we know what we're doing. This restriction was removed in Django 1.3.
+# Django 1.6 renamed Manager's get_query_set to get_queryset, and the old
+# function will be removed entirely in 1.8. We work back to 1.4, so use a
+# metaclass to not worry about it.
+if django.VERSION < (1, 6):
+    class GetQuerySetMetaclass(type):
+        def __new__(cls, name, bases, attrs):
+            new_class = super(GetQuerySetMetaclass, cls).__new__(cls, name, bases, attrs)
 
-class NoValidateRawQuery(RawQuery):
-    def __init__(self, sql, using, params=None):
-        # XXX NOT REQUIRED self.validate_sql(sql)
-        self.params = params or ()
-        self.sql = sql
-        self.using = using
-        self.cursor = None
+            old_method_name = 'get_query_set'
+            new_method_name = 'get_queryset'
+            for base in inspect.getmro(new_class):
+                old_method = base.__dict__.get(old_method_name)
+                new_method = base.__dict__.get(new_method_name)
 
-        # Mirror some properties of a normal query so that
-        # the compiler can be used to process results.
-        self.low_mark, self.high_mark = 0, None  # Used for offset/limit
-        self.extra_select = {}
-        self.aggregate_select = {}
+                if not new_method and old_method:
+                    setattr(base, new_method_name, old_method)
+                if not old_method and new_method:
+                    setattr(base, old_method_name, new_method)
 
-class NoValidateRawQuerySet(RawQuerySet):
-    def __init__(self, raw_query, model=None, query=None, params=None,
-        translations=None, using=None):
-        self.raw_query = raw_query
-        self.model = model
-        self._db = using
-        self.query = query or NoValidateRawQuery(sql=raw_query, using=self.db, params=params)
-        self.params = params or ()
-        self.translations = translations or {}
-
-
+            return new_class
+else:
+    # Nothing to do, make an empty metaclass
+    from django.db.models.manager import RenameManagerMethods
+    class GetQuerySetMetaclass(RenameManagerMethods):
+        pass
 
