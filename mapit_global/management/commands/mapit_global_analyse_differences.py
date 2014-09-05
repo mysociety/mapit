@@ -49,7 +49,7 @@ class Command(LabelCommand):
                     counted_somewhere = True
                 if not counted_somewhere:
                     print "not counted:", row
-                osm_elements_seen_in_new_data.add((row['ElementType'],row['ElementID']))
+                osm_elements_seen_in_new_data.add((row['ElementType'], row['ElementID']))
             
         disappeared = 0
         

@@ -114,7 +114,7 @@ class Command(LabelCommand):
     def handle_label(self, filename, **options):
 
         missing_options = []
-        for k in ['generation_id','area_type_code','name_type_code','country_code']:
+        for k in ['generation_id', 'area_type_code', 'name_type_code', 'country_code']:
             if options[k]:
                 continue
             else:

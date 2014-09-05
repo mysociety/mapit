@@ -327,7 +327,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
             args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
-    return output_areas(request, 'Areas covering the point (%s,%s)' % (x,y), format, areas, indent_areas=True)
+    return output_areas(request, 'Areas covering the point (%s,%s)' % (x, y), format, areas, indent_areas=True)
 
 
 @ratelimit(minutes=3, requests=100)

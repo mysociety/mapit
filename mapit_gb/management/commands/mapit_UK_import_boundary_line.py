@@ -97,7 +97,7 @@ class Command(LabelCommand):
                 country = 'E'
             else: # WMC
                 # Make sure WMC are loaded after all wards...
-                area_within = Area.objects.filter(type__code__in=('UTW','UTE','MTW','COP','LBW','DIW'), polygons__polygon__contains=feat.geom.geos.point_on_surface)[0]
+                area_within = Area.objects.filter(type__code__in=('UTW', 'UTE', 'MTW', 'COP', 'LBW', 'DIW'), polygons__polygon__contains=feat.geom.geos.point_on_surface)[0]
                 country = area_within.country.code
             # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
             # Do parents in separate P-in-P code after this is done.

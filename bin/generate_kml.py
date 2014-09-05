@@ -200,12 +200,12 @@ def kml_string(folder_name,
 
     kml = etree.Element("kml",
                         nsmap={None: "http://earth.google.com/kml/2.1"})
-    folder = etree.SubElement(kml,"Folder")
-    name = etree.SubElement(folder,"name")
+    folder = etree.SubElement(kml, "Folder")
+    name = etree.SubElement(folder, "name")
     name.text = folder_name
 
-    placemark = etree.SubElement(folder,"Placemark")
-    name = etree.SubElement(placemark,"name")
+    placemark = etree.SubElement(folder, "Placemark")
+    name = etree.SubElement(placemark, "name")
     name.text = placemark_name
 
     extended = etree.SubElement(placemark, "ExtendedData")

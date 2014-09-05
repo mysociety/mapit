@@ -63,7 +63,7 @@ def postcode(request, postcode, format=None):
     # Shortcuts
     shortcuts = {}
     for area in areas:
-        if area.type.code in ('COP','LBW','LGE','MTW','UTE','UTW'):
+        if area.type.code in ('COP', 'LBW', 'LGE', 'MTW', 'UTE', 'UTW'):
             shortcuts['ward'] = area.id
             shortcuts['council'] = area.parent_area_id
         elif area.type.code == 'CED':
