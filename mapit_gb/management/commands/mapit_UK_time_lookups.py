@@ -69,7 +69,7 @@ class Command(BaseCommand):
         to_generate = repeats * iterations
         print "Generating %d random locations in the UK ..." % (to_generate,)
         global random_locations
-        random_locations = [get_random_UK_location() for _ in xrange(to_generate)]
+        random_locations = [get_random_UK_location() for _ in range(to_generate)]
         print "... done."
 
         # Now look up each of those locations, timing the process with
