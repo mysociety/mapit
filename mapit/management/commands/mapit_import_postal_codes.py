@@ -128,7 +128,7 @@ class Command(LabelCommand):
                     else:
                         pc.location.transform(27700) # Postcode locations are stored as WGS84
                         curr_location = ( pc.location[0], pc.location[1] )
-                    curr_location = map(round, curr_location)
+                    curr_location = tuple(map(round, curr_location))
                 elif srid != 4326:
                     pc.location.transform(srid) # Postcode locations are stored as WGS84
                     curr_location = ( pc.location[0], pc.location[1] )

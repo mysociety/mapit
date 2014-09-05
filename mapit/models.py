@@ -487,5 +487,5 @@ class Postcode(models.Model):
         cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))
         row = cursor.fetchone()
         m = re.match('POINT\((.*?) (.*)\)', row[0])
-        return map(float, m.groups())
+        return list(map(float, m.groups()))
 
