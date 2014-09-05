@@ -29,7 +29,7 @@ class Command(LabelCommand):
             2342: 'E07000242',
         }
 
-        for id, code in areas_to_update.iteritems():
+        for id, code in areas_to_update.items():
             area = Area.objects.get(id=id)
             print "Updating: {0} to: {1}".format(area, code)
             area.generation_low = Generation.objects.new()
