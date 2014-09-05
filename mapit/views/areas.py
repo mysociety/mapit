@@ -162,7 +162,7 @@ def area_intersect(query_type, title, request, area_id, format):
         raise ViewException(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
-    types = filter( None, request.REQUEST.get('type', '').split(',') )
+    types = [_f for _f in request.REQUEST.get('type', '').split(',') if _f]
 
     set_timeout(format)
     try:
