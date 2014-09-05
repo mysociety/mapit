@@ -5,8 +5,9 @@ from xml.sax.handler import ContentHandler
 import yaml
 from lxml import etree
 from tempfile import mkdtemp, NamedTemporaryFile
-from StringIO import StringIO
 from subprocess import Popen, PIPE
+
+from django.utils.six import StringIO
 
 with open(os.path.join(
         os.path.dirname(__file__), '..', 'conf', 'general.yml')) as f:

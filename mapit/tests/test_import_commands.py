@@ -1,9 +1,9 @@
 import os
-from StringIO import StringIO
 
 from django.test import TestCase
 from django.core.management import call_command
 from django.conf import settings
+from django.utils.six import StringIO
 
 from ..models import Type, NameType, Area, Generation, Country
 
