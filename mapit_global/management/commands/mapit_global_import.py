@@ -20,7 +20,6 @@ import json
 from optparse import make_option
 import os
 import re
-import urllib2
 import xml.sax
 
 from django.core.management.base import LabelCommand
@@ -28,6 +27,7 @@ from django.core.management.base import LabelCommand
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import MultiPolygon
+from django.utils.six.moves import urllib
 import shapely
 
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
@@ -57,7 +57,7 @@ def get_iso639_2_table():
 
     result = []
     url = "http://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt"
-    for row in csv.reader(urllib2.urlopen(url), delimiter='|'):
+    for row in csv.reader(urllib.request.urlopen(url), delimiter='|'):
         row = [ cell.decode('utf-8-sig') for cell in row ]
         bibliographic = [ row[0], row[2], row[3], row[4] ]
         result_row = LanguageCodes._make(make_missing_none(s) for s in bibliographic)

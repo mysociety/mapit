@@ -1,12 +1,13 @@
 # This script is used to import information from the Northern Ireland
 # Output Areas, available from http://www.nisra.gov.uk/geography/default.asp2.htm
 
-import urllib
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
 

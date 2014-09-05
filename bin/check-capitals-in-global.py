@@ -16,14 +16,15 @@ import json
 import re
 import requests
 import time
-import urllib
 from SPARQLWrapper import SPARQLWrapper, JSON
+
+from django.utils.six.moves import urllib
 
 def name_from_url(url):
     """Extract everything after the last slash in the URL"""
 
     url_as_str = url.encode('utf-8')
-    unquoted = urllib.unquote(re.sub(r'^.*/', '', url_as_str))
+    unquoted = urllib.parse.unquote(re.sub(r'^.*/', '', url_as_str))
     return unquoted.decode('utf-8')
 
 def tuple_mean(index, tuples):

@@ -4,9 +4,8 @@
 # This script fetches all administrative and political boundaries from
 # OpenStreetMap and writes them out as KML.
 
-import xml.sax, urllib, os, re, errno, sys
+import xml.sax, os, re, errno, sys
 from xml.sax.handler import ContentHandler
-import urllib, urllib2
 
 from boundaries import *
 from generate_kml import *

@@ -13,7 +13,6 @@ from optparse import make_option
 from django.core.management.base import LabelCommand
 from mapit.models import Area, Code, CodeType
 from glob import glob
-import urllib2
 from lxml import etree
 
 class Command(LabelCommand):

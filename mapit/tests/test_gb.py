@@ -1,16 +1,16 @@
 import json
-import urllib
 
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon, Point
+from django.utils.six.moves import urllib
 
 from mapit import utils, models
 
 from mapit_gb import countries
 
 def url_postcode(pc):
-    return urllib.quote(countries.get_postcode_display(pc))
+    return urllib.parse.quote(countries.get_postcode_display(pc))
 
 class GBViewsTest(TestCase):
     def setUp(self):
@@ -48,7 +48,7 @@ class GBViewsTest(TestCase):
 
     def test_postcode_json(self):
         pc = self.postcode.postcode
-        url = '/postcode/%s' % urllib.quote(pc)
+        url = '/postcode/%s' % urllib.parse.quote(pc)
         response = self.client.get(url)
         content = json.loads(response.content)
 
@@ -80,7 +80,7 @@ class GBViewsTest(TestCase):
 
     def test_postcode_json_link(self):
         pc = self.postcode.postcode
-        url = '/postcode/%s.html' % urllib.quote(pc)
+        url = '/postcode/%s.html' % urllib.parse.quote(pc)
         response = self.client.get(url)
         self.assertContains(response, '"/postcode/%s"' % url_postcode(pc))
 

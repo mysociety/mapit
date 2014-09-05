@@ -13,12 +13,12 @@
 import json
 import os
 import sys
-import urllib2
 
 from optparse import make_option
 
 from django.core.management import call_command
 from django.core.management.base import LabelCommand
+from django.utils.six.moves import urllib
 
 from mapit.models import Type, NameType, Country, CodeType
 
@@ -112,7 +112,7 @@ class Command(LabelCommand):
         if not os.path.exists(names_data_filename):
             print "Can't find force names data at %s; trying to fetch it from the police API instead..." % names_data_filename
             url = "http://data.police.uk/api/forces"
-            forces = urllib2.urlopen(url)
+            forces = urllib.request.urlopen(url)
             with open(names_data_filename, 'w') as f:
                 f.write(forces.read())
             print "...successfully fetched and saved the force names data."

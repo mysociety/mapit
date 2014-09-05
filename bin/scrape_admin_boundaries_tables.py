@@ -2,11 +2,12 @@
 
 import sys, re
 from bs4 import BeautifulSoup
-import urllib2
+
+from django.utils.six.moves import urllib
 
 url = "http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative"
 
-f = urllib2.urlopen(url)
+f = urllib.request.urlopen(url)
 data = f.read()
 f.close()
 
