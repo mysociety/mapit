@@ -11,11 +11,10 @@ from django.utils.html import escape
 from mapit.managers import Manager, GeoManager
 from mapit import countries
 from mapit.djangopatch import GetQuerySetMetaclass
+from django.utils import six
 
 
-class GenerationManager(models.Manager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class GenerationManager(six.with_metaclass(GetQuerySetMetaclass, models.Manager)):
     def current(self):
         """Return the most recent active generation.
 
@@ -116,9 +115,7 @@ class Type(models.Model):
     def __unicode__(self):
         return '%s (%s)' % (self.description, self.code)
 
-class AreaManager(models.GeoManager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class AreaManager(six.with_metaclass(GetQuerySetMetaclass, models.GeoManager)):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related('type', 'country')
 
@@ -423,9 +420,7 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeManager(GeoManager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class PostcodeManager(six.with_metaclass(GetQuerySetMetaclass, GeoManager)):
     def get_queryset(self):
         return self.model.QuerySet(self.model)
     def __getattr__(self, attr, *args):
