@@ -1,6 +1,6 @@
 import re
 
-from view_error import *
+from .view_error import *
 
 class JSONPMiddleware(object):
     def process_response(self, request, response):
