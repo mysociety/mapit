@@ -7,11 +7,16 @@
 import re
 import sys
 from optparse import make_option
+
 from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from django.conf import settings
+from django.utils import six
+from django.utils.six.moves import input
+from django.utils.encoding import smart_str
+
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
@@ -114,7 +119,7 @@ class Command(LabelCommand):
     def handle_label(self, filename, **options):
 
         missing_options = []
-        for k in ['generation_id','area_type_code','name_type_code','country_code']:
+        for k in ['generation_id', 'area_type_code', 'name_type_code', 'country_code']:
             if options[k]:
                 continue
             else:
@@ -151,21 +156,21 @@ class Command(LabelCommand):
         try:
             area_type = Type.objects.get(code=area_type_code)
         except:
-            type_desc = raw_input('Please give a description for area type code %s: ' % area_type_code)
+            type_desc = input('Please give a description for area type code %s: ' % area_type_code)
             area_type = Type(code=area_type_code, description=type_desc)
             if options['commit']: area_type.save()
 
         try:
             name_type = NameType.objects.get(code=name_type_code)
         except:
-            name_desc = raw_input('Please give a description for name type code %s: ' % name_type_code)
+            name_desc = input('Please give a description for name type code %s: ' % name_type_code)
             name_type = NameType(code=name_type_code, description=name_desc)
             if options['commit']: name_type.save()
 
         try:
             country = Country.objects.get(code=country_code)
         except:
-            country_name = raw_input('Please give the name for country code %s: ' % country_code)
+            country_name = input('Please give the name for country code %s: ' % country_code)
             country = Country(code=country_code, name=country_name)
             if options['commit']: country.save()
 
@@ -173,7 +178,7 @@ class Command(LabelCommand):
             try:
                 code_type = CodeType.objects.get(code=code_type_code)
             except:
-                code_desc = raw_input('Please give a description for code type %s: ' % code_type_code)
+                code_desc = input('Please give a description for code type %s: ' % code_type_code)
                 code_type = CodeType(code=code_type_code, description=code_desc)
                 if options['commit']: code_type.save()
 
@@ -209,7 +214,7 @@ class Command(LabelCommand):
                     choices = ', '.join(layer.fields)
                     raise CommandError("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
-                    if not isinstance(name, unicode):
+                    if not isinstance(name, six.text_type):
                         name = name.decode(encoding)
                 except:
                     raise CommandError("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
@@ -228,7 +233,7 @@ class Command(LabelCommand):
                     choices = ', '.join(layer.fields)
                     raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
+            self.stdout.write(smart_str("  looking at '%s'%s" % ( name, (' (%s)' % code) if code else '' )))
 
             g = None
             if hasattr(feat, 'geom'):
@@ -281,7 +286,7 @@ class Command(LabelCommand):
                 else:
                     # If --preserve is not specified, the code or the name must be unique:
                     if len(areas) > 1:
-                        raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
+                        raise Area.MultipleObjectsReturned("There was more than one area with %s, and --preserve was not specified" % (matching_message,))
 
             except Area.DoesNotExist:
                 m = Area(
@@ -297,7 +302,7 @@ class Command(LabelCommand):
 
             # check that we are not about to skip a generation
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
             m.generation_high = new_generation
 
             if options['fix_invalid_polygons'] and g is not None:

@@ -51,6 +51,8 @@
 #
 # 8. Go to File -> Share and change "Private" to "Anyone with the link"
 
+from __future__ import print_function
+
 import sys
 import csv
 from optparse import make_option
@@ -101,7 +103,7 @@ class Command(BaseCommand):
         possible_query_types = ('coveredby',)
 
         if len(args) != 1:
-            print >> sys.stderr, "You must supply a CSV file name for output"
+            print("You must supply a CSV file name for output", file=sys.stderr)
             sys.exit(1)
 
         output_filename = args[0]
@@ -112,13 +114,13 @@ class Command(BaseCommand):
             generation = Generation.objects.current()
 
         if not options['types']:
-            print >> sys.stderr, "Currently you must choose at least one type"
+            print("Currently you must choose at least one type", file=sys.stderr)
             sys.exit(1)
 
         selected_query_types = [q for q in possible_query_types if options[q]]
 
         if not all_equal(options[q] for q in selected_query_types):
-            print >> sys.stderr, "The ID used in %s must be the same" % (", ".join(selected_query_types),)
+            print("The ID used in %s must be the same" % (", ".join(selected_query_types),), file=sys.stderr)
             sys.exit(1)
 
         if len(selected_query_types) > 0:
@@ -144,20 +146,20 @@ class Command(BaseCommand):
                 hue = random()
                 line_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.5))
                 fill_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.95))
-                print "Exporting:", area
+                print("Exporting:", area)
                 try:
                     kml, _ = area.export(4326,
                                          'kml',
                                          simplify_tolerance=options['tolerance'],
                                          kml_type="polygon")
-                except TransformError, e:
+                except TransformError as e:
                     simplified_away.append(area)
-                    print "  (the area was simplified away to nothing)"
+                    print("  (the area was simplified away to nothing)")
                     continue
 
                 if kml is None:
                     empty_anyway.append(area)
-                    print "  (the area was empty, skipping it)"
+                    print("  (the area was empty, skipping it)")
                     continue
 
                 # The maximum cell size in Google Fusion tables is 1
@@ -169,9 +171,9 @@ class Command(BaseCommand):
                 # than bytes after UTF-8 encoding.)
 
                 if len(kml) > 1E6:
-                  print >> sys.stderr, "A cell for Google Fusion tables must be less than 1 million characters"
-                  print >> sys.stderr, "but %s was %d characters" % (area, len(kml))
-                  print >> sys.stderr, "Try raising the simplify tolerance with --tolerance"
+                  print("A cell for Google Fusion tables must be less than 1 million characters", file=sys.stderr)
+                  print("but %s was %d characters" % (area, len(kml)), file=sys.stderr)
+                  print("Try raising the simplify tolerance with --tolerance", file=sys.stderr)
                   sys.exit(1)
 
                 writer.writerow([area.name.encode('utf-8') + " [%d]" % (area.id,),
@@ -179,11 +181,11 @@ class Command(BaseCommand):
                                  kml.encode('utf-8')])
 
         if empty_anyway:
-            print "The following areas had no polygons in the first place:"
+            print("The following areas had no polygons in the first place:")
             for area in empty_anyway:
-                print "  ", area
+                print("  ", area)
 
         if simplified_away:
-            print "The following areas did have polygon data, but were simplified away to nothing:"
+            print("The following areas did have polygon data, but were simplified away to nothing:")
             for area in simplified_away:
-                print "  ", area
+                print("  ", area)

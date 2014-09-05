@@ -1,12 +1,13 @@
 # This script is used to import information from the Northern Ireland
 # Output Areas, available from http://www.nisra.gov.uk/geography/default.asp2.htm
 
-import urllib
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
 
@@ -30,7 +31,7 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         # Compile an alphabetical list of NI councils and their wards, OA codes
         # are assigned alphabetically.
@@ -57,7 +58,7 @@ class Command(LabelCommand):
                 ons_code = feat['OA_CODE'].value
                 name = 'Output Area %s' % ons_code
             else:
-                raise Exception, 'Bad data passed in'
+                raise Exception('Bad data passed in')
 
             council = ord(ons_code[2:3]) - 65
             ward = int(ons_code[4:6]) - 1
@@ -69,9 +70,9 @@ class Command(LabelCommand):
             try:
                 m = Area.objects.get(codes__type=code_type, codes__code=ons_code)
                 if int(options['verbosity']) > 1:
-                    print "  Area matched, %s" % (m, )
+                    print("  Area matched, %s" % (m, ))
             except Area.DoesNotExist:
-                print "  New area: %s" % (ons_code)
+                print("  New area: %s" % (ons_code))
                 m = Area(
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = area_type,
@@ -82,7 +83,7 @@ class Command(LabelCommand):
                 )
 
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
             m.generation_high = new_generation
             m.parent_area_id = parent
             if options['commit']:

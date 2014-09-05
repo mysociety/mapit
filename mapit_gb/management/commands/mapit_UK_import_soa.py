@@ -13,7 +13,7 @@ class Command(LabelCommand):
     args = '<ONS SOA shapefile>'
 
     def handle_label(self, filename, **options):
-        print filename
+        print(filename)
         generation = Generation.objects.current()
 
         short_filename = filename.split("/")[-1]
@@ -36,7 +36,7 @@ class Command(LabelCommand):
             else: 
                 area_type = 'OMF'
         else:
-            raise Exception, "Sorry, this script only handles LSOA/MSOA shapefiles!"            
+            raise Exception("Sorry, this script only handles LSOA/MSOA shapefiles!")            
     
         ds = DataSource(filename)
         layer = ds[0]
@@ -48,7 +48,7 @@ class Command(LabelCommand):
             # skip if the SOA already exists in db (SOAs don't change)
             if Area.objects.filter(type__code=area_type, codes__code=lsoa_code).count():
                 continue
-            print "Adding %s (%s) %s" % (name, lsoa_code, feat.geom.geom_name)
+            print("Adding %s (%s) %s" % (name, lsoa_code, feat.geom.geom_name))
             m = Area(
                 type = Type.objects.get(code=area_type),
                 country = Country.objects.get(code=country),

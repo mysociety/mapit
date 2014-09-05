@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import re
 from boundaries import *
 
@@ -11,10 +13,10 @@ cache_directory = os.path.realpath(os.path.join(script_directory,
                                                 'new-cache'))
 
 for old_filename in os.listdir(cache_directory):
-    print "filename is", old_filename
+    print("filename is", old_filename)
     m = re.search(r'^(way|node|relation)-(\d+)\.xml$', old_filename)
     if not m:
-        print >> sys.stderr, "Ignoring file:", old_filename
+        print("Ignoring file:", old_filename, file=sys.stderr)
         continue
     element_type, element_id = m.groups()
     full_new_filename = get_cache_filename(element_type, element_id)

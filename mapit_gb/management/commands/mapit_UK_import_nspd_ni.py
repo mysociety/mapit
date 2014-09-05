@@ -31,7 +31,7 @@ class Command(Command):
 
         # Read in new ONS code to names, look up existing wards and Parliamentary constituencies
         snac = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/snac-2009-ni-cons2ward.csv'))
-        snac.next()
+        next(snac)
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             ward_code = ward_code.replace(' ', '')

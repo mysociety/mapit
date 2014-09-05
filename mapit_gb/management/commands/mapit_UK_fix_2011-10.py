@@ -23,6 +23,6 @@ class Command(LabelCommand):
             if ons_code in ('E04008782', 'E05004419'):
                 m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 if options['commit']:
-                    print 'Updating %s' % name
+                    print('Updating %s' % name)
                     save_polygons({ ons_code: (m, [ feat.geom ]) })
 

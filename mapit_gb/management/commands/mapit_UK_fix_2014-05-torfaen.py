@@ -38,7 +38,7 @@ class Command(NoArgsCommand):
             old.update(generation_high=22)
             new.delete()
         else:
-            print 'Would delete %s and reinstate %s' % (disp(new), disp(old))
+            print('Would delete %s and reinstate %s' % (disp(new), disp(old)))
 
     def handle_noargs(self, **options):
         self.commit = options['commit']

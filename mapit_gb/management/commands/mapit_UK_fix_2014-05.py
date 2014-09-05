@@ -40,9 +40,9 @@ class Command(NoArgsCommand):
             area_polygon = area.polygons.all()[0]
             fixed_polygon = fix_invalid_geos_geometry(area_polygon.polygon)
             if fixed_polygon:
-                print "Fixed polygon {0}".format(area_polygon)
+                print("Fixed polygon {0}".format(area_polygon))
                 area_polygon.polygon = fixed_polygon
                 if options['commit']:
                     area_polygon.save()
             else:
-                print "Could not fix polygon {0}".format(area_polygon)
+                print("Could not fix polygon {0}".format(area_polygon))

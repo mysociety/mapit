@@ -1,12 +1,16 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys, re
 from bs4 import BeautifulSoup
-import urllib2
+
+from django.utils.six.moves import urllib
+from django.utils.encoding import smart_str
 
 url = "http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative"
 
-f = urllib2.urlopen(url)
+f = urllib.request.urlopen(url)
 data = f.read()
 f.close()
 
@@ -14,7 +18,7 @@ soup = BeautifulSoup(data, "lxml")
 
 def strip_all_tags(element):
     for br in element.find_all('br'):
-        br.replaceWith(u"\n")
+        br.replaceWith("\n")
     return "".join(element.findAll(text=True)).strip()
 
 # Tidy up the country name column - I'm not sure there's an obviously
@@ -50,20 +54,20 @@ for table in soup.find_all('table', 'wikitable'):
             continue
         country_name = get_country_name(strip_all_tags(tds[0]))
         if len(tds) != len(headers):
-            print >> sys.stderr, "Warning: Ignoring row of unexpected length", len(tds)
+            print("Warning: Ignoring row of unexpected length", len(tds), file=sys.stderr)
             continue
         levels = [None]
         levels += [make_missing_none(strip_all_tags(td))
                    for td in tds[1:]]
         if country_name in country_to_admin_levels:
-            print >> sys.stderr, "Warning: Overwriting previous information for country '%s'" % (country_name,)
+            print("Warning: Overwriting previous information for country '%s'" % (country_name,), file=sys.stderr)
         country_to_admin_levels[country_name] = levels
 
 for country_name, levels in sorted(country_to_admin_levels.items()):
-    print "####", country_name.encode('utf-8')
+    print("####", smart_str(country_name))
     for i, s in enumerate(levels):
-        print "---- level", i
+        print("---- level", i)
         if s:
-            print "  " + s.encode('utf-8')
+            print("  " + smart_str(s))
         else:
-            print "  [No information]"
+            print("  [No information]")

@@ -70,7 +70,7 @@ class AreaViewsTest(TestCase):
         url = '/point/4326/-3.4,51.5.json'
         response = self.client.get(url)
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
 
         self.assertEqual(
             set((int(x) for x in content.keys())),
@@ -90,4 +90,5 @@ class AreaViewsTest(TestCase):
         id = self.small_area_1.id
         url = '/area/%d/example_postcode' % id
         response = self.client.get(url)
-        self.assertEqual(response.content, json.dumps(self.postcode.postcode))
+        content = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(content, self.postcode.postcode)

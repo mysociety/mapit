@@ -7,15 +7,15 @@ from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
 from django.utils.html import escape
+from django.utils.encoding import python_2_unicode_compatible
 
 from mapit.managers import Manager, GeoManager
 from mapit import countries
 from mapit.djangopatch import GetQuerySetMetaclass
+from django.utils import six
 
 
-class GenerationManager(models.Manager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class GenerationManager(six.with_metaclass(GetQuerySetMetaclass, models.Manager)):
     def current(self):
         """Return the most recent active generation.
 
@@ -36,6 +36,7 @@ class GenerationManager(models.Manager):
             return None
         return latest[0]
         
+@python_2_unicode_compatible
 class Generation(models.Model):
 
     # Generations are used so that, theoretically, old versions of the same
@@ -79,7 +80,7 @@ class Generation(models.Model):
 
     objects = GenerationManager()
 
-    def __unicode__(self):
+    def __str__(self):
         id = self.id or '?'
         return "Generation %s (%sactive)" % (id, "" if self.active else "in")
 
@@ -91,16 +92,18 @@ class Generation(models.Model):
             'description': self.description,
         }
 
+@python_2_unicode_compatible
 class Country(models.Model):
     code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
     
     class Meta:
         verbose_name_plural='countries'
 
+@python_2_unicode_compatible
 class Type(models.Model):
 
     # An area type (the Type model) is the type of area. You can see examples
@@ -113,12 +116,10 @@ class Type(models.Model):
     code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'CTR', 'CON', etc")
     description = models.CharField(max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
-class AreaManager(models.GeoManager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class AreaManager(six.with_metaclass(GetQuerySetMetaclass, models.GeoManager)):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related('type', 'country')
 
@@ -207,6 +208,7 @@ SELECT DISTINCT mapit_area.*
 class TransformError(Exception):
     pass
 
+@python_2_unicode_compatible
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
@@ -229,7 +231,7 @@ class Area(models.Model):
             codes[code.type.code] = code.code
         return codes
 
-    def __unicode__(self):
+    def __str__(self):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type.code, name)
 
@@ -306,13 +308,13 @@ class Area(models.Model):
             try:
                 all_areas.transform(srid)
             except (SRSException, OGRException) as e:
-                raise TransformError, "Error with transform: %s" % e
+                raise TransformError("Error with transform: %s" % e)
 
         num_points_before_simplification = all_areas.num_points
         if simplify_tolerance:
             all_areas = all_areas.simplify(simplify_tolerance)
             if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise TransformError, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
+                raise TransformError("Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance))
 
         if export_format=='kml':
             if kml_type == "polygon":
@@ -338,7 +340,7 @@ class Area(models.Model):
     </Document>
 </kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
             else:
-                raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
+                raise Exception("Unknown kml_type: '%s'" % (kml_type,))
             content_type = 'application/vnd.google-earth.kml+xml'
         elif export_format in ('json', 'geojson'):
             out = all_areas.json
@@ -348,6 +350,7 @@ class Area(models.Model):
             content_type = 'text/plain'
         return (out, content_type)
 
+@python_2_unicode_compatible
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
@@ -356,9 +359,10 @@ class Geometry(models.Model):
     class Meta:
         verbose_name_plural = 'geometries'
 
-    def __unicode__(self):
-        return u'%s, polygon %d' % (self.area, self.id)
+    def __str__(self):
+        return '%s, polygon %d' % (self.area, self.id)
 
+@python_2_unicode_compatible
 class NameType(models.Model):
 
     # Name types are for storing different types of names. This could have
@@ -371,9 +375,10 @@ class NameType(models.Model):
     description = models.CharField(max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
     objects = Manager()
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
+@python_2_unicode_compatible
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
     type = models.ForeignKey(NameType, related_name='names')
@@ -383,7 +388,7 @@ class Name(models.Model):
     class Meta:
         unique_together = ('area', 'type')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s) [%s]' % (self.name, self.type.code, self.area.id)
 
     def save(self, *args, **kwargs):
@@ -395,6 +400,7 @@ class Name(models.Model):
         return (self.type.code, [self.type.description,
                                  self.name])
 
+@python_2_unicode_compatible
 class CodeType(models.Model):
 
     # Code types are so you can store different types of code for an area. In
@@ -406,9 +412,10 @@ class CodeType(models.Model):
     code = models.CharField(max_length=10, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
     description = models.CharField(max_length=200, blank=True, help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
+@python_2_unicode_compatible
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
     type = models.ForeignKey(CodeType, related_name='codes')
@@ -418,19 +425,18 @@ class Code(models.Model):
     class Meta:
         unique_together = ('area', 'type')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s) [%s]' % (self.code, self.type.code, self.area.id)
 
 # Postcodes
 
-class PostcodeManager(GeoManager):
-    __metaclass__ = GetQuerySetMetaclass
-
+class PostcodeManager(six.with_metaclass(GetQuerySetMetaclass, GeoManager)):
     def get_queryset(self):
         return self.model.QuerySet(self.model)
     def __getattr__(self, attr, *args):
         return getattr(self.get_queryset(), attr, *args)
 
+@python_2_unicode_compatible
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
     location = models.PointField(null=True)
@@ -456,7 +462,7 @@ class Postcode(models.Model):
                 params = [ area.id, area.id ]
             )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_postcode_display()
 
     # Prettify postcode for display, if we know how to
@@ -487,5 +493,5 @@ class Postcode(models.Model):
         cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))
         row = cursor.fetchone()
         m = re.match('POINT\((.*?) (.*)\)', row[0])
-        return map(float, m.groups())
+        return list(map(float, m.groups()))
 

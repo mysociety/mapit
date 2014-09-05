@@ -200,12 +200,12 @@ def kml_string(folder_name,
 
     kml = etree.Element("kml",
                         nsmap={None: "http://earth.google.com/kml/2.1"})
-    folder = etree.SubElement(kml,"Folder")
-    name = etree.SubElement(folder,"name")
+    folder = etree.SubElement(kml, "Folder")
+    name = etree.SubElement(folder, "name")
     name.text = folder_name
 
-    placemark = etree.SubElement(folder,"Placemark")
-    name = etree.SubElement(placemark,"name")
+    placemark = etree.SubElement(folder, "Placemark")
+    name = etree.SubElement(placemark, "name")
     name.text = placemark_name
 
     extended = etree.SubElement(placemark, "ExtendedData")
@@ -288,11 +288,11 @@ def get_kml_for_osm_element_no_fetch(element):
     element_type, element_id = element.name_id_tuple()
 
     name = element.get_name()
-    folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
+    folder_name = "Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
 
     if element_type == 'way':
         if not element.closed():
-            raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
+            raise UnclosedBoundariesException("get_kml_for_osm_element called with an unclosed way (%s)" % (element_id))
         return (kml_string(folder_name,
                            name,
                            element.tags,
@@ -318,7 +318,7 @@ def get_kml_for_osm_element_no_fetch(element):
                 bounding_boxes)
 
     else:
-        raise Exception, "Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id)
+        raise Exception("Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id))
 
 def get_kml_for_osm_element(element_type, element_id):
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys
 import os
 import csv
@@ -48,17 +50,17 @@ class Command(LabelCommand):
                     empty_in_either += 1
                     counted_somewhere = True
                 if not counted_somewhere:
-                    print "not counted:", row
-                osm_elements_seen_in_new_data.add((row['ElementType'],row['ElementID']))
+                    print("not counted:", row)
+                osm_elements_seen_in_new_data.add((row['ElementType'], row['ElementID']))
             
         disappeared = 0
         
         for a in Area.objects.all().iterator():
             all_codes = a.codes.all()
             if len(all_codes) == 0:
-                print "code missing for:", a
+                print("code missing for:", a)
             elif len(all_codes) > 1:
-                print "too many codes (%d) for: %s" % (len(all_codes), a)
+                print("too many codes (%d) for: %s" % (len(all_codes), a))
             else:
                 code = all_codes[0]
                 element_type = 'relation' if code.type.code == 'osm_rel' else 'way'
@@ -75,14 +77,14 @@ class Command(LabelCommand):
                             point_url = "[first polygon was invalid, skipping]"
                     else:
                         point_url = "[no polygons]"
-                    print "disappeared: /code/%s/%s - a point inside is: %s" % (code.type.code, code.code, point_url)
+                    print("disappeared: /code/%s/%s - a point inside is: %s" % (code.type.code, code.code, point_url))
 
-        print "========================================================================"
-        print "equals_but_not_equals_exact:", equals_but_not_equals_exact
-        print "equals_exact_but_not_equals:", equals_exact_but_not_equals
-        print "completely_new_boundaries:", completely_new_boundaries
-        print "areas that disappeared:", disappeared
-        print "boundary_stayed_the_same:", boundary_stayed_the_same
-        print "boundary_changed:", boundary_changed
-        print "empty_in_either:", empty_in_either
-        print "out of a total:", total
+        print("========================================================================")
+        print("equals_but_not_equals_exact:", equals_but_not_equals_exact)
+        print("equals_exact_but_not_equals:", equals_exact_but_not_equals)
+        print("completely_new_boundaries:", completely_new_boundaries)
+        print("areas that disappeared:", disappeared)
+        print("boundary_stayed_the_same:", boundary_stayed_the_same)
+        print("boundary_changed:", boundary_changed)
+        print("empty_in_either:", empty_in_either)
+        print("out of a total:", total)

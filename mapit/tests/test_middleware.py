@@ -21,7 +21,7 @@ class JSONPMiddlewareTest(TestCase):
         request = self.factory.get("/dummy_url", {"callback": "xyz"})
         response = HttpResponse(content="blah")
         middleware_response = self.middleware.process_response(request, response)
-        self.assertEqual(middleware_response.content, u'xyz(blah)')
+        self.assertEqual(middleware_response.content, b"typeof xyz === 'function' && xyz(blah)")
 
     def test_process_response_uses_ignores_requests_without_callback(self):
         request = self.factory.get("/dummy_url")
@@ -33,7 +33,7 @@ class JSONPMiddlewareTest(TestCase):
         request = self.factory.get("/dummy_url", {"callback": "xyz123_$."})
         response = HttpResponse(content="blah")
         middleware_response = self.middleware.process_response(request, response)
-        self.assertEqual(middleware_response.content, u'xyz123_$.(blah)')
+        self.assertEqual(middleware_response.content, b"typeof xyz123_$. === 'function' && xyz123_$.(blah)")
 
         # Try with a character not allowed in the callback
         request = self.factory.get("/dummy_url", {"callback": "xyz123_$.["})

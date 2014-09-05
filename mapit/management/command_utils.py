@@ -58,7 +58,7 @@ def save_polygons(lookup):
         #m.polygon = g.wkt
         #m.save()
         poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-    print ""
+    print("")
 
 
 def fix_with_buffer(geos_polygon):
@@ -323,7 +323,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
                     elif fixed.geom_type == 'Polygon':
                         valid_polygons.append(fixed)
                     else:
-                        raise "Unknown fixed geometry type:", fixed.geom_type
+                        raise Exception("Unknown fixed geometry type: " + fixed.geom_type)
         for_union = MultiPolygon(valid_polygons)
     if len(for_union) > 0:
         result = for_union.cascaded_union

@@ -14,7 +14,7 @@ class Command(NoArgsCommand):
 
         # Read in ward name -> electoral area name/area
         mapping = csv.reader(open('../data/UK/BL-2010-10-code-change.csv'))
-        mapping.next()
+        next(mapping)
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]
             try:
@@ -48,5 +48,5 @@ class Command(NoArgsCommand):
             try:
                 area.codes.create(type=CodeType.objects.get(code='gss'), code=new_code)
             except IntegrityError:
-                raise Exception, "Key already exists for %s, can't give it %s" % (area, new_code)
+                raise Exception("Key already exists for %s, can't give it %s" % (area, new_code))
 

@@ -2,10 +2,15 @@
 # one-off after that import in order to get the four old boundaries back
 # that were removed during that import.
 
+from __future__ import print_function
+
 import re
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
+from django.utils import six
+
 from mapit.models import Area, Code, CodeType, Type, Country, Generation, NameType
 from mapit.management.command_utils import save_polygons
 
@@ -29,9 +34,9 @@ class Command(LabelCommand):
             2342: 'E07000242',
         }
 
-        for id, code in areas_to_update.iteritems():
+        for id, code in areas_to_update.items():
             area = Area.objects.get(id=id)
-            print "Updating: {0} to: {1}".format(area, code)
+            print("Updating: {0} to: {1}".format(area, code))
             area.generation_low = Generation.objects.new()
             if options['commit']:
                 area.save()
@@ -43,7 +48,7 @@ class Command(LabelCommand):
         # Add in new areas to represent the old boundaries too
         for feat in DataSource(filename)[0]:
             name = feat['NAME'].value
-            if not isinstance(name, unicode):
+            if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
@@ -65,7 +70,7 @@ class Command(LabelCommand):
 
     def make_new_area(self, name, ons_code, area_code, code_version, generation_low, generation_high, country):
         assert Area.objects.filter(codes__type=code_version, codes__code=ons_code).count() == 0
-        print ons_code, area_code, country, name
+        print(ons_code, area_code, country, name)
 
         return Area(
             type = Type.objects.get(code=area_code),

@@ -11,9 +11,10 @@ import os
 import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
+from django.utils.encoding import smart_str, smart_text
+
 from mapit.models import Area, Code, CodeType
 from glob import glob
-import urllib2
 from lxml import etree
 
 class Command(LabelCommand):
@@ -26,26 +27,26 @@ class Command(LabelCommand):
     def handle_label(self, directory_name, **options):
 
         if not os.path.isdir(directory_name):
-            raise Exception, "'%s' is not a directory" % (directory_name,)
+            raise Exception("'%s' is not a directory" % (directory_name,))
 
         os.chdir(directory_name)
 
         if not glob("al[0-1][0-9]"):
-            raise Exception, "'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,)
+            raise Exception("'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print s.encode('utf-8')
+                print(smart_str(s))
 
         verbose("Loading any admin boundaries from " + directory_name)
 
         unknown_names_before = Area.objects.filter(name__startswith='Unknown name').count()
 
-        for admin_level in range(2,12):
+        for admin_level in range(2, 12):
 
             verbose("Loading admin_level " + str(admin_level))
 
-            admin_directory = "al%02d" % (admin_level)
+            admin_directory = smart_text("al%02d" % (admin_level))
 
             if not os.path.exists(admin_directory):
                 verbose("Skipping the non-existent " + admin_directory)
@@ -66,7 +67,7 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception, u"Couldn't extract OSM element type and ID from: " + e
+                    raise Exception("Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
 
@@ -75,7 +76,7 @@ class Command(LabelCommand):
                 if not re.search('Unknown name for', e):
                     continue
 
-                verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
+                verbose(progress + "Loading " + os.path.realpath(kml_filename))
 
                 tree = etree.parse(kml_filename)
                 place_name_values = tree.xpath('//kml:Placemark/kml:ExtendedData/kml:Data[@name="place_name"]/kml:value',
@@ -85,7 +86,7 @@ class Command(LabelCommand):
 
                     place_name = place_name_values[0].text
 
-                    verbose(u"Found a better name: " + place_name)
+                    verbose("Found a better name: " + place_name)
 
                     # Then we can replace the name:
 
@@ -94,20 +95,20 @@ class Command(LabelCommand):
                     elif osm_type == 'way':
                         code_type_osm = CodeType.objects.get(code='osm_way')
                     else:
-                        raise Exception, "Unknown OSM element type:", osm_type
+                        raise Exception("Unknown OSM element type: " + osm_type)
 
                     try:
                         existing_area = Code.objects.get(type=code_type_osm, code=osm_id).area
                     except Code.DoesNotExist:
-                        print "WARNING: failed to find Code with code_type %s and code %s" % (code_type_osm, osm_id)
+                        print("WARNING: failed to find Code with code_type %s and code %s" % (code_type_osm, osm_id))
                         continue
 
                     # Just check that the existing area really does
                     # still have an unknown name:
 
                     if not existing_area.name.startswith('Unknown name'):
-                        print (u"The existing area already had a sensible name: " + existing_area.name).encode('utf-8')
-                        raise Exception, "Not overwriting sensible name, exiting."
+                        print("The existing area already had a sensible name: " + smart_str(existing_area.name))
+                        raise Exception("Not overwriting sensible name, exiting.")
 
                     existing_area.name = place_name
 
@@ -116,5 +117,5 @@ class Command(LabelCommand):
 
         unknown_names_after = Area.objects.filter(name__startswith='Unknown name').count()
 
-        print "unknown_names_before:", unknown_names_before
-        print "unknown_names_after:", unknown_names_after
+        print("unknown_names_before: %d" % unknown_names_before)
+        print("unknown_names_after: %d" % unknown_names_after)

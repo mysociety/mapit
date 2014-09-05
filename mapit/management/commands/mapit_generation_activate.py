@@ -13,11 +13,11 @@ class Command(NoArgsCommand):
     def handle(self, **options):
         new = Generation.objects.new()
         if not new:
-            raise Exception, "You do not have an inactive generation to activate"
+            raise Exception("You do not have an inactive generation to activate")
 
         new.active = True
         if options['commit']:
             new.save()
-            print "%s - activated" % new
+            print("%s - activated" % new)
         else:
-            print "%s - not activated, dry run" % new
+            print("%s - not activated, dry run" % new)

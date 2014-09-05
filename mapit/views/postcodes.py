@@ -63,7 +63,7 @@ def postcode(request, postcode, format=None):
     # Shortcuts
     shortcuts = {}
     for area in areas:
-        if area.type.code in ('COP','LBW','LGE','MTW','UTE','UTW'):
+        if area.type.code in ('COP', 'LBW', 'LGE', 'MTW', 'UTE', 'UTW'):
             shortcuts['ward'] = area.id
             shortcuts['council'] = area.parent_area_id
         elif area.type.code == 'CED':
@@ -130,7 +130,7 @@ def example_postcode_for_area(request, area_id, format='json'):
             pc = Postcode.objects.filter_by_area(area).order_by()[0]
         except QueryCanceledError:
             raise ViewException(format, 'That query was taking too long to compute.', 500)
-        except DatabaseError, e:
+        except DatabaseError as e:
             if 'canceling statement due to statement timeout' not in e.args[0]: raise
             raise ViewException(format, 'That query was taking too long to compute.', 500)
         except:
@@ -154,7 +154,7 @@ def nearest(request, srid, x, y, format='json'):
         postcode = Postcode.objects.filter(location__distance_gte=( location, D(mi=0) )).distance(location).order_by('distance')[0]
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute.', 500)
-    except DatabaseError, e:
+    except DatabaseError as e:
         if 'canceling statement due to statement timeout' not in e.args[0]: raise
         raise ViewException(format, 'That query was taking too long to compute.', 500)
     except:

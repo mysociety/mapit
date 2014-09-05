@@ -19,6 +19,6 @@ for file in glob.glob('../data/Code-Point-Open-2010-05/*.csv'):
         if row[1] == '60': continue
         ons_code = ''.join(row[15:18])
         if pc not in lookup:
-            print "Postcode in Code-Point, not in NSPD" # This hopefully never happens
+            print("Postcode in Code-Point, not in NSPD") # This hopefully never happens
         elif lookup[pc] != ons_code:
-            print "ONS codes differ for %s, Code-Point has %s, NSPD has %s" % (pc, ons_code, lookup[pc])
+            print("ONS codes differ for %s, Code-Point has %s, NSPD has %s" % (pc, ons_code, lookup[pc]))

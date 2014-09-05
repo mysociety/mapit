@@ -1,9 +1,9 @@
 import os
-from StringIO import StringIO
 
 from django.test import TestCase
 from django.core.management import call_command
 from django.conf import settings
+from django.utils.six import StringIO
 
 from ..models import Type, NameType, Area, Generation, Country
 
@@ -51,7 +51,7 @@ class MapitImportTest(TestCase):
 
         # Check it loaded the data properly
         area = Area.objects.all()[0]
-        self.assertEqual(area.name, u"London")
+        self.assertEqual(area.name, "London")
         self.assertEqual(area.country.name, england.name)
         self.assertEqual(area.generation_low.id, generation.id)
         self.assertEqual(area.generation_high.id, generation.id)

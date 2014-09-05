@@ -18,7 +18,7 @@ class Command(NoArgsCommand):
         new_generation = Generation.objects.new()
         country = Country.objects.get(code='N')
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         code_type = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='S')
@@ -33,7 +33,7 @@ class Command(NoArgsCommand):
 
         # Read in ward name -> electoral area name/area
         ni_eas = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/ni-electoral-areas.csv'))
-        ni_eas.next()
+        next(ni_eas)
         ward_to_electoral_area = {}
         e = {}
         for district, electoral_area, ward, dummy in ni_eas:
@@ -52,13 +52,13 @@ class Command(NoArgsCommand):
 
         # Read in new ONS code to names
         snac = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/snac-2009-ni-cons2ward.csv'))
-        snac.next()
+        next(snac)
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             if district_name not in ward_to_electoral_area:
-                raise Exception, "District %s is missing" % district_name
+                raise Exception("District %s is missing" % district_name)
             if ward_name not in ward_to_electoral_area[district_name]:
-                raise Exception, "Ward %s, district %s is missing" % (ward_name, district_name)
+                raise Exception("Ward %s, district %s is missing" % (ward_name, district_name))
 
             ward_code = ward_code.replace(' ', '')
 
