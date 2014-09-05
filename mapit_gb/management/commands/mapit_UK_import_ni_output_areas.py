@@ -30,7 +30,7 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         # Compile an alphabetical list of NI councils and their wards, OA codes
         # are assigned alphabetically.
@@ -57,7 +57,7 @@ class Command(LabelCommand):
                 ons_code = feat['OA_CODE'].value
                 name = 'Output Area %s' % ons_code
             else:
-                raise Exception, 'Bad data passed in'
+                raise Exception('Bad data passed in')
 
             council = ord(ons_code[2:3]) - 65
             ward = int(ons_code[4:6]) - 1
@@ -82,7 +82,7 @@ class Command(LabelCommand):
                 )
 
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
             m.generation_high = new_generation
             m.parent_area_id = parent
             if options['commit']:

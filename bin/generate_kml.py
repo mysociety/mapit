@@ -292,7 +292,7 @@ def get_kml_for_osm_element_no_fetch(element):
 
     if element_type == 'way':
         if not element.closed():
-            raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
+            raise UnclosedBoundariesException("get_kml_for_osm_element called with an unclosed way (%s)" % (element_id))
         return (kml_string(folder_name,
                            name,
                            element.tags,
@@ -318,7 +318,7 @@ def get_kml_for_osm_element_no_fetch(element):
                 bounding_boxes)
 
     else:
-        raise Exception, "Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id)
+        raise Exception("Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id))
 
 def get_kml_for_osm_element(element_type, element_id):
 

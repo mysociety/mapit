@@ -79,17 +79,17 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         if not os.path.isdir(directory_name):
-            raise Exception, "'%s' is not a directory" % (directory_name,)
+            raise Exception("'%s' is not a directory" % (directory_name,))
 
         os.chdir(directory_name)
 
         mapit_type_glob = "[A-Z0-9][A-Z0-9][A-Z0-9]"
 
         if not glob(mapit_type_glob):
-            raise Exception, "'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,)
+            raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -147,7 +147,7 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception, u"Couldn't extract OSM element type and ID from: " + e
+                    raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
 
@@ -161,9 +161,9 @@ class Command(LabelCommand):
 
                 useful_names = [n for n in kml_data.data.keys() if not n.startswith('Boundaries for')]
                 if len(useful_names) == 0:
-                    raise Exception, "No useful names found in KML data"
+                    raise Exception("No useful names found in KML data")
                 elif len(useful_names) > 1:
-                    raise Exception, "Multiple useful names found in KML data"
+                    raise Exception("Multiple useful names found in KML data")
                 name = useful_names[0]
                 print " ", name.encode('utf-8')
 
@@ -172,12 +172,12 @@ class Command(LabelCommand):
                 elif osm_type == 'way':
                     code_type_osm = CodeType.objects.get(code='osm_way')
                 else:
-                    raise Exception, "Unknown OSM element type:", osm_type
+                    raise Exception("Unknown OSM element type: " + osm_type)
 
                 ds = DataSource(kml_filename)
                 layer = ds[0]
                 if len(layer) != 1:
-                    raise Exception, "We only expect one feature in each layer"
+                    raise Exception("We only expect one feature in each layer")
 
                 feat = layer[1]
 
@@ -265,7 +265,7 @@ class Command(LabelCommand):
 
                     if name not in kml_data.data:
                         print json.dumps(kml_data.data, sort_keys=True, indent=4)
-                        raise Exception, u"Will fail to find '%s' in the dictionary" % (name,)
+                        raise Exception(u"Will fail to find '%s' in the dictionary" % (name,))
 
                     old_lang_codes = set(unicode(n.type.code) for n in m.names.all())
 

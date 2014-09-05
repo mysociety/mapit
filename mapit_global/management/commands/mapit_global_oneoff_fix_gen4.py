@@ -25,14 +25,14 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
 
         if not os.path.isdir(directory_name):
-            raise Exception, "'%s' is not a directory" % (directory_name,)
+            raise Exception("'%s' is not a directory" % (directory_name,))
 
         os.chdir(directory_name)
 
         mapit_type_glob = "[A-Z0-9][A-Z0-9][A-Z0-9]"
 
         if not glob(mapit_type_glob):
-            raise Exception, "'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,)
+            raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -61,7 +61,7 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception, u"Couldn't extract OSM element type and ID from: " + e
+                    raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
                 kml_filename = os.path.join(type_directory, e)
@@ -72,12 +72,12 @@ class Command(LabelCommand):
                 elif osm_type == 'way':
                     code_type_osm = CodeType.objects.get(code='osm_way')
                 else:
-                    raise Exception, "Unknown OSM element type:", osm_type
+                    raise Exception("Unknown OSM element type: " + osm_type)
 
                 ds = DataSource(kml_filename)
                 layer = ds[0]
                 if len(layer) != 1:
-                    raise Exception, "We only expect one feature in each layer"
+                    raise Exception("We only expect one feature in each layer")
 
                 feat = layer[1]
 

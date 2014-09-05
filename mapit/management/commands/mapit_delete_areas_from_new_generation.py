@@ -15,7 +15,7 @@ class Command(NoArgsCommand):
     def handle(self, **options):
         new = Generation.objects.new()
         if not new:
-            raise CommandError, "There's no new inactive generation to delete areas from"
+            raise CommandError("There's no new inactive generation to delete areas from")
 
         generations = list(Generation.objects.all().order_by('id'))
         if len(generations) <= 1:
@@ -31,9 +31,9 @@ class Command(NoArgsCommand):
             g_high = area.generation_high
 
             if g_low not in generations:
-                raise Exception, "area.generation_low was " + g_low + ", which no longer exists!"
+                raise Exception("area.generation_low was " + g_low + ", which no longer exists!")
             if g_high not in generations:
-                raise Exception, "area.generation_high was " + g_high + ", which no longer exists!"
+                raise Exception("area.generation_high was " + g_high + ", which no longer exists!")
 
             if area.generation_low == new and area.generation_high == new:
                 print "  ... only exists in", new, "so will delete"
@@ -59,4 +59,4 @@ class Command(NoArgsCommand):
                     str(area.generation_high) + \
                     ") is after Generation.objects.new() (" + \
                     str(new) + ")"
-                raise Exception, message
+                raise Exception(message)

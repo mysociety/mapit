@@ -35,7 +35,7 @@ class Command(LabelCommand):
 
     def handle_label(self, file, **options):
         if not Generation.objects.new():
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         count = 0
         for row in csv.reader(open(file)):

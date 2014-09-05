@@ -104,7 +104,7 @@ class Command(LabelCommand):
         print filename
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         name_type = NameType.objects.get(code='O')
         code_type = CodeType.objects.get(code='gss')
@@ -119,7 +119,7 @@ class Command(LabelCommand):
 
             if "P Const" in name: area_code = 'SPC'
             elif "PER" in name: area_code = 'SPE'
-            else: raise Exception, "Unknown type of area %s" % name
+            else: raise Exception("Unknown type of area %s" % name)
 
             ons_code = name_to_code[name]
 
@@ -128,7 +128,7 @@ class Command(LabelCommand):
                 if options['commit']:
                     m_name = m.names.get(type=name_type).name
                     if name != m_name:
-                        raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
+                        raise Exception("ONS code %s is used for %s and %s" % (ons_code, name, m_name))
                 # Otherwise, combine the two shapes for one area
                 print "    Adding subsequent shape to ONS code %s" % ons_code
                 poly.append(feat.geom)

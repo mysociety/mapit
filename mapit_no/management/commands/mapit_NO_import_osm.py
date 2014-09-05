@@ -26,7 +26,7 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         print filename
 
@@ -73,7 +73,7 @@ class Command(LabelCommand):
                     )
 
                 if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                    raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                    raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
                 m.generation_high = new_generation
 
                 g = feat.geom.transform(4326, clone=True)

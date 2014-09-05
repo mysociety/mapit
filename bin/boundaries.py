@@ -96,7 +96,7 @@ def get_osm3s(query_xml):
               stdout=PIPE)
     out, err = p.communicate(query_xml)
     if p.returncode != 0:
-        raise Exception, "The osm3s_query failed"
+        raise Exception("The osm3s_query failed")
     return out
 
 def get_remote(query_xml, filename):
@@ -298,7 +298,7 @@ class OSMElement(object):
         elif element_type == "relation":
             return Relation(element_id, element_content_missing=True)
         else:
-            raise Exception, "Unknown element name '%s'" % (element_type,)
+            raise Exception("Unknown element name '%s'" % (element_type,))
 
     def __repr__(self):
         """A returns simple repr-style representation of the OSMElement
@@ -688,9 +688,9 @@ class Way(OSMElement):
         """
 
         if self.closed():
-            raise Exception, "Trying to join a closed way to another"
+            raise Exception("Trying to join a closed way to another")
         if other.closed():
-            raise Exception, "Trying to join a way to a closed way"
+            raise Exception("Trying to join a way to a closed way")
         if self.first == other.first:
             new_nodes = list(reversed(other.nodes))[0:-1] + self.nodes
         elif self.first == other.last:
@@ -700,7 +700,7 @@ class Way(OSMElement):
         elif self.last == other.last:
             new_nodes = self.nodes[0:-1] + list(reversed(other.nodes))
         else:
-            raise Exception, "Trying to join two ways with no end point in common"
+            raise Exception("Trying to join two ways with no end point in common")
         return Way(None, new_nodes)
 
     def bounding_box_tuple(self):
@@ -1206,7 +1206,7 @@ class Relation(OSMElement):
         for member, role in self:
             if include_node_dependencies and member.element_type == "node":
                 if member.element_content_missing:
-                    raise Exception, "Trying out output a missing node %s as XML"
+                    raise Exception("Trying out output a missing node %s as XML")
                 member.to_xml(parent_element, include_node_dependencies)
             etree.SubElement(relation,
                              'member',
@@ -1596,7 +1596,7 @@ class OSMXMLParser(ContentHandler):
     # FIXME: make this a decorator
     def raise_if_callback(self):
         if self.callback:
-            raise Exception, "When parsed with a callback, no top level elements are kept in memory"
+            raise Exception("When parsed with a callback, no top level elements are kept in memory")
 
     def __iter__(self):
         self.raise_if_callback()
@@ -1655,7 +1655,7 @@ class OSMXMLParser(ContentHandler):
                 else:
                     # However, if there's the wrong data in the file,
                     # that's worth looking into:
-                    raise Exception, "Failed to find expected element in: " + cache_filename
+                    raise Exception("Failed to find expected element in: " + cache_filename)
         if result is None:
             if self.fetch_missing:
                 result = fetch_osm_element(element_type,
@@ -1703,7 +1703,7 @@ class OSMXMLParser(ContentHandler):
                 self.raise_unless_expected_parent(name, 'relation')
                 member_type = attr['type']
                 if member_type not in OSMXMLParser.VALID_RELATION_MEMBERS:
-                    raise Exception, "Unknown member type '%s' in <relation>" % (member_type,)
+                    raise Exception("Unknown member type '%s' in <relation>" % (member_type,))
                 if attr['role'] not in OSMXMLParser.IGNORED_ROLES:
                     member = self.get_known_or_fetch(member_type, attr['ref'])
                     self.current_top_level_element.children.append((member, attr['role']))
@@ -1772,7 +1772,7 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
 
     arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
-        raise Exception, "Unknown element type '%s'" % (element_type,)
+        raise Exception("Unknown element type '%s'" % (element_type,))
     filename = get_cache_filename(element_type, element_id, cache_directory)
     all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
     return get_from_overpass(all_dependents_query, filename)
@@ -1987,7 +1987,7 @@ class EndpointToWayMap:
 
     def add_way(self, way):
         if self.get_from_either_end(way):
-            raise Exception, "Call to add_way would overwrite existing way(s)"
+            raise Exception("Call to add_way would overwrite existing way(s)")
         self.endpoints[way.first] = way
         self.endpoints[way.last] = way
 
@@ -2128,7 +2128,7 @@ def join_way_soup(ways):
         else:
             endpoints_to_ways.add_way(way)
     if endpoints_to_ways.number_of_endpoints():
-        raise UnclosedBoundariesException, endpoints_to_ways.pretty()
+        raise UnclosedBoundariesException(endpoints_to_ways.pretty())
     return closed_ways
 
 if __name__ == "__main__":

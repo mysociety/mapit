@@ -26,12 +26,12 @@ class Command(LabelCommand):
     def handle_label(self, directory_name, **options):
 
         if not os.path.isdir(directory_name):
-            raise Exception, "'%s' is not a directory" % (directory_name,)
+            raise Exception("'%s' is not a directory" % (directory_name,))
 
         os.chdir(directory_name)
 
         if not glob("al[0-1][0-9]"):
-            raise Exception, "'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,)
+            raise Exception("'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -66,7 +66,7 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception, u"Couldn't extract OSM element type and ID from: " + e
+                    raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
 
@@ -94,7 +94,7 @@ class Command(LabelCommand):
                     elif osm_type == 'way':
                         code_type_osm = CodeType.objects.get(code='osm_way')
                     else:
-                        raise Exception, "Unknown OSM element type:", osm_type
+                        raise Exception("Unknown OSM element type: " + osm_type)
 
                     try:
                         existing_area = Code.objects.get(type=code_type_osm, code=osm_id).area
@@ -107,7 +107,7 @@ class Command(LabelCommand):
 
                     if not existing_area.name.startswith('Unknown name'):
                         print (u"The existing area already had a sensible name: " + existing_area.name).encode('utf-8')
-                        raise Exception, "Not overwriting sensible name, exiting."
+                        raise Exception("Not overwriting sensible name, exiting.")
 
                     existing_area.name = place_name
 

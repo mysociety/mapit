@@ -303,13 +303,13 @@ class Area(models.Model):
             try:
                 all_areas.transform(srid)
             except (SRSException, OGRException) as e:
-                raise TransformError, "Error with transform: %s" % e
+                raise TransformError("Error with transform: %s" % e)
 
         num_points_before_simplification = all_areas.num_points
         if simplify_tolerance:
             all_areas = all_areas.simplify(simplify_tolerance)
             if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise TransformError, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
+                raise TransformError("Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance))
 
         if export_format=='kml':
             if kml_type == "polygon":
@@ -335,7 +335,7 @@ class Area(models.Model):
     </Document>
 </kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
             else:
-                raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
+                raise Exception("Unknown kml_type: '%s'" % (kml_type,))
             content_type = 'application/vnd.google-earth.kml+xml'
         elif export_format in ('json', 'geojson'):
             out = all_areas.json

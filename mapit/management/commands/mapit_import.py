@@ -281,7 +281,7 @@ class Command(LabelCommand):
                 else:
                     # If --preserve is not specified, the code or the name must be unique:
                     if len(areas) > 1:
-                        raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
+                        raise Area.MultipleObjectsReturned("There was more than one area with %s, and --preserve was not specified" % (matching_message,))
 
             except Area.DoesNotExist:
                 m = Area(
@@ -297,7 +297,7 @@ class Command(LabelCommand):
 
             # check that we are not about to skip a generation
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
             m.generation_high = new_generation
 
             if options['fix_invalid_polygons'] and g is not None:

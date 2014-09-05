@@ -16,10 +16,10 @@ class Command(BaseCommand):
     def handle(self, generation_id, **options):
         generation_to_deactivate = Generation.objects.get(id=int(generation_id, 10))
         if not generation_to_deactivate.active:
-            raise CommandError, "The generation %s wasn't active" % (generation_id,)
+            raise CommandError("The generation %s wasn't active" % (generation_id,))
         active_generations = Generation.objects.filter(active=True).count()
         if active_generations <= 1 and not options['force']:
-            raise CommandError, "You're trying to deactivate the only active generation.  If this is what you intended, please re-run the command with --force"
+            raise CommandError("You're trying to deactivate the only active generation.  If this is what you intended, please re-run the command with --force")
         generation_to_deactivate.active = False
         if options['commit']:
             generation_to_deactivate.save()

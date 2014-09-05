@@ -59,7 +59,7 @@ class Command(LabelCommand):
         for regionid, area_type, regionname, area_names, email, categories in region_line:
             print "Building region '%s'" % regionname
             if (-2147483648 > int(regionid) or 2147483647 < int(regionid)):
-                raise Exception, "Region ID %d is outside range of 32-bit integer" % regionid
+                raise Exception("Region ID %d is outside range of 32-bit integer" % regionid)
 
             if area_names:
                 # Look up areas using the names, find their geometry
@@ -88,7 +88,7 @@ class Command(LabelCommand):
                             }
                     area_id = Area.objects.filter(**args).only('id')
                     if 1 < len(area_id):
-                        raise Exception, "More than one Area named %s, use area ID as well" % name
+                        raise Exception("More than one Area named %s, use area ID as well" % name)
                     try:
                         print "ID:", area_id[0].id
                         args = {
@@ -99,7 +99,7 @@ class Command(LabelCommand):
                         else:
                             geometry = Geometry.objects.filter(**args)
                     except:
-                        raise Exception, "Area or geometry with name %s was not found!" % name
+                        raise Exception("Area or geometry with name %s was not found!" % name)
                     unionoutline = geometry.unionagg()
 
                 def update_or_create():
@@ -119,7 +119,7 @@ class Command(LabelCommand):
 
                     if m.generation_high and current_generation \
                             and m.generation_high.id < current_generation.id:
-                        raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                        raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
                     m.generation_high = new_generation
 
                     poly = [ GEOSGeometry(unionoutline).ogr ]
@@ -129,4 +129,4 @@ class Command(LabelCommand):
 
                 update_or_create()
             else:
-                raise Exception, "No area names found for region with name %s!" % regionname
+                raise Exception("No area names found for region with name %s!" % regionname)

@@ -48,5 +48,5 @@ class Command(NoArgsCommand):
             try:
                 area.codes.create(type=CodeType.objects.get(code='gss'), code=new_code)
             except IntegrityError:
-                raise Exception, "Key already exists for %s, can't give it %s" % (area, new_code)
+                raise Exception("Key already exists for %s, can't give it %s" % (area, new_code))
 

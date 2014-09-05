@@ -36,7 +36,7 @@ class Command(LabelCommand):
             else: 
                 area_type = 'OMF'
         else:
-            raise Exception, "Sorry, this script only handles LSOA/MSOA shapefiles!"            
+            raise Exception("Sorry, this script only handles LSOA/MSOA shapefiles!")            
     
         ds = DataSource(filename)
         layer = ds[0]

@@ -20,7 +20,7 @@ for app in settings.INSTALLED_APPS:
     try:
         mod = import_module(app)
     except ImportError as e:
-        raise ImproperlyConfigured, 'ImportError %s: %s' % (app, e.args[0])
+        raise ImproperlyConfigured('ImportError %s: %s' % (app, e.args[0]))
     template_dir = os.path.join(os.path.dirname(mod.__file__), 'templates')
     if os.path.isdir(template_dir):
         if settings.MAPIT_COUNTRY:
@@ -54,5 +54,5 @@ def load_template_source(template_name, template_dirs=None):
             return (open(filepath).read().decode(settings.FILE_CHARSET), filepath)
         except IOError:
             pass
-    raise TemplateDoesNotExist, template_name
+    raise TemplateDoesNotExist(template_name)
 load_template_source.is_usable = True
