@@ -33,7 +33,7 @@ class Command(NoArgsCommand):
 
         # Read in ward name -> electoral area name/area
         ni_eas = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/ni-electoral-areas.csv'))
-        ni_eas.next()
+        next(ni_eas)
         ward_to_electoral_area = {}
         e = {}
         for district, electoral_area, ward, dummy in ni_eas:
@@ -52,7 +52,7 @@ class Command(NoArgsCommand):
 
         # Read in new ONS code to names
         snac = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/snac-2009-ni-cons2ward.csv'))
-        snac.next()
+        next(snac)
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             if district_name not in ward_to_electoral_area:

@@ -15,7 +15,7 @@ class Command(NoArgsCommand):
 
         # Read in ward name -> electoral area name/area
         mapping = csv.reader(open('../data/UK/BL-2010-10-missing-codes.csv'))
-        mapping.next()
+        next(mapping)
         for row in mapping:
             type, new_code, old_code, name = row
             try:

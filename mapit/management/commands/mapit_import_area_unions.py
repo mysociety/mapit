@@ -9,25 +9,29 @@ import csv
 import sys
 import re
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import GEOSGeometry
+from django.utils.six import Iterator
+
 from mapit.models import Area, Generation, Geometry, Country, Type
 from mapit.management.command_utils import save_polygons
+
 
 # CSV format is
 # ID;code;name;area1,area2,...;email;categories
 
 # Copied from
 # http://www.mfasold.net/blog/2010/02/python-recipe-read-csvtsv-textfiles-and-ignore-comment-lines/
-class CommentedFile:
+class CommentedFile(Iterator):
     def __init__(self, f, commentstring="#"):
         self.f = f
         self.commentstring = commentstring
-    def next(self):
-        line = self.f.next()
+    def __next__(self):
+        line = next(self.f)
         while line.startswith(self.commentstring):
-            line = self.f.next()
+            line = next(self.f)
         return line
     def __iter__(self):
         return self
