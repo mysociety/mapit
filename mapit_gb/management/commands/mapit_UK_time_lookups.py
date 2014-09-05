@@ -67,16 +67,16 @@ class Command(BaseCommand):
         # was much slower.)
 
         to_generate = repeats * iterations
-        print "Generating %d random locations in the UK ..." % (to_generate,)
+        print("Generating %d random locations in the UK ..." % (to_generate,))
         global random_locations
         random_locations = [get_random_UK_location() for _ in range(to_generate)]
-        print "... done."
+        print("... done.")
 
         # Now look up each of those locations, timing the process with
         # timeit.  Note that the list() is required to cause
         # evaluation of the GeoQuerySet.
 
-        print "Testing point-in-polygon tests ..."
+        print("Testing point-in-polygon tests ...")
         result = repeat(stmt='list(Area.objects.by_location(random_locations.pop()))',
                         setup='''
 from mapit.models import Area
@@ -84,6 +84,6 @@ from mapit.management.commands.mapit_UK_time_lookups import random_locations
 ''',
                         repeat=repeats,
                         number=iterations)
-        print "... done."
+        print("... done.")
 
-        print result
+        print(result)

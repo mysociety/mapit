@@ -1,6 +1,8 @@
 # This script is used to fix up the Isles of Scilly, as Boundary-Line only contains
 # the Isles alone. We have to generate the COP parishes within it.
 
+from __future__ import print_function
+
 import csv
 import re
 from django.contrib.gis.geos import Point
@@ -52,4 +54,4 @@ class Command(LabelCommand):
                 if ons_code[0:4] != '00HF': continue
             pc = Postcode.objects.get(postcode=postcode)
             pc.areas.add(ward[ons_code])
-            print ".",
+            print(".", end=' ')

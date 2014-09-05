@@ -21,9 +21,9 @@ class Command(NoArgsCommand):
             raise Exception("You must specify a generation description")
 
         g = Generation(description=options['desc'])
-        print "Creating generation..."
+        print("Creating generation...")
         if options['commit']:
             g.save()
-            print "...saved: %s" % g
+            print("...saved: %s" % g)
         else:
-            print "...not saving, dry run"
+            print("...not saving, dry run")

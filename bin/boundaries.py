@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import xml.sax, os, errno, sys, datetime, time, shutil
 from xml.sax.handler import ContentHandler
 import yaml
@@ -1880,14 +1882,14 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
 
     element_id = str(element_id)
     if verbose:
-        print "fetch_osm_element(%s, %s)" % (element_type, element_id)
+        print("fetch_osm_element(%s, %s)" % (element_type, element_id))
 
     # Prevent circular inclusion of relations
     global CACHE_VISITED
     if visited is not None:
         CACHE_VISITED = visited
     if element_id in CACHE_VISITED:
-        print "  SEEN ALREADY..."
+        print("  SEEN ALREADY...")
         return None
     if element_type == 'relation':
         CACHE_VISITED.add(element_id)
@@ -2159,7 +2161,7 @@ if __name__ == "__main__":
                          options.way)
 
     if sum(bool(x) for x in exclusive_options) != 1:
-        print >> sys.stderr, "You must specify exactly one of --test, --relation or --way"
+        print("You must specify exactly one of --test, --relation or --way", file=sys.stderr)
         sys.exit(1)
 
     if options.doctest:
@@ -2179,7 +2181,7 @@ if __name__ == "__main__":
     kml, bbox = get_kml_for_osm_element(element_type, element_id)
 
     if kml:
-        print kml
+        print(kml)
         sys.exit(0)
     else:
         sys.exit(1)

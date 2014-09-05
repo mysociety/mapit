@@ -15,13 +15,13 @@ for row in nspd:
     if not ons_code or not parl or row[4]:
         continue
     if ons_code in lookup and lookup[ons_code] != parl:
-        print "%s maps to both %s and %s (%s)" % (ons_code, lookup[ons_code], parl, pc)
+        print("%s maps to both %s and %s (%s)" % (ons_code, lookup[ons_code], parl, pc))
     lookup[ons_code] = parl
 
 snac = csv.reader(open('../data/UK/snac-2003-ni-cons2ward.csv'))
 for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
     ward_code = ward_code.replace(' ', '')
     if ward_code not in lookup:
-        print "Ward code %s in SNAC, not in NSPD" % ward_code
+        print("Ward code %s in SNAC, not in NSPD" % ward_code)
     elif lookup[ward_code] != parl_code:
-        print "Parl codes differ for %s, SNAC has %s, NSPD has %s" % (ward_code, parl_code, lookup[ward_code])
+        print("Parl codes differ for %s, SNAC has %s, NSPD has %s" % (ward_code, parl_code, lookup[ward_code]))

@@ -18,6 +18,6 @@ class Command(NoArgsCommand):
         new.active = True
         if options['commit']:
             new.save()
-            print "%s - activated" % new
+            print("%s - activated" % new)
         else:
-            print "%s - not activated, dry run" % new
+            print("%s - not activated, dry run" % new)

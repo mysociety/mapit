@@ -101,7 +101,7 @@ class Command(LabelCommand):
     ons_code_to_shape = {}
 
     def handle_label(self,  filename, **options):
-        print filename
+        print(filename)
         new_generation = Generation.objects.new()
         if not new_generation:
             raise Exception("No new generation to be used for import!")
@@ -113,7 +113,7 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = unicode(feat['NAME'].value, 'iso-8859-1')
-            print " ", name
+            print("  %s" % name)
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
 
@@ -130,7 +130,7 @@ class Command(LabelCommand):
                     if name != m_name:
                         raise Exception("ONS code %s is used for %s and %s" % (ons_code, name, m_name))
                 # Otherwise, combine the two shapes for one area
-                print "    Adding subsequent shape to ONS code %s" % ons_code
+                print("    Adding subsequent shape to ONS code %s" % ons_code)
                 poly.append(feat.geom)
                 continue
 

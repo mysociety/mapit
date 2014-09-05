@@ -2,6 +2,8 @@
 # one-off after that import in order to get the four old boundaries back
 # that were removed during that import.
 
+from __future__ import print_function
+
 import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
@@ -28,7 +30,7 @@ class Command(LabelCommand):
             country = ons_code[0]
             if ons_code in ('E07000100', 'E07000104', 'S12000009', 'S12000043'):
                 assert Area.objects.filter(codes__type=code_version, codes__code=ons_code).count() == 0
-                print ons_code, area_code, country, name
+                print(ons_code, area_code, country, name)
 
                 m = Area(
                     type = Type.objects.get(code=area_code),

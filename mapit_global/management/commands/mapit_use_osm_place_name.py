@@ -34,7 +34,7 @@ class Command(LabelCommand):
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print s.encode('utf-8')
+                print(s.encode('utf-8'))
 
         verbose("Loading any admin boundaries from " + directory_name)
 
@@ -98,14 +98,14 @@ class Command(LabelCommand):
                     try:
                         existing_area = Code.objects.get(type=code_type_osm, code=osm_id).area
                     except Code.DoesNotExist:
-                        print "WARNING: failed to find Code with code_type %s and code %s" % (code_type_osm, osm_id)
+                        print("WARNING: failed to find Code with code_type %s and code %s" % (code_type_osm, osm_id))
                         continue
 
                     # Just check that the existing area really does
                     # still have an unknown name:
 
                     if not existing_area.name.startswith('Unknown name'):
-                        print (u"The existing area already had a sensible name: " + existing_area.name).encode('utf-8')
+                        print((u"The existing area already had a sensible name: " + existing_area.name).encode('utf-8'))
                         raise Exception("Not overwriting sensible name, exiting.")
 
                     existing_area.name = place_name
@@ -115,5 +115,5 @@ class Command(LabelCommand):
 
         unknown_names_after = Area.objects.filter(name__startswith='Unknown name').count()
 
-        print "unknown_names_before:", unknown_names_before
-        print "unknown_names_after:", unknown_names_after
+        print("unknown_names_before: %d" % unknown_names_before)
+        print("unknown_names_after: %d" % unknown_names_after)

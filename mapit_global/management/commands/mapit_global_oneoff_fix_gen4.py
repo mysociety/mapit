@@ -36,7 +36,7 @@ class Command(LabelCommand):
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print s.encode('utf-8')
+                print(s.encode('utf-8'))
 
         verbose("Loading any admin boundaries from " + directory_name)
         for type_directory in sorted(glob(mapit_type_glob)):

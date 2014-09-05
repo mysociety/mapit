@@ -149,8 +149,8 @@ class Command(LabelCommand):
         return pc
 
     def print_stats(self):
-        print "Imported %d (%d new, %d changed, %d same)" % (
+        print("Imported %d (%d new, %d changed, %d same)" % (
             self.count['total'], self.count['created'],
             self.count['updated'], self.count['unchanged']
-        )
+        ))
 

@@ -58,7 +58,7 @@ def save_polygons(lookup):
         #m.polygon = g.wkt
         #m.save()
         poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-    print ""
+    print("")
 
 
 def fix_with_buffer(geos_polygon):

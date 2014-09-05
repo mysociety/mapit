@@ -34,7 +34,7 @@ class Command(LabelCommand):
         name_type = NameType.objects.get(code='O')
         code_type_os = CodeType.objects.get(code='unit_id')
 
-        print filename
+        print(filename)
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
@@ -119,9 +119,9 @@ class Command(LabelCommand):
                 else:
                     raise Exception('Area "%s" (%s) has neither ONS code nor unit ID' % (name, area_code))
                 if int(options['verbosity']) > 1:
-                    print "  Area matched, %s" % (m, )
+                    print("  Area matched, %s" % (m, ))
             except Area.DoesNotExist:
-                print "  New area: %s %s %s %s" % (area_code, ons_code, unit_id, name)
+                print("  New area: %s %s %s %s" % (area_code, ons_code, unit_id, name))
                 m = Area(
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = Type.objects.get(code=area_code),

@@ -11,6 +11,8 @@
 #   pip install requests
 #   pip install SPARQLWrapper
 
+from __future__ import print_function
+
 from collections import defaultdict
 import json
 import re
@@ -72,27 +74,27 @@ capitals_with_no_country = 0
 
 for place, coords in sorted_mapping:
     city, country = (name_from_url(x) for x in place)
-    print u"{0} ({1})".format(city, country).encode('utf-8')
+    print(u"{0} ({1})".format(city, country).encode('utf-8'))
     mean_lon = tuple_mean(0, coords)
     mean_lat = tuple_mean(1, coords)
     mapit_url_format = "http://global.mapit.mysociety.org/point/4326/{0},{1}"
     mapit_url = mapit_url_format.format(mean_lon, mean_lat)
-    print "  browse on MapIt Global:", mapit_url + ".html"
+    print("  browse on MapIt Global:", mapit_url + ".html")
     r = requests.get(mapit_url, headers={'User-Agent': 'TestingCapitals/1.0'})
     mapit_result = json.loads(r.text)
     area_values = [a for k, a in mapit_result.items() if k != "debug_db_queries"]
     level_2_areas = [a for a in area_values if a['type'] == 'O02']
     if level_2_areas:
-        print "  In these level 2 areas:"
+        print("  In these level 2 areas:")
         for a in level_2_areas:
-            print "    ", a['name'].encode('utf-8')
+            print("    ", a['name'].encode('utf-8'))
     else:
-        print "  ### No level 2 areas found!"
+        print("  ### No level 2 areas found!")
         capitals_with_no_country += 1
     total_capitals += 1
     # Sleep so we don't hit MapIt's rate limiting:
     time.sleep(1)
 
-print "{0} capitals had no country in MapIt Global (out of {1})".format(
+print("{0} capitals had no country in MapIt Global (out of {1})".format(
     capitals_with_no_country,
-    total_capitals)
+    total_capitals))

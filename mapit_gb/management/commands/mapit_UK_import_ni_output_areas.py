@@ -70,9 +70,9 @@ class Command(LabelCommand):
             try:
                 m = Area.objects.get(codes__type=code_type, codes__code=ons_code)
                 if int(options['verbosity']) > 1:
-                    print "  Area matched, %s" % (m, )
+                    print("  Area matched, %s" % (m, ))
             except Area.DoesNotExist:
-                print "  New area: %s" % (ons_code)
+                print("  New area: %s" % (ons_code))
                 m = Area(
                     name = name, # If committing, this will be overwritten by the m.names.update_or_create
                     type = area_type,

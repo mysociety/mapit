@@ -60,4 +60,4 @@ class Command(LabelCommand):
 
             count += 1
             if count % 10000 == 0:
-                print "Imported %d" % count
+                print("Imported %d" % count)

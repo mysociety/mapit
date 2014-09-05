@@ -2,6 +2,8 @@
 # one-off after that import in order to get the four old boundaries back
 # that were removed during that import.
 
+from __future__ import print_function
+
 import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
@@ -31,7 +33,7 @@ class Command(LabelCommand):
 
         for id, code in areas_to_update.items():
             area = Area.objects.get(id=id)
-            print "Updating: {0} to: {1}".format(area, code)
+            print("Updating: {0} to: {1}".format(area, code))
             area.generation_low = Generation.objects.new()
             if options['commit']:
                 area.save()
@@ -65,7 +67,7 @@ class Command(LabelCommand):
 
     def make_new_area(self, name, ons_code, area_code, code_version, generation_low, generation_high, country):
         assert Area.objects.filter(codes__type=code_version, codes__code=ons_code).count() == 0
-        print ons_code, area_code, country, name
+        print(ons_code, area_code, country, name)
 
         return Area(
             type = Type.objects.get(code=area_code),

@@ -93,7 +93,7 @@ class Command(LabelCommand):
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print s.encode('utf-8')
+                print(s.encode('utf-8'))
 
         verbose("Loading any admin boundaries from " + directory_name)
 
@@ -165,7 +165,7 @@ class Command(LabelCommand):
                 elif len(useful_names) > 1:
                     raise Exception("Multiple useful names found in KML data")
                 name = useful_names[0]
-                print " ", name.encode('utf-8')
+                print("  %s" % name.encode('utf-8'))
 
                 if osm_type == 'relation':
                     code_type_osm = CodeType.objects.get(code='osm_rel')
@@ -264,7 +264,7 @@ class Command(LabelCommand):
                     verbose('    Area ID: ' + str(m.id))
 
                     if name not in kml_data.data:
-                        print json.dumps(kml_data.data, sort_keys=True, indent=4)
+                        print(json.dumps(kml_data.data, sort_keys=True, indent=4))
                         raise Exception(u"Will fail to find '%s' in the dictionary" % (name,))
 
                     old_lang_codes = set(unicode(n.type.code) for n in m.names.all())

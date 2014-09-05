@@ -28,7 +28,7 @@ class Command(LabelCommand):
         if not new_generation:
             raise Exception("No new generation to be used for import!")
 
-        print filename
+        print(filename)
 
         # Need to parse the KML manually to get the ExtendedData
         kml_data = KML()
@@ -44,7 +44,7 @@ class Command(LabelCommand):
             if not isinstance(name, unicode):
                 name = name.decode('utf-8')
             name = re.sub('\s+', ' ', name)
-            print " ", name.encode('utf-8')
+            print("  %s" % name.encode('utf-8'))
 
             code = int(kml_data.data[name]['ref'])
             if code == 301: # Oslo ref in OSM could be either 3 (fylke) or 301 (kommune). Make sure it's 3.

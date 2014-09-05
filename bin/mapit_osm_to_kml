@@ -5,6 +5,8 @@
 # One KML file is generated per fylke, each containing all the kommune
 # Additionally, one more KML file is generated containing the fylke.
 
+from __future__ import print_function
+
 import xml.sax, urllib, os
 from xml.sax.handler import ContentHandler
 
@@ -135,7 +137,7 @@ relation_ids = {
 
 # Okay, let's get going
 for fylke_id, relation_id in relation_ids.items():
-    print "Fetching relation %d..." % relation_id
+    print("Fetching relation %d..." % relation_id)
     P = OSM2KML()
     xml.sax.parse( fetch_from_cache('relation', relation_id), P )
 
@@ -151,11 +153,12 @@ for fylke_id, relation_id in relation_ids.items():
         rel = P.relation[id]
 
         name = rel['tags'].get('name', '')
-        if not name: name = rel['tags']['name:no']
+        if not name: name = rel['tags'].get('name:no')
+        if not name: continue
 
         ref = rel['tags'].get('ref')
         if not ref: ref = refs[name][fylke_id]
-        print " ", id, name.encode('utf-8'), ref
+        print(" ", id, name.encode('utf-8'), ref)
 
         extended = { 'ref': ref, 'osm': id }
         for k in ('name:no', 'name:smi', 'name:fi'):

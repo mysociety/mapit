@@ -47,17 +47,17 @@ class Command(LabelCommand):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         if not new_generation:
-            print "Using current generation %d" % current_generation.id
+            print("Using current generation %d" % current_generation.id)
             new_generation = current_generation
         else:
-            print "Using new generation %d" % new_generation.id
+            print("Using new generation %d" % new_generation.id)
 
-        print "Loading file %s" % filename
+        print("Loading file %s" % filename)
         region_line = csv.reader(CommentedFile(open(filename, "rb")),
                                  delimiter=';')
 
         for regionid, area_type, regionname, area_names, email, categories in region_line:
-            print "Building region '%s'" % regionname
+            print("Building region '%s'" % regionname)
             if (-2147483648 > int(regionid) or 2147483647 < int(regionid)):
                 raise Exception("Region ID %d is outside range of 32-bit integer" % regionid)
 
@@ -73,14 +73,14 @@ class Command(LabelCommand):
                     try:
                         # Use this to allow '123 Name' in area definition
                         areaidnum = int(name.split()[0])
-                        print "Looking up ID '%d'" % areaidnum
+                        print("Looking up ID '%d'" % areaidnum)
                         args = {
                             'id__exact': areaidnum,
                             'generation_low__lte': current_generation,
                             'generation_high__gte': new_generation,
                             }
                     except (ValueError, IndexError):
-                        print "Looking up name '%s'" % name
+                        print("Looking up name '%s'" % name)
                         args = {
                             'name__iexact': name,
                             'generation_low__lte': current_generation,
@@ -90,7 +90,7 @@ class Command(LabelCommand):
                     if 1 < len(area_id):
                         raise Exception("More than one Area named %s, use area ID as well" % name)
                     try:
-                        print "ID:", area_id[0].id
+                        print("ID: %d" % area_id[0].id)
                         args = {
                             'area__exact': area_id[0].id,
                             }
@@ -105,9 +105,9 @@ class Command(LabelCommand):
                 def update_or_create():
                     try:
                         m = Area.objects.get(id=int(regionid))
-                        print "Updating area %s with id %d" % (regionname, int(regionid))
+                        print("Updating area %s with id %d" % (regionname, int(regionid)))
                     except Area.DoesNotExist:
-                        print "Creating new area %s with id %d" % (regionname, int(regionid))
+                        print("Creating new area %s with id %d" % (regionname, int(regionid)))
                         m = Area(
                             id = int(regionid),
                             name = regionname,

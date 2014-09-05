@@ -12,6 +12,8 @@
 # Copyright (c) 2011, 2012 UK Citizens Online Democracy. All rights reserved.
 # Email: mark@mysociety.org; WWW: http://www.mysociety.org
 
+from __future__ import print_function
+
 import os
 import re
 import xml.sax
@@ -62,7 +64,7 @@ class Command(LabelCommand):
             for admin_directory in sorted(x for x in os.listdir('.') if os.path.isdir(x)):
 
                 if not re.search('^[A-Z0-9]{3}$', admin_directory):
-                    print "Skipping a directory that doesn't look like a MapIt type:", admin_directory
+                    print("Skipping a directory that doesn't look like a MapIt type:", admin_directory)
 
                 if not os.path.exists(admin_directory):
                     continue
@@ -95,7 +97,7 @@ class Command(LabelCommand):
 
                     # Need to parse the KML manually to get the ExtendedData
                     kml_data = KML()
-                    print "parsing", kml_filename
+                    print("parsing", kml_filename)
                     xml.sax.parse(kml_filename, kml_data)
 
                     useful_names = [n for n in kml_data.data.keys() if not n.startswith('Boundaries for')]
@@ -104,7 +106,7 @@ class Command(LabelCommand):
                     elif len(useful_names) > 1:
                         raise Exception("Multiple useful names found in KML data")
                     name = useful_names[0]
-                    print " ", name.encode('utf-8')
+                    print(" ", name.encode('utf-8'))
 
                     if osm_type == 'relation':
                         code_type_osm = CodeType.objects.get(code='osm_rel')

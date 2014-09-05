@@ -1,6 +1,8 @@
 # This script deletes all the areas from the new generation (i.e. the
 # most recent inactive one).
 
+from __future__ import print_function
+
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Generation, Area
@@ -25,7 +27,7 @@ class Command(NoArgsCommand):
 
         for area in Area.objects.filter(generation_low__lte=new, generation_high__gte=new):
 
-            print "Considering", area
+            print("Considering", area)
 
             g_low = area.generation_low
             g_high = area.generation_high
@@ -36,20 +38,20 @@ class Command(NoArgsCommand):
                 raise Exception("area.generation_high was " + g_high + ", which no longer exists!")
 
             if area.generation_low == new and area.generation_high == new:
-                print "  ... only exists in", new, "so will delete"
+                print("  ... only exists in", new, "so will delete")
                 if options['commit']:
                     area.delete()
-                    print "  ... deleted."
+                    print("  ... deleted.")
                 else:
-                    print "  ... not deleting, since --commit wasn't specified"
+                    print("  ... not deleting, since --commit wasn't specified")
             elif area.generation_low.id < new.id and area.generation_high == new:
-                print "  ... still exists in an earlier generation, so lowering generation_high to", previous_generation
+                print("  ... still exists in an earlier generation, so lowering generation_high to", previous_generation)
                 area.generation_high = previous_generation
                 if options['commit']:
                     area.save()
-                    print "  ... lowered."
+                    print("  ... lowered.")
                 else:
-                    print "  ... not lowering, since --commit wasn't specified"
+                    print("  ... not lowering, since --commit wasn't specified")
 
             elif area.generation_high.id > new.id:
                 # This should never happen - it'd mean the
