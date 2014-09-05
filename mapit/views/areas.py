@@ -171,7 +171,7 @@ def area_intersect(query_type, title, request, area_id, format):
         areas = list(Area.objects.intersect(query_type, area, types, generation))
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
-    except DatabaseError, e:
+    except DatabaseError as e:
         # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
         if 'canceling statement due to statement timeout' not in e.args[0]: raise
         raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
@@ -282,10 +282,10 @@ def area_from_code(request, code_type, code_value, format='json'):
     args['codes__code'] = code_value
     try:
         area = Area.objects.get(**args)
-    except Area.DoesNotExist, e:
+    except Area.DoesNotExist as e:
         message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 404)
-    except Area.MultipleObjectsReturned, e:
+    except Area.MultipleObjectsReturned as e:
         message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 500)
     return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))

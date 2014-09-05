@@ -150,7 +150,7 @@ class Command(BaseCommand):
                                          'kml',
                                          simplify_tolerance=options['tolerance'],
                                          kml_type="polygon")
-                except TransformError, e:
+                except TransformError as e:
                     simplified_away.append(area)
                     print "  (the area was simplified away to nothing)"
                     continue

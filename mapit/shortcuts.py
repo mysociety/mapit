@@ -74,7 +74,7 @@ def output_json(out, code=200):
 def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
-    except http.Http404, e:
+    except http.Http404 as e:
         from mapit.middleware import ViewException
         raise ViewException(format, str(e), 404)
 

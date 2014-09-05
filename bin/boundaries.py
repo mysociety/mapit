@@ -1894,7 +1894,7 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     xml = fetch_cached(element_type, element_id, verbose, cache_directory)
     try:
         parsed = parse_xml_string(xml, fetch_missing)
-    except UnexpectedElementException, e:
+    except UnexpectedElementException as e:
         raise
     # Sometimes we seem to have an empty element returned, in which
     # case just return None:
