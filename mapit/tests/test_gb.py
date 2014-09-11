@@ -50,7 +50,7 @@ class GBViewsTest(TestCase):
         pc = self.postcode.postcode
         url = '/postcode/%s' % urllib.parse.quote(pc)
         response = self.client.get(url)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
 
         in_gb_coords = self.postcode.location.transform(27700, clone=True)
         pc = countries.get_postcode_display(self.postcode.postcode)
@@ -87,7 +87,7 @@ class GBViewsTest(TestCase):
     def test_partial_json(self):
         url = '/postcode/partial/SW1A'
         response = self.client.get(url)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         pc = countries.get_postcode_display(self.postcode.postcode)
         in_gb_coords = self.postcode.location.transform(27700, clone=True)
         self.assertDictEqual(content, {
@@ -107,7 +107,7 @@ class GBViewsTest(TestCase):
     def test_nearest_json(self):
         url = '/nearest/4326/%f,%f' % self.postcode.location.coords
         response = self.client.get(url)
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
         pc = countries.get_postcode_display(self.postcode.postcode)
         in_gb_coords = self.postcode.location.transform(27700, clone=True)
         self.assertDictEqual(content, {
