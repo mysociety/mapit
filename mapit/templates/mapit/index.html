@@ -112,6 +112,9 @@ to keep NUUG going.
                     <li><a href="#about-mapit">About MapIt</a></li>
                     <li><a href="#usage-licence">Usage &amp; licence</a></li>
                     <li><a href="https://github.com/mysociety/mapit">Source code</a></li>
+                    {% if country == 'GB' %}
+                    <li><a href="{% url 'mapit_changelog' %}">Changelog</a></li>
+                    {% endif %}
                 </ul>
 
             </nav>
@@ -173,7 +176,7 @@ to keep NUUG going.
             rewritten and made public for the whole UK.
 
             {% if country == 'GB' %}
-                        
+
             Versions have appeared in other countries, such as
             <a href="http://mapit.nuug.no/">Norway</a>, and in 2012 we released a
             <a href="http://global.mapit.mysociety.org/">global version</a> based on OpenStreetMap data.

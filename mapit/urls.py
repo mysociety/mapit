@@ -1,4 +1,5 @@
-from django.conf.urls import patterns
+from django.conf.urls import patterns, include
+from django.conf import settings
 
 from mapit.shortcuts import render
 
@@ -44,3 +45,10 @@ urlpatterns = patterns('',
     (r'^areas$', 'mapit.views.areas.deal_with_POST', { 'call': 'areas' }),
     (r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, 'mapit.views.areas.area_from_code'),
 )
+
+# Include app-specific urls
+if (settings.MAPIT_COUNTRY == 'GB'):
+    urlpatterns += patterns('',
+        (r'^', include('mapit_gb.urls')),
+    )
+

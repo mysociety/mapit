@@ -1,0 +1,45 @@
+{% extends "mapit/base.html" %}
+
+{% block title %}Changelog{% endblock title %}
+
+{% block content %}
+
+<h2>Changelog</h2>
+<p>Changes to MapIt UK's data</p>
+
+<h3>2014-10-14 - Torfaen council changes</h3>
+
+<p>A one-off script was run to fix up some of the changes to Torfaen
+wards/communities in the May 2014 edition of Boundary-Line that should not
+have been present.</p>
+
+<p><a href="http://www.legislation.gov.uk/wsi/2013/2156/contents/made">
+http://www.legislation.gov.uk/wsi/2013/2156/contents/made</a> is the source
+for all of this. Specifically, section 2 saying that articles 5, 6 and 10
+don't come into operation until before the next election, which is 2017.</p>
+
+<p>This script revoked the changes made for the purposes of articles 5 and 6,
+but the changes for article 10 overlap with changes for (active) articles 8
+and 9, so we will live with those being incorrect until Ordnance Survey
+release hopefully fixed boundaries in October.</p>
+
+<p>Boundaries W05000993, W04000981, W05000997, W04000984, W05000995, and
+W05000996 were deleted, with W05000771, W04000761, W05000779, W04000767,
+W05000777, and W05000777 reinstated.</p>
+
+<h3>Changes and additions since 2010</h3>
+
+<ul>
+<li>22, May 2014: May 2014 Boundary-Line
+<li>21, December 2013: October 2013 Boundary-Line
+<li>20, May 2013: May 2013 Boundary-Line
+<li>19, March 2013: October 2012 Boundary-Line
+<li>18, July 2012: Northern Ireland Output Areas
+<li>17, May 2012: May 2012 Boundary-Line
+<li>16, April 2012: October 2011 Boundary-Line
+<li>15, January 2011: 2011 Scottish Parliament boundaries
+<li>14, January 2011: October 2010 Boundary-Line
+<li>13, July 2010: May 2010 Boundary-Line
+</ul>
+
+{% endblock %}
