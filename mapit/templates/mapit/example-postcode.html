@@ -1,10 +1,11 @@
 {% extends "mapit/base.html" %}
+{% load url from future %}
 
 {% block title %}Example postcode in {{ area.name }}{% endblock title %}
 
 {% block content %}
 
-<p>An example postcode for <a href="{% url mapit_index %}area/{{ area.id }}.html">{{ area.name }}</a> is <strong>{{ postcode }}</strong>
-(<a href="{% url mapit_index %}area/{{ area.id }}/example_postcode">JSON</a>).</p>
+<p>An example postcode for <a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a> is <strong>{{ postcode }}</strong>
+(<a href="{% url "mapit_index" %}area/{{ area.id }}/example_postcode">JSON</a>).</p>
 
 {% endblock %}

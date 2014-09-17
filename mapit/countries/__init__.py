@@ -1,9 +1,9 @@
 from django.conf import settings
 
 if settings.MAPIT_COUNTRY == 'GB':
-    from mapit.countries.gb import *
+    from mapit_gb.countries import *
 elif settings.MAPIT_COUNTRY == 'NO':
-    from mapit.countries.no import *
+    from mapit_no.countries import *
 elif settings.MAPIT_COUNTRY == 'Global':
-    from mapit.countries.osm import *
+    from mapit_global.countries import *
 

@@ -31,7 +31,7 @@ class GenerationManager(models.Manager):
         if not latest or latest[0].active:
             return None
         return latest[0]
-        
+
 class Generation(models.Model):
 
     # Generations are used so that, theoretically, old versions of the same
@@ -41,17 +41,17 @@ class Generation(models.Model):
     # lookups (both can be overridden to a different generation with a query
     # parameter). Inactive generations are so that you can load in new data
     # without it being returned by normal lookups by everyone using mapit.
-    # 
+    #
     # An Area in the database has a minimum and maximum generation that it is
     # valid for, so that you can see at which point an area was added and then
     # removed.
-    # 
+    #
     # As an example, http://mapit.mysociety.org/postcode/EH11BB.html is the
     # current areas for that postcode, whilst
     # http://mapit.mysociety.org/postcode/EH11BB.html?generation=14 gives you
     # the areas before the last Scottish Parliament boundary changes, hence
     # giving you the different areas involved.
-    # 
+    #
     # The concept works okay for boundary changes of things that have the
     # notion of being children - e.g. council wards, UK Parliament
     # constituencies, and so on - which are changed with a clean slate to a
@@ -63,7 +63,7 @@ class Generation(models.Model):
     # of Edinburgh Council boundary. If the City of Edinburgh Council boundary
     # were to change, this should get a new ID starting at the new generation.
     # But that would break some things.
-    # 
+    #
     # Another example, as I've just fixed #32, is
     # http://mapit.mysociety.org/area/2253/children.html?type=UTW vs
     # http://mapit.mysociety.org/area/2253/children.html?generation=14;type=UTW
@@ -88,12 +88,12 @@ class Generation(models.Model):
         }
 
 class Country(models.Model):
-    code = models.CharField(max_length=1, unique=True)
+    code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
 
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name_plural='countries'
 
@@ -103,10 +103,10 @@ class Type(models.Model):
     # for a few countries in the mapit/fixtures directory. In the UK we have
     # county councils (CTY), district councils (DIS), constituencies of the UK
     # Parliament (WMC), Scottish Parliament regions (SPE), and so on. The fact
-    # they are three letter codes is a hangover from the original source data
-    # we used from Ordnance Survey, and could potentially be changed.
+    # these examples are three letter codes is a hangover from the original
+    # source data we used from Ordnance Survey.
 
-    code = models.CharField(max_length=3, unique=True, help_text="A unique three letter code, eg 'CTR', 'CON', etc")
+    code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'CTR', 'CON', etc")
     description = models.CharField(max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
 
     def __unicode__(self):
@@ -203,7 +203,7 @@ class TransformError(Exception):
     pass
 
 class Area(models.Model):
-    name = models.CharField(max_length=100, editable=False, blank=True) # Automatically set from name children
+    name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
     type = models.ForeignKey(Type, related_name='areas')
     country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)
@@ -315,20 +315,22 @@ class Area(models.Model):
             elif kml_type == "full":
                 out = '''<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-    <Style id="ourPolygonStyle">
-        <LineStyle>
-            <color>%s</color>
-            <width>2</width>
-        </LineStyle>
-        <PolyStyle>
-            <color>%s</color>
-        </PolyStyle>
-    </Style>
-    <Placemark>
-        <styleUrl>#ourPolygonStyle</styleUrl>
-        <name>%s</name>
-        %s
-    </Placemark>
+    <Document>
+        <Style id="ourPolygonStyle">
+            <LineStyle>
+                <color>%s</color>
+                <width>2</width>
+            </LineStyle>
+            <PolyStyle>
+                <color>%s</color>
+            </PolyStyle>
+        </Style>
+        <Placemark>
+            <styleUrl>#ourPolygonStyle</styleUrl>
+            <name>%s</name>
+            %s
+        </Placemark>
+    </Document>
 </kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
             else:
                 raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
@@ -379,40 +381,10 @@ class Name(models.Model):
     def __unicode__(self):
         return '%s (%s) [%s]' % (self.name, self.type.code, self.area.id)
 
-    def make_friendly_name(self, name):
-        n = re.sub('\s+', ' ', name.name.strip())
-        n = n.replace('St. ', 'St ')
-        if name.type.code == 'M': return n
-        if name.type.code == 'S': return n
-        # Type must be 'O' here
-        n = re.sub(' Euro Region$', '', n) # EUR
-        n = re.sub(' (Burgh|Co|Boro) Const$', '', n) # WMC
-        n = re.sub(' P Const$', '', n) # SPC
-        n = re.sub(' PER$', '', n) # SPE
-        n = re.sub(' GL Assembly Const$', '', n) # LAC
-        n = re.sub(' Assembly Const$', '', n) # WAC
-        n = re.sub(' Assembly ER$', '', n) # WAE
-        n = re.sub(' London Boro$', ' Borough', n) # LBO
-        if self.area.country and self.area.country.name == 'Wales': n = re.sub('^.*? - ', '', n) # UTA
-        n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n) # UTA
-        n = re.sub(' District \(B\)$', ' Borough', n) # DIS
-        n = re.sub(' \(B\)$', ' Borough', n) # DIS
-        if self.area.type.code in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'): n += ' Council'
-        n = re.sub(' (ED|CP)$', '', n) # CPC, CED, UTE
-        n = re.sub(' Ward$', '', n) # DIW, LBW, MTW, UTW
-        return n
-
     def save(self, *args, **kwargs):
         super(Name, self).save(*args, **kwargs)
-        name = self.area.names.filter(type__code__in=('M', 'O', 'S')).order_by('type__code')
-        if name:
-            name = name[0]
-        else:
-            # Always fallback to self
-            # This solved the Unknown name problem
-            name = self
-        self.area.name = self.make_friendly_name(name)
-        self.area.save()
+        if hasattr(countries, 'name_save_hook'):
+            countries.name_save_hook(self)
 
     def as_tuple(self):
         return (self.type.code, [self.type.description,
@@ -509,4 +481,3 @@ class Postcode(models.Model):
         row = cursor.fetchone()
         m = re.match('POINT\((.*?) (.*)\)', row[0])
         return map(float, m.groups())
-

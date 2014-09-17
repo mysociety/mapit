@@ -1,4 +1,5 @@
 {% extends "mapit/base.html" %}
+{% load url from future %}
 
 {% block title %}{{ area.name }}{% endblock title %}
 
@@ -7,24 +8,24 @@
     <header class="area_info">
         <h2>{{ area.name }} <em class="area_id">ID {{ area.id }}</em></h2>
         <ul>
-            <li>Type: <a href="{% url mapit_index %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
+            <li>Type: <a href="{% url "mapit_index" %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
             <li>Exists in generations: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
             {% if country != 'Global' %}
             <li>Country: {{ area.country }}</li>
             {% endif %}
             {% if area.parent_area %}
-            <li>A child of <a href="{% url mapit_index %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
+            <li>A child of <a href="{% url "mapit_index" %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
             {% endif %}
             {% if country != 'Global' %}
             {% if area.polygons.count or area.postcodes.count %}
-            <li><a href="{% url mapit_index %}area/{{ area.id }}/example_postcode.html">Example postcode</a></li>
+            <li><a href="{% url "mapit_index" %}area/{{ area.id }}/example_postcode.html">Example postcode</a></li>
             {% endif %}
             {% endif %}
             {% if area.children.count %}
-            <li><a href="{% url mapit_index %}area/{{ area.id }}/children.html">Children</a></li>
+            <li><a href="{% url "mapit_index" %}area/{{ area.id }}/children.html">Children</a></li>
             {% endif %}
         </ul>
-        <p>Get <a href="{% url mapit_index %}area/{{ area.id }}">this data as JSON</a></p>
+        <p>Get <a href="{% url "mapit_index" %}area/{{ area.id }}">this data as JSON</a></p>
     </header>
 
 {% if area.polygons.count %}
@@ -38,7 +39,7 @@
     map.addLayer(osm);
 
     reqwest({
-        url: "{% url mapit_index %}area/{{ area.id }}.geojson?simplify_tolerance=0.0001",
+        url: "{% url "mapit_index" %}area/{{ area.id }}.geojson?simplify_tolerance=0.0001",
         type: 'json',
         success: function(data) {
             var area = new L.GeoJSON(data);
@@ -70,11 +71,11 @@
 {% if area.polygons.count %}
                 <h3>Geometry:</h3>
                 <ul>
-                    <li><a href="{% url mapit_index %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a></li>
-                    <li><a href="{% url mapit_index %}area/{{ area.id }}.wkt">WKT</a></li>
-                    <li><a href="{% url mapit_index %}area/{{ area.id }}.geojson">GeoJSON</a></li>
-                    <li><a href="{% url mapit_index %}area/{{ area.id }}.kml">KML</a>
-                    (<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url mapit_index %}area/{{ area.id }}.kml">on a Google Map</a>)</li>
+                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a></li>
+                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}.wkt">WKT</a></li>
+                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}.geojson">GeoJSON</a></li>
+                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}.kml">KML</a>
+                    (<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url "mapit_index" %}area/{{ area.id }}.kml">on a Google Map</a>)</li>
                 </ul>
 {% endif %}
             </li>
@@ -82,12 +83,12 @@
 {% if area.polygons.count %}
                 <h3>Areas:</h3>
                 <ul>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/touches.html{{ geotype.touches.0 }}">Touching this area{{ geotype.touches.1 }}</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/overlaps.html{{ geotype.overlaps.0 }}">Overlapping this area{{ geotype.overlaps.1 }}</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covered.html">Covering this area</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">Covered by this area{{ geotype.covers.1 }}</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/coverlaps.html{{ geotype.coverlaps.0 }}">Covered by or overlapping this area{{ geotype.coverlaps.1 }}</a></li>
-                    <li><a rel="nofollow" href="{% url mapit_index %}area/{{ area.id }}/intersects.html{{ geotype.intersects.0 }}">Intersects this area{{ geotype.intersects.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/touches.html{{ geotype.touches.0 }}">Touching this area{{ geotype.touches.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/overlaps.html{{ geotype.overlaps.0 }}">Overlapping this area{{ geotype.overlaps.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covered.html">Covering this area</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">Covered by this area{{ geotype.covers.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/coverlaps.html{{ geotype.coverlaps.0 }}">Covered by or overlapping this area{{ geotype.coverlaps.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/intersects.html{{ geotype.intersects.0 }}">Intersects this area{{ geotype.intersects.1 }}</a></li>
                 </ul>
 {% endif %}
             </li>

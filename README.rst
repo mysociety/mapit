@@ -7,7 +7,7 @@ the co-ordinates of a point on Earth, and who needs to find out what country,
 region, city, constituency, or state it lies within. It’s also great for
 looking up the shapes of all those boundaries.
 
-It was created in 2003 by `mySociety <http://www.mysociety.org/>`_, a UK
+It was created in 2003 by `mySociety <http://www.mysociety.org/>`__, a UK
 charity, for use by their various tools needing admin area lookup.
 
 Installation
@@ -20,7 +20,7 @@ and documentation.
 Examples
 --------
 
-`mySociety <http://www.mysociety.org>`_ runs public installations of MapIt that
+`mySociety <http://www.mysociety.org>`__ runs public installations of MapIt that
 you might be able to use:
 
     * `MapIt Global <http://global.mapit.mysociety.org/>`_ - global boundaries

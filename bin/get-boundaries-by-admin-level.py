@@ -72,9 +72,8 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
 
     file_basename = mapit_type + ".xml"
     output_directory = os.path.join(data_dir, "cache-with-political")
-    xml_filename = os.path.join(output_directory, file_basename)
     query = get_query_relations_and_ways(required_tags)
-    get_osm3s(query, xml_filename)
+    data = get_osm3s(query)
 
     level_directory = os.path.join(output_directory, mapit_type)
     mkdir_p(level_directory)
@@ -114,4 +113,4 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
         except UnclosedBoundariesException:
             print "      ... ignoring unclosed boundary"
 
-    parse_xml_minimal(xml_filename, handle_top_level_element)
+    parse_xml_minimal(data, handle_top_level_element)

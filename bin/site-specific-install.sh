@@ -23,7 +23,7 @@ misuse() {
 [ -z "$DISTRIBUTION" ] && misuse DISTRIBUTION
 [ -z "$DISTVERSION" ] && misuse DISTVERSION
 
-apt-get install -y python-flup gunicorn
+apt-get install -qq -y python-flup gunicorn >/dev/null
 
 install_nginx
 

@@ -10,7 +10,7 @@ class CodeInline(admin.TabularInline):
 class AreaAdmin(admin.OSMGeoAdmin):
     list_filter = ('type', 'country')
     list_display = ('name', 'type', 'country', 'generation_low', 'generation_high', 'parent_area', 'geometries_link')
-    search_fields = ('names__name',)
+    search_fields = ('name', 'names__name', 'codes__code')
     raw_id_fields = ('parent_area',)
     inlines = [
         NameInline,

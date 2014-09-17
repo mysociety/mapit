@@ -1,3 +1,18 @@
+v1.0.3 2014-02-05
+* Bugfix: Limit area lookups by unit_id to the current generation
+* Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
+* Bugfix: Avoid problems with old versions of pip and setuptools
+
+
+v1.0.2, 2013-12-09
+* Now requires Django 1.4 or higher.
+* Allow $ and . in callback function names.
+* Increased maximum lengths for codes and names.
+* Bugfix: Include required messages framework for admin.
+* Bugfix: Django 1.5+ dealing with DataSource names.
+* Bugfix: Running CSS script when not installed via PyPi.
+* Bugfix: Include required <Document> in KML output.
+
 v1.0.1, 2013-09-16
 * Fix script installation.
 * Link postcode to GeoHack page.

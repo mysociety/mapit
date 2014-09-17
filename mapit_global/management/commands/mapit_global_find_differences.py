@@ -22,7 +22,6 @@ from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameTy
 from mapit.management.command_utils import save_polygons, KML
 from glob import glob
 import urllib2
-from BeautifulSoup import BeautifulSoup
 from collections import namedtuple
 import json
 import csv

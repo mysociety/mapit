@@ -1,17 +1,16 @@
-python-yaml
-python-beautifulsoup
-python-django
-libapache2-mod-wsgi
-python-psycopg2 
-
-libgdal1 | libgdal1-1.6.0 | libgdal1-1.5.0
 postgresql
 postgresql-9.1-postgis | postgresql-8.4-postgis | postgresql-8.3-postgis
-
-ruby-sass
-
+libgdal1 | libgdal1-1.6.0 | libgdal1-1.5.0
 memcached
+python-virtualenv
+
+python-django
+python-django-south
+python-psycopg2
+python-yaml
 python-memcache
 python-gdal
-python-django-south
+
+libapache2-mod-wsgi
+ruby-sass
 python-shapely

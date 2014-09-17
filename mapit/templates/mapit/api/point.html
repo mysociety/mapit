@@ -1,3 +1,4 @@
+{% load url from future %}
         <section id="api-by_point">
             <h3><em>lookup by</em> point</h3>
             <dl>
@@ -39,13 +40,13 @@
 
                 <dt>Example:</dt>
 {% if country == 'GB' %}
-<dd><a href="{% url mapit_index %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.</dd>
+<dd><a href="{% url "mapit_index" %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.</dd>
 {% endif %}
 {% if country == 'NO' %}
-<dd><a href="{% url mapit_index %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
+<dd><a href="{% url "mapit_index" %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
 {% endif %}
 {% if country == 'Global' %}
-<dd><a href="{% url mapit_index %}point/4326/8.55,47.366667.html">Example of areas containing (47.366667,8.55)</a>.</dd>
+<dd><a href="{% url "mapit_index" %}point/4326/8.55,47.366667.html">Example of areas containing (47.366667,8.55)</a>.</dd>
 {% endif %}
             </dl>
         </section>
@@ -62,13 +63,13 @@
                 <dd>The postcode closest to the particular point.
                 <dt>Example</dt>
 {% if country == 'GB' %}
-                <dd><a href="{% url mapit_index %}nearest/27700/400000,300000.html">Example of postcode nearest to (400000,300000)</a>.</dd>
+                <dd><a href="{% url "mapit_index" %}nearest/27700/400000,300000.html">Example of postcode nearest to (400000,300000)</a>.</dd>
 {% endif %}
 {% if country == 'NO' %}
-                <dd><a href="{% url mapit_index %}nearest/4326/10,59.html">Example of postcode nearest to (59,10)</a>.</dd>
+                <dd><a href="{% url "mapit_index" %}nearest/4326/10,59.html">Example of postcode nearest to (59,10)</a>.</dd>
 {% endif %}
 {% if country == 'Global' %}
-                <dd><a href="{% url mapit_index %}nearest/4326/8.55,47.366667.html">Example of postcode nearest to (47.366667,8.55)</a>.</dd>
+                <dd><a href="{% url "mapit_index" %}nearest/4326/8.55,47.366667.html">Example of postcode nearest to (47.366667,8.55)</a>.</dd>
 {% endif %}
             </dl>
         </section>

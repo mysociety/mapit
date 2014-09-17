@@ -1,18 +1,13 @@
 import json
 
 from django.test import TestCase
+from django.conf import settings
 from django.contrib.gis.geos import Polygon
-
-import settings
 
 from mapit.models import Type, Area, Geometry, Generation
 
 class AreaViewsTest(TestCase):
-    @classmethod
-    def setUpClass(self):
-        self.old_srid = settings.MAPIT_AREA_SRID
-        settings.MAPIT_AREA_SRID = 4326
-
+    def setUp(self):
         self.generation = Generation.objects.create(
             active=True,
             description="Test generation",
@@ -22,7 +17,7 @@ class AreaViewsTest(TestCase):
             code="BIG",
             description="A large test area",
             )
-        
+
         self.small_type = Type.objects.create(
             code="SML",
             description="A small test area",
@@ -70,7 +65,8 @@ class AreaViewsTest(TestCase):
 
     def test_areas_by_point(self):
         # Different co-ords to evade any caching
-        response = self.client.get('/point/4326/-3.4,51.5.json')
+        url = '/point/{0}/-3.4,51.5.json'.format(settings.MAPIT_AREA_SRID)
+        response = self.client.get(url)
 
         content = json.loads(response.content)
 
@@ -79,6 +75,11 @@ class AreaViewsTest(TestCase):
             set((x.id for x in (self.big_area, self.small_area_1)))
             )
 
-    @classmethod
-    def tearDownClass(self):
-        settings.MAPIT_AREA_SRID = self.old_srid
+    def test_front_page(self):
+        response = self.client.get('/')
+
+    def test_json_links(self):
+        id = self.big_area.id
+        url = '/area/%d/covers.html?type=SML' % id
+        response = self.client.get(url)
+        self.assertContains(response, '/area/%d/covers?type=SML' % id)

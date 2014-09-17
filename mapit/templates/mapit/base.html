@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load static from staticfiles %}
 <!DOCTYPE HTML>
 <html lang="en-gb">
 <head>
@@ -7,15 +9,15 @@
 
     <title>{% block fulltitle %}{% block title %}{% endblock %} - MapIt{% endblock %}</title>
 
-    <link href="{% url mapit_index %}static/mapit/css/mapit.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% url mapit_index %}static/mapit/leaflet/leaflet.css" />
+    <link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.css" %}" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="{% url mapit_index %}static/mapit/leaflet/leaflet.ie.css" />
-        <script src="{% url mapit_index %}static/mapit/js/html5shiv.min.js"></script>
-        <script src="{% url mapit_index %}static/mapit/js/respond.min.js"></script>
+        <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.ie.css" %}" />
+        <script src="{% static "mapit/js/html5shiv.min.js" %}"></script>
+        <script src="{% static "mapit/js/respond.min.js" %}"></script>
     <![endif]-->
-    <script src="{% url mapit_index %}static/mapit/js/reqwest.min.js"></script>
-    <script src="{% url mapit_index %}static/mapit/leaflet/leaflet.js"></script>
+    <script src="{% static "mapit/js/reqwest.min.js" %}"></script>
+    <script src="{% static "mapit/leaflet/leaflet.js" %}"></script>
 
 {% if norobots %}
     <meta name="robots" content="noindex, follow">
@@ -41,19 +43,19 @@
     <div id="mysociety-org-bar">
 
         <a class="mysociety-home-link" href="http://www.mysociety.org/">
-            <img src="{% url mapit_index %}static/mapit/img/page-top-mysociety.png" alt="MapIt is a charitable project from mySociety" width="362" height="32">
+            <img src="{% static "mapit/img/page-top-mysociety.png" %}" alt="MapIt is a charitable project from mySociety" width="362" height="32">
         </a>
 
         <a class="mysociety-donate-link" href="http://www.mysociety.org/donate/">
-            <img src="{% url mapit_index %}static/mapit/img/page-top-donate.png" alt="Keep us online, Donate Now" width="160" height="32">
+            <img src="{% static "mapit/img/page-top-donate.png" %}" alt="Keep us online, Donate Now" width="160" height="32">
         </a>
 
     </div>
 
     {% if request.path != '/' %}
     <header class="header">
-        <a class="docs_link" href="{% url mapit_index %}"><img src="{% url mapit_index %}static/mapit/img/home-icon.png" alt="" width="16" height="14" /> Home &amp; Documentation</a>
-        <h1><a href="{% url mapit_index %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
+        <a class="docs_link" href="{% url "mapit_index" %}"><img src="{% static "mapit/img/home-icon.png" %}" alt="" width="16" height="14" /> Home &amp; Documentation</a>
+        <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
     </header>
 
     <article class="content">
@@ -66,7 +68,7 @@
 
     <footer class="footer" role="contentinfo">
         <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em>
-            <a href="http://www.djangoproject.com/"><img align="middle" src="http://media.djangopony.com/img/small/badge.png" border="0" alt="Django powered"></a>
+            <a href="http://www.djangoproject.com/"><img align="middle" src="{% static "mapit/img/pony.png" %}" border="0" alt="Django powered"></a>
         </h1>
 
         <div class="database-credits">

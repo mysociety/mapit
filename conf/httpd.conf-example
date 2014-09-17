@@ -6,10 +6,9 @@
 # Copyright (c) 2010 UK Citizens Online Democracy. All rights reserved.
 # Email: matthew@mysociety.org; WWW: http://www.mysociety.org
 
-WSGIDaemonProcess example.mapit.mysociety.org user=exampleuser group=examplegroup processes=5 threads=1 display-name=example.mapit.mysociety.org
+WSGIDaemonProcess example.mapit.mysociety.org user=exampleuser group=examplegroup processes=5 threads=1 display-name=example.mapit.mysociety.org python-path=/data/vhost/example.mapit.mysociety.org/virtualenv-mapit/lib/python/site-packages
 WSGIProcessGroup example.mapit.mysociety.org
 
-WSGIScriptAlias / /data/vhost/example.mapit.mysociety.org/mapit/web/django.wsgi
+WSGIScriptAlias / /data/vhost/example.mapit.mysociety.org/mapit/project/wsgi.py
 
-Alias /media /usr/share/pyshared/django/contrib/admin/media
-Alias /static /data/vhost/example.mapit.mysociety.org/mapit/mapit/static
+Alias /static /data/vhost/example.mapit.mysociety.org/collected_static

@@ -45,7 +45,7 @@ def sorted_areas(areas):
     return list(areas)
 
 def output_html(request, title, areas, **kwargs):
-    kwargs['json_url'] = request.path.replace('.html', '')
+    kwargs['json_url'] = request.get_full_path().replace('.html', '')
     kwargs['title'] = title
     kwargs['areas'] = sorted_areas(areas)
     kwargs['indent_areas'] = kwargs.get('indent_areas', False)

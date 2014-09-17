@@ -52,18 +52,9 @@ def save_polygons(lookup):
                 # database.
                 if g.point_count < 4:
                     continue
-                # XXX Using g.wkt directly when importing Norway KML works fine
-                # with Django 1.1, Postgres 8.3, PostGIS 1.3.3 but fails with
-                # Django 1.2, Postgres 8.4, PostGIS 1.5.1, saying that the
-                # dimensions constraint fails - because it is trying to import a
-                # shape as 3D as the WKT contains an altitude at the end of
-                # every co-ordinate. Removing the altitudes from the KML, and/or
-                # using altitudeMode makes no difference to the WKT here, so the
-                # only easy solution appears to be removing the altitude
-                # directly from the WKT before using it.
-                dimensions_re = r'([\d.-]+\s+[\d.-]+)(\s+[\d.-]+)(,|\))'
-                must_be_two_d = re.sub(dimensions_re, r'\1\3', g.wkt)
-                m.polygons.create(polygon=must_be_two_d)
+                # Make sure it is two-dimensional
+                g.coord_dim = 2
+                m.polygons.create(polygon=g.wkb)
         #m.polygon = g.wkt
         #m.save()
         poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice

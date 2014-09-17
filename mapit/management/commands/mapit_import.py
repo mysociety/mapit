@@ -7,7 +7,7 @@
 import re
 import sys
 from optparse import make_option
-from django.core.management.base import LabelCommand
+from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
@@ -113,13 +113,16 @@ class Command(LabelCommand):
 
     def handle_label(self, filename, **options):
 
-        err = False
+        missing_options = []
         for k in ['generation_id','area_type_code','name_type_code','country_code']:
-            if options[k]: continue
-            print "Missing argument '--%s'" % k
-            err = True
-        if err:
-            sys.exit(1)
+            if options[k]:
+                continue
+            else:
+                missing_options.append(k)
+        if missing_options:
+            message_start = "Missing arguments " if len(missing_options) > 1 else "Missing argument "
+            message = message_start + " ".join('--{0}'.format(k) for k in missing_options)
+            raise CommandError(message)
 
         generation_id = options['generation_id']
         area_type_code = options['area_type_code']
@@ -135,20 +138,16 @@ class Command(LabelCommand):
         encoding = options['encoding'] or 'utf-8'
 
         if len(area_type_code)>3:
-            print "Area type code must be 3 letters or fewer, sorry"
-            sys.exit(1)
+            raise CommandError("Area type code must be 3 letters or fewer, sorry")
 
         if name_field and override_name:
-            print "You must not specify both --name_field and --override_name"
-            sys.exit(1)
+            raise CommandError("You must not specify both --name_field and --override_name")
         if code_field and override_code:
-            print "You must not specify both --code_field and --override_code"
-            sys.exit(1)
+            raise CommandError("You must not specify both --code_field and --override_code")
 
         using_code = (code_field or override_code)
         if (using_code and not code_type_code) or (not using_code and code_type_code):
-            print "If you want to save a code, specify --code_type and either --code_field or --override_code"
-            sys.exit(1)
+            raise CommandError("If you want to save a code, specify --code_type and either --code_field or --override_code")
         try:
             area_type = Type.objects.get(code=area_type_code)
         except:
@@ -178,26 +177,26 @@ class Command(LabelCommand):
                 code_type = CodeType(code=code_type_code, description=code_desc)
                 if options['commit']: code_type.save()
 
-        print "Importing from %s" % filename
+        self.stdout.write("Importing from %s" % filename)
 
         if not options['commit']:
-            print '(will not save to db as --commit not specified)'
+            self.stdout.write('(will not save to db as --commit not specified)')
 
         current_generation = Generation.objects.current()
         new_generation     = Generation.objects.get( id=generation_id )
 
         def verbose(*args):
             if int(options['verbosity']) > 1:
-                print " ".join(str(a) for a in args)
+                self.stdout.write(" ".join(str(a) for a in args))
 
         ds = DataSource(filename)
         layer = ds[0]
         if (override_name or override_code) and len(layer) > 1:
             message = "Warning: you have specified an override %s and this file contains more than one feature; multiple areas with the same %s will be created"
             if override_name:
-                print message % ('name', 'name')
+                self.stdout.write(message % ('name', 'name'))
             if override_code:
-                print message % ('code', 'code')
+                self.stdout.write(message % ('code', 'code'))
 
         for feat in layer:
 
@@ -208,13 +207,12 @@ class Command(LabelCommand):
                     name = feat[name_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    print "Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices)
-                    sys.exit(1)
+                    raise CommandError("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
-                    name = name.decode(encoding)
+                    if not isinstance(name, unicode):
+                        name = name.decode(encoding)
                 except:
-                    print "Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding
-                    sys.exit(1)
+                    raise CommandError("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
 
             name = re.sub('\s+', ' ', name)
             if not name:
@@ -228,12 +226,13 @@ class Command(LabelCommand):
                     code = feat[code_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    print "Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices)
-                    sys.exit(1)
+                    raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            print "  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' )
+            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
 
-            g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
+            g = None
+            if hasattr(feat, 'geom'):
+                g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
 
             try:
                 if options['new']: # Always want a new area
@@ -256,6 +255,12 @@ class Command(LabelCommand):
                         # Then it was missing in current_generation:
                         verbose("    area existed previously, but was missing from", current_generation)
                         raise Area.DoesNotExist
+                    elif g is None:
+                        if previous_geos_geometry is not None:
+                            verbose("    area is now empty")
+                            raise Area.DoesNotExist
+                        else:
+                            verbose("    the area has remained empty")
                     elif previous_geos_geometry is None:
                         # It was empty in the previous generation:
                         verbose("    area was empty in", current_generation)
@@ -295,13 +300,13 @@ class Command(LabelCommand):
                 raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
             m.generation_high = new_generation
 
-            if options['fix_invalid_polygons']:
+            if options['fix_invalid_polygons'] and g is not None:
                 # Make a GEOS geometry only to check for validity:
                 geos_g = g.geos
                 if not geos_g.valid:
                     geos_g = fix_invalid_geos_geometry(geos_g)
                     if geos_g is None:
-                        print "The geometry for area %s was invalid and couldn't be fixed" % name
+                        self.stdout.write("The geometry for area %s was invalid and couldn't be fixed" % name)
                         g = None
                     else:
                         g = geos_g.ogr

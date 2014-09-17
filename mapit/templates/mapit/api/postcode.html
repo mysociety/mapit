@@ -1,3 +1,4 @@
+{% load url from future %}
 <section id="api-by_postcode">
     <h3><em>lookup by</em> postcode</h3>
     <dl>
@@ -22,20 +23,20 @@
         <dd>
 {% if country == 'GB' %}
             <p>If your postcode was <em>SW1A 1AA</em> you would load
-                <a href="{% url mapit_index %}postcode/SW1A1AA">/postcode/SW1A1AA</a>
+                <a href="{% url "mapit_index" %}postcode/SW1A1AA">/postcode/SW1A1AA</a>
             </p>
             <p>
                 By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url
-                <a href="{% url mapit_index %}postcode/SW1A1AA.html">/postcode/SW1A1AA.html</a>
+                <a href="{% url "mapit_index" %}postcode/SW1A1AA.html">/postcode/SW1A1AA.html</a>
             </p>
 {% endif %}
 {% if country == 'NO' %}
             <p>If your postcode was <em>0373</em> you would load
-                <a href="{% url mapit_index %}postcode/0373">/postcode/0373</a>
+                <a href="{% url "mapit_index" %}postcode/0373">/postcode/0373</a>
             </p>
             <p>
                 By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url
-                <a href="{% url mapit_index %}postcode/0373.html">/postcode/0373.html</a>
+                <a href="{% url "mapit_index" %}postcode/0373.html">/postcode/0373.html</a>
             </p>
 {% endif %}
         </dd>
@@ -58,14 +59,14 @@
         <dd>
 {% if country == 'GB' %}
             <ul>
-                <li>JSON: <a href="{% url mapit_index %}postcode/partial/SW1A">/postcode/partial/SW1A</a>
-                <li>HTML: <a href="{% url mapit_index %}postcode/partial/SW1A.html">/postcode/partial/SW1A.html</a>
+                <li>JSON: <a href="{% url "mapit_index" %}postcode/partial/SW1A">/postcode/partial/SW1A</a>
+                <li>HTML: <a href="{% url "mapit_index" %}postcode/partial/SW1A.html">/postcode/partial/SW1A.html</a>
             </ul>
 {% endif %}
 {% if country == 'NO' %}
             <ul>
-                <li>JSON: <a href="{% url mapit_index %}postcode/partial/85">/postcode/partial/85</a>
-                <li>HTML: <a href="{% url mapit_index %}postcode/partial/85.html">/postcode/partial/85.html</a>
+                <li>JSON: <a href="{% url "mapit_index" %}postcode/partial/85">/postcode/partial/85</a>
+                <li>HTML: <a href="{% url "mapit_index" %}postcode/partial/85.html">/postcode/partial/85.html</a>
             </ul>
 {% endif %}
         </dd>
