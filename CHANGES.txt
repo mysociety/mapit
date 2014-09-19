@@ -1,28 +1,40 @@
-v1.0.3 2014-02-05
-* Bugfix: Limit area lookups by unit_id to the current generation
-* Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
-* Bugfix: Avoid problems with old versions of pip and setuptools
+v1.1, 2014-09-19
+    * Allow import of shapefiles with empty features.
+    * Allow editing of main area name in admin
+    * Improved admin search
+    * Include query parameters in postcode JSON links
+    * Factor out country specific management commands
+    * MapIt Global specific:
+        Various fixes to import process, including preventing infinite loop,
+        better geometry comparison, better language fetching
+    * MapIt UK specific:
+        * Add a --commit option to mapit_UK_find_parents
+        * October 2013 patches and May 2014 support
 
+v1.0.3, 2014-02-05
+    * Bugfix: Limit area lookups by unit_id to the current generation
+    * Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
+    * Bugfix: Avoid problems with old versions of pip and setuptools
 
 v1.0.2, 2013-12-09
-* Now requires Django 1.4 or higher.
-* Allow $ and . in callback function names.
-* Increased maximum lengths for codes and names.
-* Bugfix: Include required messages framework for admin.
-* Bugfix: Django 1.5+ dealing with DataSource names.
-* Bugfix: Running CSS script when not installed via PyPi.
-* Bugfix: Include required <Document> in KML output.
+    * Now requires Django 1.4 or higher.
+    * Allow $ and . in callback function names.
+    * Increased maximum lengths for codes and names.
+    * Bugfix: Include required messages framework for admin.
+    * Bugfix: Django 1.5+ dealing with DataSource names.
+    * Bugfix: Running CSS script when not installed via PyPi.
+    * Bugfix: Include required <Document> in KML output.
 
 v1.0.1, 2013-09-16
-* Fix script installation.
-* Link postcode to GeoHack page.
+    * Fix script installation.
+    * Link postcode to GeoHack page.
 
 v1.0.0, 2013-08-27
-* Initial proper PyPI release.
+    * Initial proper PyPI release.
 
 v1.0.0pr2, 2011-12-08
-* Add South and factored out hard-coded name and code types into separate
-  database tables.
+    * Add South and factored out hard-coded name and code types into separate
+      database tables.
 
 v1.0.0pr1, 2011-12-07
-* Initial packaged version.
+    * Initial packaged version.
