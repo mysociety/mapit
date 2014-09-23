@@ -5,7 +5,12 @@ try:
     from django.db.utils import DatabaseError
 except:
     from psycopg2 import DatabaseError
-from osgeo import gdal
+
+try:
+    from osgeo import gdal
+    PYGDAL = True
+except ImportError:
+    PYGDAL = False
 
 from django.contrib.gis.geos import Point
 from django.http import HttpResponse, HttpResponseRedirect
@@ -294,7 +299,8 @@ def area_from_code(request, code_type, code_value, format='json'):
 @ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
-    gdal.UseExceptions()
+    if PYGDAL:
+        gdal.UseExceptions()
     try:
         location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
