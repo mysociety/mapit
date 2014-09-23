@@ -20,13 +20,19 @@ import requests
 import time
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+from django.utils.encoding import smart_str
+from django.utils import six
 from django.utils.six.moves import urllib
+if six.PY2:
+    from urllib import unquote as unquote_to_bytes
+else:
+    from urllib.parse import unquote_to_bytes
 
 def name_from_url(url):
     """Extract everything after the last slash in the URL"""
 
-    url_as_str = url.encode('utf-8')
-    unquoted = urllib.parse.unquote(re.sub(r'^.*/', '', url_as_str))
+    url = re.sub(r'^.*/', '', url)
+    unquoted = unquote_to_bytes(url.encode('utf-8'))
     return unquoted.decode('utf-8')
 
 def tuple_mean(index, tuples):
@@ -74,7 +80,7 @@ capitals_with_no_country = 0
 
 for place, coords in sorted_mapping:
     city, country = (name_from_url(x) for x in place)
-    print(u"{0} ({1})".format(city, country).encode('utf-8'))
+    print(smart_str("{0} ({1})".format(city, country)))
     mean_lon = tuple_mean(0, coords)
     mean_lat = tuple_mean(1, coords)
     mapit_url_format = "http://global.mapit.mysociety.org/point/4326/{0},{1}"
@@ -87,7 +93,7 @@ for place, coords in sorted_mapping:
     if level_2_areas:
         print("  In these level 2 areas:")
         for a in level_2_areas:
-            print("    ", a['name'].encode('utf-8'))
+            print("    ", smart_str(a['name']))
     else:
         print("  ### No level 2 areas found!")
         capitals_with_no_country += 1

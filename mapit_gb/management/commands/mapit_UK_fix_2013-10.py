@@ -6,8 +6,11 @@ from __future__ import print_function
 
 import re
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
+from django.utils import six
+
 from mapit.models import Area, Code, CodeType, Type, Country, Generation, NameType
 from mapit.management.command_utils import save_polygons
 
@@ -45,7 +48,7 @@ class Command(LabelCommand):
         # Add in new areas to represent the old boundaries too
         for feat in DataSource(filename)[0]:
             name = feat['NAME'].value
-            if not isinstance(name, unicode):
+            if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)

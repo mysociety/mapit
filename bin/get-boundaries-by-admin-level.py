@@ -9,6 +9,8 @@ from __future__ import print_function
 import xml.sax, os, re, errno, sys
 from xml.sax.handler import ContentHandler
 
+from django.utils.encoding import smart_str
+
 from boundaries import *
 from generate_kml import *
 
@@ -90,7 +92,7 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
 
         name = get_name_from_tags(tags, element_type, element_id)
 
-        print("Considering admin boundary:", name.encode('utf-8'))
+        print("Considering admin boundary:", smart_str(name))
 
         try:
 
@@ -98,7 +100,7 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
                                      element_id,
                                      replace_slashes(name))
 
-            filename = os.path.join(level_directory, u"%s.kml" % (basename,))
+            filename = os.path.join(level_directory, "%s.kml" % (basename,))
 
             if not os.path.exists(filename):
 
@@ -107,7 +109,7 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
                     print("      No data found for %s %s" % (element_type, element_id))
                     return
 
-                print("      Writing KML to", filename.encode('utf-8'))
+                print("      Writing KML to", smart_str(filename))
                 with open(filename, "w") as fp:
                     fp.write(kml)
 

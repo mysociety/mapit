@@ -6,10 +6,13 @@
 import re
 import sys
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+from django.utils import six
+
 from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
 
@@ -44,7 +47,7 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = feat['NAME'].value
-            if not isinstance(name, unicode):
+            if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
 
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)

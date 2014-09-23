@@ -10,6 +10,8 @@ from __future__ import print_function
 import xml.sax, urllib, os
 from xml.sax.handler import ContentHandler
 
+from django.utils.encoding import smart_str
+
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
 
@@ -21,7 +23,7 @@ except:
 
 # Read in file matching names to IDs. Distinguish per fylke
 # as some names are used more than once.
-ids = open('%s/norway/ids.csv' % data_dir).readlines()
+ids = open('%s/norway/ids.csv' % data_dir, 'rb').readlines()
 refs = {}
 for row in ids:
     id, name = row.decode('utf-8').strip().split(',')
@@ -158,7 +160,7 @@ for fylke_id, relation_id in relation_ids.items():
 
         ref = rel['tags'].get('ref')
         if not ref: ref = refs[name][fylke_id]
-        print(" ", id, name.encode('utf-8'), ref)
+        print(" ", id, smart_str(name), ref)
 
         extended = { 'ref': ref, 'osm': id }
         for k in ('name:no', 'name:smi', 'name:fi'):
@@ -166,12 +168,12 @@ for fylke_id, relation_id in relation_ids.items():
         if rel['tags'].get('name:samisk'): extended['name:smi'] = rel['tags'].get('name:samisk')
         extended = '\n        '.join([ '<Data name="%s"><value>%s</value></Data>' % (k,v) for k, v in extended.items() ])
 
-        out.write(('''    <Placemark>
+        out.write(smart_str('''    <Placemark>
       <name>%s</name>
       <ExtendedData>
         %s
       </ExtendedData>
-      <Polygon><outerBoundaryIs><LinearRing><coordinates>''' % (name, extended) ).encode('utf-8') )
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>''' % (name, extended) ) )
         out.write( P.make_wkt(id) )
         out.write('''</coordinates></LinearRing></outerBoundaryIs></Polygon>
     </Placemark>

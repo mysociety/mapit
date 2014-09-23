@@ -6,6 +6,7 @@ import sys, re
 from bs4 import BeautifulSoup
 
 from django.utils.six.moves import urllib
+from django.utils.encoding import smart_str
 
 url = "http://wiki.openstreetmap.org/wiki/Tag:boundary%3Dadministrative"
 
@@ -17,7 +18,7 @@ soup = BeautifulSoup(data, "lxml")
 
 def strip_all_tags(element):
     for br in element.find_all('br'):
-        br.replaceWith(u"\n")
+        br.replaceWith("\n")
     return "".join(element.findAll(text=True)).strip()
 
 # Tidy up the country name column - I'm not sure there's an obviously
@@ -63,10 +64,10 @@ for table in soup.find_all('table', 'wikitable'):
         country_to_admin_levels[country_name] = levels
 
 for country_name, levels in sorted(country_to_admin_levels.items()):
-    print("####", country_name.encode('utf-8'))
+    print("####", smart_str(country_name))
     for i, s in enumerate(levels):
         print("---- level", i)
         if s:
-            print("  " + s.encode('utf-8'))
+            print("  " + smart_str(s))
         else:
             print("  [No information]")

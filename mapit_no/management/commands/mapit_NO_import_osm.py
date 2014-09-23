@@ -8,10 +8,14 @@
 import re
 import xml.sax
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
+from django.utils import six
+from django.utils.encoding import smart_str
+
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
 
@@ -41,10 +45,10 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = feat['Name'].value
-            if not isinstance(name, unicode):
+            if not isinstance(name, six.text_type):
                 name = name.decode('utf-8')
             name = re.sub('\s+', ' ', name)
-            print("  %s" % name.encode('utf-8'))
+            print("  %s" % smart_str(name))
 
             code = int(kml_data.data[name]['ref'])
             if code == 301: # Oslo ref in OSM could be either 3 (fylke) or 301 (kommune). Make sure it's 3.

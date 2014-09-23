@@ -426,10 +426,10 @@ class Node(OSMElement):
         self.tags = {}
 
     def pretty(self, indent=0):
-        i = u" "*indent
-        result = i + u"node (%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
+        i = " "*indent
+        result = i + "node (%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
         for k, v in sorted(self.tags.items()):
-            result += u"\n%s  %s => %s" % (i, k, v)
+            result += "\n%s  %s => %s" % (i, k, v)
         return result
 
     def lon_lat_tuple(self):
@@ -583,12 +583,12 @@ class Way(OSMElement):
             node (15) lat: 51, lon: 2
         """
 
-        i = u" "*indent
-        result = i + u"way (%s)" % (self.element_id)
+        i = " "*indent
+        result = i + "way (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
-            result += u"\n%s  %s => %s" % (i, k, v)
+            result += "\n%s  %s => %s" % (i, k, v)
         for node in self.nodes:
-            result += u"\n" + node.pretty(indent + 2)
+            result += "\n" + node.pretty(indent + 2)
         return result
 
     @property
@@ -982,14 +982,14 @@ class Relation(OSMElement):
               way (76546)
         """
 
-        i = u" "*indent
-        result = i + u"relation (%s)" % (self.element_id)
+        i = " "*indent
+        result = i + "relation (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
-            result += u"\n%s  %s => %s" % (i, k, v)
+            result += "\n%s  %s => %s" % (i, k, v)
         for child, role in self.children:
-            result += u"\n%s  child %s" % (i, child.element_type)
-            result += u" with role '%s'" % (role)
-            result += u"\n" + child.pretty(indent + 4)
+            result += "\n%s  child %s" % (i, child.element_type)
+            result += " with role '%s'" % (role)
+            result += "\n" + child.pretty(indent + 4)
         return result
 
     def way_iterator(self, inner=False):

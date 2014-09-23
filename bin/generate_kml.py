@@ -288,7 +288,7 @@ def get_kml_for_osm_element_no_fetch(element):
     element_type, element_id = element.name_id_tuple()
 
     name = element.get_name()
-    folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
+    folder_name = "Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
 
     if element_type == 'way':
         if not element.closed():

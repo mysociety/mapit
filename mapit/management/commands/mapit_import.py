@@ -13,7 +13,9 @@ from django.core.management.base import LabelCommand, CommandError
 #from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import *
 from django.conf import settings
+from django.utils import six
 from django.utils.six.moves import input
+from django.utils.encoding import smart_str
 
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
@@ -212,7 +214,7 @@ class Command(LabelCommand):
                     choices = ', '.join(layer.fields)
                     raise CommandError("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
-                    if not isinstance(name, unicode):
+                    if not isinstance(name, six.text_type):
                         name = name.decode(encoding)
                 except:
                     raise CommandError("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
@@ -231,7 +233,7 @@ class Command(LabelCommand):
                     choices = ', '.join(layer.fields)
                     raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
+            self.stdout.write(smart_str("  looking at '%s'%s" % ( name, (' (%s)' % code) if code else '' )))
 
             g = None
             if hasattr(feat, 'geom'):

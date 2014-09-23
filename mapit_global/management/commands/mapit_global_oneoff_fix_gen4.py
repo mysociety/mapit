@@ -8,6 +8,7 @@ import re
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
+from django.utils.encoding import smart_str, smart_text
 import shapely
 
 from mapit.models import Generation, Code, CodeType
@@ -29,14 +30,14 @@ class Command(LabelCommand):
 
         os.chdir(directory_name)
 
-        mapit_type_glob = "[A-Z0-9][A-Z0-9][A-Z0-9]"
+        mapit_type_glob = smart_text("[A-Z0-9][A-Z0-9][A-Z0-9]")
 
         if not glob(mapit_type_glob):
             raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print(s.encode('utf-8'))
+                print(smart_str(s))
 
         verbose("Loading any admin boundaries from " + directory_name)
         for type_directory in sorted(glob(mapit_type_glob)):
@@ -61,11 +62,11 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
+                    raise Exception("Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
                 kml_filename = os.path.join(type_directory, e)
-                verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
+                verbose(progress + "Loading " + os.path.realpath(kml_filename))
 
                 if osm_type == 'relation':
                     code_type_osm = CodeType.objects.get(code='osm_rel')
@@ -98,7 +99,7 @@ class Command(LabelCommand):
 
                 g_geos = g.geos
                 if not g_geos.valid:
-                    verbose("    Invalid KML:" + unicode(kml_filename, 'utf-8'))
+                    verbose("    Invalid KML:" + kml_filename)
                     fixed_multipolygon = fix_invalid_geos_multipolygon(g_geos)
                     if len(fixed_multipolygon) == 0:
                         verbose("    Invalid polygons couldn't be fixed")

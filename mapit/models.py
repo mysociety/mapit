@@ -354,7 +354,7 @@ class Geometry(models.Model):
         verbose_name_plural = 'geometries'
 
     def __unicode__(self):
-        return u'%s, polygon %d' % (self.area, self.id)
+        return '%s, polygon %d' % (self.area, self.id)
 
 class NameType(models.Model):
 

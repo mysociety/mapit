@@ -18,8 +18,11 @@ import os
 import re
 import xml.sax
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
+from django.utils.encoding import smart_str
+
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
 from glob import glob
@@ -87,7 +90,7 @@ class Command(LabelCommand):
 
                     m = re.search(r'^(way|relation)-(\d+)-', e)
                     if not m:
-                        raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
+                        raise Exception("Couldn't extract OSM element type and ID from: " + e)
 
                     osm_type, osm_id = m.groups()
 
@@ -106,7 +109,7 @@ class Command(LabelCommand):
                     elif len(useful_names) > 1:
                         raise Exception("Multiple useful names found in KML data")
                     name = useful_names[0]
-                    print(" ", name.encode('utf-8'))
+                    print(" ", smart_str(name))
 
                     if osm_type == 'relation':
                         code_type_osm = CodeType.objects.get(code='osm_rel')

@@ -28,6 +28,8 @@ from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import MultiPolygon
 from django.utils.six.moves import urllib
+from django.utils.encoding import smart_str, smart_text
+
 import shapely
 
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
@@ -86,14 +88,14 @@ class Command(LabelCommand):
 
         os.chdir(directory_name)
 
-        mapit_type_glob = "[A-Z0-9][A-Z0-9][A-Z0-9]"
+        mapit_type_glob = smart_text("[A-Z0-9][A-Z0-9][A-Z0-9]")
 
         if not glob(mapit_type_glob):
             raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
-                print(s.encode('utf-8'))
+                print(smart_str(s))
 
         verbose("Loading any admin boundaries from " + directory_name)
 
@@ -147,13 +149,13 @@ class Command(LabelCommand):
 
                 m = re.search(r'^(way|relation)-(\d+)-', e)
                 if not m:
-                    raise Exception(u"Couldn't extract OSM element type and ID from: " + e)
+                    raise Exception("Couldn't extract OSM element type and ID from: " + e)
 
                 osm_type, osm_id = m.groups()
 
                 kml_filename = os.path.join(type_directory, e)
 
-                verbose(progress + "Loading " + unicode(os.path.realpath(kml_filename), 'utf-8'))
+                verbose(progress + "Loading " + os.path.realpath(kml_filename))
 
                 # Need to parse the KML manually to get the ExtendedData
                 kml_data = KML()
@@ -165,7 +167,7 @@ class Command(LabelCommand):
                 elif len(useful_names) > 1:
                     raise Exception("Multiple useful names found in KML data")
                 name = useful_names[0]
-                print("  %s" % name.encode('utf-8'))
+                print(smart_str("  %s" % name))
 
                 if osm_type == 'relation':
                     code_type_osm = CodeType.objects.get(code='osm_rel')
@@ -204,7 +206,7 @@ class Command(LabelCommand):
                 g_geos = g.geos
 
                 if not g_geos.valid:
-                    verbose("    Invalid KML:" + unicode(kml_filename, 'utf-8'))
+                    verbose("    Invalid KML:" + kml_filename)
                     fixed_multipolygon = fix_invalid_geos_multipolygon(g_geos)
                     if len(fixed_multipolygon) == 0:
                         verbose("    Invalid polygons couldn't be fixed")
@@ -265,9 +267,9 @@ class Command(LabelCommand):
 
                     if name not in kml_data.data:
                         print(json.dumps(kml_data.data, sort_keys=True, indent=4))
-                        raise Exception(u"Will fail to find '%s' in the dictionary" % (name,))
+                        raise Exception("Will fail to find '%s' in the dictionary" % (name,))
 
-                    old_lang_codes = set(unicode(n.type.code) for n in m.names.all())
+                    old_lang_codes = set(n.type.code for n in m.names.all())
 
                     for k, translated_name in kml_data.data[name].items():
                         language_name = None
@@ -282,7 +284,7 @@ class Command(LabelCommand):
                                     language_name = language_code_to_name[lang]
                         if not language_name:
                             continue
-                        old_lang_codes.discard(unicode(lang))
+                        old_lang_codes.discard(lang)
 
                         # Otherwise, make sure that a NameType for this language exists:
                         NameType.objects.update_or_create({'code': lang},
