@@ -15,7 +15,8 @@ PARENT_DIR = os.path.dirname(BASE_DIR)
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
 try:
-    config = yaml.load( open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') )
+    with open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') as fp:
+        config = yaml.load(fp)
 except:
     config = {}
 
@@ -49,13 +50,17 @@ if DEBUG:
     }
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-            'TIMEOUT': 86400,
+    try:
+        import memcache
+        CACHES = {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+                'LOCATION': '127.0.0.1:11211',
+                'TIMEOUT': 86400,
+            }
         }
-    }
+    except ImportError:
+        pass
     CACHE_MIDDLEWARE_SECONDS = 86400
     CACHE_MIDDLEWARE_KEY_PREFIX = config.get('MAPIT_DB_NAME')
 
