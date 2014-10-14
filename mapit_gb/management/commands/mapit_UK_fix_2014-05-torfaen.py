@@ -35,7 +35,7 @@ class Command(NoArgsCommand):
         old = areas.filter(generation_high_id=21)
         new = areas.filter(generation_low_id=22)
         if self.commit:
-            old.update(generation_high_id=22)
+            old.update(generation_high=22)
             new.delete()
         else:
             print 'Would delete %s and reinstate %s' % (disp(new), disp(old))
