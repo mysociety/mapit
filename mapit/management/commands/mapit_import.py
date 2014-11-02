@@ -228,7 +228,7 @@ class Command(LabelCommand):
                     choices = ', '.join(layer.fields)
                     raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
+            self.stdout.write(u"  looking at '%s'%s" % ( name, (' (%s)' % code) if code else '' ))
 
             g = None
             if hasattr(feat, 'geom'):
