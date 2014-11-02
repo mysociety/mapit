@@ -20,3 +20,4 @@
 .venv
 
 .DS_Store
+django_mapit.egg-info
