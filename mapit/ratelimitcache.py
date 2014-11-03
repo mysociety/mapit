@@ -58,7 +58,10 @@ class ratelimit(object):
         try:
             cache.incr(key)
         except ValueError:
-            cache.add(key, 0, self.expire_after())
+            if cache.__class__.__name__ == 'MemcachedCache':
+                cache.add(key, '0', self.expire_after())
+            else:
+                cache.add(key, 0, self.expire_after())
             cache.incr(key)
     
     def should_ratelimit(self, request):
