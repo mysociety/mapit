@@ -64,8 +64,8 @@ class Command(LabelCommand):
                 new_area = self.make_new_area(name, ons_code, area_code, code_version, 11, 20, country)
             if new_area and options['commit']:
                 new_area.save()
-                new_area.names.update_or_create({ 'type': name_type }, { 'name': name })
-                new_area.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
+                new_area.names.update_or_create(type=name_type, defaults={ 'name': name })
+                new_area.codes.update_or_create(type=code_version, defaults={ 'code': ons_code })
                 save_polygons({ ons_code: (new_area, [feat.geom]) })
 
     def make_new_area(self, name, ons_code, area_code, code_version, generation_low, generation_high, country):

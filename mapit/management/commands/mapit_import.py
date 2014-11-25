@@ -320,8 +320,8 @@ class Command(LabelCommand):
 
             if options['commit']:
                 m.save()
-                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.names.update_or_create(type=name_type, defaults={ 'name': name })
                 if code:
-                    m.codes.update_or_create({ 'type': code_type }, { 'code': code })
+                    m.codes.update_or_create(type=code_type, defaults={ 'code': code })
                 save_polygons({ m.id : (m, poly) })
 

@@ -56,8 +56,8 @@ class Command(LabelCommand):
                 generation_high = generation,
             )
             m.save()
-            m.names.update_or_create({ 'type': NameType.objects.get(code='S') }, { 'name': name })
-            m.codes.update_or_create({ 'type': CodeType.objects.get(code='ons') }, { 'code': lsoa_code })
+            m.names.update_or_create(type=NameType.objects.get(code='S'), defaults={ 'name': name })
+            m.codes.update_or_create(type=CodeType.objects.get(code='ons'), defaults={ 'code': lsoa_code })
 
             p = feat.geom
             if p.geom_name == 'POLYGON':

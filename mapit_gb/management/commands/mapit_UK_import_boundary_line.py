@@ -142,15 +142,15 @@ class Command(LabelCommand):
             poly = [ feat.geom ]
 
             if options['commit']:
-                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.names.update_or_create(type=name_type, defaults={ 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
+                    m.codes.update_or_create(type=code_version, defaults={ 'code': ons_code })
             if unit_id:
                 self.unit_id_to_shape[unit_id] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': code_type_os }, { 'code': unit_id })
+                    m.codes.update_or_create(type=code_type_os, defaults={ 'code': unit_id })
 
         if options['commit']:
             save_polygons(self.unit_id_to_shape)

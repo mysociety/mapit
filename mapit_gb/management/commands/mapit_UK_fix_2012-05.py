@@ -40,7 +40,7 @@ class Command(LabelCommand):
                 )
                 if options['commit']:
                     m.save()
-                    m.names.update_or_create({ 'type': name_type }, { 'name': name })
-                    m.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
+                    m.names.update_or_create(type=name_type, defaults={'name': name})
+                    m.codes.update_or_create(type=code_version, defaults={'code': ons_code})
                     save_polygons({ ons_code: (m, [feat.geom]) })
 

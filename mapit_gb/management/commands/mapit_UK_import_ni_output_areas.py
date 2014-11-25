@@ -94,11 +94,11 @@ class Command(LabelCommand):
             poly = [ f ]
 
             if options['commit']:
-                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.names.update_or_create(type=name_type, defaults={ 'name': name })
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': code_type }, { 'code': ons_code })
+                    m.codes.update_or_create(type=code_type, defaults={ 'code': ons_code })
 
         if options['commit']:
             save_polygons(self.ons_code_to_shape)

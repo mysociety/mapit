@@ -87,10 +87,10 @@ class Command(LabelCommand):
                     m.save()
                     for k, v in kml_data.data[name].items():
                         if k in ('name:smi', 'name:fi'):
-                    	    lang = 'N' + k[5:]
-                    	    m.names.update_or_create({ 'type': NameType.objects.get(code=lang) }, { 'name': v })
-                    m.codes.update_or_create({ 'type': code_type_n5000 }, { 'code': code_str })
-                    m.codes.update_or_create({ 'type': code_type_osm }, { 'code': int(kml_data.data[name]['osm']) })
+                            lang = 'N' + k[5:]
+                            m.names.update_or_create(type=NameType.objects.get(code=lang), defaults={ 'name': v })
+                    m.codes.update_or_create(type=code_type_n5000, defaults={ 'code': code_str })
+                    m.codes.update_or_create(type=code_type_osm, defaults={ 'code': int(kml_data.data[name]['osm']) })
                     save_polygons({ code : (m, poly) })
 
             update_or_create()

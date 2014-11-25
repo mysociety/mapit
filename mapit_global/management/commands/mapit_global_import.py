@@ -287,12 +287,10 @@ class Command(LabelCommand):
                         old_lang_codes.discard(lang)
 
                         # Otherwise, make sure that a NameType for this language exists:
-                        NameType.objects.update_or_create({'code': lang},
-                                                          {'code': lang,
-                                                           'description': language_name})
+                        NameType.objects.update_or_create(code=lang, defaults={'description': language_name})
                         name_type = NameType.objects.get(code=lang)
 
-                        m.names.update_or_create({ 'type': name_type }, { 'name': translated_name })
+                        m.names.update_or_create(type=name_type, defaults={ 'name': translated_name })
 
                     if old_lang_codes:
                         verbose('Removing deleted languages codes: ' + ' '.join(old_lang_codes))
