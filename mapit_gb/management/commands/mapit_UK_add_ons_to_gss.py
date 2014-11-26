@@ -7,6 +7,7 @@ from django.core.management.base import NoArgsCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
 
+
 def process(new_code, old_code):
     try:
         area = Area.objects.get(codes__code=new_code, codes__type__code='gss')
@@ -23,6 +24,7 @@ def process(new_code, old_code):
     except IntegrityError:
         raise Exception("Key already exists for %s, can't give it %s" % (area, old_code))
 
+
 class Command(NoArgsCommand):
     help = 'Inserts the old ONS codes into mapit'
 
@@ -38,4 +40,3 @@ class Command(NoArgsCommand):
         for row in mapping:
             type, new_code, old_code, name = row
             process(new_code, old_code)
-

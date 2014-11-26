@@ -4,10 +4,10 @@
 # because it uses that information. If this is a first import, use the
 # first-gss control file.
 
-from ..models import Area, Generation
 
 def code_version():
     return 'gss'
+
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match against

@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from boundaries import *
+import sys
 from lxml import etree
 from shapely.geometry import Polygon
+from boundaries import join_way_soup, fetch_osm_element, UnclosedBoundariesException
+
 
 def ways_overlap(a, b):
     """Determines if two Way objects represent overlapping polygons
@@ -51,6 +53,7 @@ def ways_overlap(a, b):
     polygon_a = Polygon(tuples_a)
     polygon_b = Polygon(tuples_b)
     return polygon_a.intersects(polygon_b)
+
 
 def group_boundaries_into_polygons(outer_ways, inner_ways):
 
@@ -113,8 +116,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
     for outer_way in outer_ways:
         if len(outer_way) <= 3:
             continue
-        polygon = { 'outer': [outer_way],
-                    'inner': [] }
+        polygon = {'outer': [outer_way], 'inner': []}
         for i in range(len(inner_ways_left) - 1, -1, -1):
             inner_way = inner_ways_left[i]
             if len(inner_way) <= 3:
@@ -126,6 +128,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
         result.append(polygon)
 
     return result
+
 
 def kml_string(folder_name,
                placemark_name,
@@ -226,7 +229,7 @@ def kml_string(folder_name,
         all_ways += [(w, True) for w in p['inner']]
         for way, inner in all_ways:
             boundary_type = "inner" if inner else "outer"
-            boundary = etree.SubElement(polygon, boundary_type+"BoundaryIs")
+            boundary = etree.SubElement(polygon, boundary_type + "BoundaryIs")
             linear_ring = etree.SubElement(boundary, "LinearRing")
             coordinates = etree.SubElement(linear_ring, "coordinates")
             coordinates.text = " ".join("%s,%s,0 " % n.lon_lat_tuple() for n in way.nodes)
@@ -296,7 +299,8 @@ def get_kml_for_osm_element_no_fetch(element):
 
     if element_type == 'way':
         if not element.closed():
-            raise UnclosedBoundariesException("get_kml_for_osm_element called with an unclosed way (%s)" % (element_id))
+            raise UnclosedBoundariesException(
+                "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id))
         return (kml_string(folder_name,
                            name,
                            element.tags,
@@ -323,6 +327,7 @@ def get_kml_for_osm_element_no_fetch(element):
 
     else:
         raise Exception("Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id))
+
 
 def get_kml_for_osm_element(element_type, element_id):
 

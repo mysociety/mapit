@@ -3,9 +3,9 @@
 
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
-from django.contrib.gis.gdal import *
 from mapit.models import Area, CodeType
 from mapit.management.command_utils import fix_invalid_geos_geometry
+
 
 class Command(NoArgsCommand):
     help = 'Fix the UK boundary line import for May 2014'

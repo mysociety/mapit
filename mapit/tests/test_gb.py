@@ -9,8 +9,10 @@ from mapit import utils, models
 
 from mapit_gb import countries
 
+
 def url_postcode(pc):
     return urllib.parse.quote(countries.get_postcode_display(pc))
+
 
 class GBViewsTest(TestCase):
     def setUp(self):
@@ -88,7 +90,7 @@ class GBViewsTest(TestCase):
         url = '/postcode/partial/SW1A'
         response = self.client.get(url)
         content = json.loads(response.content.decode('utf-8'))
-        pc = countries.get_postcode_display(self.postcode.postcode)
+        countries.get_postcode_display(self.postcode.postcode)
         in_gb_coords = self.postcode.location.transform(27700, clone=True)
         self.assertDictEqual(content, {
             'wgs84_lat': self.postcode.location.y,

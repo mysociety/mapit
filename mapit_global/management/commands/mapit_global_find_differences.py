@@ -17,29 +17,25 @@ from __future__ import print_function
 import os
 import re
 import xml.sax
-from optparse import make_option
 
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
 from django.utils.encoding import smart_str
 
-from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
-from mapit.management.command_utils import save_polygons, KML
-from glob import glob
-from collections import namedtuple
-import json
+from mapit.models import Code, CodeType
+from mapit.management.command_utils import KML
 import csv
+
 
 def empty_if_none(o):
     return '' if o is None else o
+
 
 class Command(LabelCommand):
     help = 'Import OSM administrative boundary data'
     args = '<KML-DIRECTORY>'
 
     def handle_label(self, directory_name, **options):
-        current_generation = Generation.objects.current()
-
         if not os.path.isdir(directory_name):
             raise Exception("'%s' is not a directory" % (directory_name,))
 
@@ -73,11 +69,8 @@ class Command(LabelCommand):
                     continue
 
                 files = sorted(os.listdir(admin_directory))
-                total_files = len(files)
 
                 for i, e in enumerate(files):
-
-                    progress = "[%d%% complete] " % ((i * 100) / total_files,)
 
                     if skipping:
                         if skip_up_to in e:
@@ -128,29 +121,22 @@ class Command(LabelCommand):
 
                     feat = layer[0]
 
-                    area_code = admin_directory
-
                     osm_codes = list(Code.objects.filter(type=code_type_osm, code=osm_id))
                     osm_codes.sort(key=lambda e: e.area.generation_high.created)
 
                     new_area = None
-                    new_valid = None
                     new_empty = None
 
                     previous_area = None
-                    previous_valid = None
                     previous_empty = None
 
                     symmetric_difference_area = None
 
                     g = feat.geom.transform(4326, clone=True)
 
-                    new_some_nonempty = False
                     for polygon in g:
                         if polygon.point_count < 4:
                             new_empty = True
-                        else:
-                            new_some_nonempty = True
                     if not new_empty:
                         new_geos_geometry = g.geos.simplify(tolerance=0)
                         new_area = new_geos_geometry.area
@@ -170,13 +156,14 @@ class Command(LabelCommand):
                             previous_area = previous_geos_geometry.area
 
                             if not new_empty:
-                                symmetric_difference_area = previous_geos_geometry.sym_difference(new_geos_geometry).area
+                                symmetric_difference_area = previous_geos_geometry.sym_difference(
+                                    new_geos_geometry).area
                                 geos_equals = previous_geos_geometry.equals(new_geos_geometry)
                                 geos_equals_exact = previous_geos_geometry.equals_exact(new_geos_geometry)
 
                     csv_writer.writerow([osm_type,
                                          osm_id,
-                                         bool(osm_codes), # ExistedPreviously
+                                         bool(osm_codes),  # ExistedPreviously
                                          empty_if_none(previous_empty),
                                          empty_if_none(previous_area),
                                          empty_if_none(new_empty),

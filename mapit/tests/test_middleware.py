@@ -40,4 +40,3 @@ class JSONPMiddlewareTest(TestCase):
         response = HttpResponse(content="blah")
         middleware_response = self.middleware.process_response(request, response)
         self.assertEqual(middleware_response, response)
-

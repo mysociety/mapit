@@ -22,11 +22,11 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 from django.utils.encoding import smart_str
 from django.utils import six
-from django.utils.six.moves import urllib
 if six.PY2:
     from urllib import unquote as unquote_to_bytes
 else:
     from urllib.parse import unquote_to_bytes
+
 
 def name_from_url(url):
     """Extract everything after the last slash in the URL"""
@@ -34,6 +34,7 @@ def name_from_url(url):
     url = re.sub(r'^.*/', '', url)
     unquoted = unquote_to_bytes(url.encode('utf-8'))
     return unquoted.decode('utf-8')
+
 
 def tuple_mean(index, tuples):
     """Return the mean along a given index in a sequence of tuples"""

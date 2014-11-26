@@ -4,6 +4,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from mapit.models import Generation
 
+
 class Command(BaseCommand):
     help = 'Deactivate a generation'
     args = '<GENERATION-ID>'
@@ -19,7 +20,9 @@ class Command(BaseCommand):
             raise CommandError("The generation %s wasn't active" % (generation_id,))
         active_generations = Generation.objects.filter(active=True).count()
         if active_generations <= 1 and not options['force']:
-            raise CommandError("You're trying to deactivate the only active generation.  If this is what you intended, please re-run the command with --force")
+            raise CommandError(
+                "You're trying to deactivate the only active generation. "
+                "If this is what you intended, please re-run the command with --force")
         generation_to_deactivate.active = False
         if options['commit']:
             generation_to_deactivate.save()

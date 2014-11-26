@@ -4,8 +4,9 @@
 from __future__ import print_function
 
 from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import NoArgsCommand, CommandError
 from mapit.models import Generation, Area
+
 
 class Command(NoArgsCommand):
     help = 'Remove all areas from the new (inactive) generation'
@@ -45,7 +46,9 @@ class Command(NoArgsCommand):
                 else:
                     print("  ... not deleting, since --commit wasn't specified")
             elif area.generation_low.id < new.id and area.generation_high == new:
-                print("  ... still exists in an earlier generation, so lowering generation_high to", previous_generation)
+                print(
+                    "  ... still exists in an earlier generation, so lowering generation_high to",
+                    previous_generation)
                 area.generation_high = previous_generation
                 if options['commit']:
                     area.save()

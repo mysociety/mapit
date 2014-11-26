@@ -6,12 +6,9 @@
 # the GPL.  Based on import_norway_osm.py by Matthew Somerville
 
 import csv
-import sys
-import re
 from optparse import make_option
 
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
 from django.contrib.gis.geos import GEOSGeometry
 from django.utils.six import Iterator
 
@@ -28,13 +25,16 @@ class CommentedFile(Iterator):
     def __init__(self, f, commentstring="#"):
         self.f = f
         self.commentstring = commentstring
+
     def __next__(self):
         line = next(self.f)
         while line.startswith(self.commentstring):
             line = next(self.f)
         return line
+
     def __iter__(self):
         return self
+
 
 class Command(LabelCommand):
     help = 'Import region data'
@@ -109,12 +109,12 @@ class Command(LabelCommand):
                     except Area.DoesNotExist:
                         print("Creating new area %s with id %d" % (regionname, int(regionid)))
                         m = Area(
-                            id = int(regionid),
-                            name = regionname,
-                            type = Type.objects.get(code=area_type),
-                            country = Country.objects.get(code='O'),
-                            generation_low = new_generation,
-                            generation_high = new_generation,
+                            id=int(regionid),
+                            name=regionname,
+                            type=Type.objects.get(code=area_type),
+                            country=Country.objects.get(code='O'),
+                            generation_low=new_generation,
+                            generation_high=new_generation,
                             )
 
                     if m.generation_high and current_generation \
@@ -122,10 +122,10 @@ class Command(LabelCommand):
                         raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
                     m.generation_high = new_generation
 
-                    poly = [ GEOSGeometry(unionoutline).ogr ]
+                    poly = [GEOSGeometry(unionoutline).ogr]
                     if options['commit']:
                         m.save()
-                        save_polygons({ regionid : (m, poly) })
+                        save_polygons({regionid: (m, poly)})
 
                 update_or_create()
             else:

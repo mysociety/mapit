@@ -3,16 +3,17 @@
 # suggestion in the timeit documentation is to take the minimum over
 # a number of repetitions.
 
-from random import randint, uniform, seed
-from time import time
-from timeit import timeit, Timer, repeat
+from random import randint, uniform  # seed
+# from time import time
+from timeit import repeat  # timeit, Timer
 from django.core.management.base import BaseCommand, CommandError
-from django.db import connection
+# from django.db import connection
 from django.db.models import Min, Max
-from mapit.models import *
+from mapit.models import Postcode
 
 minimum_postcode_id = Postcode.objects.aggregate(Min('id'))['id__min']
 maximum_postcode_id = Postcode.objects.aggregate(Max('id'))['id__max']
+
 
 def get_random_UK_location():
     """Return a random location generally on the UK mainland
@@ -43,6 +44,7 @@ def get_random_UK_location():
     return location
 
 random_locations = None
+
 
 class Command(BaseCommand):
     args = '<iterations>'

@@ -24,9 +24,8 @@ import xml.sax
 
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
-#from django.contrib.gis.utils import LayerMapping
-from django.contrib.gis.gdal import *
-from django.contrib.gis.geos import MultiPolygon
+# from django.contrib.gis.utils import LayerMapping
+from django.contrib.gis.gdal import DataSource
 from django.utils.six.moves import urllib
 from django.utils.encoding import smart_str, smart_text
 
@@ -34,7 +33,8 @@ import shapely
 
 from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
 from mapit.management.command_utils import save_polygons, KML
-from mapit.management.command_utils import fix_invalid_geos_polygon, fix_invalid_geos_multipolygon
+from mapit.management.command_utils import fix_invalid_geos_multipolygon
+
 
 def make_missing_none(s):
     """If s is empty (considering Unicode spaces) return None, else s"""
@@ -49,6 +49,7 @@ LanguageCodes = namedtuple('LanguageCodes',
                             'english_name',
                             'french_name'])
 
+
 def get_iso639_2_table():
     """Scrape and return the table of ISO639-2 and ISO639-1 language codes
 
@@ -60,15 +61,16 @@ def get_iso639_2_table():
     result = []
     url = "http://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt"
     for row in csv.reader(urllib.request.urlopen(url), delimiter='|'):
-        row = [ cell.decode('utf-8-sig') for cell in row ]
-        bibliographic = [ row[0], row[2], row[3], row[4] ]
+        row = [cell.decode('utf-8-sig') for cell in row]
+        bibliographic = [row[0], row[2], row[3], row[4]]
         result_row = LanguageCodes._make(make_missing_none(s) for s in bibliographic)
         result.append(result_row)
         if row[1]:
-            terminologic = [ row[1], row[2], row[3], row[4] ]
+            terminologic = [row[1], row[2], row[3], row[4]]
             result_row = LanguageCodes._make(make_missing_none(s) for s in terminologic)
             result.append(result_row)
     return result
+
 
 class Command(LabelCommand):
     help = 'Import OSM boundary data from KML files'
@@ -91,7 +93,9 @@ class Command(LabelCommand):
         mapit_type_glob = smart_text("[A-Z0-9][A-Z0-9][A-Z0-9]")
 
         if not glob(mapit_type_glob):
-            raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
+            raise Exception(
+                "'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (
+                    directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -236,7 +240,8 @@ class Command(LabelCommand):
                         verbose('    In the current generation, that area was empty - skipping')
                     else:
                         # Simplify it to make sure the polygons are valid:
-                        previous_geos_geometry = shapely.wkb.loads(str(previous_geos_geometry.simplify(tolerance=0).ewkb))
+                        previous_geos_geometry = shapely.wkb.loads(
+                            str(previous_geos_geometry.simplify(tolerance=0).ewkb))
                         new_geos_geometry = shapely.wkb.loads(str(g.geos.simplify(tolerance=0).ewkb))
                         if previous_geos_geometry.almost_equals(new_geos_geometry, decimal=7):
                             was_the_same_in_current = True
@@ -251,15 +256,15 @@ class Command(LabelCommand):
                 else:
                     # Otherwise, create a completely new area:
                     m = Area(
-                        name = name,
-                        type = area_type,
-                        country = global_country,
-                        parent_area = None,
-                        generation_low = new_generation,
-                        generation_high = new_generation,
+                        name=name,
+                        type=area_type,
+                        country=global_country,
+                        parent_area=None,
+                        generation_low=new_generation,
+                        generation_high=new_generation,
                     )
 
-                poly = [ g ]
+                poly = [g]
 
                 if options['commit']:
                     m.save()
@@ -290,7 +295,7 @@ class Command(LabelCommand):
                         NameType.objects.update_or_create(code=lang, defaults={'description': language_name})
                         name_type = NameType.objects.get(code=lang)
 
-                        m.names.update_or_create(type=name_type, defaults={ 'name': translated_name })
+                        m.names.update_or_create(type=name_type, defaults={'name': translated_name})
 
                     if old_lang_codes:
                         verbose('Removing deleted languages codes: ' + ' '.join(old_lang_codes))
@@ -303,4 +308,4 @@ class Command(LabelCommand):
                     if not was_the_same_in_current:
                         new_code = Code(area=m, type=code_type_osm, code=osm_id)
                         new_code.save()
-                    save_polygons({ 'dummy': (m, poly) })
+                    save_polygons({'dummy': (m, poly)})

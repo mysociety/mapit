@@ -35,11 +35,13 @@ def add_codes(areas):
             area.code_list = lookup[area.id]
     return areas
 
+
 def output_areas(request, title, format, areas, **kwargs):
     areas = add_codes(areas)
     if format == 'html':
         return output_html(request, title, areas, **kwargs)
     return output_json(dict((area.id, area.as_dict()) for area in areas))
+
 
 def query_args(request, format, type=None):
     try:
@@ -75,14 +77,15 @@ def query_args(request, format, type=None):
 
 def generations(request):
     generations = Generation.objects.all()
-    return output_json( dict( (g.id, g.as_dict() ) for g in generations ) )
+    return output_json(dict((g.id, g.as_dict()) for g in generations))
 
 
 @ratelimit(minutes=3, requests=100)
 def area(request, area_id, format='json'):
     if hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
-        if resp: return resp
+        if resp:
+            return resp
 
     if not re.match('\d+$', area_id):
         raise ViewException(format, 'Bad area ID specified', 400)
@@ -118,13 +121,15 @@ def area(request, area_id, format='json'):
             'alternative_names': alternative_names,
             'geotype': geotype,
         })
-    return output_json( area.as_dict(names) )
+    return output_json(area.as_dict(names))
+
 
 @ratelimit(minutes=3, requests=100)
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid and hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
-        if resp: return resp
+        if resp:
+            return resp
 
     if not re.match('\d+$', area_id):
         raise ViewException(format, 'Bad area ID specified', 400)
@@ -145,13 +150,14 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         if output is None:
             return output_json({'error': 'No polygons found'}, code=404)
     except TransformError as e:
-        return output_json({ 'error': e.args[0] }, code=400)
+        return output_json({'error': e.args[0]}, code=400)
 
     response = HttpResponse(content_type='%s; charset=utf-8' % content_type)
     response['Access-Control-Allow-Origin'] = '*'
-    response['Cache-Control'] = 'max-age=2419200' # 4 weeks
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
     response.write(output)
     return response
+
 
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
@@ -175,11 +181,16 @@ def area_intersect(query_type, title, request, area_id, format):
         # confused with a RawQuerySet
         areas = list(Area.objects.intersect(query_type, area, types, generation))
     except QueryCanceledError:
-        raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+        raise ViewException(
+            format, 'That query was taking too long to compute - '
+            'try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError as e:
         # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
-        if 'canceling statement due to statement timeout' not in e.args[0]: raise
-        raise ViewException(format, 'That query was taking too long to compute - try restricting to a specific type, if you weren\'t already doing so.', 500)
+        if 'canceling statement due to statement timeout' not in e.args[0]:
+            raise
+        raise ViewException(
+            format, 'That query was taking too long to compute - '
+            'try restricting to a specific type, if you weren\'t already doing so.', 500)
     except InternalError:
         raise ViewException(format, 'There was an internal error performing that query.', 500)
 
@@ -191,21 +202,26 @@ def area_intersect(query_type, title, request, area_id, format):
 def area_touches(request, area_id, format='json'):
     return area_intersect('touches', 'Areas touching %s', request, area_id, format)
 
+
 @ratelimit(minutes=3, requests=100)
 def area_overlaps(request, area_id, format='json'):
     return area_intersect('overlaps', 'Areas overlapping %s', request, area_id, format)
+
 
 @ratelimit(minutes=3, requests=100)
 def area_covers(request, area_id, format='json'):
     return area_intersect('coveredby', 'Areas covered by %s', request, area_id, format)
 
+
 @ratelimit(minutes=3, requests=100)
 def area_coverlaps(request, area_id, format='json'):
     return area_intersect(['overlaps', 'coveredby'], 'Areas covered by or overlapping %s', request, area_id, format)
 
+
 @ratelimit(minutes=3, requests=100)
 def area_covered(request, area_id, format='json'):
     return area_intersect('covers', 'Areas that cover %s', request, area_id, format)
+
 
 @ratelimit(minutes=3, requests=100)
 def area_intersects(request, area_id, format='json'):
@@ -237,14 +253,16 @@ def areas_by_name(request, name, format='json'):
 @ratelimit(minutes=3, requests=100)
 def area_geometry(request, area_id):
     area = _area_geometry(area_id)
-    if isinstance(area, HttpResponse): return area
+    if isinstance(area, HttpResponse):
+        return area
     return output_json(area)
+
 
 def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
     all_areas = area.polygons.all().collect()
     if not all_areas:
-        return output_json({ 'error': 'No polygons found' }, code=404)
+        return output_json({'error': 'No polygons found'}, code=404)
     out = {
         'parts': all_areas.num_geom,
     }
@@ -268,6 +286,7 @@ def _area_geometry(area_id):
             out['centre_e'], out['centre_n'] = all_areas.centroid
     return out
 
+
 @ratelimit(minutes=3, requests=100)
 def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
@@ -287,10 +306,10 @@ def area_from_code(request, code_type, code_value, format='json'):
     args['codes__code'] = code_value
     try:
         area = Area.objects.get(**args)
-    except Area.DoesNotExist as e:
+    except Area.DoesNotExist:
         message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 404)
-    except Area.MultipleObjectsReturned as e:
+    except Area.MultipleObjectsReturned:
         message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 500)
     return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
@@ -312,7 +331,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     type = request.REQUEST.get('type', '')
 
     if type and method == 'polygon':
-        args = dict( ("area__%s" % k, v) for k, v in args.items() )
+        args = dict(("area__%s" % k, v) for k, v in args.items())
         # So this is odd. It doesn't matter if you specify types, PostGIS will
         # do the contains test on all the geometries matching the bounding-box
         # index, even if it could be much quicker to filter some out first
@@ -322,7 +341,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         areas = []
         for shape in shapes:
             try:
-                areas.append( Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location) )
+                areas.append(Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location))
             except:
                 pass
     else:
@@ -358,16 +377,18 @@ def point_form_submitted(request):
     if not m:
         return redirect('/')
     lat, lon = m.groups()
-    return redirect('mapit.views.areas.areas_by_point',
+    return redirect(
+        'mapit.views.areas.areas_by_point',
         srid=4326, x=lon, y=lat, format='html'
     )
 
 # ---
 
+
 def deal_with_POST(request, call='areas'):
     url = request.POST.get('URL', '')
     if not url:
-        return output_json({ 'error': 'No content specified' }, code=400)
+        return output_json({'error': 'No content specified'}, code=400)
     view, args, kwargs = resolve('/%s/%s' % (call, url))
     kwargs['request'] = request
     return view(*args, **kwargs)

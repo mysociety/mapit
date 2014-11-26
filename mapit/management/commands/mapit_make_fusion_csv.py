@@ -60,16 +60,17 @@ from random import random, seed
 import colorsys
 
 from django.core.management.base import BaseCommand
-from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType, TransformError
-from mapit.views.areas import area_polygon
+from mapit.models import Area, Generation, TransformError
+
 
 def hsv_to_rgb(h, s, v):
     rgb = colorsys.hsv_to_rgb(h, s, v)
-    return [int(x*255) for x in rgb]
+    return [int(x * 255) for x in rgb]
+
 
 def rgb_for_html(r, g, b):
     return "%02x%02x%02x" % (r, g, b)
+
 
 # From: http://stackoverflow.com/questions/3844801/check-if-all-elements-in-a-list-are-identical
 def all_equal(iterator):
@@ -80,22 +81,25 @@ def all_equal(iterator):
     except StopIteration:
         return True
 
+
 class Command(BaseCommand):
     help = 'Generate a CSV file for Google Fusion Tables from MapIt'
     option_list = BaseCommand.option_list + (
-            make_option("--types", dest="types",
-                        help="The comma-separated types of the areas to return",
-                        metavar="TYPES"),
-            make_option("--coveredby", dest="coveredby", type="int",
-                        help="Only include areas covered by AREA-ID",
-                        metavar="AREA-ID"),
-            make_option("--generation", dest="generation",
-                        help="Specify the generation number", metavar="AREA-ID"),
-            make_option("--tolerance", dest="tolerance", type="float",
-                        default=0.0001,
-                        help="Specify the simplifiy tolerance (default: 0.0001)",
-                        metavar="TOLERANCE"),
-            )
+        make_option(
+            "--types", dest="types",
+            help="The comma-separated types of the areas to return",
+            metavar="TYPES"),
+        make_option(
+            "--coveredby", dest="coveredby", type="int",
+            help="Only include areas covered by AREA-ID",
+            metavar="AREA-ID"),
+        make_option(
+            "--generation", dest="generation",
+            help="Specify the generation number", metavar="AREA-ID"),
+        make_option(
+            "--tolerance", dest="tolerance", type="float", default=0.0001,
+            help="Specify the simplifiy tolerance (default: 0.0001)", metavar="TOLERANCE"),
+        )
 
     def handle(self, *args, **options):
 
@@ -144,7 +148,7 @@ class Command(BaseCommand):
             for i, area in enumerate(areas):
                 seed(area.name)
                 hue = random()
-                line_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.5))
+                # line_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.5))
                 fill_rgb = rgb_for_html(*hsv_to_rgb(hue, 0.5, 0.95))
                 print("Exporting:", area)
                 try:
@@ -152,7 +156,7 @@ class Command(BaseCommand):
                                          'kml',
                                          simplify_tolerance=options['tolerance'],
                                          kml_type="polygon")
-                except TransformError as e:
+                except TransformError:
                     simplified_away.append(area)
                     print("  (the area was simplified away to nothing)")
                     continue
@@ -171,10 +175,10 @@ class Command(BaseCommand):
                 # than bytes after UTF-8 encoding.)
 
                 if len(kml) > 1E6:
-                  print("A cell for Google Fusion tables must be less than 1 million characters", file=sys.stderr)
-                  print("but %s was %d characters" % (area, len(kml)), file=sys.stderr)
-                  print("Try raising the simplify tolerance with --tolerance", file=sys.stderr)
-                  sys.exit(1)
+                    print("A cell for Google Fusion tables must be less than 1 million characters", file=sys.stderr)
+                    print("but %s was %d characters" % (area, len(kml)), file=sys.stderr)
+                    print("Try raising the simplify tolerance with --tolerance", file=sys.stderr)
+                    sys.exit(1)
 
                 writer.writerow([area.name.encode('utf-8') + " [%d]" % (area.id,),
                                  "#" + fill_rgb,

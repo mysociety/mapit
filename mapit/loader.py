@@ -37,6 +37,7 @@ for app in settings.INSTALLED_APPS:
 # It won't change, so convert it to a tuple to save memory.
 app_template_dirs = tuple(app_template_dirs)
 
+
 def get_template_sources(template_name, template_dirs=None):
     """
     Returns the absolute paths to "template_name", when appended to each
@@ -54,6 +55,7 @@ def get_template_sources(template_name, template_dirs=None):
         except ValueError:
             # The joined path was located outside of template_dir.
             pass
+
 
 def load_template_source(template_name, template_dirs=None):
     for filepath in get_template_sources(template_name, template_dirs):

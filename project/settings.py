@@ -51,7 +51,7 @@ if DEBUG:
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
     try:
-        import memcache
+        import memcache  # noqa
         CACHES = {
             'default': {
                 'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
@@ -127,7 +127,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join( PARENT_DIR, 'collected_static' )
+STATIC_ROOT = os.path.join(PARENT_DIR, 'collected_static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -145,14 +145,14 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     # Needs adapting to new class version
-    #'django.template.loaders.app_directories.Loader',
+    # 'django.template.loaders.app_directories.Loader',
     'mapit.loader.load_template_source',
 )
 

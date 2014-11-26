@@ -24,6 +24,6 @@ if django.VERSION < (1, 6):
 else:
     # Nothing to do, make an empty metaclass
     from django.db.models.manager import RenameManagerMethods
+
     class GetQuerySetMetaclass(RenameManagerMethods):
         pass
-

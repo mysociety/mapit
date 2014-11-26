@@ -1,5 +1,4 @@
 import json
-import re
 import django
 from django import http
 from django.db import connection
@@ -17,25 +16,29 @@ if django.get_version() < '1.6':
     try:
         import simplejson
         if issubclass(DjangoJSONEncoder, simplejson.JSONEncoder):
-            import simplejson as json
+            import simplejson as json  # noqa
     except:
         pass
+
 
 class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
         try:
-            return o.json # Will therefore support all the GEOS objects
+            return o.json  # Will therefore support all the GEOS objects
         except:
             pass
         return super(GEOS_JSONEncoder, self).default(o)
 
+
 def render(request, template_name, context=None):
-    if context is None: context = {}
+    if context is None:
+        context = {}
 #    context['base'] = base or 'base.html'
 #    context['connection'] = connection
     return render_to_response(
-        template_name, context, context_instance = RequestContext(request)
+        template_name, context, context_instance=RequestContext(request)
     )
+
 
 def sorted_areas(areas):
     # In here to prevent a circular dependency
@@ -44,12 +47,14 @@ def sorted_areas(areas):
         return countries.sorted_areas(areas)
     return list(areas)
 
+
 def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.get_full_path().replace('.html', '')
     kwargs['title'] = title
     kwargs['areas'] = sorted_areas(areas)
     kwargs['indent_areas'] = kwargs.get('indent_areas', False)
     return render(request, 'mapit/data.html', kwargs)
+
 
 def output_json(out, code=200):
     types = {
@@ -60,7 +65,7 @@ def output_json(out, code=200):
     response_type = types.get(code, http.HttpResponse)
     response = response_type(content_type='application/json; charset=utf-8')
     response['Access-Control-Allow-Origin'] = '*'
-    response['Cache-Control'] = 'max-age=2419200' # 4 weeks
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
     if code != 200:
         out['code'] = code
     indent = None
@@ -71,6 +76,7 @@ def output_json(out, code=200):
     json.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
     return response
 
+
 def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
@@ -78,11 +84,12 @@ def get_object_or_404(klass, format='json', *args, **kwargs):
         from mapit.middleware import ViewException
         raise ViewException(format, str(e), 404)
 
+
 def json_500(request):
-    return output_json({ 'error': "Sorry, something's gone wrong." }, code=500)
+    return output_json({'error': "Sorry, something's gone wrong."}, code=500)
+
 
 def set_timeout(format):
     cursor = connection.cursor()
     timeout = 10000 if format == 'html' else 10000
     cursor.execute('set session statement_timeout=%d' % timeout)
-

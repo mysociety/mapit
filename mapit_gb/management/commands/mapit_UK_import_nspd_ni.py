@@ -1,7 +1,7 @@
 # This script is used to import Northern Ireland postcode information from the
 # National Statistics Postcode Database.
 # http://www.ons.gov.uk/about-statistics/geography/products/geog-products-postcode/nspd/
-# 
+#
 # The fields of NSPD Open CSV file are:
 #   Postcode (7), Postcode (8), Postcode (sp), Start date, End date, County,
 #   council, ward, usertype, Easting, Northing, quality, SHA, IT cluster,
@@ -19,10 +19,11 @@ from django.db import transaction
 from mapit.models import Area
 from mapit.management.commands.mapit_import_postal_codes import Command
 
+
 class Command(Command):
     help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'
     args = '<NSPD CSV file>'
-    option_defaults = { 'strip': True, 'srid': 29902, 'coord-field-lon': 10, 'coord-field-lat': 11 }
+    option_defaults = {'strip': True, 'srid': 29902, 'coord-field-lon': 10, 'coord-field-lat': 11}
 
     @transaction.commit_manually
     def handle_label(self, file, **options):
@@ -41,7 +42,7 @@ class Command(Command):
                 )
                 code_to_area[ward_code] = ward_area
 
-            if parl_code not in code_to_area and len(parl_code)==3: # Ignore Derryaghy line
+            if parl_code not in code_to_area and len(parl_code) == 3:  # Ignore Derryaghy line
                 parl_area = Area.objects.get(
                     country__code='N', type__code='WMC', codes__type__code='ons', codes__code=parl_code,
                 )
@@ -60,9 +61,12 @@ class Command(Command):
         self.process(file, options)
 
     def pre_row(self, row, options):
-        if row[4]: return False # Terminated postcode
-        if row[11] == '9': return False # PO Box etc.
-        if self.code[0:2] != 'BT': return False # Only importing NI from NSPD
+        if row[4]:
+            return False  # Terminated postcode
+        if row[11] == '9':
+            return False  # PO Box etc.
+        if self.code[0:2] != 'BT':
+            return False  # Only importing NI from NSPD
 
         # NSPD (now ONSPD) started using GSS codes for Parliament in February 2011
         # Detect this here; although they're still using old codes for council/wards
@@ -75,17 +79,17 @@ class Command(Command):
         else:
             ons_code = ''.join(row[5:8])
             parl_code = row[17].replace('N', '7')
-        #output_area = row[33]
-        #super_output_area = row[44]
+        # output_area = row[33]
+        # super_output_area = row[44]
 
         ward = self.code_to_area[ons_code]
         electoral_area = ward.parent_area
         self.areas = [
             ward,
             electoral_area,
-            electoral_area.parent_area, # Council
-            self.code_to_area['NIE' + parl_code], # Assembly
-            self.code_to_area[parl_code], # Parliament
+            electoral_area.parent_area,  # Council
+            self.code_to_area['NIE' + parl_code],  # Assembly
+            self.code_to_area[parl_code],  # Parliament
             self.euro_area,
         ]
 
@@ -95,4 +99,3 @@ class Command(Command):
         pc.areas.clear()
         pc.areas.add(*self.areas)
         transaction.commit()
-

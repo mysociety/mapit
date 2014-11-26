@@ -6,8 +6,10 @@ from django.template import RequestContext
 from django.template.loader import render_to_string
 from mapit.shortcuts import output_json
 
+
 class ViewException(Exception):
     pass
+
 
 class ViewExceptionMiddleware(object):
     def process_exception(self, request, exception):
@@ -24,8 +26,7 @@ class ViewExceptionMiddleware(object):
             response_type = types.get(code, http.HttpResponse)
             return response_type(render_to_string(
                 'mapit/%s.html' % code,
-                { 'error': message, },
+                {'error': message},
                 context_instance=RequestContext(request)
             ))
-        return output_json({ 'error': message }, code=code)
-
+        return output_json({'error': message}, code=code)

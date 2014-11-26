@@ -17,6 +17,7 @@ from mapit.models import Area, Code, CodeType
 from glob import glob
 from lxml import etree
 
+
 class Command(LabelCommand):
     help = 'Find any "Unknown" names, and use place_name instead, if possible'
     args = '<KML-DIRECTORY>'
@@ -32,7 +33,8 @@ class Command(LabelCommand):
         os.chdir(directory_name)
 
         if not glob("al[0-1][0-9]"):
-            raise Exception("'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (directory_name,))
+            raise Exception("'%s' did not contain any admin level directories (e.g. al02, al03, etc.)" % (
+                directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -79,8 +81,9 @@ class Command(LabelCommand):
                 verbose(progress + "Loading " + os.path.realpath(kml_filename))
 
                 tree = etree.parse(kml_filename)
-                place_name_values = tree.xpath('//kml:Placemark/kml:ExtendedData/kml:Data[@name="place_name"]/kml:value',
-                                               namespaces={'kml': 'http://earth.google.com/kml/2.1'} )
+                place_name_values = tree.xpath(
+                    '//kml:Placemark/kml:ExtendedData/kml:Data[@name="place_name"]/kml:value',
+                    namespaces={'kml': 'http://earth.google.com/kml/2.1'})
 
                 if len(place_name_values) > 0:
 

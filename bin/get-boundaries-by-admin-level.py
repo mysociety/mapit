@@ -6,13 +6,16 @@
 
 from __future__ import print_function
 
-import xml.sax, os, re, errno, sys
-from xml.sax.handler import ContentHandler
+import os
+import re
+import sys
 
 from django.utils.encoding import smart_str
 
-from boundaries import *
-from generate_kml import *
+from boundaries import (
+    mkdir_p, get_query_relations_and_ways, get_osm3s, get_name_from_tags, parse_xml_minimal,
+    UnclosedBoundariesException)
+from generate_kml import get_kml_for_osm_element
 
 if len(sys.argv) > 2:
     print("Usage: %s [FIRST-MAPIT_TYPE]" % (sys.argv[0],), file=sys.stderr)
@@ -24,6 +27,7 @@ if len(sys.argv) == 2:
 
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
+
 
 def replace_slashes(s):
     return re.sub(r'/', '_', s)

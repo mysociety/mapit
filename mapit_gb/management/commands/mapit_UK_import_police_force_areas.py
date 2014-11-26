@@ -111,7 +111,9 @@ class Command(LabelCommand):
         # data and save the IDs as codes for future use:
         names_data_filename = os.path.join(DATA_DIRECTORY, "police_force_names.json")
         if not os.path.exists(names_data_filename):
-            print("Can't find force names data at %s; trying to fetch it from the police API instead..." % names_data_filename)
+            print(
+                "Can't find force names data at %s; trying to fetch it from the police API instead..." %
+                names_data_filename)
             url = "http://data.police.uk/api/forces"
             forces = urllib.request.urlopen(url)
             with open(names_data_filename, 'w') as f:

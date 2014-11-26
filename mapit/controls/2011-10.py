@@ -1,7 +1,7 @@
 # A control file for importing October 2011 Boundary-Line.
-# 
+#
 # Notes for this edition:
-# 
+#
 # * Two CEDs have had their names changed (no GSS codes so can't match up
 # automatically) - Okhey Park ED to Oxhey Park ED, and Bested ED to Bersted ED.
 # Here's the SQL used to fix this, using our own IDs (yours may differ):
@@ -19,7 +19,8 @@
 # SQL, again, using our hard-coded IDs.
 #
 # update areas_code set code='E05004368' where type='gss' and area_id=135066; -- Should have been all along
-# delete from areas_code where code='E05004368' and type='gss' and area_id=4526; -- Can't have two areas with same GSS code
+# delete from areas_code where code='E05004368' and type='gss' and area_id=4526;
+# -- Can't have two areas with same GSS code
 # update areas_code set code='E04008791' where type='gss' and area_id=135448;
 # delete from areas_code where code='E04008791' and type='gss' and area_id=60017;
 #
@@ -27,8 +28,10 @@
 # than old, which were lost by the May 2011 import. This could be manually
 # fixed if necessary by importing those two areas from the old Boundary-Line.
 
+
 def code_version():
     return 'gss'
+
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""

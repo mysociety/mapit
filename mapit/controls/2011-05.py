@@ -1,20 +1,22 @@
 # A control file for importing Boundary-Line.
 # CEDs don't have ONS codes, so we have to have something manual
 # to e.g. tell us if some county council wards have changed.
-# 
+#
 # This edition of Boundary-Line uses the new SNAC codes
 
 from areas.models import Area, Generation
 
+
 def code_version():
     return 'gss'
 
+
 # Renames
-# Eastleigh: Parish of Allbrook renamed Allbrook and North Boyatt 
-# North Norfolk: Parish of Aldborough renamed  Aldborough & Thurgarton 
-# Sevenoaks: Ash Ward renamed  Ash and New Ash Green 
+# Eastleigh: Parish of Allbrook renamed Allbrook and North Boyatt
+# North Norfolk: Parish of Aldborough renamed  Aldborough & Thurgarton
+# Sevenoaks: Ash Ward renamed  Ash and New Ash Green
 # Harrogate: Parish of Markingfield renamed Markenfield
-# Wiltshire: Parishes of Allcannings and Bower Chalke renamed All Cannings and Bowerchalke 
+# Wiltshire: Parishes of Allcannings and Bower Chalke renamed All Cannings and Bowerchalke
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match against ONS code,
@@ -25,10 +27,12 @@ def check(name, type, country, geometry):
     # http://www.legislation.gov.uk/wsi/2010/1451/contents/made )
     # have disappeared from May 2011 and it has the previous areas.
     if type == 'UTE' and name in ('Sully ED', 'Dinas Powys ED', 'Plymouth ED', 'Llandough ED'):
-        area_within = Area.objects.filter(type__code='UTA', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
+        area_within = Area.objects.filter(
+            type__code='UTA', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
         if area_within.name == 'Vale of Glamorgan Council':
             current = Generation.objects.current()
-            return Area.objects.get(names__name=name, names__type='O', parent_area=area_within,
+            return Area.objects.get(
+                names__name=name, names__type='O', parent_area=area_within,
                 generation_low__lte=current, generation_high__gte=current)
 
     # The Scottish Parliament has had boundary changes. New Boundary-Line has
@@ -36,7 +40,7 @@ def check(name, type, country, geometry):
 
     # The following have had boundary changes for the 2011 elections, but all
     # have ONS codes and so can be ignored/ detected that way:
-    #  
+    #
     # Redrawn boundaries
     # 2011/3   Cheshire East
     # 2011/4   Cheshire West and Chester
@@ -48,7 +52,7 @@ def check(name, type, country, geometry):
     # 2011/166 Sedgemoor
     # 2011/167 Stoke-on-Trent
     # 2011/168 West Somerset
-    #  
+    #
     # Minor changes
     # 2008/176  Maidston
     # 2008/178  Uttlesford

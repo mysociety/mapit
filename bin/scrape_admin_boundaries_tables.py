@@ -2,7 +2,8 @@
 
 from __future__ import print_function
 
-import sys, re
+import re
+import sys
 from bs4 import BeautifulSoup
 
 from django.utils.six.moves import urllib
@@ -16,10 +17,12 @@ f.close()
 
 soup = BeautifulSoup(data, "lxml")
 
+
 def strip_all_tags(element):
     for br in element.find_all('br'):
         br.replaceWith("\n")
     return "".join(element.findAll(text=True)).strip()
+
 
 # Tidy up the country name column - I'm not sure there's an obviously
 # smarter way of doing this for the moment:
@@ -34,11 +37,13 @@ def get_country_name(s):
     result = re.sub(r'^(?u)Flag of Isle of Man\s+', '', result)
     return result
 
+
 def make_missing_none(s):
     if re.search('(?uis)^\s*N/A\s*$', s):
         return None
     else:
         return s
+
 
 country_to_admin_levels = {}
 

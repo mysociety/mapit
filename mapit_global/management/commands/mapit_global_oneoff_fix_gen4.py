@@ -7,13 +7,14 @@ import os
 import re
 
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
 from django.utils.encoding import smart_str, smart_text
 import shapely
 
 from mapit.models import Generation, Code, CodeType
 from mapit.management.command_utils import save_polygons
 from mapit.management.command_utils import fix_invalid_geos_multipolygon
+
 
 class Command(LabelCommand):
     help = 'Update OSM boundary data from KML files'
@@ -33,7 +34,9 @@ class Command(LabelCommand):
         mapit_type_glob = smart_text("[A-Z0-9][A-Z0-9][A-Z0-9]")
 
         if not glob(mapit_type_glob):
-            raise Exception("'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (directory_name,))
+            raise Exception(
+                "'%s' did not contain any directories that look like MapIt types (e.g. O11, OWA, etc.)" % (
+                    directory_name,))
 
         def verbose(s):
             if int(options['verbosity']) > 1:
@@ -106,10 +109,11 @@ class Command(LabelCommand):
                         continue
                     g = fixed_multipolygon.ogr
 
-                osm_code = Code.objects.get(type=code_type_osm,
-                                        code=osm_id,
-                                        area__generation_high__lte=current_generation,
-                                        area__generation_high__gte=current_generation)
+                osm_code = Code.objects.get(
+                    type=code_type_osm,
+                    code=osm_id,
+                    area__generation_high__lte=current_generation,
+                    area__generation_high__gte=current_generation)
 
                 m = osm_code.area
 
@@ -120,6 +124,6 @@ class Command(LabelCommand):
                     verbose('    Boundary unchanged')
                 else:
                     verbose('    In the current generation, the boundary was different')
-                    poly = [ g ]
+                    poly = [g]
                     if options['commit']:
-                        save_polygons({ 'dummy': (m, poly) })
+                        save_polygons({'dummy': (m, poly)})

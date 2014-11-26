@@ -5,11 +5,12 @@ from optparse import make_option
 
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
-#from django.contrib.gis.utils import LayerMapping
-from django.contrib.gis.gdal import *
+# from django.contrib.gis.utils import LayerMapping
+from django.contrib.gis.gdal import DataSource
 
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
+
 
 class Command(LabelCommand):
     help = 'Import NI Output Areas'
@@ -21,7 +22,7 @@ class Command(LabelCommand):
     ons_code_to_shape = {}
     councils = []
 
-    def handle_label(self,  filename, **options):
+    def handle_label(self, filename, **options):
         country = Country.objects.get(code='N')
         oa_type = Type.objects.get(code='OUA')
         soa_type = Type.objects.get(code='OLF')
@@ -62,7 +63,7 @@ class Command(LabelCommand):
 
             council = ord(ons_code[2:3]) - 65
             ward = int(ons_code[4:6]) - 1
-            if ward == 98: # SOA covers two wards, set parent to council, best we can do
+            if ward == 98:  # SOA covers two wards, set parent to council, best we can do
                 parent = self.councils[council]['id']
             else:
                 parent = self.councils[council]['wards'][ward]['id']
@@ -74,12 +75,12 @@ class Command(LabelCommand):
             except Area.DoesNotExist:
                 print("  New area: %s" % (ons_code))
                 m = Area(
-                    name = name, # If committing, this will be overwritten by the m.names.update_or_create
-                    type = area_type,
-                    country = country,
-                    parent_area_id = parent,
-                    generation_low = new_generation,
-                    generation_high = new_generation,
+                    name=name,  # If committing, this will be overwritten by the m.names.update_or_create
+                    type=area_type,
+                    country=country,
+                    parent_area_id=parent,
+                    generation_low=new_generation,
+                    generation_high=new_generation,
                 )
 
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
@@ -91,15 +92,14 @@ class Command(LabelCommand):
 
             f = feat.geom
             f.srid = 29902
-            poly = [ f ]
+            poly = [f]
 
             if options['commit']:
-                m.names.update_or_create(type=name_type, defaults={ 'name': name })
+                m.names.update_or_create(type=name_type, defaults={'name': name})
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create(type=code_type, defaults={ 'code': ons_code })
+                    m.codes.update_or_create(type=code_type, defaults={'code': ons_code})
 
         if options['commit']:
             save_polygons(self.ons_code_to_shape)
-

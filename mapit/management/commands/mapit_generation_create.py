@@ -5,6 +5,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Generation
 
+
 class Command(NoArgsCommand):
     help = 'Create a new generation'
     option_list = NoArgsCommand.option_list + (

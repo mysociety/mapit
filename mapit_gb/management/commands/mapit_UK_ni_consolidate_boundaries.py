@@ -7,6 +7,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area, Type, Geometry
 
+
 class Command(NoArgsCommand):
     help = 'Puts the boundaries on the LGDs, LGWs and LGEs from the Output Areas'
     option_list = NoArgsCommand.option_list + (
@@ -25,7 +26,7 @@ class Command(NoArgsCommand):
             if options['commit']:
                 area.polygons.all().delete()
                 if p.geom_type == 'Polygon':
-                    shapes = [ p ]
+                    shapes = [p]
                 else:
                     shapes = p
                 for g in shapes:
@@ -43,4 +44,3 @@ class Command(NoArgsCommand):
             council = lge.parent_area
             if council.id not in done:
                 save_polygons(council, area__parent_area__parent_area__parent_area=council)
-

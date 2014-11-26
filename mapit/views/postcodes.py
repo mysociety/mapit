@@ -6,8 +6,6 @@ try:
 except:
     from psycopg2 import DatabaseError
 
-from django.template import loader
-from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
@@ -31,21 +29,22 @@ LAS_AREA_ID = 900006
 HOL_AREA_ID = 900007
 HOC_AREA_ID = 900008
 enclosing_areas = {
-    'LAC': [ LAE_AREA_ID, LAS_AREA_ID ],
-    'SPC': [ SPA_AREA_ID ],
-    'WAC': [ WAS_AREA_ID ],
-    'NIE': [ NIA_AREA_ID ],
-    'WMC': [ WMP_AREA_ID ],
-    'EUR': [ EUP_AREA_ID ],
+    'LAC': [LAE_AREA_ID, LAS_AREA_ID],
+    'SPC': [SPA_AREA_ID],
+    'WAC': [WAS_AREA_ID],
+    'NIE': [NIA_AREA_ID],
+    'WMC': [WMP_AREA_ID],
+    'EUR': [EUP_AREA_ID],
 }
+
 
 @ratelimit(minutes=3, requests=100)
 def postcode(request, postcode, format=None):
     if hasattr(countries, 'canonical_postcode'):
         canon_postcode = countries.canonical_postcode(postcode)
         postcode = canon_postcode
-        #if (postcode != canon_postcode and format is None) or format == 'json':
-        #    return redirect('mapit.views.postcodes.postcode', postcode=canon_postcode)
+        # if (postcode != canon_postcode and format is None) or format == 'json':
+        #     return redirect('mapit.views.postcodes.postcode', postcode=canon_postcode)
     if format is None:
         format = 'json'
     if not is_valid_postcode(postcode):
@@ -72,16 +71,17 @@ def postcode(request, postcode, format=None):
         elif area.type.code == 'DIW':
             shortcuts.setdefault('ward', {})['district'] = area.id
             shortcuts.setdefault('council', {})['district'] = area.parent_area_id
-        elif area.type.code in ('WMC'): # XXX Also maybe 'EUR', 'NIE', 'SPC', 'SPE', 'WAC', 'WAE', 'OLF', 'OLG', 'OMF', 'OMG'):
+        elif area.type.code in ('WMC',):
+            # XXX Also maybe 'EUR', 'NIE', 'SPC', 'SPE', 'WAC', 'WAE', 'OLF', 'OLG', 'OMF', 'OMG'):
             shortcuts[area.type.code] = area.id
 
-    # Add manual enclosing areas. 
+    # Add manual enclosing areas.
     extra = []
     for area in areas:
         if area.type.code in enclosing_areas.keys():
             extra.extend(enclosing_areas[area.type.code])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
- 
+
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
@@ -90,9 +90,11 @@ def postcode(request, postcode, format=None):
         })
 
     out = postcode.as_dict()
-    out['areas'] = dict( ( area.id, area.as_dict() ) for area in areas )
-    if shortcuts: out['shortcuts'] = shortcuts
+    out['areas'] = dict((area.id, area.as_dict()) for area in areas)
+    if shortcuts:
+        out['shortcuts'] = shortcuts
     return output_json(out)
+
 
 @ratelimit(minutes=3, requests=100)
 def partial_postcode(request, postcode, format='json'):
@@ -103,9 +105,9 @@ def partial_postcode(request, postcode, format='json'):
         raise ViewException(format, "Partial postcode '%s' is not valid." % postcode, 400)
     try:
         postcode = Postcode(
-            postcode = postcode,
-            location = Postcode.objects.filter(postcode__startswith=postcode).extra(
-                where = [ 'length(postcode) = %d' % (len(postcode)+3) ]
+            postcode=postcode,
+            location=Postcode.objects.filter(postcode__startswith=postcode).extra(
+                where=['length(postcode) = %d' % (len(postcode) + 3)]
             ).collect().centroid
         )
     except:
@@ -119,6 +121,7 @@ def partial_postcode(request, postcode, format='json'):
 
     return output_json(postcode.as_dict())
 
+
 @ratelimit(minutes=3, requests=100)
 def example_postcode_for_area(request, area_id, format='json'):
     area = get_object_or_404(Area, format=format, id=area_id)
@@ -131,14 +134,17 @@ def example_postcode_for_area(request, area_id, format='json'):
         except QueryCanceledError:
             raise ViewException(format, 'That query was taking too long to compute.', 500)
         except DatabaseError as e:
-            if 'canceling statement due to statement timeout' not in e.args[0]: raise
+            if 'canceling statement due to statement timeout' not in e.args[0]:
+                raise
             raise ViewException(format, 'That query was taking too long to compute.', 500)
         except:
             pc = None
-    if pc: pc = pc.get_postcode_display()
+    if pc:
+        pc = pc.get_postcode_display()
     if format == 'html':
-        return render(request, 'mapit/example-postcode.html', { 'area': area, 'postcode': pc })
+        return render(request, 'mapit/example-postcode.html', {'area': area, 'postcode': pc})
     return output_json(pc)
+
 
 def form_submitted(request):
     pc = request.POST.get('pc', None)
@@ -146,22 +152,25 @@ def form_submitted(request):
         return redirect('/')
     return redirect('mapit.views.postcodes.postcode', postcode=pc, format='html')
 
+
 @ratelimit(minutes=3, requests=100)
 def nearest(request, srid, x, y, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
     set_timeout(format)
     try:
-        postcode = Postcode.objects.filter(location__distance_gte=( location, D(mi=0) )).distance(location).order_by('distance')[0]
+        postcode = Postcode.objects.filter(
+            location__distance_gte=(location, D(mi=0))).distance(location).order_by('distance')[0]
     except QueryCanceledError:
         raise ViewException(format, 'That query was taking too long to compute.', 500)
     except DatabaseError as e:
-        if 'canceling statement due to statement timeout' not in e.args[0]: raise
+        if 'canceling statement due to statement timeout' not in e.args[0]:
+            raise
         raise ViewException(format, 'That query was taking too long to compute.', 500)
     except:
         raise ViewException(format, 'No postcode found near %s,%s (%s)' % (x, y, srid), 404)
 
     if format == 'html':
-        return render( request, 'mapit/postcode.html', {
+        return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'json_view': 'mapit.views.postcodes.postcode',
         })
@@ -171,4 +180,3 @@ def nearest(request, srid, x, y, format='json'):
     return output_json({
         'postcode': pc,
     })
-

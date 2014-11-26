@@ -2,12 +2,18 @@
 
 from __future__ import print_function
 
-import xml.sax, os, errno, sys, datetime, time, shutil
+import errno
+import os
+import sys
+import xml.sax
 from xml.sax.handler import ContentHandler
 import yaml
 from lxml import etree
-from tempfile import mkdtemp, NamedTemporaryFile
 from subprocess import Popen, PIPE
+
+# The following are only used by doctests, hence noqa
+import shutil  # noqa
+from tempfile import mkdtemp, NamedTemporaryFile  # noqa
 
 from django.utils.six import StringIO
 from django.utils.six.moves import urllib
@@ -17,6 +23,7 @@ with open(os.path.join(
     config = yaml.load(f)
 
 CACHE_VISITED = set()
+
 
 # Suggested by http://stackoverflow.com/q/600268/223092
 def mkdir_p(path):
@@ -59,6 +66,7 @@ def mkdir_p(path):
         else:
             raise
 
+
 def get_query_relation_and_dependents(element_type, element_id):
     return """<osm-script timeout="3600">
   <union into="_">
@@ -68,6 +76,7 @@ def get_query_relation_and_dependents(element_type, element_id):
   <print from="_" limit="" mode="body" order="id"/>
 </osm-script>
 """ % (element_id, element_type)
+
 
 def get_query_relations_and_ways(required_tags):
     has_kv = "\n".join('      <has-kv k="%s" modv="" v="%s"/>' % (k, v)
@@ -84,6 +93,7 @@ def get_query_relations_and_ways(required_tags):
   <print from="_" limit="" mode="body" order="id"/>
 </osm-script>""" % (has_kv, has_kv)
 
+
 def get_from_overpass(query_xml, filename):
     if config.get('LOCAL_OVERPASS'):
         return get_osm3s(query_xml)
@@ -91,6 +101,7 @@ def get_from_overpass(query_xml, filename):
         if not os.path.exists(filename):
             return get_remote(query_xml, filename)
         return open(filename).read()
+
 
 def get_osm3s(query_xml):
     p = Popen(["osm3s_query",
@@ -103,6 +114,7 @@ def get_osm3s(query_xml):
         raise Exception("The osm3s_query failed")
     return out
 
+
 def get_remote(query_xml, filename):
     url = config['OVERPASS_SERVER']
     values = {'data': query_xml}
@@ -113,6 +125,7 @@ def get_remote(query_xml, filename):
     with open(filename, "w") as fp:
         fp.write(data)
     return data
+
 
 def get_cache_filename(element_type, element_id, cache_directory=None):
     if cache_directory is None:
@@ -129,6 +142,7 @@ def get_cache_filename(element_type, element_id, cache_directory=None):
     mkdir_p(full_subdirectory)
     basename = "%s-%d.xml" % (element_type, element_id)
     return os.path.join(full_subdirectory, basename)
+
 
 def get_name_from_tags(tags, element_type=None, element_id=None):
     """Given an OSMElement, return a readable name if possible
@@ -170,6 +184,7 @@ def get_name_from_tags(tags, element_type=None, element_id=None):
     else:
         return "Unknown"
 
+
 def get_non_contained_elements(elements):
     """Filter elements, keeping only those which are not a member of another
 
@@ -190,6 +205,7 @@ def get_non_contained_elements(elements):
             for member, role in e:
                 contained_elements.add(member)
     return [e for e in elements if e not in contained_elements]
+
 
 class OSMElement(object):
 
@@ -360,16 +376,25 @@ class OSMElement(object):
         The returned object is an etree.Element, which can be
         pretty-printed with etree.tostring:
 
-        >>> print(etree.tostring(OSMElement.xml_wrapping(), pretty_print=True), end='')
+        >>> print(
+        ...     etree.tostring(OSMElement.xml_wrapping(),
+        ...     pretty_print=True), end='') # doctest: +NORMALIZE_WHITESPACE
         <osm generator="mySociety Boundary Extractor" version="0.6">
-          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <note>The data included in this document is from www.openstreetmap.org.
+          It has there been collected by a large group of contributors.
+          For individual attribution of each item please refer to
+          http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
         </osm>
         """
 
         osm = etree.Element("osm", attrib={"version": "0.6",
                                            "generator": "mySociety Boundary Extractor"})
         note = etree.SubElement(osm, "note")
-        note.text = "The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history"
+        note.text = (
+            "The data included in this document is from www.openstreetmap.org. "
+            "It has there been collected by a large group of contributors. "
+            "For individual attribution of each item please refer to "
+            "http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history")
         return osm
 
     def xml_add_tags(self, xml_element):
@@ -389,6 +414,7 @@ class OSMElement(object):
 
         for k, v in sorted(self.tags.items()):
             etree.SubElement(xml_element, 'tag', attrib={'k': k, 'v': v})
+
 
 class Node(OSMElement):
 
@@ -426,7 +452,7 @@ class Node(OSMElement):
         self.tags = {}
 
     def pretty(self, indent=0):
-        i = " "*indent
+        i = " " * indent
         result = i + "node (%s) lat: %s, lon: %s" % (self.element_id, self.lat, self.lon)
         for k, v in sorted(self.tags.items()):
             result += "\n%s  %s => %s" % (i, k, v)
@@ -467,9 +493,12 @@ class Node(OSMElement):
           <node id="1234" lat="51.2" lon="-0.2"/>
         </example>
         >>> full_result = n.to_xml()
-        >>> print(etree.tostring(full_result, pretty_print=True), end='')
+        >>> print(etree.tostring(full_result, pretty_print=True), end='') # doctest: +NORMALIZE_WHITESPACE
         <osm generator="mySociety Boundary Extractor" version="0.6">
-          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <note>The data included in this document is from www.openstreetmap.org.
+          It has there been collected by a large group of contributors.
+          For individual attribution of each item please refer to
+          http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
           <node id="1234" lat="51.2" lon="-0.2"/>
         </osm>
         """
@@ -483,6 +512,7 @@ class Node(OSMElement):
                                         'lon': self.lon})
         self.xml_add_tags(node)
         return parent_element
+
 
 class Way(OSMElement):
 
@@ -583,7 +613,7 @@ class Way(OSMElement):
             node (15) lat: 51, lon: 2
         """
 
-        i = " "*indent
+        i = " " * indent
         result = i + "way (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
             result += "\n%s  %s => %s" % (i, k, v)
@@ -847,9 +877,12 @@ class Way(OSMElement):
         And the final option is to include the OSM XML boilerplate as well:
 
         >>> result = w.to_xml()
-        >>> print(etree.tostring(result, pretty_print=True), end='')
+        >>> print(etree.tostring(result, pretty_print=True), end='') # doctest: +NORMALIZE_WHITESPACE
         <osm generator="mySociety Boundary Extractor" version="0.6">
-          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <note>The data included in this document is from www.openstreetmap.org.
+          It has there been collected by a large group of contributors.
+          For individual attribution of each item please refer to
+          http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
           <way id="76543">
             <nd ref="12"/>
             <nd ref="13"/>
@@ -928,6 +961,7 @@ class Way(OSMElement):
                 still_missing.append(node)
         return still_missing
 
+
 class Relation(OSMElement):
 
     """Represents an OSM relation as returned via the Overpass API"""
@@ -982,7 +1016,7 @@ class Relation(OSMElement):
               way (76546)
         """
 
-        i = " "*indent
+        i = " " * indent
         result = i + "relation (%s)" % (self.element_id)
         for k, v in sorted(self.tags.items()):
             result += "\n%s  %s => %s" % (i, k, v)
@@ -1174,9 +1208,12 @@ class Relation(OSMElement):
         And the final option is to include the OSM XML boilerplate as well:
 
         >>> result = r.to_xml()
-        >>> print(etree.tostring(result, pretty_print=True), end='')
+        >>> print(etree.tostring(result, pretty_print=True), end='') # doctest: +NORMALIZE_WHITESPACE
         <osm generator="mySociety Boundary Extractor" version="0.6">
-          <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
+          <note>The data included in this document is from www.openstreetmap.org.
+          It has there been collected by a large group of contributors.
+          For individual attribution of each item please refer to
+          http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
           <relation id="98765">
             <member ref="76542" role="" type="node"/>
             <member ref="76543" role="" type="way"/>
@@ -1206,7 +1243,6 @@ class Relation(OSMElement):
             parent_element = OSMElement.xml_wrapping()
         relation = etree.Element('relation',
                                  attrib={'id': self.element_id})
-        members_xml = []
         for member, role in self:
             if include_node_dependencies and member.element_type == "node":
                 if member.element_content_missing:
@@ -1271,8 +1307,9 @@ class Relation(OSMElement):
         ...     def get_known_or_fetch(self, element_type, element_id):
         ...         return OSMElement.make_missing_element(element_type, element_id)
         >>> node_cache = {}
-        >>> r.reconstruct_missing(FakeEmptyParser(), node_cache)
-        [Node(id="13", missing), Node(id="14", missing), Way(id="18", missing), Node(id="19", missing), Node(id="20", missing)]
+        >>> r.reconstruct_missing(FakeEmptyParser(), node_cache) # doctest: +NORMALIZE_WHITESPACE
+        [Node(id="13", missing), Node(id="14", missing),
+            Way(id="18", missing), Node(id="19", missing), Node(id="20", missing)]
         """
 
         still_missing = []
@@ -1303,12 +1340,15 @@ class Relation(OSMElement):
 
         return still_missing
 
+
 class UnexpectedElementException(Exception):
     def __init__(self, element_name, message):
         self.element_name = element_name
         self.message = message
+
     def __str__(self):
         return self.message
+
 
 class OSMXMLParser(ContentHandler):
 
@@ -1620,7 +1660,8 @@ class OSMXMLParser(ContentHandler):
 
     def raise_if_sub_level(self, name):
         if self.current_top_level_element is not None:
-            raise UnexpectedElementException(name, "Should never get a new <%s> when still in a top-level element" % (name,))
+            raise UnexpectedElementException(
+                name, "Should never get a new <%s> when still in a top-level element" % (name,))
 
     def raise_if_top_level(self, name):
         if self.current_top_level_element is None:
@@ -1629,7 +1670,9 @@ class OSMXMLParser(ContentHandler):
     def raise_unless_expected_parent(self, name, expected_parent):
         if self.current_top_level_element.element_type != expected_parent:
             wrong_parent = self.current_top_level_element.element_type
-            raise UnexpectedElementException(name, "Didn't expect to find <%s> in a <%s>, can only be in <%s>" % (name, wrong_parent, expected_parent))
+            raise UnexpectedElementException(
+                name, "Didn't expect to find <%s> in a <%s>, can only be in <%s>" % (
+                    name, wrong_parent, expected_parent))
 
     def get_known_or_fetch(self, element_type, element_id, verbose=False):
         """Return an OSM Node, Way or Relation, fetching it if necessary
@@ -1696,7 +1739,7 @@ class OSMXMLParser(ContentHandler):
             else:
                 # A programming error: something's been added to
                 # VALID_TOP_LEVEL_ELEMENTS which isn't dealt with.
-                assert "Unhandled top level element %s" % (name,) # pragma: no cover
+                assert "Unhandled top level element %s" % (name,)  # pragma: no cover
         else:
             # These must be sub-elements:
             self.raise_if_top_level(name)
@@ -1716,8 +1759,8 @@ class OSMXMLParser(ContentHandler):
                 node = self.get_known_or_fetch('node', attr['ref'])
                 if node.element_content_missing:
                     if self.fetch_missing:
-                         # print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
-                         pass
+                        # print >> sys.stderr, "A node (%s) was referenced that couldn't be found" % (attr['ref'],)
+                        pass
                     node = OSMElement.make_missing_element('node', attr['ref'])
                 self.current_top_level_element.nodes.append(node)
             else:
@@ -1730,6 +1773,7 @@ class OSMXMLParser(ContentHandler):
             else:
                 self.top_level_elements.append(self.current_top_level_element)
             self.current_top_level_element = None
+
 
 class MinimalOSMXMLParser(ContentHandler):
 
@@ -1758,9 +1802,11 @@ class MinimalOSMXMLParser(ContentHandler):
             self.current_element_id = None
             self.current_tags = None
 
+
 def get_total_seconds(td):
     """A replacement for timedelta.total_seconds(), that's only in Python >= 2.7"""
     return td.microseconds * 1e-6 + td.seconds + td.days * (24.0 * 60 * 60)
+
 
 def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     """Get an OSM element from the Overpass API, with caching on disk if remote
@@ -1775,12 +1821,12 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     Exception: Unknown element type 'nonsense'
     """
 
-    arguments = (element_type, element_id)
     if element_type not in ('relation', 'way', 'node'):
         raise Exception("Unknown element type '%s'" % (element_type,))
     filename = get_cache_filename(element_type, element_id, cache_directory)
     all_dependents_query = get_query_relation_and_dependents(element_type, element_id)
     return get_from_overpass(all_dependents_query, filename)
+
 
 def parse_xml_minimal(s, element_handler):
     """Parse some OSM XML just to get type, id and tags
@@ -1810,6 +1856,7 @@ def parse_xml_minimal(s, element_handler):
     fp = StringIO(s)
     parser = MinimalOSMXMLParser(element_handler)
     xml.sax.parse(fp, parser)
+
 
 def parse_xml(filename, fetch_missing=True):
     """Completely parse an OSM XML file
@@ -1844,11 +1891,13 @@ def parse_xml(filename, fetch_missing=True):
         xml.sax.parse(fp, parser)
     return parser
 
+
 def parse_xml_string(s, *parser_args, **parser_kwargs):
     fp = StringIO(s)
     parser = OSMXMLParser(*parser_args, **parser_kwargs)
     xml.sax.parse(fp, parser)
     return parser
+
 
 def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=False, cache_directory=None, visited=None):
     """Fetch and parse a particular OSM element recursively
@@ -1899,13 +1948,14 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
     xml = fetch_cached(element_type, element_id, verbose, cache_directory)
     try:
         parsed = parse_xml_string(xml, fetch_missing)
-    except UnexpectedElementException as e:
+    except UnexpectedElementException:
         raise
     # Sometimes we seem to have an empty element returned, in which
     # case just return None:
     if not len(parsed):
         return None
     return parsed.get_known_or_fetch(element_type, element_id)
+
 
 class EndpointToWayMap:
 
@@ -2001,11 +2051,11 @@ class EndpointToWayMap:
         del self.endpoints[way.last]
 
     def get_from_either_end(self, way):
-        return [ self.endpoints[e] for e in (way.first, way.last)
-                 if e in self.endpoints ]
+        return [self.endpoints[e] for e in (way.first, way.last)
+                if e in self.endpoints]
 
     def pretty(self, indent=0):
-        i = " "*indent
+        i = " " * indent
         result = i + "EndpointToWayMap:"
         for k, v in sorted(self.endpoints.items()):
             result += "\n%s  endpoint: %s" % (i, k.pretty())
@@ -2016,9 +2066,11 @@ class EndpointToWayMap:
     def number_of_endpoints(self):
         return len(self.endpoints)
 
+
 class UnclosedBoundariesException(Exception):
     def __init__(self, detailed_error=None):
         self.detailed_error = detailed_error
+
 
 def join_way_soup(ways):
     """Join an iterable collection of ways into closed ways
@@ -2136,6 +2188,7 @@ def join_way_soup(ways):
         raise UnclosedBoundariesException(endpoints_to_ways.pretty())
     return closed_ways
 
+
 if __name__ == "__main__":
 
     from optparse import OptionParser
@@ -2177,7 +2230,7 @@ if __name__ == "__main__":
         element_type = 'way'
         element_id = options.way
 
-    from generate_kml import *
+    from generate_kml import get_kml_for_osm_element
 
     kml, bbox = get_kml_for_osm_element(element_type, element_id)
 

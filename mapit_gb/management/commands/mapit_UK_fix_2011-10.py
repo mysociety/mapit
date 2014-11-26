@@ -4,9 +4,10 @@
 
 from optparse import make_option
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
 from mapit.models import Area, CodeType
 from utils import save_polygons
+
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
@@ -15,7 +16,7 @@ class Command(LabelCommand):
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
 
-    def handle_label(self,  filename, **options):
+    def handle_label(self, filename, **options):
         code_version = CodeType.objects.get(code='gss')
         for feat in DataSource(filename)[0]:
             name = unicode(feat['NAME'].value, 'iso-8859-1')
@@ -24,5 +25,4 @@ class Command(LabelCommand):
                 m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 if options['commit']:
                     print('Updating %s' % name)
-                    save_polygons({ ons_code: (m, [ feat.geom ]) })
-
+                    save_polygons({ons_code: (m, [feat.geom])})

@@ -2,8 +2,11 @@
 
 from __future__ import print_function
 
+import os
 import re
-from boundaries import *
+import sys
+
+from boundaries import get_cache_filename
 
 script_directory = os.path.dirname(os.path.abspath(__file__))
 
