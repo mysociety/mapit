@@ -49,7 +49,7 @@ def is_special_postcode(pc):
         'TDCU1ZZ',  # Tristan da Cunha
         'TKCA1ZZ',  # Turks and Caicos Islands
         'GIR0AA', 'G1R0AA',  # Girobank
-        'SANTA1',  # Santa Claus
+        'SANTA1', 'XM45HQ',  # Santa Claus
     ):
         return True
     return False
