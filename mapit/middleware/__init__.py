@@ -9,8 +9,10 @@ class JSONPMiddleware(object):
         if response.status_code == 302:
             return response
         else:
-            if request.GET.get('callback') and re.match('[a-zA-Z0-9_$.]+$', request.GET.get('callback')):
-                response.content = request.GET.get('callback').encode('utf-8') + b'(' + response.content + b')'
+            cb = request.GET.get('callback')
+            if cb and re.match('[a-zA-Z0-9_$.]+$', cb):
+                cb = cb.encode('utf-8')
+                response.content = b'typeof ' + cb + b" === 'function' && " + cb + b'(' + response.content + b')'
                 response.status_code = 200 # Must return OK for JSONP to be processed
             return response
 
