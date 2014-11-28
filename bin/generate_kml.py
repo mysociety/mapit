@@ -10,6 +10,7 @@ def ways_overlap(a, b):
 
     For example, if we have two overlapping ways:
 
+    >>> from boundaries import Way, Node
     >>> w1 = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                      Node('11', latitude=53, longitude=4),
     ...                      Node('12', latitude=49, longitude=4),
@@ -62,6 +63,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
 
     For example:
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),
@@ -135,6 +137,7 @@ def kml_string(folder_name,
 
     For example, supposing we have these Ways:
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),
@@ -237,6 +240,7 @@ def kml_string(folder_name,
 def get_kml_for_osm_element_no_fetch(element):
     """Return KML for a boundary represented by a supplied OSM element
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),

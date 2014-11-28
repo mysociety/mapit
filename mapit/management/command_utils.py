@@ -222,6 +222,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
     >>> coords_c = [(0, 1), (0, 3), (2, 3), (2, 2), (3, 2),
     ...             (3, 0), (1, 0), (1, 1), (0, 1)]
 
+    >>> from django.contrib.gis.geos import Polygon
     >>> mp = MultiPolygon(Polygon(coords_a), Polygon(coords_b))
     >>> mp.valid
     False

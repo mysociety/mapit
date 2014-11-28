@@ -361,7 +361,7 @@ class OSMElement(object):
         pretty-printed with etree.tostring:
 
         >>> print(etree.tostring(OSMElement.xml_wrapping(), pretty_print=True), end='')
-        <osm version="0.6" generator="mySociety Boundary Extractor">
+        <osm generator="mySociety Boundary Extractor" version="0.6">
           <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
         </osm>
         """
@@ -464,13 +464,13 @@ class Node(OSMElement):
         True
         >>> print(etree.tostring(parent, pretty_print=True), end='')
         <example>
-          <node lat="51.2" lon="-0.2" id="1234"/>
+          <node id="1234" lat="51.2" lon="-0.2"/>
         </example>
         >>> full_result = n.to_xml()
         >>> print(etree.tostring(full_result, pretty_print=True), end='')
-        <osm version="0.6" generator="mySociety Boundary Extractor">
+        <osm generator="mySociety Boundary Extractor" version="0.6">
           <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
-          <node lat="51.2" lon="-0.2" id="1234"/>
+          <node id="1234" lat="51.2" lon="-0.2"/>
         </osm>
         """
 
@@ -830,10 +830,10 @@ class Way(OSMElement):
         <Element example-with-nodes at ...>
         >>> print(etree.tostring(xe, pretty_print=True), end='')
         <example-with-nodes>
-          <node lat="52" lon="1" id="12"/>
-          <node lat="52" lon="2" id="13"/>
-          <node lat="51" lon="1" id="14"/>
-          <node lat="51" lon="2" id="15"/>
+          <node id="12" lat="52" lon="1"/>
+          <node id="13" lat="52" lon="2"/>
+          <node id="14" lat="51" lon="1"/>
+          <node id="15" lat="51" lon="2"/>
           <way id="76543">
             <nd ref="12"/>
             <nd ref="13"/>
@@ -848,7 +848,7 @@ class Way(OSMElement):
 
         >>> result = w.to_xml()
         >>> print(etree.tostring(result, pretty_print=True), end='')
-        <osm version="0.6" generator="mySociety Boundary Extractor">
+        <osm generator="mySociety Boundary Extractor" version="0.6">
           <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
           <way id="76543">
             <nd ref="12"/>
@@ -1156,7 +1156,7 @@ class Relation(OSMElement):
         <Element example-with-nodes at ...>
         >>> print(etree.tostring(xe, pretty_print=True), end='')
         <example-with-nodes>
-          <node lat="52" lon="0.3" id="76542"/>
+          <node id="76542" lat="52" lon="0.3"/>
           <relation id="98765">
             <member ref="76542" role="" type="node"/>
             <member ref="76543" role="" type="way"/>
@@ -1175,7 +1175,7 @@ class Relation(OSMElement):
 
         >>> result = r.to_xml()
         >>> print(etree.tostring(result, pretty_print=True), end='')
-        <osm version="0.6" generator="mySociety Boundary Extractor">
+        <osm generator="mySociety Boundary Extractor" version="0.6">
           <note>The data included in this document is from www.openstreetmap.org. It has there been collected by a large group of contributors. For individual attribution of each item please refer to http://www.openstreetmap.org/api/0.6/[node|way|relation]/#id/history</note>
           <relation id="98765">
             <member ref="76542" role="" type="node"/>
@@ -1766,6 +1766,7 @@ def fetch_cached(element_type, element_id, verbose=False, cache_directory=None):
     """Get an OSM element from the Overpass API, with caching on disk if remote
 
     If you request an unknown element type, an exception is thrown:
+    >>> tmp_cache = mkdtemp()
     >>> filename = fetch_cached('nonsense',
     ...                         '1',
     ...                         cache_directory=tmp_cache)
@@ -1860,14 +1861,14 @@ def fetch_osm_element(element_type, element_id, fetch_missing=True, verbose=Fals
 
     >>> tmp_cache = mkdtemp()
     >>> fetch_osm_element("relation", "58446", cache_directory=tmp_cache)
-    Relation(id="58446", members=71)
+    Relation(id="58446", members=70)
 
     Or do the same, more verbosely, with:
 
     >>> tmp_cache2 = mkdtemp()
-    >>> fetch_osm_element("relation", "58446", verbose=True, cache_directory=tmp_cache2)
+    >>> fetch_osm_element("relation", "58446", verbose=True, cache_directory=tmp_cache2, visited=set())
     fetch_osm_element(relation, 58446)
-    Relation(id="58446", members=71)
+    Relation(id="58446", members=70)
 
     FIXME: fetching a non-existing element really should produce an
     exception, but at the moment just returns None
