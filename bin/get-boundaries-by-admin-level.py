@@ -4,15 +4,21 @@
 # This script fetches all administrative and political boundaries from
 # OpenStreetMap and writes them out as KML.
 
-import xml.sax, urllib, os, re, errno, sys
-from xml.sax.handler import ContentHandler
-import urllib, urllib2
+from __future__ import print_function
 
-from boundaries import *
-from generate_kml import *
+import os
+import re
+import sys
+
+from django.utils.encoding import smart_str
+
+from boundaries import (
+    mkdir_p, get_query_relations_and_ways, get_osm3s, get_name_from_tags, parse_xml_minimal,
+    UnclosedBoundariesException)
+from generate_kml import get_kml_for_osm_element
 
 if len(sys.argv) > 2:
-    print >> sys.stderr, "Usage: %s [FIRST-MAPIT_TYPE]" % (sys.argv[0],)
+    print("Usage: %s [FIRST-MAPIT_TYPE]" % (sys.argv[0],), file=sys.stderr)
     sys.exit(1)
 
 start_mapit_type = 'O02'
@@ -21,6 +27,7 @@ if len(sys.argv) == 2:
 
 dir = os.path.dirname(os.path.abspath(__file__))
 data_dir = os.path.join(dir, '..', 'data')
+
 
 def replace_slashes(s):
     return re.sub(r'/', '_', s)
@@ -51,10 +58,10 @@ mapit_type_to_tags = {
 }
 
 if start_mapit_type not in mapit_type_to_tags.keys():
-    print >> sys.stderr, "The type %s isn't known" % (start_mapit_type,)
-    print >> sys.stderr, "The known types are:"
+    print("The type %s isn't known" % (start_mapit_type,), file=sys.stderr)
+    print("The known types are:", file=sys.stderr)
     for mapit_type in sorted(mapit_type_to_tags.keys()):
-        print >> sys.stderr, " ", mapit_type
+        print(" ", mapit_type, file=sys.stderr)
     sys.exit(1)
 
 reached_first_mapit_type = False
@@ -65,10 +72,10 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
         if mapit_type == start_mapit_type:
             reached_first_mapit_type = True
         else:
-            print "Haven't reached the first MapIt type, skipping", mapit_type
+            print("Haven't reached the first MapIt type, skipping", mapit_type)
             continue
 
-    print "Fetching data for MapIt type", mapit_type
+    print("Fetching data for MapIt type", mapit_type)
 
     file_basename = mapit_type + ".xml"
     output_directory = os.path.join(data_dir, "cache-with-political")
@@ -89,7 +96,7 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
 
         name = get_name_from_tags(tags, element_type, element_id)
 
-        print "Considering admin boundary:", name.encode('utf-8')
+        print("Considering admin boundary:", smart_str(name))
 
         try:
 
@@ -97,20 +104,20 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
                                      element_id,
                                      replace_slashes(name))
 
-            filename = os.path.join(level_directory, u"%s.kml" % (basename,))
+            filename = os.path.join(level_directory, "%s.kml" % (basename,))
 
             if not os.path.exists(filename):
 
                 kml, _ = get_kml_for_osm_element(element_type, element_id)
                 if not kml:
-                    print "      No data found for %s %s" % (element_type, element_id)
+                    print("      No data found for %s %s" % (element_type, element_id))
                     return
 
-                print "      Writing KML to", filename.encode('utf-8')
+                print("      Writing KML to", smart_str(filename))
                 with open(filename, "w") as fp:
                     fp.write(kml)
 
         except UnclosedBoundariesException:
-            print "      ... ignoring unclosed boundary"
+            print("      ... ignoring unclosed boundary")
 
     parse_xml_minimal(data, handle_top_level_element)

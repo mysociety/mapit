@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.six import assertRegex
 
 
 class AdminViewsTest(TestCase):
@@ -22,7 +23,7 @@ class AdminViewsTest(TestCase):
     def test_area_admin_page(self):
         admin_url = reverse("admin:mapit_area_add")
         resp = self.client.get(admin_url)
-        self.assertRegexpMatches(resp.content, '<input([^>]*(id="id_name"|name="name"|type="text")){3}')
+        assertRegex(self, resp.content.decode('utf-8'), '<input([^>]*(id="id_name"|name="name"|type="text")){3}')
         self.assertEqual(resp.status_code, 200)
 
     def test_type_admin_page(self):

@@ -2,12 +2,15 @@
 # one-off after that import in order to get the four old boundaries back
 # that were removed during that import.
 
+from __future__ import print_function
+
 import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
 from mapit.models import Area, CodeType, Type, Country, Generation, NameType
 from utils import save_polygons
+
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
@@ -16,7 +19,7 @@ class Command(LabelCommand):
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
 
-    def handle_label(self,  filename, **options):
+    def handle_label(self, filename, **options):
         code_version = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='O')
         for feat in DataSource(filename)[0]:
@@ -28,17 +31,16 @@ class Command(LabelCommand):
             country = ons_code[0]
             if ons_code in ('E07000100', 'E07000104', 'S12000009', 'S12000043'):
                 assert Area.objects.filter(codes__type=code_version, codes__code=ons_code).count() == 0
-                print ons_code, area_code, country, name
+                print(ons_code, area_code, country, name)
 
                 m = Area(
-                    type = Type.objects.get(code=area_code),
-                    country = Country.objects.get(code=country),
-                    generation_low = Generation.objects.get(id=1),
-                    generation_high = Generation.objects.get(id=14),
+                    type=Type.objects.get(code=area_code),
+                    country=Country.objects.get(code=country),
+                    generation_low=Generation.objects.get(id=1),
+                    generation_high=Generation.objects.get(id=14),
                 )
                 if options['commit']:
                     m.save()
-                    m.names.update_or_create({ 'type': name_type }, { 'name': name })
-                    m.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
-                    save_polygons({ ons_code: (m, [feat.geom]) })
-
+                    m.names.update_or_create(type=name_type, defaults={'name': name})
+                    m.codes.update_or_create(type=code_version, defaults={'code': ons_code})
+                    save_polygons({ons_code: (m, [feat.geom])})

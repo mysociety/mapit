@@ -1,14 +1,15 @@
 # This script is used to import Northern Ireland areas into MaPit
-# 
+#
 # XXX This is incomplete, it needs to know which things have had boundary changes
 # like import_boundary_line does. Hopefully just using new GSS codes by the time
 # NI has any boundary changes.
 
-import csv, re
+import csv
+import re
 import os.path
-from django.contrib.gis.geos import Point
 from django.core.management.base import NoArgsCommand
-from mapit.models import Postcode, Area, Generation, Country, Type, CodeType, NameType
+from mapit.models import Area, Generation, Country, Type, CodeType, NameType
+
 
 class Command(NoArgsCommand):
     help = 'Creates/updates Northern Ireland areas'
@@ -18,14 +19,15 @@ class Command(NoArgsCommand):
         new_generation = Generation.objects.new()
         country = Country.objects.get(code='N')
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         code_type = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='S')
 
-        euro_area, created = Area.objects.get_or_create(country=country, type=Type.objects.get(code='EUR'),
+        euro_area, created = Area.objects.get_or_create(
+            country=country, type=Type.objects.get(code='EUR'),
             generation_low__lte=current_generation, generation_high__gte=current_generation,
-            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+            defaults={'generation_low': new_generation, 'generation_high': new_generation}
         )
         euro_area.generation_high = new_generation
         euro_area.save()
@@ -33,9 +35,11 @@ class Command(NoArgsCommand):
 
         # Read in ward name -> electoral area name/area
         ni_eas = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/ni-electoral-areas.csv'))
-        ni_eas.next()
+        next(ni_eas)
         ward_to_electoral_area = {}
         e = {}
+        last_district = None
+        last_electoral_area = None
         for district, electoral_area, ward, dummy in ni_eas:
             if not district:
                 district = last_district
@@ -52,13 +56,13 @@ class Command(NoArgsCommand):
 
         # Read in new ONS code to names
         snac = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/snac-2009-ni-cons2ward.csv'))
-        snac.next()
+        next(snac)
         code_to_area = {}
         for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
             if district_name not in ward_to_electoral_area:
-                raise Exception, "District %s is missing" % district_name
+                raise Exception("District %s is missing" % district_name)
             if ward_name not in ward_to_electoral_area[district_name]:
-                raise Exception, "Ward %s, district %s is missing" % (ward_name, district_name)
+                raise Exception("Ward %s, district %s is missing" % (ward_name, district_name))
 
             ward_code = ward_code.replace(' ', '')
 
@@ -80,7 +84,8 @@ class Command(NoArgsCommand):
                 ward_area.parent_area.save()
                 code_to_area[ward_code] = ward_area
 
-            if ward_code == '95S24': continue # Derryaghy
+            if ward_code == '95S24':
+                continue  # Derryaghy
 
             if parl_code not in code_to_area:
                 parl_area = Area.objects.get_or_create_with_code(
@@ -90,10 +95,9 @@ class Command(NoArgsCommand):
                 new_code = re.sub('^7', 'N060000', parl_code)
                 parl_area.codes.get_or_create(type=code_type, code=new_code)
                 code_to_area[parl_code] = parl_area
-                
+
             if 'NIE' + parl_code not in code_to_area:
                 nia_area = Area.objects.get_or_create_with_name(
                     country=country, type=Type.objects.get(code='NIE'), name_type='S', name=parl_name,
                 )
                 code_to_area['NIE' + parl_code] = nia_area
-

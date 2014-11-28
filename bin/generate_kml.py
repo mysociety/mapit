@@ -1,15 +1,18 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from boundaries import *
+import sys
 from lxml import etree
 from shapely.geometry import Polygon
+from boundaries import join_way_soup, fetch_osm_element, UnclosedBoundariesException
+
 
 def ways_overlap(a, b):
     """Determines if two Way objects represent overlapping polygons
 
     For example, if we have two overlapping ways:
 
+    >>> from boundaries import Way, Node
     >>> w1 = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                      Node('11', latitude=53, longitude=4),
     ...                      Node('12', latitude=49, longitude=4),
@@ -51,6 +54,7 @@ def ways_overlap(a, b):
     polygon_b = Polygon(tuples_b)
     return polygon_a.intersects(polygon_b)
 
+
 def group_boundaries_into_polygons(outer_ways, inner_ways):
 
     """Group outer_ways and inner_ways into distinct polygons
@@ -62,6 +66,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
 
     For example:
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),
@@ -111,8 +116,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
     for outer_way in outer_ways:
         if len(outer_way) <= 3:
             continue
-        polygon = { 'outer': [outer_way],
-                    'inner': [] }
+        polygon = {'outer': [outer_way], 'inner': []}
         for i in range(len(inner_ways_left) - 1, -1, -1):
             inner_way = inner_ways_left[i]
             if len(inner_way) <= 3:
@@ -125,6 +129,7 @@ def group_boundaries_into_polygons(outer_ways, inner_ways):
 
     return result
 
+
 def kml_string(folder_name,
                placemark_name,
                extended_data,
@@ -135,6 +140,7 @@ def kml_string(folder_name,
 
     For example, supposing we have these Ways:
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),
@@ -200,12 +206,12 @@ def kml_string(folder_name,
 
     kml = etree.Element("kml",
                         nsmap={None: "http://earth.google.com/kml/2.1"})
-    folder = etree.SubElement(kml,"Folder")
-    name = etree.SubElement(folder,"name")
+    folder = etree.SubElement(kml, "Folder")
+    name = etree.SubElement(folder, "name")
     name.text = folder_name
 
-    placemark = etree.SubElement(folder,"Placemark")
-    name = etree.SubElement(placemark,"name")
+    placemark = etree.SubElement(folder, "Placemark")
+    name = etree.SubElement(placemark, "name")
     name.text = placemark_name
 
     extended = etree.SubElement(placemark, "ExtendedData")
@@ -223,7 +229,7 @@ def kml_string(folder_name,
         all_ways += [(w, True) for w in p['inner']]
         for way, inner in all_ways:
             boundary_type = "inner" if inner else "outer"
-            boundary = etree.SubElement(polygon, boundary_type+"BoundaryIs")
+            boundary = etree.SubElement(polygon, boundary_type + "BoundaryIs")
             linear_ring = etree.SubElement(boundary, "LinearRing")
             coordinates = etree.SubElement(linear_ring, "coordinates")
             coordinates.text = " ".join("%s,%s,0 " % n.lon_lat_tuple() for n in way.nodes)
@@ -237,6 +243,7 @@ def kml_string(folder_name,
 def get_kml_for_osm_element_no_fetch(element):
     """Return KML for a boundary represented by a supplied OSM element
 
+    >>> from boundaries import Way, Node
     >>> big_square = Way('1', nodes=[Node('10', latitude=53, longitude=0),
     ...                              Node('11', latitude=53, longitude=4),
     ...                              Node('12', latitude=49, longitude=4),
@@ -288,11 +295,12 @@ def get_kml_for_osm_element_no_fetch(element):
     element_type, element_id = element.name_id_tuple()
 
     name = element.get_name()
-    folder_name = u"Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
+    folder_name = "Boundaries for %s [%s %s] from OpenStreetMap" % (name, element_type, element_id)
 
     if element_type == 'way':
         if not element.closed():
-            raise UnclosedBoundariesException, "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id)
+            raise UnclosedBoundariesException(
+                "get_kml_for_osm_element called with an unclosed way (%s)" % (element_id))
         return (kml_string(folder_name,
                            name,
                            element.tags,
@@ -318,7 +326,8 @@ def get_kml_for_osm_element_no_fetch(element):
                 bounding_boxes)
 
     else:
-        raise Exception, "Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id)
+        raise Exception("Unsupported element type in get_kml_for_osm_element(%s, %s)" % (element_type, element_id))
+
 
 def get_kml_for_osm_element(element_type, element_id):
 

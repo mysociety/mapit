@@ -9,16 +9,17 @@
 # Scotland is not covered by this dataset, but as of 1st April 2013 has one
 # police force for the whole country, called Police Scotland.
 
+from __future__ import print_function
 
 import json
 import os
 import sys
-import urllib2
 
 from optparse import make_option
 
 from django.core.management import call_command
 from django.core.management.base import LabelCommand
+from django.utils.six.moves import urllib
 
 from mapit.models import Type, NameType, Country, CodeType
 
@@ -86,7 +87,7 @@ class Command(LabelCommand):
         for k in ['generation_id', 'area_type_code', 'name_type_code', 'code_type']:
             if options[k]:
                 continue
-            print "Missing argument '--%s'" % k
+            print("Missing argument '--%s'" % k)
             err = True
         if err:
             sys.exit(1)
@@ -101,7 +102,7 @@ class Command(LabelCommand):
             Country.objects.get(code='W')
             Country.objects.get(code='N')
         except Country.DoesNotExist:
-            print "England, Wales and Northern Ireland don't exist yet; load the UK fixture first."
+            print("England, Wales and Northern Ireland don't exist yet; load the UK fixture first.")
             sys.exit(1)
         welsh_forces = ('dyfed-powys', 'gwent', 'north-wales', 'south-wales')
 
@@ -110,12 +111,14 @@ class Command(LabelCommand):
         # data and save the IDs as codes for future use:
         names_data_filename = os.path.join(DATA_DIRECTORY, "police_force_names.json")
         if not os.path.exists(names_data_filename):
-            print "Can't find force names data at %s; trying to fetch it from the police API instead..." % names_data_filename
+            print(
+                "Can't find force names data at %s; trying to fetch it from the police API instead..." %
+                names_data_filename)
             url = "http://data.police.uk/api/forces"
-            forces = urllib2.urlopen(url)
+            forces = urllib.request.urlopen(url)
             with open(names_data_filename, 'w') as f:
                 f.write(forces.read())
-            print "...successfully fetched and saved the force names data."
+            print("...successfully fetched and saved the force names data.")
 
         with open(names_data_filename) as names_file:
             names_data = json.load(names_file)
@@ -131,10 +134,10 @@ class Command(LabelCommand):
             NameType.objects.get(code=name_type_code)
             CodeType.objects.get(code=code_type_code)
         except (Type.DoesNotExist, NameType.DoesNotExist, CodeType.DoesNotExist) as e:
-            print e, "Create the area, name and code types first."
+            print(e, "Create the area, name and code types first.")
             sys.exit(1)
 
-        print "Importing police force areas from %s" % directory
+        print("Importing police force areas from %s" % directory)
 
         # mapit_import command kwargs which are common to all forces:
         command_kwargs = {
@@ -165,7 +168,7 @@ class Command(LabelCommand):
             try:
                 name = codes_to_names[code]
             except KeyError:
-                print "Could not find a force name in API JSON data for %s" % code
+                print("Could not find a force name in API JSON data for %s" % code)
                 sys.exit(1)
 
             call_command(

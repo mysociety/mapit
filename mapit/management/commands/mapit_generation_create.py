@@ -5,6 +5,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Generation
 
+
 class Command(NoArgsCommand):
     help = 'Create a new generation'
     option_list = NoArgsCommand.option_list + (
@@ -15,15 +16,15 @@ class Command(NoArgsCommand):
     def handle(self, **options):
         new_generation = Generation.objects.new()
         if new_generation:
-            raise Exception, "You already have an inactive generation"
+            raise Exception("You already have an inactive generation")
 
         if not options['desc']:
-            raise Exception, "You must specify a generation description"
+            raise Exception("You must specify a generation description")
 
         g = Generation(description=options['desc'])
-        print "Creating generation..."
+        print("Creating generation...")
         if options['commit']:
             g.save()
-            print "...saved: %s" % g
+            print("...saved: %s" % g)
         else:
-            print "...not saving, dry run"
+            print("...not saving, dry run")

@@ -15,10 +15,12 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area
 
+
 def disp(areas):
     if isinstance(areas, Area):
-        areas = [ areas ]
-    return ', '.join( a.all_codes['gss'] for a in areas )
+        areas = [areas]
+    return ', '.join(a.all_codes['gss'] for a in areas)
+
 
 class Command(NoArgsCommand):
     help = 'Fix some of the Torfaen wards in the May 2014 UK Boundary-Line import'
@@ -38,7 +40,7 @@ class Command(NoArgsCommand):
             old.update(generation_high=22)
             new.delete()
         else:
-            print 'Would delete %s and reinstate %s' % (disp(new), disp(old))
+            print('Would delete %s and reinstate %s' % (disp(new), disp(old)))
 
     def handle_noargs(self, **options):
         self.commit = options['commit']

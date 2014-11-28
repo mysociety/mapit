@@ -5,7 +5,8 @@ import sys
 from xml.sax.handler import ContentHandler
 import shapely.ops
 import shapely.wkt
-from django.contrib.gis.geos import GEOSGeometry, MultiPolygon, Polygon
+from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
+
 
 class KML(ContentHandler):
     def __init__(self, *args, **kwargs):
@@ -32,6 +33,7 @@ class KML(ContentHandler):
         if name == 'Data':
             self.name = self.normalize_whitespace(attr['name'])
 
+
 def save_polygons(lookup):
     for shape in lookup.values():
         m, poly = shape
@@ -39,11 +41,11 @@ def save_polygons(lookup):
             continue
         sys.stdout.write(".")
         sys.stdout.flush()
-        #g = OGRGeometry(OGRGeomType('MultiPolygon'))
+        # g = OGRGeometry(OGRGeomType('MultiPolygon'))
         m.polygons.all().delete()
         for p in poly:
             if p.geom_name == 'POLYGON':
-                shapes = [ p ]
+                shapes = [p]
             else:
                 shapes = p
             for g in shapes:
@@ -55,14 +57,16 @@ def save_polygons(lookup):
                 # Make sure it is two-dimensional
                 g.coord_dim = 2
                 m.polygons.create(polygon=g.wkb)
-        #m.polygon = g.wkt
-        #m.save()
-        poly[:] = [] # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
-    print ""
+        # m.polygon = g.wkt
+        # m.save()
+        # Clear the polygon's list, so that if it has both an ons_code and unit_id, it's not processed twice
+        poly[:] = []
+    print("")
 
 
 def fix_with_buffer(geos_polygon):
     return geos_polygon.buffer(0)
+
 
 def fix_with_exterior_union_polygonize(geos_polygon):
     exterior_ring = geos_polygon.exterior_ring
@@ -77,6 +81,7 @@ def fix_with_exterior_union_polygonize(geos_polygon):
     except ValueError:
         reconstructed_geos_polygons = []
     return MultiPolygon(reconstructed_geos_polygons)
+
 
 def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
     """Try to make a valid version of an invalid GEOS polygon
@@ -190,9 +195,8 @@ def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
     original_length = geos_polygon.length
 
     for method, fix_function in (
-        ('buffer', fix_with_buffer),
-        ('exterior', fix_with_exterior_union_polygonize)
-        ):
+            ('buffer', fix_with_buffer),
+            ('exterior', fix_with_exterior_union_polygonize)):
         if method in methods:
             fixed = fix_function(geos_polygon)
             if not fixed:
@@ -201,6 +205,7 @@ def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
             if (difference / float(original_length)) < cutoff:
                 return fixed
     return None
+
 
 def fix_invalid_geos_multipolygon(geos_multipolygon):
     """Try to fix an invalid GEOS MultiPolygon
@@ -222,6 +227,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
     >>> coords_c = [(0, 1), (0, 3), (2, 3), (2, 2), (3, 2),
     ...             (3, 0), (1, 0), (1, 1), (0, 1)]
 
+    >>> from django.contrib.gis.geos import Polygon
     >>> mp = MultiPolygon(Polygon(coords_a), Polygon(coords_b))
     >>> mp.valid
     False
@@ -323,7 +329,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
                     elif fixed.geom_type == 'Polygon':
                         valid_polygons.append(fixed)
                     else:
-                        raise "Unknown fixed geometry type:", fixed.geom_type
+                        raise Exception("Unknown fixed geometry type: " + fixed.geom_type)
         for_union = MultiPolygon(valid_polygons)
     if len(for_union) > 0:
         result = for_union.cascaded_union
@@ -334,10 +340,6 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
     else:
         result = for_union
     return result
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
 
 
 def fix_invalid_geos_geometry(geos_geometry):
@@ -350,3 +352,8 @@ def fix_invalid_geos_geometry(geos_geometry):
         return fix_invalid_geos_multipolygon(geos_geometry)
     else:
         raise Exception("Don't know how to fix an invalid %s" % geos_geometry.geom_type)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

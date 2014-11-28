@@ -8,5 +8,6 @@
     { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "STHL1ZZ", "location": "POINT(-5.71151733296042 -15.9692510055427)" } },
     { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "TDCU1ZZ", "location": "POINT(-12.2827148415488 -37.1198113355105)" } },
     { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "TKCA1ZZ", "location": "POINT(-71.9384765496097 21.8538513272946)" } },
-    { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "SANTA1", "location": "POINT(0 90)" } }
+    { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "SANTA1", "location": "POINT(0 90)" } },
+    { "pk": null, "model": "mapit.postcode", "fields": { "areas": [], "postcode": "XM45HQ", "location": "POINT(0 90)" } }
 ]

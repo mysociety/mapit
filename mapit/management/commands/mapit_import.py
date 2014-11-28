@@ -5,15 +5,20 @@
 # Email: matthew@mysociety.org; WWW: http://www.mysociety.org
 
 import re
-import sys
 from optparse import make_option
+
 from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
-#from django.contrib.gis.utils import LayerMapping
-from django.contrib.gis.gdal import *
+# from django.contrib.gis.utils import LayerMapping
+from django.contrib.gis.gdal import DataSource
 from django.conf import settings
+from django.utils import six
+from django.utils.six.moves import input
+from django.utils.encoding import smart_str
+
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
+
 
 class Command(LabelCommand):
     help = 'Import geometry data from .shp, .kml or .geojson files'
@@ -114,7 +119,7 @@ class Command(LabelCommand):
     def handle_label(self, filename, **options):
 
         missing_options = []
-        for k in ['generation_id','area_type_code','name_type_code','country_code']:
+        for k in ['generation_id', 'area_type_code', 'name_type_code', 'country_code']:
             if options[k]:
                 continue
             else:
@@ -137,7 +142,7 @@ class Command(LabelCommand):
         code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
 
-        if len(area_type_code)>3:
+        if len(area_type_code) > 3:
             raise CommandError("Area type code must be 3 letters or fewer, sorry")
 
         if name_field and override_name:
@@ -147,35 +152,40 @@ class Command(LabelCommand):
 
         using_code = (code_field or override_code)
         if (using_code and not code_type_code) or (not using_code and code_type_code):
-            raise CommandError("If you want to save a code, specify --code_type and either --code_field or --override_code")
+            raise CommandError(
+                "If you want to save a code, specify --code_type and either --code_field or --override_code")
         try:
             area_type = Type.objects.get(code=area_type_code)
         except:
-            type_desc = raw_input('Please give a description for area type code %s: ' % area_type_code)
+            type_desc = input('Please give a description for area type code %s: ' % area_type_code)
             area_type = Type(code=area_type_code, description=type_desc)
-            if options['commit']: area_type.save()
+            if options['commit']:
+                area_type.save()
 
         try:
             name_type = NameType.objects.get(code=name_type_code)
         except:
-            name_desc = raw_input('Please give a description for name type code %s: ' % name_type_code)
+            name_desc = input('Please give a description for name type code %s: ' % name_type_code)
             name_type = NameType(code=name_type_code, description=name_desc)
-            if options['commit']: name_type.save()
+            if options['commit']:
+                name_type.save()
 
         try:
             country = Country.objects.get(code=country_code)
         except:
-            country_name = raw_input('Please give the name for country code %s: ' % country_code)
+            country_name = input('Please give the name for country code %s: ' % country_code)
             country = Country(code=country_code, name=country_name)
-            if options['commit']: country.save()
+            if options['commit']:
+                country.save()
 
         if code_type_code:
             try:
                 code_type = CodeType.objects.get(code=code_type_code)
             except:
-                code_desc = raw_input('Please give a description for code type %s: ' % code_type_code)
+                code_desc = input('Please give a description for code type %s: ' % code_type_code)
                 code_type = CodeType(code=code_type_code, description=code_desc)
-                if options['commit']: code_type.save()
+                if options['commit']:
+                    code_type.save()
 
         self.stdout.write("Importing from %s" % filename)
 
@@ -183,7 +193,7 @@ class Command(LabelCommand):
             self.stdout.write('(will not save to db as --commit not specified)')
 
         current_generation = Generation.objects.current()
-        new_generation     = Generation.objects.get( id=generation_id )
+        new_generation = Generation.objects.get(id=generation_id)
 
         def verbose(*args):
             if int(options['verbosity']) > 1:
@@ -192,7 +202,9 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         if (override_name or override_code) and len(layer) > 1:
-            message = "Warning: you have specified an override %s and this file contains more than one feature; multiple areas with the same %s will be created"
+            message = (
+                "Warning: you have specified an override %s and this file contains more than one feature; "
+                "multiple areas with the same %s will be created")
             if override_name:
                 self.stdout.write(message % ('name', 'name'))
             if override_code:
@@ -207,16 +219,20 @@ class Command(LabelCommand):
                     name = feat[name_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    raise CommandError("Could not find name using name field '%s' - should it be something else? It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
+                    raise CommandError(
+                        "Could not find name using name field '%s' - should it be something else? "
+                        "It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
-                    if not isinstance(name, unicode):
+                    if not isinstance(name, six.text_type):
                         name = name.decode(encoding)
                 except:
-                    raise CommandError("Could not decode name using encoding '%s' - is it in another encoding? Specify one with --encoding" % encoding)
+                    raise CommandError(
+                        "Could not decode name using encoding '%s' - is it in another encoding? "
+                        "Specify one with --encoding" % encoding)
 
             name = re.sub('\s+', ' ', name)
             if not name:
-                raise Exception( "Could not find a name to use for area" )
+                raise Exception("Could not find a name to use for area")
 
             code = None
             if override_code:
@@ -226,16 +242,18 @@ class Command(LabelCommand):
                     code = feat[code_field].value
                 except:
                     choices = ', '.join(layer.fields)
-                    raise CommandError("Could not find code using code field '%s' - should it be something else? It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
+                    raise CommandError(
+                        "Could not find code using code field '%s' - should it be something else? "
+                        "It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            self.stdout.write("  looking at '%s'%s" % ( name.encode('utf-8'), (' (%s)' % code) if code else '' ))
+            self.stdout.write(smart_str("  looking at '%s'%s" % (name, (' (%s)' % code) if code else '')))
 
             g = None
             if hasattr(feat, 'geom'):
                 g = feat.geom.transform(settings.MAPIT_AREA_SRID, clone=True)
 
             try:
-                if options['new']: # Always want a new area
+                if options['new']:  # Always want a new area
                     raise Area.DoesNotExist
                 if code:
                     matching_message = "code %s of code type %s" % (code, code_type)
@@ -281,23 +299,25 @@ class Command(LabelCommand):
                 else:
                     # If --preserve is not specified, the code or the name must be unique:
                     if len(areas) > 1:
-                        raise Area.MultipleObjectsReturned, "There was more than one area with %s, and --preserve was not specified" % (matching_message,)
+                        raise Area.MultipleObjectsReturned(
+                            "There was more than one area with %s, and --preserve was not specified" % (
+                                matching_message,))
 
             except Area.DoesNotExist:
                 m = Area(
-                    name            = name,
-                    type            = area_type,
-                    country         = country,
-                    # parent_area     = parent_area,
-                    generation_low  = new_generation,
-                    generation_high = new_generation,
+                    name=name,
+                    type=area_type,
+                    country=country,
+                    # parent_area=parent_area,
+                    generation_low=new_generation,
+                    generation_high=new_generation,
                 )
                 if options['use_code_as_id'] and code:
                     m.id = int(code)
 
             # check that we are not about to skip a generation
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
-                raise Exception, "Area %s found, but not in current generation %s" % (m, current_generation)
+                raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
             m.generation_high = new_generation
 
             if options['fix_invalid_polygons'] and g is not None:
@@ -311,12 +331,11 @@ class Command(LabelCommand):
                     else:
                         g = geos_g.ogr
 
-            poly = [ g ] if g is not None else []
+            poly = [g] if g is not None else []
 
             if options['commit']:
                 m.save()
-                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.names.update_or_create(type=name_type, defaults={'name': name})
                 if code:
-                    m.codes.update_or_create({ 'type': code_type }, { 'code': code })
-                save_polygons({ m.id : (m, poly) })
-
+                    m.codes.update_or_create(type=code_type, defaults={'code': code})
+                save_polygons({m.id: (m, poly)})

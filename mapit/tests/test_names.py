@@ -4,6 +4,7 @@ from mapit.models import Type, Area, Generation, Name, NameType
 import mapit_gb.countries
 import mapit.models
 
+
 class NamesTest(TestCase):
     def setUp(self):
         self.generation = Generation.objects.create(
