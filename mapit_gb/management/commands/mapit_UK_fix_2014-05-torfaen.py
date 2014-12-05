@@ -1,15 +1,15 @@
-# This script is to be run as a one-off to fix up some of the changes to
-# Torfaen wards/communities in the May 2014 edition of Boundary-Line that
-# should not have been present.
+# This script is to be run as a one-off to revert the changes to Torfaen
+# wards/communities in the May 2014 edition of Boundary-Line. Only some of them
+# should not have been present, but they've all been reverted in the October
+# edition.
 #
 # http://www.legislation.gov.uk/wsi/2013/2156/contents/made is the source for
 # all of this. Specifically, section 2 saying that articles 5, 6 and 10 don't
 # come into operation until before the next election, which is 2017.
 #
-# This script will revoke the changes made for the purposes of articles 5 and
-# 6, but the changes for article 10 overlap with changes for (active) articles
-# 8 and 9, so we will live with those being incorrect until Ordnance Survey
-# release hopefully fixed boundaries in October.
+# This script will revoke the changes made for the purposes of articles 5-10
+# (originally this script only revoked 5 and 6, leaving 10 as it overlapped
+# with 8/9).
 
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
@@ -23,7 +23,7 @@ def disp(areas):
 
 
 class Command(NoArgsCommand):
-    help = 'Fix some of the Torfaen wards in the May 2014 UK Boundary-Line import'
+    help = 'Fix the Torfaen wards in the May 2014 UK Boundary-Line import'
     option_list = NoArgsCommand.option_list + (
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
@@ -56,9 +56,22 @@ class Command(NoArgsCommand):
         self.move('Llanyrafon', 'UTE', True)
 
         # Article 7 moved some of Abersychan to Pen Tranch (Snatchwood UTE)
+        self.move('Abersychan Community', 'CPC')
+        self.move('Abersychan', 'UTE')
+        self.move('Pen Tranch Community', 'CPC')
+        self.move('Snatchwood', 'UTE')
+
         # Article 8 moved some of Upper Cwmbran to Pontnewydd
+        self.move('Upper Cwmbran Community', 'CPC')
+        self.move('Upper Cwmbran', 'UTE')
+        self.move('Pontnewydd Community', 'CPC')
+        self.move('Pontnewydd', 'UTE')
+
         # Article 9 moved some of Fairwater to Cwmbran Central (Greenmeadow to St Dials UTEs)
-        #    These three have come into operation.
+        self.move('Fairwater Community', 'CPC')
+        self.move('Greenmeadow', 'UTE')
+        self.move('Cwmbran Central Community', 'CPC')
+        self.move('St Dials', 'UTE')
 
         # Article 10 moved some of Fairwater to Upper Cwmbran (Greenmeadow to Upper Cwmbran UTEs)
-        #    Not reverting article 10 changes, see above
+        # Covered by movements for articles 8 and 9
