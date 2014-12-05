@@ -14,7 +14,7 @@ from django.contrib.gis.gdal import DataSource
 from django.utils import six
 
 from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
-from mapit.management.command_utils import save_polygons
+from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
 class Command(LabelCommand):
@@ -150,7 +150,19 @@ class Command(LabelCommand):
             if options['commit']:
                 m.save()
 
-            poly = [feat.geom]
+            # Make a GEOS geometry only to check for validity:
+            g = feat.geom
+            geos_g = g.geos
+            if not geos_g.valid:
+                print("  Geometry of %s %s not valid" % (ons_code, m))
+                geos_g = fix_invalid_geos_geometry(geos_g)
+                if geos_g is None:
+                    raise Exception("The geometry for area %s was invalid and couldn't be fixed" % name)
+                    g = None
+                else:
+                    g = geos_g.ogr
+
+            poly = [g]
 
             if options['commit']:
                 m.names.update_or_create(type=name_type, defaults={'name': name})
