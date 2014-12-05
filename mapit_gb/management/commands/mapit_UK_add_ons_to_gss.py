@@ -29,13 +29,13 @@ class Command(NoArgsCommand):
     help = 'Inserts the old ONS codes into mapit'
 
     def handle_noargs(self, **options):
-        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/BL-2010-10-code-change.csv'))
+        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../data/BL-2010-10-code-change.csv'))
         next(mapping)
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]
             process(new_code, old_code)
 
-        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../../data/UK/BL-2010-10-missing-codes.csv'))
+        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../data/BL-2010-10-missing-codes.csv'))
         next(mapping)
         for row in mapping:
             type, new_code, old_code, name = row

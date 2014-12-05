@@ -5,7 +5,7 @@
 
 import csv, glob
 
-nspd = csv.reader(open('../data/UK/NSPD-2010-05.csv'))
+nspd = csv.reader(open('../data/NSPD-2010-05.csv'))
 lookup = {}
 for row in nspd:
     pc = row[0]
@@ -18,7 +18,7 @@ for row in nspd:
         print("%s maps to both %s and %s (%s)" % (ons_code, lookup[ons_code], parl, pc))
     lookup[ons_code] = parl
 
-snac = csv.reader(open('../data/UK/snac-2003-ni-cons2ward.csv'))
+snac = csv.reader(open('../data/snac-2003-ni-cons2ward.csv'))
 for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
     ward_code = ward_code.replace(' ', '')
     if ward_code not in lookup:

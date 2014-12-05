@@ -28,7 +28,7 @@ setup(
     url='https://github.com/mysociety/mapit',
     license='LICENSE.txt',
     packages=find_packages(exclude=['project']),
-    scripts=['bin/mapit_make_css', 'bin/mapit_osm_to_kml'],
+    scripts=['bin/mapit_make_css'],
     include_package_data=True,
     install_requires=install_requires(),
     classifiers=[

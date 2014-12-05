@@ -151,9 +151,7 @@ STATICFILES_FINDERS = (
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    # Needs adapting to new class version
-    # 'django.template.loaders.app_directories.Loader',
-    'mapit.loader.load_template_source',
+    'django.template.loaders.app_directories.Loader',
 )
 
 # UpdateCacheMiddleware does ETag setting, and
@@ -212,6 +210,7 @@ if MAPIT_COUNTRY:
     try:
         c = 'mapit_%s' % MAPIT_COUNTRY.lower()
         imp.find_module(c)
-        INSTALLED_APPS.append(c)
+        # Put before 'mapit', so country templates take precedence
+        INSTALLED_APPS.insert(INSTALLED_APPS.index('mapit'), c)
     except:
         pass
