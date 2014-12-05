@@ -18,7 +18,7 @@ def install_requires():
 
 setup(
     name='django-mapit',
-    version='1.1',
+    version='1.2',
     description=(
         'A web service for mapping postcodes and points to current or past '
         'administrative area information and polygons.'),
@@ -38,6 +38,8 @@ setup(
         'License :: OSI Approved :: GNU Affero General Public License v3',
         'Intended Audience :: Developers',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Database :: Front-Ends',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Scientific/Engineering :: GIS',
