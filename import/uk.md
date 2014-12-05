@@ -28,7 +28,7 @@ Here are the basic instructions to install OS OpenData and ONSPD:
 ./manage.py mapit_generation_create --commit --desc "Initial import."
 ./manage.py loaddata uk
 ./manage.py mapit_UK_import_boundary_line \
-    --control=mapit.controls.first-gss --commit \
+    --control=mapit_gb.controls.first-gss --commit \
     `\ls ../data/Boundary-Line/Data/*.shp|\grep -v high_water`
 # (You can run without --commit to do a dry run.)
 # first-gss in the above assumes the Boundary Line you're importing
@@ -85,7 +85,7 @@ You probably don't need any of that for your own install.
 {% highlight bash %}
 # Create inactive generation.
 ./manage.py mapit_UK_import_boundary_line \
-    --control=mapit.controls.2009-10 \
+    --control=mapit_gb.controls.2009-10 \
     `\ls ../../data/Boundary-Line/2009-10/*.shp|\grep -v high_water`
 ./manage.py mapit_UK_import_codepoint \
     ../../data/Code-Point-Open-2010-05/*.csv
@@ -94,7 +94,7 @@ You probably don't need any of that for your own install.
 ./manage.py mapit_UK_scilly ../../data/Code-Point-Open-2010-05/tr.csv
 # Make generation active, add another inactive generation
 ./manage.py mapit_UK_import_boundary_line \
-    --control=mapit.controls.2010-05 \
+    --control=mapit_gb.controls.2010-05 \
     `\ls ../../data/Boundary-Line/2010-05/*.shp|\grep -v high_water`
 # mapit_UK_import_codepoint not needed as it's the same
 # and there's no P-in-P tests!
