@@ -15,7 +15,8 @@ PARENT_DIR = os.path.dirname(BASE_DIR)
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
 try:
-    config = yaml.load( open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') )
+    with open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') as fp:
+        config = yaml.load(fp)
 except:
     config = {}
 
@@ -49,13 +50,17 @@ if DEBUG:
     }
     CACHE_MIDDLEWARE_SECONDS = 0
 else:
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-            'TIMEOUT': 86400,
+    try:
+        import memcache  # noqa
+        CACHES = {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+                'LOCATION': '127.0.0.1:11211',
+                'TIMEOUT': 86400,
+            }
         }
-    }
+    except ImportError:
+        pass
     CACHE_MIDDLEWARE_SECONDS = 86400
     CACHE_MIDDLEWARE_KEY_PREFIX = config.get('MAPIT_DB_NAME')
 
@@ -122,7 +127,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = os.path.join( PARENT_DIR, 'collected_static' )
+STATIC_ROOT = os.path.join(PARENT_DIR, 'collected_static')
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -140,15 +145,13 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    # Needs adapting to new class version
-    #'django.template.loaders.app_directories.Loader',
-    'mapit.loader.load_template_source',
+    'django.template.loaders.app_directories.Loader',
 )
 
 # UpdateCacheMiddleware does ETag setting, and
@@ -207,6 +210,7 @@ if MAPIT_COUNTRY:
     try:
         c = 'mapit_%s' % MAPIT_COUNTRY.lower()
         imp.find_module(c)
-        INSTALLED_APPS.append(c)
+        # Put before 'mapit', so country templates take precedence
+        INSTALLED_APPS.insert(INSTALLED_APPS.index('mapit'), c)
     except:
         pass

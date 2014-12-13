@@ -2,12 +2,18 @@
 # one-off after that import in order to get the four old boundaries back
 # that were removed during that import.
 
+from __future__ import print_function
+
 import re
 from optparse import make_option
+
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
+from django.utils import six
+
 from mapit.models import Area, Code, CodeType, Type, Country, Generation, NameType
 from mapit.management.command_utils import save_polygons
+
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
@@ -16,7 +22,7 @@ class Command(LabelCommand):
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
     )
 
-    def handle_label(self,  filename, **options):
+    def handle_label(self, filename, **options):
         code_version = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='O')
 
@@ -29,9 +35,9 @@ class Command(LabelCommand):
             2342: 'E07000242',
         }
 
-        for id, code in areas_to_update.iteritems():
+        for id, code in areas_to_update.items():
             area = Area.objects.get(id=id)
-            print "Updating: {0} to: {1}".format(area, code)
+            print("Updating: {0} to: {1}".format(area, code))
             area.generation_low = Generation.objects.new()
             if options['commit']:
                 area.save()
@@ -43,7 +49,7 @@ class Command(LabelCommand):
         # Add in new areas to represent the old boundaries too
         for feat in DataSource(filename)[0]:
             name = feat['NAME'].value
-            if not isinstance(name, unicode):
+            if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
@@ -59,17 +65,17 @@ class Command(LabelCommand):
                 new_area = self.make_new_area(name, ons_code, area_code, code_version, 11, 20, country)
             if new_area and options['commit']:
                 new_area.save()
-                new_area.names.update_or_create({ 'type': name_type }, { 'name': name })
-                new_area.codes.update_or_create({ 'type': code_version }, { 'code': ons_code })
-                save_polygons({ ons_code: (new_area, [feat.geom]) })
+                new_area.names.update_or_create(type=name_type, defaults={'name': name})
+                new_area.codes.update_or_create(type=code_version, defaults={'code': ons_code})
+                save_polygons({ons_code: (new_area, [feat.geom])})
 
     def make_new_area(self, name, ons_code, area_code, code_version, generation_low, generation_high, country):
         assert Area.objects.filter(codes__type=code_version, codes__code=ons_code).count() == 0
-        print ons_code, area_code, country, name
+        print(ons_code, area_code, country, name)
 
         return Area(
-            type = Type.objects.get(code=area_code),
-            country = Country.objects.get(code=country),
-            generation_low = Generation.objects.get(id=generation_low),
-            generation_high = Generation.objects.get(id=generation_high),
+            type=Type.objects.get(code=area_code),
+            country=Country.objects.get(code=country),
+            generation_low=Generation.objects.get(id=generation_low),
+            generation_high=Generation.objects.get(id=generation_high),
         )

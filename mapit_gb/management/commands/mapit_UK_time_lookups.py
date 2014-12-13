@@ -3,16 +3,17 @@
 # suggestion in the timeit documentation is to take the minimum over
 # a number of repetitions.
 
-from random import randint, uniform, seed
-from time import time
-from timeit import timeit, Timer, repeat
+from random import randint, uniform  # seed
+# from time import time
+from timeit import repeat  # timeit, Timer
 from django.core.management.base import BaseCommand, CommandError
-from django.db import connection
+# from django.db import connection
 from django.db.models import Min, Max
-from mapit.models import *
+from mapit.models import Postcode
 
 minimum_postcode_id = Postcode.objects.aggregate(Min('id'))['id__min']
 maximum_postcode_id = Postcode.objects.aggregate(Max('id'))['id__max']
+
 
 def get_random_UK_location():
     """Return a random location generally on the UK mainland
@@ -44,6 +45,7 @@ def get_random_UK_location():
 
 random_locations = None
 
+
 class Command(BaseCommand):
     args = '<iterations>'
     help = 'Time many point-in-polygon lookups'
@@ -67,16 +69,16 @@ class Command(BaseCommand):
         # was much slower.)
 
         to_generate = repeats * iterations
-        print "Generating %d random locations in the UK ..." % (to_generate,)
+        print("Generating %d random locations in the UK ..." % (to_generate,))
         global random_locations
-        random_locations = [get_random_UK_location() for _ in xrange(to_generate)]
-        print "... done."
+        random_locations = [get_random_UK_location() for _ in range(to_generate)]
+        print("... done.")
 
         # Now look up each of those locations, timing the process with
         # timeit.  Note that the list() is required to cause
         # evaluation of the GeoQuerySet.
 
-        print "Testing point-in-polygon tests ..."
+        print("Testing point-in-polygon tests ...")
         result = repeat(stmt='list(Area.objects.by_location(random_locations.pop()))',
                         setup='''
 from mapit.models import Area
@@ -84,6 +86,6 @@ from mapit.management.commands.mapit_UK_time_lookups import random_locations
 ''',
                         repeat=repeats,
                         number=iterations)
-        print "... done."
+        print("... done.")
 
-        print result
+        print(result)

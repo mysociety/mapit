@@ -7,6 +7,7 @@ from optparse import make_option
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area, Generation
 
+
 class Command(NoArgsCommand):
     help = 'Find parents for shapes'
     option_list = NoArgsCommand.option_list + (
@@ -16,7 +17,7 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         parentmap = {
             # A District council ward's parent is a District council:
@@ -67,13 +68,15 @@ class Command(NoArgsCommand):
                 except Area.DoesNotExist:
                     continue
             if not parent:
-                raise Exception, "Area %s does not have a parent?" % (self.pp_area(area))
+                raise Exception("Area %s does not have a parent?" % (self.pp_area(area)))
             if area.parent_area != parent:
-                print "Parent for %s was %s, is now %s" % (self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent))
+                print("Parent for %s was %s, is now %s" % (
+                    self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent)))
                 if options['commit']:
                     area.parent_area = parent
                     area.save()
 
     def pp_area(self, area):
-        if not area: return "None"
+        if not area:
+            return "None"
         return "%s [%d] (%s)" % (area.name, area.id, area.type.code)

@@ -6,7 +6,9 @@
 /web/down.html
 /data/cache
 /MANIFEST
+/build
 /dist
+/django_mapit.egg-info
 *~
 /.coverage
 

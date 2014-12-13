@@ -6,6 +6,7 @@ from django.contrib.gis.geos import Polygon, Point
 
 from mapit.models import Type, Area, Geometry, Generation, Postcode
 
+
 class AreaViewsTest(TestCase):
     def setUp(self):
         self.generation = Generation.objects.create(
@@ -70,7 +71,7 @@ class AreaViewsTest(TestCase):
         url = '/point/4326/-3.4,51.5.json'
         response = self.client.get(url)
 
-        content = json.loads(response.content)
+        content = json.loads(response.content.decode('utf-8'))
 
         self.assertEqual(
             set((int(x) for x in content.keys())),
@@ -79,6 +80,7 @@ class AreaViewsTest(TestCase):
 
     def test_front_page(self):
         response = self.client.get('/')
+        self.assertContains(response, 'MapIt')
 
     def test_json_links(self):
         id = self.big_area.id
@@ -90,4 +92,5 @@ class AreaViewsTest(TestCase):
         id = self.small_area_1.id
         url = '/area/%d/example_postcode' % id
         response = self.client.get(url)
-        self.assertEqual(response.content, json.dumps(self.postcode.postcode))
+        content = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(content, self.postcode.postcode)

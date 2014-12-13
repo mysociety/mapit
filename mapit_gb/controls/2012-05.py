@@ -4,8 +4,10 @@
 
 from areas.models import Area, Generation
 
+
 def code_version():
     return 'gss'
+
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match against ONS code,
@@ -32,16 +34,16 @@ def check(name, type, country, geometry):
     # NB: After import_boundary_line is run with this control file, the GSS
     # codes of these four councils will need updating to their new entries, as
     # it will have maintained the old codes.
-    
-    if ( type == 'UTA' and name in ('Glasgow City', 'East Dunbartonshire') ) \
-    or ( type == 'DIS' and name in ('St. Albans District (B)', 'Welwyn Hatfield District (B)') ):
+
+    if (type == 'UTA' and name in ('Glasgow City', 'East Dunbartonshire')) or (
+            type == 'DIS' and name in ('St. Albans District (B)', 'Welwyn Hatfield District (B)')):
         current = Generation.objects.current()
-        return Area.objects.get(names__name=name, names__type='O',
-            generation_low__lte=current, generation_high__gte=current)
+        return Area.objects.get(
+            names__name=name, names__type='O', generation_low__lte=current, generation_high__gte=current)
 
     # The following have had boundary changes for the 2012 elections, but all
     # have ONS codes and so can be ignored/ detected that way:
-    #  
+    #
     # Glasgow/E Dunb.	2010/353
     # Huntingdonshire	2010/684
     # Epping Forest	2011/2764 (minor)
@@ -55,4 +57,3 @@ def check(name, type, country, geometry):
     # Welwyn/St Albans	2012/667
 
     return False
-

@@ -6,8 +6,10 @@
 
 from ..models import Area, Generation
 
+
 def code_version():
     return 'gss'
+
 
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match against
@@ -77,7 +79,8 @@ def check(name, type, country, geometry):
     if (type == 'UTA' and name == 'Northumberland') \
        or (type == 'MTD' and name == 'Gateshead District (B)') \
        or (type == 'DIS' and name in overriden_dis_areas):
-        return Area.objects.get(names__name=name, names__type__code='O',
+        return Area.objects.get(
+            names__name=name, names__type__code='O',
             generation_low__lte=current, generation_high__gte=current)
 
     # This is the default

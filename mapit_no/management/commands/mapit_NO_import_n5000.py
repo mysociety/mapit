@@ -9,4 +9,3 @@
 #   --name_field NAVN --encoding iso-8859-1 \
 #   --code_field KOMM --code_type n5000 --use_code_as_id --commit \
 #   N5000_AdministrativFlate.shp
-

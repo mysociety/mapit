@@ -4,8 +4,8 @@
 
 from optparse import make_option
 from django.core.management.base import NoArgsCommand
-from django.contrib.gis.gdal import *
 from mapit.models import Area, CodeType
+
 
 class Command(NoArgsCommand):
     help = 'Fix the GSS code of UTE South Tynedale so that we can import the May 2014 boundary line'

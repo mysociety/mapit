@@ -12,32 +12,32 @@
 # Copyright (c) 2011, 2012 UK Citizens Online Democracy. All rights reserved.
 # Email: mark@mysociety.org; WWW: http://www.mysociety.org
 
+from __future__ import print_function
+
 import os
 import re
 import xml.sax
-from optparse import make_option
+
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
-from mapit.models import Area, Generation, Country, Type, Code, CodeType, NameType
-from mapit.management.command_utils import save_polygons, KML
-from glob import glob
-import urllib2
-from collections import namedtuple
-import json
+from django.contrib.gis.gdal import DataSource
+from django.utils.encoding import smart_str
+
+from mapit.models import Code, CodeType
+from mapit.management.command_utils import KML
 import csv
+
 
 def empty_if_none(o):
     return '' if o is None else o
+
 
 class Command(LabelCommand):
     help = 'Import OSM administrative boundary data'
     args = '<KML-DIRECTORY>'
 
     def handle_label(self, directory_name, **options):
-        current_generation = Generation.objects.current()
-
         if not os.path.isdir(directory_name):
-            raise Exception, "'%s' is not a directory" % (directory_name,)
+            raise Exception("'%s' is not a directory" % (directory_name,))
 
         os.chdir(directory_name)
         skip_up_to = None
@@ -63,17 +63,14 @@ class Command(LabelCommand):
             for admin_directory in sorted(x for x in os.listdir('.') if os.path.isdir(x)):
 
                 if not re.search('^[A-Z0-9]{3}$', admin_directory):
-                    print "Skipping a directory that doesn't look like a MapIt type:", admin_directory
+                    print("Skipping a directory that doesn't look like a MapIt type:", admin_directory)
 
                 if not os.path.exists(admin_directory):
                     continue
 
                 files = sorted(os.listdir(admin_directory))
-                total_files = len(files)
 
                 for i, e in enumerate(files):
-
-                    progress = "[%d%% complete] " % ((i * 100) / total_files,)
 
                     if skipping:
                         if skip_up_to in e:
@@ -86,7 +83,7 @@ class Command(LabelCommand):
 
                     m = re.search(r'^(way|relation)-(\d+)-', e)
                     if not m:
-                        raise Exception, u"Couldn't extract OSM element type and ID from: " + e
+                        raise Exception("Couldn't extract OSM element type and ID from: " + e)
 
                     osm_type, osm_id = m.groups()
 
@@ -96,57 +93,50 @@ class Command(LabelCommand):
 
                     # Need to parse the KML manually to get the ExtendedData
                     kml_data = KML()
-                    print "parsing", kml_filename
+                    print("parsing", kml_filename)
                     xml.sax.parse(kml_filename, kml_data)
 
                     useful_names = [n for n in kml_data.data.keys() if not n.startswith('Boundaries for')]
                     if len(useful_names) == 0:
-                        raise Exception, "No useful names found in KML data"
+                        raise Exception("No useful names found in KML data")
                     elif len(useful_names) > 1:
-                        raise Exception, "Multiple useful names found in KML data"
+                        raise Exception("Multiple useful names found in KML data")
                     name = useful_names[0]
-                    print " ", name.encode('utf-8')
+                    print(" ", smart_str(name))
 
                     if osm_type == 'relation':
                         code_type_osm = CodeType.objects.get(code='osm_rel')
                     elif osm_type == 'way':
                         code_type_osm = CodeType.objects.get(code='osm_way')
                     else:
-                        raise Exception, "Unknown OSM element type:", osm_type
+                        raise Exception("Unknown OSM element type: " + osm_type)
 
                     ds = DataSource(kml_filename)
                     if len(ds) != 1:
-                        raise Exception, "We only expect one layer in a DataSource"
+                        raise Exception("We only expect one layer in a DataSource")
 
                     layer = ds[0]
                     if len(layer) != 1:
-                        raise Exception, "We only expect one feature in each layer"
+                        raise Exception("We only expect one feature in each layer")
 
                     feat = layer[0]
-
-                    area_code = admin_directory
 
                     osm_codes = list(Code.objects.filter(type=code_type_osm, code=osm_id))
                     osm_codes.sort(key=lambda e: e.area.generation_high.created)
 
                     new_area = None
-                    new_valid = None
                     new_empty = None
 
                     previous_area = None
-                    previous_valid = None
                     previous_empty = None
 
                     symmetric_difference_area = None
 
                     g = feat.geom.transform(4326, clone=True)
 
-                    new_some_nonempty = False
                     for polygon in g:
                         if polygon.point_count < 4:
                             new_empty = True
-                        else:
-                            new_some_nonempty = True
                     if not new_empty:
                         new_geos_geometry = g.geos.simplify(tolerance=0)
                         new_area = new_geos_geometry.area
@@ -166,13 +156,14 @@ class Command(LabelCommand):
                             previous_area = previous_geos_geometry.area
 
                             if not new_empty:
-                                symmetric_difference_area = previous_geos_geometry.sym_difference(new_geos_geometry).area
+                                symmetric_difference_area = previous_geos_geometry.sym_difference(
+                                    new_geos_geometry).area
                                 geos_equals = previous_geos_geometry.equals(new_geos_geometry)
                                 geos_equals_exact = previous_geos_geometry.equals_exact(new_geos_geometry)
 
                     csv_writer.writerow([osm_type,
                                          osm_id,
-                                         bool(osm_codes), # ExistedPreviously
+                                         bool(osm_codes),  # ExistedPreviously
                                          empty_if_none(previous_empty),
                                          empty_if_none(previous_area),
                                          empty_if_none(new_empty),

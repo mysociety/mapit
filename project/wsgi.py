@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 
 file_dir = os.path.realpath(os.path.dirname(__file__))
 sys.path.insert(0, os.path.normpath(os.path.join(file_dir, '..')))

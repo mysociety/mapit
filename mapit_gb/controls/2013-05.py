@@ -29,15 +29,18 @@ COUNTIES = [
     'Buckinghamshire', 'Cumbria', 'Derbyshire', 'Gloucestershire',
     'Northamptonshire', 'Oxfordshire', 'Somerset', 'Staffordshire', 'Surrey'
 ]
-COUNTIES = [ "%s County Council" % c for c in COUNTIES ]
+COUNTIES = ["%s County Council" % c for c in COUNTIES]
+
 
 def code_version():
     return 'gss'
 
+
 def check(name, type, country, geometry):
     """Should return True if this area is NEW, False if we should match"""
 
-    if type != 'CED': return False
+    if type != 'CED':
+        return False
 
     # Make sure CEDs are loaded *after* CTY
     area_within = Area.objects.filter(type__code='CTY', polygons__polygon__contains=geometry.geos.point_on_surface)[0]
