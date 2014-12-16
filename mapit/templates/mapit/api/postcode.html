@@ -23,6 +23,7 @@
     </dl>
 </section>
 
+{% if country != 'IT' %}
 <section id="api-by_partial_postcode">
     <h3><em>lookup by</em> partial postcode</h3>
 
@@ -38,3 +39,4 @@
         {% include "mapit/api/postcode-example-partial.html" %}
     </dl>
 </section>
+{% endif %}

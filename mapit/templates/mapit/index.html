@@ -39,7 +39,9 @@
                 <ol>
                     {% if postcodes_available %}
                     <li><a href="#api-by_postcode">Postcode</a></li>
+                    {% if country != 'IT' %}
                     <li><a href="#api-by_partial_postcode">Partial postcode</a></li>
+                    {% endif %}
                     {% endif %}
                     <li><a href="#api-by_point">Point</a></li>
                     {% if postcodes_available %}

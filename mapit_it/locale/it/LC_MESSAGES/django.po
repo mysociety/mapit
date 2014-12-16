@@ -1,0 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-24 16:56+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/mapit/base.html:59
+msgid "Home &amp; Documentation"
+msgstr "Home e Documentazione"
+
+#: templates/mapit/copyright.html:3
+msgid ""
+"Boundaries administrative data are released by <a href=\"http://www.istat.it"
+"\">ISTAT</a> and downloadable in SHP format from <a href=\"http://www.istat."
+"it/storage/basi_territoriali_2013/LimAmm2011_WGS84.zip\">this link</a>."
+msgstr ""
+"I dati dei confini delle aree amministrative sono rilasciati da <a href="
+"\"http://www.istat.it\">ISTAT</a> e scaricabili, in formato SHP da <a href="
+"\"http://www.istat.it/storage/basi_territoriali_2013/LimAmm2011_WGS84.zip"
+"\">questo link</a>."
+
+#: templates/mapit/copyright.html:11
+msgid ""
+"The <a href=\"http://mapit.poplus.org/\">MapIt</a> platform has been "
+"developed by <a href=\"http://www.mysociety.org\">MySociety</a>, a UK "
+"registered charity with which Openpolis cohoperate on transparency projects "
+"since years."
+msgstr ""
+"La piattaforma <a href=\"http://mapit.poplus.org/\">MapIt</a> è stata "
+"sviluppata da <a href=\"http://www.mysociety.org\">MySociety</a>, no-profit "
+"inglese, con la quale l'Associazione Openpolis collabora da anni sui "
+"progetti di trasparenza."
+
+#: templates/mapit/copyright.html:19
+msgid ""
+"The application is released within the <a href=\"http://poplus.org\">Poplus</"
+"a> project."
+msgstr ""
+"L'applicazione è rilasciata all'interno del progetto <a href=\"http://poplus."
+"org\">Poplus</a>."
+
+#: templates/mapit/copyright.html:26
+msgid ""
+"The maps are powered by <a href=\"https://www.openstreetmap.org"
+"\">Openstreetmap</a>, a the <a href=\"http://nominatim.openstreetmap.org/"
+"\">nominatim</a> geo-localization service used to identify the centroid "
+"coordinates for postal codes."
+msgstr ""
+"Le mappe sono fornite da <a href=\"https://www.openstreetmap.org"
+"\">Openstreetmap</a>, così come il servizio di geo-localizzazione <a href="
+"\"http://nominatim.openstreetmap.org/\">nominatim</a>, che è stato usato per "
+"identificare le coordinate centrali dei CAP."
+
+#: templates/mapit/country.html:2
+msgid "Italy"
+msgstr "Italia"
+
+#: templates/mapit/index-others.html:2
+msgid ""
+"\n"
+"This version of MapIt, covering italian administrative areas,\n"
+"has appeared in 2015, and is an effort of <a href=\"http://www.openpolis.it"
+"\">Openpolis</a>.\n"
+msgstr ""
+"\n"
+"Questa versione di MapIt, che riguarda le aree amministrative italiane, è "
+"stata pubblicata nel 2015 ed è opera dell'<a href=\"http://www.openpolis.it"
+"\">Associazione Openpolis</a>.\n"
+
+#: templates/mapit/intro.html:2
+msgid ""
+"\n"
+"<p>MapIt is a service that maps postcodes and geographical points to\n"
+"administrative areas. It&rsquo;s useful for anyone who has a postcode or\n"
+"co-ordinates of a point in Italy, and needs to find out what municpality,\n"
+"province, region, or electoral constituency it lies within.\n"
+"It&rsquo;s also great for looking up the shapes of all those boundaries.</"
+"p>\n"
+msgstr ""
+"\n"
+"<p>MapIt è un servizio che associa i Codici di Avviamento Postale (CAP) e i "
+"punti geografici (latitudine, longitudine) alle aree amministrative. "
+"&Egrave; utile per chiunque, partendo da un CAP o da coordinate geografiche "
+"italiane, voglia trovare in quale comune, regione, provincia o collegio "
+"elettorale si trovi. &Egrave; anche utile per visualizzare i contorni delle "
+"aree amministrative.</p>\n"
