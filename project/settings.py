@@ -99,6 +99,9 @@ if MAPIT_COUNTRY == 'GB':
 elif MAPIT_COUNTRY == 'NO':
     TIME_ZONE = 'Europe/Oslo'
     LANGUAGE_CODE = 'no'
+elif MAPIT_COUNTRY == 'IT':
+    TIME_ZONE = 'Europe/Rome'
+    LANGUAGE_CODE = 'it'
 else:
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en'
@@ -200,7 +203,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.gis',
     'django.contrib.staticfiles',
-
     'mapit',
 ]
 if django.VERSION < (1, 7):
