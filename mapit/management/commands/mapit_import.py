@@ -14,7 +14,6 @@ from django.contrib.gis.gdal import DataSource
 from django.conf import settings
 from django.utils import six
 from django.utils.six.moves import input
-from django.utils.encoding import smart_str
 
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
@@ -246,7 +245,7 @@ class Command(LabelCommand):
                         "Could not find code using code field '%s' - should it be something else? "
                         "It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
-            self.stdout.write(smart_str("  looking at '%s'%s" % (name, (' (%s)' % code) if code else '')))
+            self.stdout.write("  looking at '%s'%s" % (name, (' (%s)' % code) if code else ''))
 
             g = None
             if hasattr(feat, 'geom'):
