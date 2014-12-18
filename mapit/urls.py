@@ -13,7 +13,7 @@ urlpatterns = patterns(
     (r'^licensing$', render, {'template_name': 'mapit/licensing.html'}),
     (r'^overview$', render, {'template_name': 'mapit/overview.html'}),
 
-    (r'^generations$', 'mapit.views.areas.generations'),
+    (r'^generations%s$' % format_end, 'mapit.views.areas.generations', {}, 'mapit_generations'),
 
     (r'^postcode/$', 'mapit.views.postcodes.form_submitted'),
     (r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, 'mapit.views.postcodes.postcode'),

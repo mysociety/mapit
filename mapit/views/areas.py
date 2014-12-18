@@ -75,8 +75,10 @@ def query_args(request, format, type=None):
     return args
 
 
-def generations(request):
+def generations(request, format='json'):
     generations = Generation.objects.all()
+    if format == 'html':
+        return render(request, 'mapit/generations.html', {'generations': generations})
     return output_json(dict((g.id, g.as_dict()) for g in generations))
 
 

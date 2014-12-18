@@ -1,3 +1,6 @@
+{% load i18n %}
+{% load url from future %}
+
 <section id="api-generations">
     <h3>Generations</h3>
     <dl>
@@ -13,6 +16,9 @@ council names in generation 10 in order for
 <a href="http://www.fixmystreet.com/">FixMyStreet</a> to show expired councils
 on its All Reports page.
 {% endif %}
+
+        <dt>{% trans "Example" %}</dt>
+        <dd><a href="{% url "mapit_generations" "html" %}">{% trans "List of generations" %}</a></dd>
 
     </dl>
 </section>

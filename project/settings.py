@@ -216,3 +216,5 @@ if MAPIT_COUNTRY:
         INSTALLED_APPS.insert(INSTALLED_APPS.index('mapit'), c)
     except:
         pass
+
+DATE_FORMAT = 'j F Y'

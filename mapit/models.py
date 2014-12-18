@@ -83,6 +83,9 @@ class Generation(models.Model):
 
     objects = GenerationManager()
 
+    class Meta:
+        ordering = ('id',)
+
     def __str__(self):
         id = self.id or '?'
         return "Generation %s (%sactive)" % (id, "" if self.active else "in")
