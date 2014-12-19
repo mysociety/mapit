@@ -118,6 +118,11 @@ else:
     LANGUAGE_CODE = 'en'
     POSTCODES_AVAILABLE = True
 
+LANGUAGES = (
+    ('en', 'English'),
+    ('it', 'Italiano')
+)
+
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -178,6 +183,8 @@ TEMPLATE_LOADERS = (
 USE_ETAGS = False
 
 MIDDLEWARE_CLASSES = [
+    # 'django.middleware.locale.LocaleMiddleware',
+    'solid_i18n.middleware.SolidLocaleMiddleware',
     'mapit.middleware.gzip.GZipMiddleware',
     # Not 'django.middleware.gzip.GZipMiddleware' to work around Django #24242
     'django.middleware.http.ConditionalGetMiddleware',
@@ -205,11 +212,13 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.i18n',
     'django.core.context_processors.request',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
     'mapit.context_processors.country',
     'mapit.context_processors.analytics',
+    'mapit.context_processors.index_url',
 )
 
 if django.get_version() >= '1.8':

@@ -1,5 +1,9 @@
+from django.core.urlresolvers import reverse
 from django.conf import settings
 
+
+def index_url(request):
+    return {'INDEX_URL': reverse('mapit_index')}
 
 def country(request):
     return {

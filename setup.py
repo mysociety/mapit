@@ -29,6 +29,7 @@ setup(
         'psycopg2',
         'PyYAML',
         'Shapely',
+        'solid-i18n'
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
