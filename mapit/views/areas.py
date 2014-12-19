@@ -362,9 +362,12 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (
-        lon, lat, "/box" if bb else '', '.%s' % format if format else '')
-    )
+    kwargs = {'srid': 4326, 'x': lon, 'y': lat}
+    if bb:
+        kwargs['bb'] = 'box'
+    if format:
+        kwargs['format'] = format
+    return HttpResponseRedirect(reverse('mapit-point', kwargs=kwargs))
 
 
 @ratelimit(minutes=3, requests=100)

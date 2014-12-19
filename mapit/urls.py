@@ -36,7 +36,7 @@ urlpatterns = [
 
     url(r'^point/$', areas.point_form_submitted),
     url(r'^point/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,
-        areas.areas_by_point),
+        areas.areas_by_point, name='mapit-point'),
     url(r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,
         areas.areas_by_point_latlon),
     url(r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,

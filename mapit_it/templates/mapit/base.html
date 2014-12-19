@@ -1,6 +1,8 @@
 {% load url from compat %}
 {% load static from staticfiles %}
 {% load i18n %}
+{% get_available_languages as LANGUAGES %}
+{% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE HTML>
 <html lang="it">
 <head>
@@ -52,20 +54,31 @@
                  alt="{% trans "Keep us online, Donate Now" %}" width="160" height="32">
         </a>
 
+        <div class="language" style="float:right; padding-top: 10px; text-transform: uppercase; font-size: smaller">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% with full_path=request.get_full_path lang_prefix='/'|add:LANGUAGE_CODE|add:'/' %}
+            {% for language in languages %}{% if language.code != LANGUAGE_CODE %}
+                <a href="{% if full_path|slice:':4' == lang_prefix %}/{{ language.code }}{{ full_path|slice:'3:' }}{% else %}/{{ language.code }}{{ full_path }}{% endif %}">{{ language.name_local }}</a>
+            {% endif %}{% endfor %}
+            {% endwith %}
+
+        </div>
+
     </div>
 
 
-    {% if request.path != '/' %}
-    <header class="header">
-        <a class="docs_link" href="{% url "mapit_index" %}"><img src="{% static "mapit/img/home-icon.png" %}" alt="" width="16" height="14" />{% trans "Home &amp; Documentation" %}</a>
-        <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
-    </header>
+    {% if request.path != INDEX_URL %}
+        <header class="header">
+            <a class="docs_link" href="{% url "mapit_index" %}"><img src="{% static "mapit/img/home-icon.png" %}" alt="" width="16" height="14" />{% trans "Home &amp; Documentation" %}</a>
+            <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
+        </header>
 
-    <article class="content">
+        <article class="content">
     {% endif %}
     {% block content %}
     {% endblock %}
-    {% if request.path != '/' %}
+    {% if request.path != INDEX_URL %}
     </article>
     {% endif %}
 
