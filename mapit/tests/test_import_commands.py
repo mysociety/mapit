@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 import os
 
 from django.test import TestCase
@@ -51,7 +54,10 @@ class MapitImportTest(TestCase):
 
         # Check it loaded the data properly
         area = Area.objects.all()[0]
-        self.assertEqual(area.name, "London")
+        # You can either have the __future__/coding at the top and the following line:
+        self.assertEqual(area.name, "Forlì")
+        # Or you can have the following UTF-8 explicit and not need the __future__/coding:
+        self.assertEqual(area.name, b"Forl\xc3\xac".decode('utf-8'))
         self.assertEqual(area.country.name, england.name)
         self.assertEqual(area.generation_low.id, generation.id)
         self.assertEqual(area.generation_high.id, generation.id)
