@@ -71,13 +71,12 @@ to keep NUUG going.
 
     <!-- Try out MapIt postcode bar -->
     <div id="try-mapit">
-        <form method="post" action="{% url "mapit_index" %}{% if country == 'Global' %}point{% else %}postcode{% endif %}/">
+        <form method="post" action="{% url "mapit_index" %}{% if postcodes_available %}postcode{% else %}point{% endif %}/">
             <label for="try-mapit-pc">
-                {% if country == 'GB' %}Try it out, enter a UK postcode:{% endif %}
-                {% if country == 'NO' %}Try it out, enter a postcode:{% endif %}
-                {% if country == 'Global' %}Try it out, enter a lat,lon:{% endif %}
+                {% if postcodes_available %}Try it out, enter a postcode:
+                {% else %}Try it out, enter a lat,lon:{% endif %}
             </label>
-            <input type="text" name="pc" id="try-mapit-pc"{% if country == 'Global' %} placeholder="latitude,longitude"{% endif %}>
+            <input type="text" name="pc" id="try-mapit-pc"{% if not postcodes_available %} placeholder="latitude,longitude"{% endif %}>
             <input class="btn" type="submit" value="Look up">
         </form>
     </div>
@@ -92,12 +91,12 @@ to keep NUUG going.
 
                 <p>Lookups</p>
                 <ol>
-                    {% if country != 'Global' %}
+                    {% if postcodes_available %}
                     <li><a href="#api-by_postcode">Postcode</a></li>
                     <li><a href="#api-by_partial_postcode">Partial postcode</a></li>
                     {% endif %}
                     <li><a href="#api-by_point">Point</a></li>
-                    {% if country != 'Global' %}
+                    {% if postcodes_available %}
                     <li><a href="#api-nearest">Nearest postcode</a></li>
                     {% endif %}
                     <li><a href="#api-by_area_id">Area</a></li>
@@ -122,7 +121,7 @@ to keep NUUG going.
         </header>
 
         {% include "mapit/api/intro.html" %}
-        {% if country != 'Global' %}
+        {% if postcodes_available %}
         {% include "mapit/api/postcode.html" %}
         {% endif %}
         {% include "mapit/api/point.html" %}

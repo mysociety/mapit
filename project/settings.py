@@ -96,15 +96,23 @@ ALLOWED_HOSTS = ['*']
 if MAPIT_COUNTRY == 'GB':
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en-gb'
+    POSTCODES_AVAILABLE = True
 elif MAPIT_COUNTRY == 'NO':
     TIME_ZONE = 'Europe/Oslo'
     LANGUAGE_CODE = 'no'
+    POSTCODES_AVAILABLE = True
 elif MAPIT_COUNTRY == 'IT':
     TIME_ZONE = 'Europe/Rome'
     LANGUAGE_CODE = 'it'
+    POSTCODES_AVAILABLE = True
+elif MAPIT_COUNTRY == 'Global':
+    TIME_ZONE = 'Europe/London'
+    LANGUAGE_CODE = 'en'
+    POSTCODES_AVAILABLE = False
 else:
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en'
+    POSTCODES_AVAILABLE = True
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.

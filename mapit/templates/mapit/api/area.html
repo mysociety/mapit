@@ -12,7 +12,7 @@
                     {% if country == 'Global' %}
                     <li>/code/osm_rel/<i>[OSM relation ID]</i>
                     <li>/code/osm_way/<i>[OSM way ID]</i>
-                    {% else %}
+                    {% elif postcodes_available %}
                     <li>/area/<i>[area ID]</i>/example_postcode
                     {% endif %}
                     <li>/area/<i>[area ID]</i>/geometry
@@ -24,9 +24,9 @@
                 <dt>Returns:</dt>
                 <dd>Information on a particular area, including name, type, parent, and any associated codes
                 (see <a href="#general">below for details</a>). The code lookups redirect to the area URI.
-                {% ifnotequal country 'Global' %}
+                {% if postcodes_available %}
                 example_postcode returns a random postcode within the area specified.
-                {% endifnotequal %}
+                {% endif %}
                 geometry returns centroid, extent and area of the area.
                 </dd>
                 <dt>Examples:</dt>

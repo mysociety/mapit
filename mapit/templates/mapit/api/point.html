@@ -52,7 +52,7 @@
             </dl>
         </section>
 
-{% ifnotequal country 'Global' %}
+{% if postcodes_available %}
         <section id="api-nearest">
             <h3><em>lookup</em>nearest postcode</h3>
             <dl>
@@ -74,4 +74,4 @@
 {% endif %}
             </dl>
         </section>
-{% endifnotequal %}
+{% endif %}
