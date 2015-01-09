@@ -1,10 +1,6 @@
 import re
 import itertools
-from psycopg2.extensions import QueryCanceledError
-try:
-    from django.db.utils import DatabaseError
-except:
-    from psycopg2 import DatabaseError
+from django.db.utils import DatabaseError
 
 from django.shortcuts import redirect
 from django.contrib.gis.geos import Point
@@ -131,8 +127,6 @@ def example_postcode_for_area(request, area_id, format='json'):
         set_timeout(format)
         try:
             pc = Postcode.objects.filter_by_area(area).order_by()[0]
-        except QueryCanceledError:
-            raise ViewException(format, 'That query was taking too long to compute.', 500)
         except DatabaseError as e:
             if 'canceling statement due to statement timeout' not in e.args[0]:
                 raise
@@ -160,8 +154,6 @@ def nearest(request, srid, x, y, format='json'):
     try:
         postcode = Postcode.objects.filter(
             location__distance_gte=(location, D(mi=0))).distance(location).order_by('distance')[0]
-    except QueryCanceledError:
-        raise ViewException(format, 'That query was taking too long to compute.', 500)
     except DatabaseError as e:
         if 'canceling statement due to statement timeout' not in e.args[0]:
             raise

@@ -1,10 +1,6 @@
 import re
-from psycopg2.extensions import QueryCanceledError
 from psycopg2 import InternalError
-try:
-    from django.db.utils import DatabaseError
-except:
-    from psycopg2 import DatabaseError
+from django.db.utils import DatabaseError
 
 try:
     from osgeo import gdal
@@ -182,12 +178,7 @@ def area_intersect(query_type, title, request, area_id, format):
         # Cast to list so that it's evaluated here, and output_areas doesn't get
         # confused with a RawQuerySet
         areas = list(Area.objects.intersect(query_type, area, types, generation))
-    except QueryCanceledError:
-        raise ViewException(
-            format, 'That query was taking too long to compute - '
-            'try restricting to a specific type, if you weren\'t already doing so.', 500)
     except DatabaseError as e:
-        # Django 1.2+ catches QueryCanceledError and throws its own DatabaseError instead
         if 'canceling statement due to statement timeout' not in e.args[0]:
             raise
         raise ViewException(
