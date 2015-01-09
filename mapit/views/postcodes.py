@@ -155,6 +155,8 @@ def nearest(request, srid, x, y, format='json'):
         postcode = Postcode.objects.filter(
             location__distance_gte=(location, D(mi=0))).distance(location).order_by('distance')[0]
     except DatabaseError as e:
+        if 'Cannot find SRID' in e.args[0]:
+            raise ViewException(format, e.args[0], 400)
         if 'canceling statement due to statement timeout' not in e.args[0]:
             raise
         raise ViewException(format, 'That query was taking too long to compute.', 500)

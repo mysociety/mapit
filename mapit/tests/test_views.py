@@ -94,3 +94,10 @@ class AreaViewsTest(TestCase):
         response = self.client.get(url)
         content = json.loads(response.content.decode('utf-8'))
         self.assertEqual(content, self.postcode.postcode)
+
+    def test_nearest_with_bad_srid(self):
+        url = '/nearest/84/0,0.json'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(content, {'code': 400, 'error': 'GetProj4StringSPI: Cannot find SRID (84) in spatial_ref_sys\n'})
