@@ -43,8 +43,8 @@ urlpatterns = patterns(
 
     (r'^nearest/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)%s$' % format_end, 'mapit.views.postcodes.nearest'),
 
-    (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)%s$' % format_end, 'mapit.views.areas.areas'),
-    (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)/geometry$', 'mapit.views.areas.areas_geometry'),
+    (r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % format_end, 'mapit.views.areas.areas'),
+    (r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', 'mapit.views.areas.areas_geometry'),
     (r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, 'mapit.views.areas.areas_by_type'),
     (r'^areas/(?P<name>.+?)%s$' % format_end, 'mapit.views.areas.areas_by_name'),
     (r'^areas$', 'mapit.views.areas.deal_with_POST', {'call': 'areas'}),
