@@ -68,7 +68,19 @@ fi
 echo -n "Setting up database... "
 if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
 then
-    createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
+    if [ trusty = "$(lsb_release -s -c)" ]
+    then
+        # Currently the only supported distribution where we can just
+        # use CREATE EXTENSION to make this a PostGIS database is on
+        # Ubuntu trusty:
+        createdb --owner "$UNIX_USER" "$DB_NAME"
+        COMMAND="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;"
+        psql -c "$COMMAND" "$DB_NAME"
+    else
+        # Otherwise, the template_postgis template should already
+        # have been created.
+        createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
+    fi
 fi
 
 conf/post_deploy_actions.bash

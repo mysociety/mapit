@@ -31,11 +31,24 @@ install_website_packages
 
 install_postgis
 
-add_postgresql_user
+if [ x"$DISTRIBUTION" = x"ubuntu" ] && [ x"$DISTVERSION" = x"trusty" ]
+then
+    # On trusty, the database user will need to be a superuser so that
+    # it can create the PostGIS extension; we'll drop that privilege
+    # afterwards:
+    add_postgresql_user --superuser
+else
+    add_postgresql_user
+fi
 
 make_log_directory
 
 su -l -c "$REPOSITORY/bin/install-as-user '$UNIX_USER' '$HOST' '$DIRECTORY'" "$UNIX_USER"
+
+if [ x"$DISTRIBUTION" = x"ubuntu" ] && [ x"$DISTVERSION" = x"trusty" ]
+then
+    sudo -u postgres psql -c "ALTER USER $UNIX_USER WITH NOSUPERUSER"
+fi
 
 install_sysvinit_script
 
