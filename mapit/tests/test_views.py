@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.gis.geos import Polygon, Point
 
 from mapit.models import Type, Area, Geometry, Generation, Postcode
+from mapit.tests.utils import get_content
 
 
 class AreaViewsTest(TestCase):
@@ -71,7 +72,7 @@ class AreaViewsTest(TestCase):
         url = '/point/4326/-3.4,51.5.json'
         response = self.client.get(url)
 
-        content = json.loads(response.content.decode('utf-8'))
+        content = get_content(response)
 
         self.assertEqual(
             set((int(x) for x in content.keys())),
@@ -92,7 +93,7 @@ class AreaViewsTest(TestCase):
         id = self.small_area_1.id
         url = '/area/%d/example_postcode' % id
         response = self.client.get(url)
-        content = json.loads(response.content.decode('utf-8'))
+        content = get_content(response)
         self.assertEqual(content, self.postcode.postcode)
 
     def test_nearest_with_bad_srid(self):
@@ -100,4 +101,6 @@ class AreaViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(content, {'code': 400, 'error': 'GetProj4StringSPI: Cannot find SRID (84) in spatial_ref_sys\n'})
+        self.assertEqual(content, {
+            'code': 400, 'error': 'GetProj4StringSPI: Cannot find SRID (84) in spatial_ref_sys\n'
+        })

@@ -51,15 +51,6 @@ def output_html(request, title, areas, **kwargs):
 
 
 def output_json(out, code=200):
-    types = {
-        400: http.HttpResponseBadRequest,
-        404: http.HttpResponseNotFound,
-        500: http.HttpResponseServerError,
-    }
-    response_type = types.get(code, http.HttpResponse)
-    response = response_type(content_type='application/json; charset=utf-8')
-    response['Access-Control-Allow-Origin'] = '*'
-    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
     if code != 200:
         out['code'] = code
     indent = None
@@ -67,7 +58,26 @@ def output_json(out, code=200):
         if isinstance(out, dict):
             out['debug_db_queries'] = connection.queries
         indent = 4
-    json.dump(out, response, ensure_ascii=False, cls=GEOS_JSONEncoder, indent=indent)
+    encoder = GEOS_JSONEncoder(ensure_ascii=False, indent=indent)
+    content = encoder.iterencode(out)
+
+    types = {
+        400: http.HttpResponseBadRequest,
+        404: http.HttpResponseNotFound,
+        500: http.HttpResponseServerError,
+    }
+    if django.get_version() >= '1.5':
+        response_type = types.get(code, http.StreamingHttpResponse)
+    else:
+        response_type = types.get(code, http.HttpResponse)
+        # Django 1.4 middleware messes up iterable content
+        content = list(content)
+
+    response = response_type(content_type='application/json; charset=utf-8')
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
+    attr = 'streaming_content' if getattr(response, 'streaming', None) else 'content'
+    setattr(response, attr, content)
     return response
 
 
