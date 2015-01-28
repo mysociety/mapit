@@ -51,5 +51,6 @@ before_script:
   - "echo 'MAPIT_DB_NAME: mapit' > conf/general.yml"
   - "echo 'MAPIT_DB_USER: postgres' >> conf/general.yml"
   - "echo 'DJANGO_SECRET_KEY: secret' >> conf/general.yml"
+  - "echo 'COUNTRY: GB' >> conf/general.yml"
 script:
-  - python -Wall manage.py test mapit
+  - python -Wall manage.py test mapit mapit_gb
