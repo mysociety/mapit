@@ -42,6 +42,16 @@ class GBViewsTest(TestCase):
             generation_high=self.generation,
         )
 
+        code_type = models.CodeType.objects.create(
+            code='CodeType',
+            description='CodeType description',
+        )
+        models.Code.objects.create(
+            area=self.area,
+            type=code_type,
+            code='CODE',
+        )
+
         polygon = Polygon(((-5, 50), (-5, 55), (1, 55), (1, 50), (-5, 50)), srid=4326)
         polygon.transform(settings.MAPIT_AREA_SRID)
         self.shape = models.Geometry.objects.create(
@@ -74,7 +84,9 @@ class GBViewsTest(TestCase):
                     'generation_high': self.generation.id,
                     'country': '',
                     'country_name': '-',
-                    'codes': {},
+                    'codes': {
+                        'CodeType': 'CODE',
+                    },
                     'all_names': {},
                 }
             }

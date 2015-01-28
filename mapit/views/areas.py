@@ -25,13 +25,13 @@ def add_codes(areas):
     codes = Code.objects.select_related('type').filter(area__in=areas)
     lookup = {}
     for code in codes:
-        lookup.setdefault(code.area_id, []).append(code)
+        lookup.setdefault(code.area_id, {})[code.type.code] = code.code
     if isinstance(areas, QuerySet):
         if hasattr(countries, 'sorted_areas'):
             areas = countries.sorted_areas(areas)
     for area in areas:
         if area.id in lookup:
-            area.code_list = lookup[area.id]
+            area.all_codes = lookup[area.id]
     return areas
 
 

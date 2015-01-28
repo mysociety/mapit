@@ -242,12 +242,16 @@ class Area(models.Model):
 
     @property
     def all_codes(self):
-        if not getattr(self, 'code_list', None):
-            self.code_list = self.codes.select_related('type')
-        codes = {}
-        for code in self.code_list:
-            codes[code.type.code] = code.code
-        return codes
+        if not hasattr(self, '_all_codes'):
+            code_list = self.codes.select_related('type')
+            self._all_codes = {}
+            for code in code_list:
+                self._all_codes[code.type.code] = code.code
+        return self._all_codes
+
+    @all_codes.setter
+    def all_codes(self, value):
+        self._all_codes = value
 
     def __str__(self):
         name = self.name or '(unknown)'
