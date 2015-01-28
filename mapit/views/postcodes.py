@@ -51,7 +51,7 @@ def postcode(request, postcode, format=None):
     except:
         generation = Generation.objects.current()
     if not hasattr(countries, 'is_special_postcode') or not countries.is_special_postcode(postcode.postcode):
-        areas = add_codes(Area.objects.by_postcode(postcode, generation))
+        areas = list(add_codes(Area.objects.by_postcode(postcode, generation)))
     else:
         areas = []
 

@@ -9,6 +9,7 @@ except ImportError:
     PYGDAL = False
 
 from django.contrib.gis.geos import Point
+from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
@@ -19,27 +20,32 @@ from mapit.shortcuts import output_json, output_html, render, get_object_or_404,
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
+from mapit.iterables import iterdict
 
 
 def add_codes(areas):
+    """Given an iterable of areas, return an iterator of those areas with codes
+    attached. We don't use prefetch_related because this can use a lot of
+    memory."""
     codes = Code.objects.select_related('type').filter(area__in=areas)
     lookup = {}
-    for code in codes:
+    for code in codes.iterator():
         lookup.setdefault(code.area_id, {})[code.type.code] = code.code
     if isinstance(areas, QuerySet):
         if hasattr(countries, 'sorted_areas'):
             areas = countries.sorted_areas(areas)
+        areas = areas.iterator()
     for area in areas:
         if area.id in lookup:
             area.all_codes = lookup[area.id]
-    return areas
+        yield area
 
 
 def output_areas(request, title, format, areas, **kwargs):
     areas = add_codes(areas)
     if format == 'html':
         return output_html(request, title, areas, **kwargs)
-    return output_json(dict((area.id, area.as_dict()) for area in areas))
+    return output_json(iterdict((area.id, area.as_dict()) for area in areas))
 
 
 def query_args(request, format, type=None):
