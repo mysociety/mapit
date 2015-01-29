@@ -26,6 +26,9 @@ def add_codes(areas):
     lookup = {}
     for code in codes:
         lookup.setdefault(code.area_id, []).append(code)
+    if isinstance(areas, QuerySet):
+        if hasattr(countries, 'sorted_areas'):
+            areas = countries.sorted_areas(areas)
     for area in areas:
         if area.id in lookup:
             area.code_list = lookup[area.id]
