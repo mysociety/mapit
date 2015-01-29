@@ -164,7 +164,8 @@ TEMPLATE_LOADERS = (
 USE_ETAGS = False
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.gzip.GZipMiddleware',
+    'mapit.middleware.gzip.GZipMiddleware',
+    # Not 'django.middleware.gzip.GZipMiddleware' to work around Django #24242
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
