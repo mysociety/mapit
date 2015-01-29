@@ -1,13 +1,18 @@
+import itertools
 import json
+
 import django
 from django import http
 from django.db import connection
 from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
-from django.template import RequestContext
+from django.template import loader, RequestContext, Context
 from django.utils.six.moves import map
 from django.utils.encoding import smart_str
+from django.utils.translation import ugettext as _
+
+from mapit.iterables import defaultiter
 
 from django.core.serializers.json import DjangoJSONEncoder
 # Assuming at least python 2.6, in Django < 1.6, the above class is either a
@@ -35,21 +40,32 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
 def render(request, template_name, context=None):
     if context is None:
         context = {}
-#    context['base'] = base or 'base.html'
-#    context['connection'] = connection
     return render_to_response(
         template_name, context, context_instance=RequestContext(request)
     )
 
 
-
-
 def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.get_full_path().replace('.html', '')
     kwargs['title'] = title
-    kwargs['areas'] = areas
-    kwargs['indent_areas'] = kwargs.get('indent_areas', False)
-    return render(request, 'mapit/data.html', kwargs)
+    tpl = loader.render_to_string('mapit/data.html', kwargs, context_instance=RequestContext(request))
+    wraps = tpl.split('!!!DATA!!!')
+
+    indent_areas = kwargs.get('indent_areas', False)
+    item_tpl = loader.get_template('mapit/areas_item.html')
+    areas = map(lambda area: item_tpl.render(Context({'area': area, 'indent_areas': indent_areas})), areas)
+    areas = defaultiter(areas, '<li>' + _('No matching areas found.') + '</li>')
+    content = itertools.chain(wraps[0:1], areas, wraps[1:])
+    content = map(smart_str, content)  # Workaround Django bug #24240
+
+    if django.get_version() >= '1.5':
+        response_type = http.StreamingHttpResponse
+    else:
+        response_type = http.HttpResponse
+        # Django 1.4 middleware messes up iterable content
+        content = list(content)
+
+    return response_type(content)
 
 
 def output_json(out, code=200):

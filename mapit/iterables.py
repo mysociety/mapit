@@ -1,3 +1,14 @@
+def defaultiter(it, default):
+    """This wraps an iterable so that if it's empty,
+    it will return a default value instead."""
+    empty = True
+    for i in it:
+        yield i
+        empty = False
+    if empty:
+        yield default
+
+
 # If you wanted iterdict() to be more generic, it'd be something like:
 # from django.utils import six
 # import itertools

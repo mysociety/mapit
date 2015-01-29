@@ -1,20 +1,7 @@
-{% load url from future %}
 <ol class="area_list">
 {% for area in areas %}
-    {% if indent_areas %}
-    <li class="{{ area.css_indent_class }}">
-    {% else %}
-    <li>
-    {% endif %}
-        <h3><a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
-        <p>ID {{ area.id }}, {{ area.type.description }}
-            <small>({{ area.type.code }})</small>, {{ area.country }}</p>
-        {% if area.parent_area %}
-        <p>A child of <a href="{% url "mapit_index" %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a></p>
-        {% endif %}
-    </li>
+    {% include "mapit/areas_item.html" %}
 {% empty %}
     <li>No matching areas found.</li>
 {% endfor %}
 </ol>
-
