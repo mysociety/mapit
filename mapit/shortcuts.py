@@ -6,6 +6,8 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.utils.six.moves import map
+from django.utils.encoding import smart_str
 
 from django.core.serializers.json import DjangoJSONEncoder
 # Assuming at least python 2.6, in Django < 1.6, the above class is either a
@@ -60,6 +62,7 @@ def output_json(out, code=200):
         indent = 4
     encoder = GEOS_JSONEncoder(ensure_ascii=False, indent=indent)
     content = encoder.iterencode(out)
+    content = map(smart_str, content)  # Workaround Django bug #24240
 
     types = {
         400: http.HttpResponseBadRequest,
