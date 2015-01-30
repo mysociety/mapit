@@ -1,11 +1,10 @@
-from django.conf.urls import patterns, include
+from django.conf.urls import include, url
 from django.contrib import admin
 admin.autodiscover()
 
 handler500 = 'mapit.shortcuts.json_500'
 
-urlpatterns = patterns(
-    '',
-    (r'^', include('mapit.urls')),
-    (r'^admin/', include(admin.site.urls)),
-)
+urlpatterns = [
+    url(r'^', include('mapit.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+]
