@@ -47,7 +47,7 @@ def postcode(request, postcode, format=None):
         raise ViewException(format, "Postcode '%s' is not valid." % postcode, 400)
     postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
     try:
-        generation = int(request.REQUEST['generation'])
+        generation = int(request.GET['generation'])
     except:
         generation = Generation.objects.current()
     if not hasattr(countries, 'is_special_postcode') or not countries.is_special_postcode(postcode.postcode):
