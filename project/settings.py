@@ -198,6 +198,16 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'mapit.context_processors.analytics',
 )
 
+if django.get_version() >= '1.8':
+    TEMPLATES = [ {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': TEMPLATE_DIRS,
+        'OPTIONS': {
+            'context_processors': map(lambda x: x.replace('django.core', 'django.template'), TEMPLATE_CONTEXT_PROCESSORS),
+            'loaders': TEMPLATE_LOADERS,
+        },
+    } ]
+
 INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -208,7 +218,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mapit',
 ]
-if django.VERSION < (1, 7):
+if django.get_version() < '1.7':
     INSTALLED_APPS.append('south')
 
 if MAPIT_COUNTRY:

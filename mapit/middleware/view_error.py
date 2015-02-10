@@ -2,9 +2,8 @@
 # and output it as either HTML or JSON appropriately
 
 from django import http
-from django.template import RequestContext
-from django.template.loader import render_to_string
 from mapit.shortcuts import output_json
+from mapit.djangopatch import render_to_string
 
 
 class ViewException(Exception):
@@ -27,6 +26,6 @@ class ViewExceptionMiddleware(object):
             return response_type(render_to_string(
                 'mapit/%s.html' % code,
                 {'error': message},
-                context_instance=RequestContext(request)
+                request=request
             ))
         return output_json({'error': message}, code=code)

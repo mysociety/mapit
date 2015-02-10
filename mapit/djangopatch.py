@@ -1,6 +1,15 @@
 import django
 import inspect
 
+# Django 1.8 changed how templates operate.
+if django.get_version() >= '1.8':
+    from django.template.loader import render_to_string
+else:
+    from django.template import loader, RequestContext
+    def render_to_string(template_name, context=None, request=None):
+        context_instance = RequestContext(request) if request else None
+        return loader.render_to_string(template_name, context, context_instance)
+
 # Django 1.6 renamed Manager's get_query_set to get_queryset, and the old
 # function will be removed entirely in 1.8. We work back to 1.4, so use a
 # metaclass to not worry about it.

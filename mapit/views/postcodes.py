@@ -2,13 +2,13 @@ import re
 import itertools
 from django.db.utils import DatabaseError
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
-from mapit.shortcuts import output_json, get_object_or_404, set_timeout, render
+from mapit.shortcuts import output_json, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit.views.areas import add_codes

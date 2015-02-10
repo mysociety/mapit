@@ -1,6 +1,6 @@
 from django.conf.urls import url
 
-from mapit.shortcuts import render
+from django.shortcuts import render
 
 urlpatterns = [
     url(r'^changelog$', render, {'template_name': 'mapit/changelog.html'}, 'mapit_changelog'),

@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from django.conf import settings
+from django.shortcuts import render
 
-from mapit.shortcuts import render
 from mapit.views import areas, postcodes
 
 handler500 = 'mapit.shortcuts.json_500'

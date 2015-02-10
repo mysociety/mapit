@@ -13,10 +13,10 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from mapit.models import Area, Generation, Geometry, Code, Name, TransformError
-from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
+from mapit.shortcuts import output_json, output_html, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
