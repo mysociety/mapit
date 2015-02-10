@@ -5,6 +5,7 @@ from django.db.utils import DatabaseError
 from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+from django.contrib.gis.db.models import Collect
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
@@ -99,15 +100,14 @@ def partial_postcode(request, postcode, format='json'):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
         raise ViewException(format, "Partial postcode '%s' is not valid." % postcode, 400)
-    try:
-        postcode = Postcode(
-            postcode=postcode,
-            location=Postcode.objects.filter(postcode__startswith=postcode).extra(
-                where=['length(postcode) = %d' % (len(postcode) + 3)]
-            ).collect().centroid
-        )
-    except:
+
+    location = Postcode.objects.filter(postcode__startswith=postcode).extra(
+        where=['length(postcode) = %d' % (len(postcode) + 3)]
+        ).aggregate(Collect('location'))['location__collect']
+    if not location:
         raise ViewException(format, 'Postcode not found', 404)
+
+    postcode = Postcode(postcode=postcode, location=location.centroid)
 
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
