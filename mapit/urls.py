@@ -16,8 +16,8 @@ urlpatterns = [
     url(r'^generations%s$' % format_end, areas.generations, {}, 'mapit_generations'),
 
     url(r'^postcode/$', postcodes.form_submitted),
-    url(r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, postcodes.postcode),
-    url(r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, postcodes.partial_postcode),
+    url(r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, postcodes.postcode, name="mapit-postcode"),
+    url(r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, postcodes.partial_postcode, name="mapit-postcode-partial"),
 
     url(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area),
     url(r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, postcodes.example_postcode_for_area),
