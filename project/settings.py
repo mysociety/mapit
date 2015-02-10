@@ -165,7 +165,7 @@ TEMPLATE_LOADERS = (
 # similar ETag code in CommonMiddleware.
 USE_ETAGS = False
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'mapit.middleware.gzip.GZipMiddleware',
     # Not 'django.middleware.gzip.GZipMiddleware' to work around Django #24242
     'django.middleware.http.ConditionalGetMiddleware',
@@ -177,7 +177,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
     'mapit.middleware.ViewExceptionMiddleware',
-)
+]
+if django.get_version() >= '1.7':
+    MIDDLEWARE_CLASSES.append('django.contrib.auth.middleware.SessionAuthenticationMiddleware')
 
 ROOT_URLCONF = 'project.urls'
 
