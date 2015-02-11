@@ -38,6 +38,13 @@ co-ordinates of a point in Norway, and needs to find out what fylke,
 kommune, or more it lies within. It&rsquo;s also great for looking up
 the shapes of all those boundaries.
 {% endif %}
+{% if country == 'ZA' %}
+MapIt is a service that maps geographical points to
+administrative areas. It&rsquo;s useful for anyone who has
+co-ordinates of a point in South Africa, and needs to find out what
+Ward, Municipality and Province it lies within. It&rsquo;s also great for
+looking up the shapes of all those boundaries.
+{% endif %}
 {% if country == 'Global' %}
 MapIt is a service that maps geographical points to administrative areas.
 This edition is based on source data from the totally amazing
@@ -218,6 +225,8 @@ to keep NUUG going.
             <p>If you use this service, you must attribute
             {% if country == 'GB' %}
             OS/RM/ONS
+            {% elif country == 'ZA' %}
+            Municipal Demarcation Board (www.demarcation.org.za)
             {% else %}
             OpenStreetMap
             {% endif %}

@@ -46,6 +46,9 @@
 {% if country == 'NO' %}
 <dd><a href="{% url "mapit_index" %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
 {% endif %}
+{% if country == 'ZA' %}
+<dd><a href="{% url "mapit_index" %}point/4326/18.42,-33.92.html">Example of areas containing (18.42,-33.92)</a>.</dd>
+{% endif %}
 {% if country == 'Global' %}
 <dd><a href="{% url "mapit_index" %}point/4326/8.55,47.366667.html">Example of areas containing (47.366667,8.55)</a>.</dd>
 {% endif %}

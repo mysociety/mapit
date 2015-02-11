@@ -1,0 +1,37 @@
+To import the data from MapIt for South Africa, first download the
+shapefiles from:
+
+http://www.demarcation.org.za/index.php/downloads/boundary-data/boundary-data-main-files
+
+Then create a new generation to import the data into:
+
+    ./manage.py mapit_generation_create --desc "Initial import" --commit
+
+Create the MapIt country, types and code types from a fixture:
+
+    ./manage.py loaddata south_africa
+
+Then try importing the data unpacked from the .rar files:
+
+    ./manage.py mapit_za_import_boundaries \
+        --wards=boundary-data/wards/Wards2011.shp \
+        --locals=boundary-data/local-municipalities/LocalMunicipalities2011.shp \
+        --districts=boundary-data/districts/DistrictMunicipalities2011.shp \
+        --provinces=boundary-data/provinces/Province_New_SANeighbours.shp
+
+If that looks OK, then add `--commit` to this command.
+
+Export the police districts choosing 'Shapefile' as the format from:
+
+    https://data.code4sa.org/Government/Police-Station-Boundaries/hr5e-pz98
+
+Then import it with:
+
+    ./manage.py mapit_import --commit \
+        --generation_id=1 --country_code=Z --area_type_code=POL \
+        --name_type_code=police --name_field=COMPNT_NM \
+        boundary-data/police/Police_bounds.shp
+
+Now commit that generation with:
+
+    ./manage.py mapit_generation_activate --commit
