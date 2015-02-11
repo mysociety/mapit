@@ -39,20 +39,11 @@
                 considered.
                 </p>
 
-                <dt>Example:</dt>
-{% if country == 'GB' %}
-<dd><a href="{% url "mapit_index" %}point/27700/400000,300000.html">Example of areas containing (400000,300000)</a>.</dd>
-{% endif %}
-{% if country == 'NO' %}
-<dd><a href="{% url "mapit_index" %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
-{% endif %}
-{% if country == 'Global' %}
-<dd><a href="{% url "mapit_index" %}point/4326/8.55,47.366667.html">Example of areas containing (47.366667,8.55)</a>.</dd>
-{% endif %}
+                {% include "mapit/api/point-example.html" %}
             </dl>
         </section>
 
-{% ifnotequal country 'Global' %}
+{% if postcodes_available %}
         <section id="api-nearest">
             <h3><em>lookup</em>nearest postcode</h3>
             <dl>
@@ -62,16 +53,8 @@
                 <dd>Same as for <a href="#api-by_point">by point</a>.</dd>
                 <dt>Returns:</dt>
                 <dd>The postcode closest to the particular point.
-                <dt>Example</dt>
-{% if country == 'GB' %}
-                <dd><a href="{% url "mapit_index" %}nearest/27700/400000,300000.html">Example of postcode nearest to (400000,300000)</a>.</dd>
-{% endif %}
-{% if country == 'NO' %}
-                <dd><a href="{% url "mapit_index" %}nearest/4326/10,59.html">Example of postcode nearest to (59,10)</a>.</dd>
-{% endif %}
-{% if country == 'Global' %}
-                <dd><a href="{% url "mapit_index" %}nearest/4326/8.55,47.366667.html">Example of postcode nearest to (47.366667,8.55)</a>.</dd>
-{% endif %}
+
+                {% include "mapit/api/point-example-nearest.html" %}
             </dl>
         </section>
-{% endifnotequal %}
+{% endif %}

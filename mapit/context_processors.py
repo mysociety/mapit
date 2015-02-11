@@ -2,7 +2,10 @@ from django.conf import settings
 
 
 def country(request):
-    return {'country': settings.MAPIT_COUNTRY}
+    return {
+        'country': settings.MAPIT_COUNTRY,
+        'postcodes_available': settings.POSTCODES_AVAILABLE,
+    }
 
 
 def analytics(request):

@@ -24,7 +24,7 @@ except:
 # WGS84. Optional, defaults to 4326.
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 
-# Country is currently one of GB, NO, or KE. Optional; country specific things
+# Country is currently one of GB, NO, KE or ZA. Optional; country specific things
 # won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
 
@@ -96,15 +96,27 @@ ALLOWED_HOSTS = ['*']
 if MAPIT_COUNTRY == 'GB':
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en-gb'
+    POSTCODES_AVAILABLE = True
 elif MAPIT_COUNTRY == 'NO':
     TIME_ZONE = 'Europe/Oslo'
     LANGUAGE_CODE = 'no'
+    POSTCODES_AVAILABLE = True
 elif MAPIT_COUNTRY == 'IT':
     TIME_ZONE = 'Europe/Rome'
     LANGUAGE_CODE = 'it'
+    POSTCODES_AVAILABLE = True
+elif MAPIT_COUNTRY == 'ZA':
+    TIME_ZONE = 'Africa/Johannesburg'
+    LANGUAGE_CODE = 'en-za'
+    POSTCODES_AVAILABLE = False
+elif MAPIT_COUNTRY == 'Global':
+    TIME_ZONE = 'Europe/London'
+    LANGUAGE_CODE = 'en'
+    POSTCODES_AVAILABLE = False
 else:
     TIME_ZONE = 'Europe/London'
     LANGUAGE_CODE = 'en'
+    POSTCODES_AVAILABLE = True
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.

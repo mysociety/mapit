@@ -10,74 +10,19 @@
 
     <!-- Main header -->
     <header class="header homepage">
-
-{% if country == 'GB' %}
-        <a class="mapit-cross-sell global" href="http://global.mapit.mysociety.org/">
-            <img src="{% static "mapit/img/global-cross_sell.png" %}" alt="Now Available: MapIt Global" width="146" height="32">
-        </a>
-{% else %}
-        <a class="mapit-cross-sell uk" href="http://mapit.mysociety.org/">
-            <img src="{% static "mapit/img/uk-cross_sell.png" %}" alt="also Available MapIt UK">
-        </a>
-{% endif %}
-
-<h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></h1>
-
-<p>
-{% if country == 'GB' %}
-MapIt is a service that maps UK postcodes and geographical points to
-administrative areas. It&rsquo;s useful for anyone who has a postcode or
-co-ordinates of a point in the UK, and needs to find out what region,
-constituency, or council it lies within. It&rsquo;s also great for looking up
-the shapes of all those boundaries.
-{% endif %}
-{% if country == 'NO' %}
-MapIt is a service that maps postcodes and geographical points to
-administrative areas. It&rsquo;s useful for anyone who has a postcode or
-co-ordinates of a point in Norway, and needs to find out what fylke,
-kommune, or more it lies within. It&rsquo;s also great for looking up
-the shapes of all those boundaries.
-{% endif %}
-{% if country == 'Global' %}
-MapIt is a service that maps geographical points to administrative areas.
-This edition is based on source data from the totally amazing
-<a href="http://www.openstreetmap.org/">OpenStreetMap</a> project,
-so add your boundaries there if they&rsquo;re missing.
-If you&rsquo;re in the UK our <a href="http://mapit.mysociety.org/">MapIt UK</a>
-with open Ordnance Survey data will probably be more useful.
-</p><p>
-MapIt is useful for anyone who has the co-ordinates of a point on Earth, and
-who needs to find out what country, region, city, constituency, or state it
-lies within. It&rsquo;s also great for looking up the shapes of all those
-boundaries.
-{% endif %}
-</p>
-
-        <p>Charitable, low volume use of this service is free &ndash;
-        <a href="/licensing">read more</a>.<br>You can
-        <a href="https://github.com/mysociety/mapit">download the source
-        on Github</a>.<br>Need a licence?
-        <a href="/licensing">Read more</a> or
-        <a href="mailto:enquiries&#64;mysociety.org">get in touch</a>.</p>
-
-        {% if country == 'NO' %}
-<p id="donate">NUUG is a member organisation for people interested in free
-software, open standards and UNIX-like operating systems. Please
-<a href="http://www.nuug.no/innmelding.shtml">become a member</a> if you want
-to keep NUUG going.
-        {% endif %}
-
+        {% include "mapit/index-cross-sell.html" %}
+        <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></h1>
+        {% include "mapit/intro.html" %}
     </header>
 
     <!-- Try out MapIt postcode bar -->
     <div id="try-mapit">
-        <form method="post" action="{% url "mapit_index" %}{% if country == 'Global' %}point{% else %}postcode{% endif %}/">
+        <form method="post" action="{% url "mapit_index" %}{% if postcodes_available %}postcode{% else %}point{% endif %}/">
             <label for="try-mapit-pc">
-                {% if country == 'GB' %}Try it out, enter a UK postcode:{% endif %}
-                {% if country == 'NO' %}Try it out, enter a postcode:{% endif %}
-                {% if country == 'Global' %}Try it out, enter a lat,lon:{% endif %}
+                {% if postcodes_available %}Try it out, enter a postcode:
+                {% else %}Try it out, enter a lat,lon:{% endif %}
             </label>
-            <input type="text" name="pc" id="try-mapit-pc"{% if country == 'Global' %} placeholder="latitude,longitude"{% endif %}>
+            <input type="text" name="pc" id="try-mapit-pc"{% if not postcodes_available %} placeholder="latitude,longitude"{% endif %}>
             <input class="btn" type="submit" value="Look up">
         </form>
     </div>
@@ -92,12 +37,12 @@ to keep NUUG going.
 
                 <p>Lookups</p>
                 <ol>
-                    {% if country != 'Global' %}
+                    {% if postcodes_available %}
                     <li><a href="#api-by_postcode">Postcode</a></li>
                     <li><a href="#api-by_partial_postcode">Partial postcode</a></li>
                     {% endif %}
                     <li><a href="#api-by_point">Point</a></li>
-                    {% if country != 'Global' %}
+                    {% if postcodes_available %}
                     <li><a href="#api-nearest">Nearest postcode</a></li>
                     {% endif %}
                     <li><a href="#api-by_area_id">Area</a></li>
@@ -122,7 +67,7 @@ to keep NUUG going.
         </header>
 
         {% include "mapit/api/intro.html" %}
-        {% if country != 'Global' %}
+        {% if postcodes_available %}
         {% include "mapit/api/postcode.html" %}
         {% endif %}
         {% include "mapit/api/point.html" %}
@@ -144,23 +89,8 @@ to keep NUUG going.
                 <dt>Historical areas</dt>
                 <dd>By default, calls will return active areas; for some calls
                 you may specify a previous generation to look up instead.
-                {% if country == 'GB' %}
-                The
-                main difference in generation 12 is that it contains the
-                pre-2010 England and Wales Parliamentary constituencies;
-                generation 14 contains the pre-2011 Scottish Parliament
-                constituencies. Only current Northern Ireland constituencies
-                are present; if you need pre-2010 UK Parliament NI
-                constituencies, or pre-2011 Northern Ireland Assembly
-                constituencies, you can work it out from the wards and the 2003
-                SNAC file in the data/ directory.
-                {% endif %}
+                {% include "mapit/index-general-extra.html" %}
                 </dd>
-                {% if country == 'GB' %}
-                <dt>Technical queries</dt>
-                <dd>If you have any technical queries with the API, please
-                contact us at <a href="mailto:mapit&#64;mysociety.org">mapit&#64;mysociety.org</a>.
-                {% endif %}
             </dl>
         </section>
 
@@ -175,61 +105,12 @@ to keep NUUG going.
             Ordnance Survey data became freely available in 2010, it was
             rewritten and made public for the whole UK.
 
-            {% if country == 'GB' %}
-
-            Versions have appeared in other countries, such as
-            <a href="http://mapit.nuug.no/">Norway</a>, and in 2012 we released a
-            <a href="http://global.mapit.mysociety.org/">global version</a> based on OpenStreetMap data.
-
-            {% endif  %}{% if country == 'NO' %}
-
-            Versions have appeared in other countries, such as
-            this one in Norway, and in 2012 we released a
-            <a href="http://global.mapit.mysociety.org/">global version</a> based on OpenStreetMap data.
-
-            {% endif %}{% if country == 'Global' %}
-
-            Versions have appeared in other countries, such as
-            <a href="http://mapit.nuug.no/">Norway</a>, and in 2012 we released this
-            global version based on OpenStreetMap data.
-
-            {% endif %}
+            {% include "mapit/index-others.html" %}
             </p>
 
         </section>
 
-        <section id="usage-licence">
-            <h3>Usage &amp; Licence</h3>
-
-            {% if country != 'NO' %}
-            <p>As a UK registered charity our legal status only allows this
-            service to be used free of charge by other registered charities, or
-            individuals working unpaid on non-profit projects. The free usage
-            limit for non-profit users is 50,000 calls to the API per year. All
-            other uses need to acquire a licence.</p>
-
-            <p><a href="/licensing">Find out if you need a licence</a> or <a
-                href="mailto:enquiries&#64;mysociety.org">get in touch</a> so we
-            can discuss how we can provide you with the service you require.</p>
-
-            <p>To maintain quality of service for our own websites, as well as our
-            API users, this service is rate limited to an average of 1 call per
-            second in a rolling 3 minute period.</p>
-
-            <p>If you use this service, you must attribute
-            {% if country == 'GB' %}
-            OS/RM/ONS
-            {% else %}
-            OpenStreetMap
-            {% endif %}
-            as
-            per their licences. We also ask that all non-profit users attribute
-            MapIt at the point of use on sites or apps. Attribution should use
-            the text &ldquo;Powered by MapIt&rdquo;, with a link back to this page.
-            {% endif %}
-            </p>
-
-        </section>
+        {% include "mapit/index-usage.html" %}
 
     </article>
 

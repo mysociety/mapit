@@ -16,7 +16,7 @@
             {% if area.parent_area %}
             <li>A child of <a href="{% url "mapit_index" %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
             {% endif %}
-            {% if country != 'Global' %}
+            {% if postcodes_available %}
             {% if area.polygons.count or area.postcodes.count %}
             <li><a href="{% url "mapit_index" %}area/{{ area.id }}/example_postcode.html">Example postcode</a></li>
             {% endif %}
