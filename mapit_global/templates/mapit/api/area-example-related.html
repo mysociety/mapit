@@ -1,0 +1,18 @@
+{% load url from future %}
+<dt>Examples:</dt>
+<dd>
+<ul>
+    <li>All the areas touching Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/touches.html">/area/25495/touches.html</a>
+    <li>All areas overlapping Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/overlaps.html">/area/25495/overlaps.html</a>
+    <li>All areas covered by Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/covers.html">/area/25495/covers.html</a>
+    <li>All areas covering Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/covered.html">/area/25495/covered.html</a>
+    <li>All areas covered by or overlapping Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/coverlaps.html">/area/25495/coverlaps.html</a>
+    <li>All areas that intersect Cambridgeshire:
+    <a rel="nofollow" href="{% url "mapit_index" %}area/25495/intersects.html">/area/25495/intersects.html</a>
+</ul>
+</dd>
