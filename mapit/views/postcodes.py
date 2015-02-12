@@ -2,13 +2,14 @@ import re
 import itertools
 from django.db.utils import DatabaseError
 
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+from django.contrib.gis.db.models import Collect
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
-from mapit.shortcuts import output_json, get_object_or_404, set_timeout, render
+from mapit.shortcuts import output_json, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit.views.areas import add_codes
@@ -47,7 +48,7 @@ def postcode(request, postcode, format=None):
         raise ViewException(format, "Postcode '%s' is not valid." % postcode, 400)
     postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
     try:
-        generation = int(request.REQUEST['generation'])
+        generation = int(request.GET['generation'])
     except:
         generation = Generation.objects.current()
     if not hasattr(countries, 'is_special_postcode') or not countries.is_special_postcode(postcode.postcode):
@@ -82,7 +83,7 @@ def postcode(request, postcode, format=None):
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'areas': areas,
-            'json_view': 'mapit.views.postcodes.postcode',
+            'json_view': 'mapit-postcode',
         })
 
     out = postcode.as_dict()
@@ -99,20 +100,19 @@ def partial_postcode(request, postcode, format='json'):
         postcode = re.sub('\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
         raise ViewException(format, "Partial postcode '%s' is not valid." % postcode, 400)
-    try:
-        postcode = Postcode(
-            postcode=postcode,
-            location=Postcode.objects.filter(postcode__startswith=postcode).extra(
-                where=['length(postcode) = %d' % (len(postcode) + 3)]
-            ).collect().centroid
-        )
-    except:
+
+    location = Postcode.objects.filter(postcode__startswith=postcode).extra(
+        where=['length(postcode) = %d' % (len(postcode) + 3)]
+        ).aggregate(Collect('location'))['location__collect']
+    if not location:
         raise ViewException(format, 'Postcode not found', 404)
+
+    postcode = Postcode(postcode=postcode, location=location.centroid)
 
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
-            'json_view': 'mapit.views.postcodes.partial_postcode',
+            'json_view': 'mapit-postcode-partial',
         })
 
     return output_json(postcode.as_dict())
@@ -166,7 +166,7 @@ def nearest(request, srid, x, y, format='json'):
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
-            'json_view': 'mapit.views.postcodes.postcode',
+            'json_view': 'mapit-postcode',
         })
 
     pc = postcode.as_dict()

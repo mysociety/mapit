@@ -13,10 +13,10 @@ from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 from mapit.models import Area, Generation, Geometry, Code, Name, TransformError
-from mapit.shortcuts import output_json, output_html, render, get_object_or_404, set_timeout
+from mapit.shortcuts import output_json, output_html, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
@@ -50,21 +50,21 @@ def output_areas(request, title, format, areas, **kwargs):
 
 def query_args(request, format, type=None):
     try:
-        generation = int(request.REQUEST.get('generation', 0))
+        generation = int(request.GET.get('generation', 0))
     except ValueError:
         raise ViewException(format, 'Bad generation specified', 400)
     if not generation:
         generation = Generation.objects.current().id
 
     try:
-        min_generation = int(request.REQUEST.get('min_generation', 0))
+        min_generation = int(request.GET.get('min_generation', 0))
     except ValueError:
         raise ViewException(format, 'Bad min_generation specified', 400)
     if not min_generation:
         min_generation = generation
 
     if type is None:
-        type = request.REQUEST.get('type', '')
+        type = request.GET.get('type', '')
 
     args = {}
     if min_generation > -1:
@@ -180,7 +180,7 @@ def area_intersect(query_type, title, request, area_id, format):
         raise ViewException(format, 'No polygons found', 404)
 
     generation = Generation.objects.current()
-    types = [_f for _f in request.REQUEST.get('type', '').split(',') if _f]
+    types = [_f for _f in request.GET.get('type', '').split(',') if _f]
 
     set_timeout(format)
     try:
@@ -330,7 +330,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
     args = query_args(request, format)
-    type = request.REQUEST.get('type', '')
+    type = request.GET.get('type', '')
 
     if type and method == 'polygon':
         args = dict(("area__%s" % k, v) for k, v in args.items())
@@ -392,5 +392,6 @@ def deal_with_POST(request, call='areas'):
     if not url:
         return output_json({'error': 'No content specified'}, code=400)
     view, args, kwargs = resolve('/%s/%s' % (call, url))
+    request.GET = request.POST
     kwargs['request'] = request
     return view(*args, **kwargs)

@@ -6,13 +6,19 @@ from django import http
 from django.db import connection
 from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
-from django.shortcuts import render_to_response
-from django.template import loader, RequestContext, Context
+from django.template import loader
 from django.utils.six.moves import map
 from django.utils.encoding import smart_str
 from django.utils.translation import ugettext as _
 
 from mapit.iterables import defaultiter
+from mapit.djangopatch import render_to_string
+
+# In 1.8, we no longer need to pass a Context() so stub it out
+if django.get_version() < '1.8':
+    from django.template import Context
+else:
+    Context = lambda x: x
 
 from django.core.serializers.json import DjangoJSONEncoder
 # Assuming at least python 2.6, in Django < 1.6, the above class is either a
@@ -37,18 +43,10 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
         return super(GEOS_JSONEncoder, self).default(o)
 
 
-def render(request, template_name, context=None):
-    if context is None:
-        context = {}
-    return render_to_response(
-        template_name, context, context_instance=RequestContext(request)
-    )
-
-
 def output_html(request, title, areas, **kwargs):
     kwargs['json_url'] = request.get_full_path().replace('.html', '')
     kwargs['title'] = title
-    tpl = loader.render_to_string('mapit/data.html', kwargs, context_instance=RequestContext(request))
+    tpl = render_to_string('mapit/data.html', kwargs, request=request)
     wraps = tpl.split('!!!DATA!!!')
 
     indent_areas = kwargs.get('indent_areas', False)
