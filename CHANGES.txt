@@ -1,3 +1,19 @@
+v1.3, 2015-02-12
+    * Ubuntu Trusty Tahr support. #156
+    * Django 1.8 support. #165
+    * Stream JSON output, and HTML lists of areas, to use much less memory on
+      very large responses. #164
+    * Italy country app, thanks Guglielmo Celata. #147 #153
+    * South Africa country app, thanks Mark Longair. #155
+    * Add setting for whether this installation uses postcodes.
+    * Add HTML version of /generations endpoint.
+    * Bugfixes:
+        * Fix nginx example config for static file serving. #162
+        * Catch invalid SRID exceptions, and return 400. #157
+        * Cache 0, not '0', to avoid a LocMem incr error.
+        * Move country specific examples to country app templates.
+        * Improve handling of bad /areas/ URLs, such as </areas/,123>.
+
 v1.2.1, 2014-12-16
     * Fix bug when importing non-ASCII named geometry data.
 
