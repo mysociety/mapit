@@ -3,9 +3,8 @@ postgresql-8.4-postgis
 libgdal1-1.6.0
 memcached
 python-virtualenv
+libhaml-ruby
 
-python-django
-python-django-south
 python-psycopg2
 python-shapely
 python-yaml

@@ -3,14 +3,11 @@ postgresql-9.1-postgis | postgresql-8.4-postgis | postgresql-8.3-postgis
 libgdal1 | libgdal1-1.6.0 | libgdal1-1.5.0
 memcached
 python-virtualenv
+ruby-sass
+libapache2-mod-wsgi
 
-python-django
-python-django-south
 python-psycopg2
+python-shapely
 python-yaml
 python-memcache
 python-gdal
-
-libapache2-mod-wsgi
-ruby-sass
-python-shapely

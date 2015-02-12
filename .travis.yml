@@ -32,7 +32,7 @@ install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq gdal-bin binutils
   - pip install $MODULES
-  - pip install -r requirements.txt
+  - CFLAGS="-O0" pip install -e .
 # The below is for Django 1.4 compatibility. If you don't need that, you could
 # just do the before_script step commented out below.
   - createdb -E UTF8 template_postgis &&

@@ -9,16 +9,9 @@ def read_file(filename):
     return open(filepath).read()
 
 
-def install_requires():
-    reqs = read_file('requirements.txt')
-    reqs = reqs.splitlines()
-    reqs = [x for x in reqs if x and x[0] != '#' and x[0:2] != '-e']
-    return reqs
-
-
 setup(
     name='django-mapit',
-    version='1.2.1',
+    version='1.3',
     description=(
         'A web service for mapping postcodes and points to current or past '
         'administrative area information and polygons.'),
@@ -30,7 +23,13 @@ setup(
     packages=find_packages(exclude=['project']),
     scripts=['bin/mapit_make_css'],
     include_package_data=True,
-    install_requires=install_requires(),
+    install_requires=[
+        'Django >= 1.4.18',
+        'South == 1.0.2',
+        'psycopg2',
+        'PyYAML',
+        'Shapely',
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
