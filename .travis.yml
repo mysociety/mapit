@@ -17,21 +17,22 @@ env:
   - MODULES="Django>=1.5,<1.6"
   - MODULES="Django>=1.6,<1.7"
   - MODULES="Django>=1.7,<1.8"
+  - MODULES="git+https://github.com/django/django.git@stable/1.8.x#egg=django"
 
 # Django 1.4 did not support Python 3.
 matrix:
   exclude:
     - python: "3.2"
       env: MODULES="Django>=1.4,<1.5"
+  allow_failures:
+    - env: MODULES="git+https://github.com/django/django.git@stable/1.8.x#egg=django"
 
 install:
   - sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list
   - sudo apt-get update -qq
-  - sudo apt-get install -qq python-gdal gdal-bin binutils
-  - ln -s /usr/lib/python2.7/dist-packages/osgeo ~/virtualenv/python2.7/lib/python2.7/site-packages/
-  - ln -s /usr/lib/python2.7/dist-packages/GDAL-1.7.3.egg-info ~/virtualenv/python2.7/lib/python2.7/site-packages/
-  - pip install $MODULES --use-mirrors
-  - pip install -r requirements.txt --use-mirrors
+  - sudo apt-get install -qq gdal-bin binutils
+  - pip install $MODULES
+  - CFLAGS="-O0" pip install -e .
 # The below is for Django 1.4 compatibility. If you don't need that, you could
 # just do the before_script step commented out below.
   - createdb -E UTF8 template_postgis &&
