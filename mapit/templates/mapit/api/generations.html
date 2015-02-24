@@ -2,13 +2,13 @@
 {% load url from compat %}
 
 <section id="api-generations">
-    <h3>Generations</h3>
+    <h3>{% trans "Generations" %}</h3>
     <dl>
         <dt>URL:</dt>
         <dd>/generations</dd>
 
-        <dt>Returns:</dt>
-        <dd>A list of all generations in this installation of MapIt.
+        <dt>{% trans "Returns" %}:</dt>
+        <dd>{% trans "A list of all generations in this installation of MapIt." %}</dd>
 
 {% if country == 'GB' %}
 Note that only generations from 12 upwards actually exist, apart from some

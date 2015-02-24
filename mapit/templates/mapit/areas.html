@@ -1,7 +1,8 @@
+{% load i18n %}
 <ol class="area_list">
 {% for area in areas %}
     {% include "mapit/areas_item.html" %}
 {% empty %}
-    <li>No matching areas found.</li>
+    <li>{% trans "No matching areas found." %}</li>
 {% endfor %}
 </ol>

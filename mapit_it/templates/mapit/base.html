@@ -71,10 +71,10 @@
     <footer class="footer" role="contentinfo">
         <h1 style="min-width:26%">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em>
             <br/>
-            <span style="font-size: 14px">Powered by </span><a href="http://www.djangoproject.com/">
+            <span style="font-size: 14px">{% trans "Powered by" %} </span><a href="http://www.djangoproject.com/">
                 <img align="middle" style="width: 120px; margin-bottom: 10px;"
                      src="{% static "mapit/img/django-logo-negative.svg" %}"
-                     border="0" alt="Django powered"></a>
+                     border="0" alt="{% trans "Django powered" %}"></a>
         </h1>
 
         <div class="database-credits">

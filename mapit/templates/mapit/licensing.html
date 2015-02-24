@@ -1,11 +1,13 @@
 {% extends "mapit/base.html" %}
+{% load mapit_i18n %}
 
-{% block title %}Usage and licensing{% endblock title %}
+{% block title %}{% trans "Usage and licensing" %}{% endblock title %}
 
 {% block content %}
 
-<h2>Usage and licensing</h2>
+<h2>{% trans "Usage and licensing" %}</h2>
 
+{% blocktrans trimmed %}
 <p>This service is free of charge for non-profit low volume use. &lsquo;Non-profit
 low volume use&rsquo; means use by registered UK charities or individuals working
 unpaid on a non-profit project, and that does not exceed 50,000 calls a year.
@@ -19,28 +21,36 @@ depending on the volumes you expect. Our licences cover 12 months, and we offer
 discounts to charities. Please email us on
 <a href="mailto:enquiries&#64;mysociety.org">enquiries&#64;mysociety.org</a>
 with details of your expected volumes, and we will let you know the costs.</p>
+{% endblocktrans %}
 
-<h3>Rate limiting</h3>
+<h3>{% trans "Rate limiting" %}</h3>
 
+{% blocktrans trimmed %}
 <p>The standard paid service is limited to an average of 1 call per second in a
 rolling 3 minute period. If you need more than this, we can set you up a
 dedicated service. Please get in touch.</p>
+{% endblocktrans %}
 
-<h3>Self-installed versions of MapIt</h3>
+<h3>{% trans "Self-installed versions of MapIt" %}</h3>
 
+{% blocktrans trimmed %}
 <p>Some organisations prefer to install their own internal version on MapIt. We
 are happy to help with this. Depending on your needs, we can advise your
 technical team on how to do this, or our developers can install it for you.</p>
+{% endblocktrans %}
 
-<h3>One-off data range searches</h3>
+<h3>{% trans "One-off data range searches" %}</h3>
 
+{% blocktrans trimmed %}
 <p>We also offer one-off look-ups for large data sets &ndash; this is useful when you
 don’t need to use the API but simply have data that you need matched (e.g. a
 list of postcodes to match to the constituencies they fall into). We can do
 this for you quickly and easily.</p>
+{% endblocktrans %}
 
-<h3>Geometry files</h3>
+<h3>{% trans "Geometry files" %}</h3>
 
+{% blocktrans trimmed %}
 <p>If you need to use the API to download the MapIt geometry files, you can do
 so for free for up to 50,000 files if you are a registered UK charity or an
 individual working on a non-profit project. If you are not, or need more than
@@ -49,5 +59,6 @@ individual working on a non-profit project. If you are not, or need more than
 <p><strong>For all enquiries about licensing, please drop us a line with some
 information about what you’re looking to do, and we’ll get in touch to discuss
 how we can help you.</strong></p>
+{% endblocktrans %}
 
 {% endblock %}

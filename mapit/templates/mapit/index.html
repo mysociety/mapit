@@ -1,9 +1,10 @@
 {% extends "mapit/base.html" %}
+{% load mapit_i18n %}
 {% load url from compat %}
 {% load static from staticfiles %}
 
 {% block fulltitle %}
-    MapIt : map postcodes and geographical points to administrative areas
+    {% trans "MapIt : map postcodes and geographical points to administrative areas" %}
 {% endblock %}
 
 {% block content %}
@@ -19,11 +20,11 @@
     <div id="try-mapit">
         <form method="post" action="{% url "mapit_index" %}{% if postcodes_available %}postcode{% else %}point{% endif %}/">
             <label for="try-mapit-pc">
-                {% if postcodes_available %}Try it out, enter a postcode:
-                {% else %}Try it out, enter a lat,lon:{% endif %}
+                {% if postcodes_available %}{% trans "Try it out, enter a postcode" %}:
+                {% else %}{% trans "Try it out, enter a lat,lon" %}:{% endif %}
             </label>
-            <input type="text" name="pc" id="try-mapit-pc"{% if not postcodes_available %} placeholder="latitude,longitude"{% endif %}>
-            <input class="btn" type="submit" value="Look up">
+            <input type="text" name="pc" id="try-mapit-pc"{% if not postcodes_available %} placeholder="{% trans "latitude" %},{% trans "longitude" %}"{% endif %}>
+            <input class="btn" type="submit" value="{% trans "Look up" %}">
         </form>
     </div>
 
@@ -31,36 +32,36 @@
 
         <header>
 
-            <h2>MapIt API</h2>
+            <h2>{% trans "MapIt API" %}</h2>
 
             <nav class="toc">
 
-                <p>Lookups</p>
+                <p>{% trans "Lookups" %}</p>
                 <ol>
                     {% if postcodes_available %}
-                    <li><a href="#api-by_postcode">Postcode</a></li>
+                    <li><a href="#api-by_postcode">{% trans "Postcode" %}</a></li>
                     {% if partial_postcodes_available %}
-                    <li><a href="#api-by_partial_postcode">Partial postcode</a></li>
+                    <li><a href="#api-by_partial_postcode">{% trans "Partial postcode" %}</a></li>
                     {% endif %}
                     {% endif %}
-                    <li><a href="#api-by_point">Point</a></li>
+                    <li><a href="#api-by_point">{% trans "Point" %}</a></li>
                     {% if postcodes_available %}
-                    <li><a href="#api-nearest">Nearest postcode</a></li>
+                    <li><a href="#api-nearest">{% trans "Nearest postcode" %}</a></li>
                     {% endif %}
-                    <li><a href="#api-by_area_id">Area</a></li>
-                    <li><a href="#api-related_areas">Related areas</a></li>
-                    <li><a href="#api-multiple_areas">Multiple areas</a></li>
-                    <li><a href="#api-generations">Generations</a></li>
+                    <li><a href="#api-by_area_id">{% trans "Area" %}</a></li>
+                    <li><a href="#api-related_areas">{% trans "Related areas" %}</a></li>
+                    <li><a href="#api-multiple_areas">{% trans "Multiple areas" %}</a></li>
+                    <li><a href="#api-generations">{% trans "Generations" %}</a></li>
                 </ol>
 
-                <p>Information</p>
+                <p>{% trans "Information" %}</p>
                 <ul>
-                    <li><a href="#general">General information</a></li>
-                    <li><a href="#about-mapit">About MapIt</a></li>
-                    <li><a href="#usage-licence">Usage &amp; licence</a></li>
-                    <li><a href="https://github.com/mysociety/mapit">Source code</a></li>
-                    {% if country == 'GB' %}
-                    <li><a href="{% url 'mapit_changelog' %}">Changelog</a></li>
+                    <li><a href="#general">{% trans "General information" %}</a></li>
+                    <li><a href="#about-mapit">{% trans "About MapIt" %}</a></li>
+                    <li><a href="#usage-licence">{% trans "Usage &amp; licence" %}</a></li>
+                    <li><a href="https://github.com/mysociety/mapit">{% trans "Source code" %}</a></li>
+                    {% if country == 'GB' or country == 'IT' %}
+                    <li><a href="{% url 'mapit_changelog' %}">{% trans "Changelog" %}</a></li>
                     {% endif %}
                 </ul>
 
@@ -78,27 +79,37 @@
         {% include "mapit/api/generations.html" %}
 
         <section id="general">
-            <h3>General information</h3>
+            <h3>{% trans "General information" %}</h3>
             <dl>
-                <dt>Format</dt>
+                <dt>{% trans "Format" %}</dt>
                 <dd>
+
+                {% blocktrans trimmed %}
                 <p>All calls return JSON, you can generally get an HTML representation
                 by sticking .html on the end.</p>
+                {% endblocktrans %}
+
+                {% blocktrans trimmed %}
                 <p>Whenever an area is returned from MapIt, it is as a
                 dictionary with the following keys: id, name, country, type,
                 parent_area, generation_low, generation_high, codes.</p>
+                {% endblocktrans %}
                 </dd>
-                <dt>Historical areas</dt>
-                <dd>By default, calls will return active areas; for some calls
+                <dt>{% trans "Historical areas" %}</dt>
+                <dd>
+                    {% blocktrans trimmed %}
+                By default, calls will return active areas; for some calls
                 you may specify a previous generation to look up instead.
+                {% endblocktrans %}
                 {% include "mapit/index-general-extra.html" %}
                 </dd>
             </dl>
         </section>
 
         <section id="about-mapit">
-            <h3>About MapIt</h3>
+            <h3>{% trans "About MapIt" %}</h3>
 
+            {% blocktrans trimmed %}
             <p>MapIt was written back in 2003 as a postcode lookup to power the
             original <a href="http://www.mysociety.org/">mySociety</a> sites
             such as <a href="http://www.writetothem.com/">WriteToThem</a>. Over
@@ -106,6 +117,7 @@
             <a href="http://www.fixmystreet.com/">FixMyStreet</a>), and when
             Ordnance Survey data became freely available in 2010, it was
             rewritten and made public for the whole UK.
+            {% endblocktrans %}
 
             {% include "mapit/index-others.html" %}
             </p>

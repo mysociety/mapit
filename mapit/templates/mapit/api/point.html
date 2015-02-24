@@ -1,43 +1,74 @@
 {% load url from compat %}
+{% load mapit_i18n %}
         <section id="api-by_point">
-            <h3><em>lookup by</em> point</h3>
+            <h3>{% blocktrans trimmed %}
+                <em>lookup by</em> point
+                {% endblocktrans %}</h3>
             <dl>
                 <dt>URL:</dt>
                 <dd><ul>
                     <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i></li>
                     <li>/point/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i>/box</li>
                 </ul>
-                <dt>Parameters:</dt>
+                <dt>{% trans "Parameters" %}:</dt>
                 <dd>
+                {% blocktrans trimmed %}
                 <p><i>SRID</i> is a unique number referring to a particular
                 co-ordinate system;
+                {% endblocktrans %}
 {% if country == 'GB' %}
+                {% blocktrans trimmed %}
                 the ones you probably are interested in are
                 27700 for British National Grid, 4326 for WGS84 lon/lat, and
                 29902 for the Irish National Grid.
+                {% endblocktrans %}
+{% elif country == 'IT' %}
+                {% blocktrans trimmed %}
+                the ones you probably are interested in are
+                32632 o UTM zone 32N, for Italy or 4326 for WGS84 lon/lat.
+                {% endblocktrans %}
 {% else %}
+                {% blocktrans trimmed %}
                 the one you probably are interested in is
                 4326 for WGS84 normal lon/lat.
+                {% endblocktrans %}
 {% endif %}
                 </p>
+                {% blocktrans trimmed %}
                 <p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-ordinate
                 system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>
+                {% endblocktrans %}
                 </dd>
+                {% blocktrans trimmed %}
                 <dt>Optional query parameters:</dt>
+                {% endblocktrans %}
                 <dd>
-        <ul>
-            <li><i>type</i>, to restrict results to a particular area type or types (multiple types separated by commas);
-            <li><i>generation</i>, to return results for a previous generation.
-            <li><i>min_generation</i>, to return results since that generation.</li>
-        </ul>
+                    <ul>
+                        <li>
+                            {% blocktrans trimmed %}
+                                <i>type</i>, to restrict results to a particular area type or types (multiple types separated by commas);
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans trimmed %}
+                                <i>generation</i>, to return results for a previous generation.
+                            {% endblocktrans %}
+                        </li>
+                        <li>
+                            {% blocktrans trimmed %}
+                                <i>min_generation</i>, to return results since that generation.
+                            {% endblocktrans %}
+                        </li>
+                    </ul>
                 </dd>
 
-                <dt>Returns:</dt>
+                <dt>{% trans "Returns" %}:</dt>
                 <dd>
-                <p>A hash of the areas that the point is contained within. If
-                the /box version is used, only the area bounding boxes are
-                considered.
-                </p>
+                {% blocktrans trimmed %}
+                    <p>A hash of the areas that the point is contained within. If
+                    the /box version is used, only the area bounding boxes are
+                    considered.</p>
+                {% endblocktrans %}
 
                 {% include "mapit/api/point-example.html" %}
             </dl>
@@ -45,14 +76,16 @@
 
 {% if postcodes_available %}
         <section id="api-nearest">
-            <h3><em>lookup</em>nearest postcode</h3>
+            <h3>{% blocktrans trimmed %}
+                <em>lookup</em>nearest postcode
+                {% endblocktrans %}</h3>
             <dl>
                 <dt>URL:</dt>
                 <dd> /nearest/<i>[SRID]</i>/<i>[x]</i>,<i>[y]</i> </dd>
-                <dt>Parameters:</dt>
-                <dd>Same as for <a href="#api-by_point">by point</a>.</dd>
-                <dt>Returns:</dt>
-                <dd>The postcode closest to the particular point.
+                <dt>{% trans "Parameters" %}:</dt>
+                <dd>{% trans "Same as for" %} <a href="#api-by_point">{% trans "by point" %}</a>.</dd>
+                <dt>{% trans "Returns" %}:</dt>
+                <dd>{% trans "The postcode closest to the particular point." %}
 
                 {% include "mapit/api/point-example-nearest.html" %}
             </dl>
