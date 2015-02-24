@@ -1,9 +1,10 @@
 {% extends "mapit/base.html" %}
+{% load i18n %}
 
-{% block title %}500 Internal Server Error{% endblock %}
+{% block title %}{% trans "500 Internal Server Error" %}{% endblock %}
 
 {% block content %}
 
-<p>Sorry, something's gone wrong. {{ error }}</p>
+<p>{% trans "Sorry, something's gone wrong." %} {{ error }}</p>
 
 {% endblock %}

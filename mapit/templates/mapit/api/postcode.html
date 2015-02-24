@@ -1,22 +1,33 @@
 {% load url from compat %}
+{% load mapit_i18n %}
 <section id="api-by_postcode">
-    <h3><em>lookup by</em> postcode</h3>
+    <h3>
+        {% blocktrans trimmed %}
+        <em>lookup by</em> postcode
+        {% endblocktrans %}
+    </h3>
     <dl>
         <dt>URL:</dt>
-        <dd> /postcode/<em>[postcode]</em> </dd>
+        <dd> /postcode/<em>[{% trans "postcode" %}]</em> </dd>
 
-        <dt>Returns:</dt>
+        <dt>{% trans "Returns" %}:</dt>
         <dd>
-            <p>Information on a particular postcode, including its
-            location in
-            {% if country == 'GB' %}both National Grid and {% endif %}
-            WGS84 latitude/longitude, and the areas it is contained
-            within.</p>
+            {% blocktrans trimmed %}
+                <p>Information on a particular postcode, including its
+                location in
+            {% endblocktrans %}
+                {% if country == 'GB' %}{% trans "both National Grid and" %} {% endif %}
+            {% blocktrans trimmed %}
+                WGS84 latitude/longitude, and the areas it is contained
+                within.</p>
+            {% endblocktrans %}
         </dd>
 
-        <dt>Optional query parameters:</dt>
+        <dt>{% trans "Optional query parameters" %}:</dt>
         <dd>
-            <p><i>generation</i>, to return results from a previous generation.</p>
+            {% blocktrans trimmed %}
+                <p><i>generation</i>, to return results from a previous generation.</p>
+            {% endblocktrans %}
         </dd>
 
         {% include "mapit/api/postcode-example.html" %}
@@ -25,15 +36,17 @@
 
 {% if country != 'IT' %}
 <section id="api-by_partial_postcode">
-    <h3><em>lookup by</em> partial postcode</h3>
+    <h3>{% blocktrans trimmed %}<em>lookup by</em> partial postcode{% endblocktrans %}</h3>
 
     <dl>
         <dt>URL:</dt>
-        <dd> /postcode/partial/<em>[partial postcode]</em> </dd>
+        <dd> /postcode/partial/<em>[{% trans "partial postcode" %}]</em> </dd>
 
-        <dt>Returns:</dt>
+        <dt>{% trans "Returns" %}:</dt>
         <dd>
-            <p>Geographical details for the centroid of the partial postcode specified.</p>
+            {% blocktrans trimmed %}
+                <p>Geographical details for the centroid of the partial postcode specified.</p>
+            {% endblocktrans %}
         </dd>
 
         {% include "mapit/api/postcode-example-partial.html" %}

@@ -8,6 +8,7 @@ try:
 except ImportError:
     PYGDAL = False
 
+from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
@@ -52,14 +53,14 @@ def query_args(request, format, type=None):
     try:
         generation = int(request.GET.get('generation', 0))
     except ValueError:
-        raise ViewException(format, 'Bad generation specified', 400)
+        raise ViewException(format, _('Bad generation specified'), 400)
     if not generation:
         generation = Generation.objects.current().id
 
     try:
         min_generation = int(request.GET.get('min_generation', 0))
     except ValueError:
-        raise ViewException(format, 'Bad min_generation specified', 400)
+        raise ViewException(format, _('Bad min_generation specified'), 400)
     if not min_generation:
         min_generation = generation
 
@@ -95,7 +96,7 @@ def area(request, area_id, format='json'):
             return resp
 
     if not re.match('\d+$', area_id):
-        raise ViewException(format, 'Bad area ID specified', 400)
+        raise ViewException(format, _('Bad area ID specified'), 400)
 
     area = get_object_or_404(Area, format=format, id=area_id)
 
@@ -139,7 +140,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
             return resp
 
     if not re.match('\d+$', area_id):
-        raise ViewException(format, 'Bad area ID specified', 400)
+        raise ViewException(format, _('Bad area ID specified'), 400)
 
     if not srid:
         srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
@@ -150,12 +151,12 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     try:
         simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
     except ValueError:
-        raise ViewException(format, 'Badly specified tolerance', 400)
+        raise ViewException(format, _('Badly specified tolerance'), 400)
 
     try:
         output, content_type = area.export(srid, format, simplify_tolerance=simplify_tolerance)
         if output is None:
-            return output_json({'error': 'No polygons found'}, code=404)
+            return output_json({'error': _('No polygons found')}, code=404)
     except TransformError as e:
         return output_json({'error': e.args[0]}, code=400)
 
@@ -171,13 +172,13 @@ def area_children(request, area_id, format='json'):
     args = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
     children = area.children.filter(**args)
-    return output_areas(request, 'Children of %s' % area.name, format, children)
+    return output_areas(request, _('Children of %s') % area.name, format, children)
 
 
 def area_intersect(query_type, title, request, area_id, format):
     area = get_object_or_404(Area, format=format, id=area_id)
     if not area.polygons.count():
-        raise ViewException(format, 'No polygons found', 404)
+        raise ViewException(format, _('No polygons found'), 404)
 
     generation = Generation.objects.current()
     types = [_f for _f in request.GET.get('type', '').split(',') if _f]
@@ -191,10 +192,10 @@ def area_intersect(query_type, title, request, area_id, format):
         if 'canceling statement due to statement timeout' not in e.args[0]:
             raise
         raise ViewException(
-            format, 'That query was taking too long to compute - '
-            'try restricting to a specific type, if you weren\'t already doing so.', 500)
+            format, _('That query was taking too long to compute - '
+            'try restricting to a specific type, if you weren\'t already doing so.'), 500)
     except InternalError:
-        raise ViewException(format, 'There was an internal error performing that query.', 500)
+        raise ViewException(format, _('There was an internal error performing that query.'), 500)
 
     title = title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name))
     return output_areas(request, title, format, areas, norobots=True)
@@ -202,46 +203,46 @@ def area_intersect(query_type, title, request, area_id, format):
 
 @ratelimit(minutes=3, requests=100)
 def area_touches(request, area_id, format='json'):
-    return area_intersect('touches', 'Areas touching %s', request, area_id, format)
+    return area_intersect('touches', _('Areas touching %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def area_overlaps(request, area_id, format='json'):
-    return area_intersect('overlaps', 'Areas overlapping %s', request, area_id, format)
+    return area_intersect('overlaps', _('Areas overlapping %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def area_covers(request, area_id, format='json'):
-    return area_intersect('coveredby', 'Areas covered by %s', request, area_id, format)
+    return area_intersect('coveredby', _('Areas covered by %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def area_coverlaps(request, area_id, format='json'):
-    return area_intersect(['overlaps', 'coveredby'], 'Areas covered by or overlapping %s', request, area_id, format)
+    return area_intersect(['overlaps', 'coveredby'], _('Areas covered by or overlapping %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def area_covered(request, area_id, format='json'):
-    return area_intersect('covers', 'Areas that cover %s', request, area_id, format)
+    return area_intersect('covers', _('Areas that cover %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def area_intersects(request, area_id, format='json'):
-    return area_intersect('intersects', 'Areas that intersect %s', request, area_id, format)
+    return area_intersect('intersects', _('Areas that intersect %s'), request, area_id, format)
 
 
 @ratelimit(minutes=3, requests=100)
 def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
     areas = Area.objects.filter(id__in=area_ids)
-    return output_areas(request, 'Areas ID lookup', format, areas)
+    return output_areas(request, _('Areas ID lookup'), format, areas)
 
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_type(request, type, format='json'):
     args = query_args(request, format, type)
     areas = Area.objects.filter(**args)
-    return output_areas(request, 'Areas in %s' % type, format, areas)
+    return output_areas(request, _('Areas in %s') % type, format, areas)
 
 
 @ratelimit(minutes=3, requests=100)
@@ -249,7 +250,7 @@ def areas_by_name(request, name, format='json'):
     args = query_args(request, format)
     args['name__istartswith'] = name
     areas = Area.objects.filter(**args)
-    return output_areas(request, 'Areas starting with %s' % name, format, areas)
+    return output_areas(request, _('Areas starting with %s') % name, format, areas)
 
 
 @ratelimit(minutes=3, requests=100)
@@ -264,7 +265,7 @@ def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
     all_areas = area.polygons.all().collect()
     if not all_areas:
-        return output_json({'error': 'No polygons found'}, code=404)
+        return output_json({'error': _('No polygons found')}, code=404)
     out = {
         'parts': all_areas.num_geom,
     }
@@ -309,10 +310,10 @@ def area_from_code(request, code_type, code_value, format='json'):
     try:
         area = Area.objects.get(**args)
     except Area.DoesNotExist:
-        message = 'No areas were found that matched code %s = %s.' % (code_type, code_value)
+        message = _('No areas were found that matched code {0} = {1}.').format(code_type, code_value)
         raise ViewException(format, message, 404)
     except Area.MultipleObjectsReturned:
-        message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
+        message = _('There were multiple areas that matched code {0} = {1}.').format(code_type, code_value)
         raise ViewException(format, message, 500)
     return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
 
@@ -325,7 +326,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
     try:
         location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
-        raise ViewException(format, 'Point outside the area geometry', 400)
+        raise ViewException(format, _('Point outside the area geometry'), 400)
 
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
@@ -354,7 +355,7 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
             args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
-    return output_areas(request, 'Areas covering the point (%s,%s)' % (x, y), format, areas, indent_areas=True)
+    return output_areas(request, _('Areas covering the point ({0},{1})').format(x, y), format, areas, indent_areas=True)
 
 
 @ratelimit(minutes=3, requests=100)
@@ -390,7 +391,7 @@ def point_form_submitted(request):
 def deal_with_POST(request, call='areas'):
     url = request.POST.get('URL', '')
     if not url:
-        return output_json({'error': 'No content specified'}, code=400)
+        return output_json({'error': _('No content specified')}, code=400)
     view, args, kwargs = resolve('/%s/%s' % (call, url))
     request.GET = request.POST
     kwargs['request'] = request

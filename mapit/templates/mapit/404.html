@@ -1,9 +1,10 @@
 {% extends "mapit/base.html" %}
+{% load i18n %}
 
-{% block title %}404 Not Found{% endblock %}
+{% block title %}{% trans "404 Not Found" %}{% endblock %}
 
 {% block content %}
 
-<p>Sorry, that could not be found.</p>
+<p>{% trans "Sorry, that could not be found." %}</p>
 
 {% endblock %}

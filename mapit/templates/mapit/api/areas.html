@@ -1,30 +1,38 @@
 {% load url from compat %}
+{% load mapit_i18n %}
     <section id="api-multiple_areas">
-        <h3><em>lookup</em> multiple areas</h3>
+        <h3>{% blocktrans trimmed %}
+            <em>lookup</em> multiple areas
+        {% endblocktrans %}</h3>
         <dl>
             <dt>URL:</dt>
             <dd><ul>
-                <li>/areas/<i>[area IDs]</i>
-                <li>/areas/<i>[area IDs]</i>/geometry
-                <li>/areas/<i>[type(s)]</i>
-                <li>/areas/<i>[name prefix]</i>
+                <li>/areas/<i>[{% trans "area IDs" %}]</i>
+                <li>/areas/<i>[{% trans "area IDs" %}]</i>/geometry
+                <li>/areas/<i>[{% trans "type(s)" %}]</i>
+                <li>/areas/<i>[{% trans "name prefix" %}]</i>
             </ul></dd>
-            <dt>Parameters:</dt>
-            <dd>Separate multiple parameters with commas.
+            <dt>{% trans "Parameters" %}:</dt>
+            <dd>{% blocktrans trimmed %}
+            Separate multiple parameters with commas.
             Name prefix means it will return any area that starts with the string given.
+            {% endblocktrans %}
             {% include "mapit/api/areas-types.html" %}
             </dd>
-            <dt>Optional query parameters:</dt>
+            <dt>{% trans "Optional query parameters" %}:</dt>
             <dd><ul>
-                <li><i>generation</i>, to return areas in that generation (type and name lookups only).</li>
-                <li><i>min_generation</i>, to return areas since that generation (type and name lookups only).</li>
-                <li><i>type</i>, to restrict results to a type or types (multiple separated by commas; name lookup only).</li>
+                <li><i>generation</i>, {% trans "to return areas in that generation (type and name lookups only)" %}.</li>
+                <li><i>min_generation</i>, {% trans "to return areas since that generation (type and name lookups only)" %}.</li>
+                <li><i>type</i>, {% trans "to restrict results to a type or types (multiple separated by commas; name lookup only)" %}.</li>
             </ul></dd>
 
-            <dt>Returns:</dt>
+            <dt>{% trans "Returns" %}:</dt>
             <dd>
-            <p>Information on multiple areas that match the parameters provided, as a dictionary indexed by area ID.
-            The geometry argument lets you fetch multiple single area geometry results at once.
+            <p>
+                {% blocktrans trimmed %}
+                    Information on multiple areas that match the parameters provided, as a dictionary indexed by area ID.
+                    The geometry argument lets you fetch multiple single area geometry results at once.
+                {% endblocktrans %}
             </p>
             </dd>
             {% include "mapit/api/areas-examples.html" %}

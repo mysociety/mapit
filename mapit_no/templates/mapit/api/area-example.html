@@ -1,11 +1,12 @@
 {% load url from compat %}
-<dt>Examples:</dt>
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
 <dd>
 <ul>
-    <li>Information held on an individual area:
+    <li>{% trans "Information held on an individual area" %}:
     <a href="{% url "mapit_index" %}area/1811.html">/area/1811.html</a>
-    <li>A KML file of an area:
+    <li>{% trans "A KML file of an area" %}:
     <a href="{% url "mapit_index" %}area/118.kml">/area/118.kml</a>
-    (on a <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">Google Map</a>)
+    ({% trans "on a" %} <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">{% trans "Google Map" %}</a>)
 </ul>
 </dd>

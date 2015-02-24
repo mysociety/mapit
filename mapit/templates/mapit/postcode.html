@@ -1,7 +1,8 @@
 {% extends "mapit/base.html" %}
+{% load mapit_i18n %}
 {% load url from compat %}
 
-{% block title %}Results for &ldquo;{{ postcode.postcode }}&rdquo;{% endblock title %}
+{% block title %}{% trans "Results for" %} &ldquo;{{ postcode.postcode }}&rdquo;{% endblock title %}
 
 {% block content %}
 
@@ -13,12 +14,16 @@
 E/N: {{ postcode.easting }}, {{ postcode.northing }}
 {% endif %}
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
-<li>WGS84 lat/lon: <a href="http://toolserver.org/~geohack/geohack.php?params={{ postcode.wgs84_lat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
+<li>{% trans "WGS84 lat/lon" %}: <a href="http://toolserver.org/~geohack/geohack.php?params={{ postcode.wgs84_lat|floatformat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
 {% else %}
-<li>No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
+<li>{% blocktrans trimmed %}
+    No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
+    {% endblocktrans %}</li>
+
 {% endif %}
     </ul>
-    <p>Get <a href="{% url json_view postcode=postcode.postcode %}">this data as JSON</a></p>
+    {% url json_view postcode=postcode.postcode as json_url %}
+    <p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
@@ -39,7 +44,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 {% endif %}
 
 <section class="details">
-<h3>Areas</h3>
+<h3>{% trans "Areas" %}</h3>
 {% include "mapit/areas.html" %}
 </section>
 
