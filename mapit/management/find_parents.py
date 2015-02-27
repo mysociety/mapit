@@ -27,6 +27,10 @@ class FindParentsCommand(NoArgsCommand):
             generation_low__lte=new_generation, generation_high__gte=new_generation,
         ):
             parent = None
+            if int(options['verbosity']) >= 2:
+                self.stdout.write("Processing %s" % (
+                    self.pp_area(area)
+                ))
             for polygon in area.polygons.all():
                 try:
                     args = {
@@ -45,7 +49,7 @@ class FindParentsCommand(NoArgsCommand):
             if not parent:
                 raise Exception("Area %s does not have a parent?" % (self.pp_area(area)))
             if area.parent_area != parent:
-                print("Parent for %s was %s, is now %s" % (
+                self.stdout.write("Parent for %s was %s, is now %s" % (
                     self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent)))
                 if options['commit']:
                     area.parent_area = parent
