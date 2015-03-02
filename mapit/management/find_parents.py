@@ -27,9 +27,10 @@ class FindParentsCommand(NoArgsCommand):
             generation_low__lte=new_generation, generation_high__gte=new_generation,
         ):
             parent = None
-            self.stdout.write("Processing %s" % (
-                self.pp_area(area)
-            ))
+            if int(options['verbosity']) >= 2:
+                self.stdout.write("Processing %s" % (
+                    self.pp_area(area)
+                ))
             for polygon in area.polygons.all():
                 try:
                     args = {
