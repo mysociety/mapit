@@ -228,9 +228,11 @@ class Command(LabelCommand):
                         "Could not decode name using encoding '%s' - is it in another encoding? "
                         "Specify one with --encoding" % encoding)
 
+
             name = re.sub('\s+', ' ', name)
             if not name:
-                raise Exception("Could not find a name to use for area")
+                self.stdout.write("Could not find a name to use for area, skipping...")
+                continue
 
             code = None
             if override_code:
