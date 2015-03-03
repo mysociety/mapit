@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-03 11:05+0000\n"
+"POT-Creation-Date: 2015-03-03 11:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,6 +20,7 @@ msgstr ""
 
 #: templates/mapit/api/area-example-related.html:3
 #: templates/mapit/api/area-example.html:3
+#: templates/mapit/api/areas-examples.html:3
 msgid "Examples:"
 msgstr "Esempi:"
 
@@ -55,10 +56,6 @@ msgstr "su una"
 msgid "Google Map"
 msgstr "Google Map"
 
-#: templates/mapit/api/areas-examples.html:3
-msgid "Examples"
-msgstr "Esempi"
-
 #: templates/mapit/api/areas-examples.html:6
 msgid "All areas starting with &ldquo;As&rdquo;"
 msgstr "Aree che iniziano per &ldquo;As&rdquo;"
@@ -93,6 +90,7 @@ msgstr "Comune"
 
 #: templates/mapit/api/point-example-nearest.html:3
 #: templates/mapit/api/point-example.html:3
+#: templates/mapit/api/postcode-example-partial.html:3
 #: templates/mapit/api/postcode-example.html:3
 msgid "Example:"
 msgstr "Esempio:"
@@ -104,10 +102,6 @@ msgstr "Esempio di codice postale più vicino a (41.8981,12.5042)"
 #: templates/mapit/api/point-example.html:4
 msgid "Example of areas containing (41.8981,12.5042)"
 msgstr "Esempio di aree che contengono (41.8981,12.5042)"
-
-#: templates/mapit/api/postcode-example-partial.html:3
-msgid "Example"
-msgstr "Esempio"
 
 #: templates/mapit/api/postcode-example.html:5
 msgid "<p>If your postcode was <em>00185</em> you would load"
