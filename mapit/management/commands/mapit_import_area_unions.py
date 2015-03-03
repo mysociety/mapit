@@ -106,15 +106,15 @@ class Command(LabelCommand):
                         self.logger.debug("Looking up ID '%d'" % areaidnum)
                         args = {
                             'id__exact': areaidnum,
-                            'generation_low__lte': new_generation.id,
-                            'generation_high__gte': current_generation.id,
+                            'generation_low__lte': current_generation.id,
+                            'generation_high__gte': new_generation.id,
                             }
                     except (ValueError, IndexError):
                         self.logger.debug("Looking up name '%s'" % name)
                         args = {
                             'name__iexact': name,
-                            'generation_low__lte': new_generation.id,
-                            'generation_high__gte': current_generation.id,
+                            'generation_low__lte': current_generation.id,
+                            'generation_high__gte': new_generation.id,
                             }
 
                     try:
