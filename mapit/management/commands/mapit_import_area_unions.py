@@ -88,7 +88,7 @@ class Command(LabelCommand):
             else:
                 regionid = 0
 
-            if (-2147483648 > int(regionid) or 2147483647 < regionid):
+            if (-2147483648 > regionid or 2147483647 < regionid):
                 raise Exception("Region ID %d is outside range of 32-bit integer" % regionid)
 
             if area_names:
