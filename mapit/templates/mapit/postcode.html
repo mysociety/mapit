@@ -2,7 +2,7 @@
 {% load mapit_i18n %}
 {% load url from compat %}
 
-{% block title %}{% trans "Results for" %} &ldquo;{{ postcode.postcode }}&rdquo;{% endblock title %}
+{% block title %}{% blocktrans %}Results for “{{ postcode.postcode }}”{% endblocktrans %}{% endblock title %}
 
 {% block content %}
 
@@ -31,7 +31,7 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 <script>
     var map = new L.Map("map");
     var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors',
+        attribution: '{% trans "Map data © OpenStreetMap contributors" %}',
         maxZoom: 18
     });
 

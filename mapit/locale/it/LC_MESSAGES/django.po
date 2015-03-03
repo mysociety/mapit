@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-02 16:24+0000\n"
+"POT-Creation-Date: 2015-03-03 11:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -378,89 +378,90 @@ msgstr ""
 "<p>Dettagli geografici del centroide del codice postale parziale indicato.</"
 "p>"
 
-#: templates/mapit/area.html:12
+#: templates/mapit/area.html:13
 msgid "Type"
 msgstr "Tipo"
 
-#: templates/mapit/area.html:13
+#: templates/mapit/area.html:14
 msgid "Exists in generations"
 msgstr "Esiste nelle generazioni"
 
-#: templates/mapit/area.html:15
+#: templates/mapit/area.html:16
 msgid "Country"
 msgstr "Nazione"
 
-#: templates/mapit/area.html:18 templates/mapit/areas_item.html:8
-msgid "A child of"
-msgstr "Un figlio di"
+#: templates/mapit/area.html:20 templates/mapit/areas_item.html:10
+#, python-format
+msgid "A child of <a href=\"%(url)s\">%(name)s</a>."
+msgstr "Un figlio di <a href=\"%(url)s\">%(name)s</a>."
 
-#: templates/mapit/area.html:22
+#: templates/mapit/area.html:25
 msgid "Example postcode"
 msgstr "Codice postale di esempio"
 
-#: templates/mapit/area.html:26
+#: templates/mapit/area.html:29
 msgid "Children"
 msgstr "Figli"
 
-#: templates/mapit/area.html:31 templates/mapit/data.html:10
+#: templates/mapit/area.html:33 templates/mapit/data.html:10
 #: templates/mapit/generations.html:12 templates/mapit/postcode.html:26
 #, python-format
 msgid "Get <a href=\"%(json_url)s\">this data as JSON</a>"
 msgstr "Prendi <a href=\"%(json_url)s\">questi dati in formato JSON</a>"
 
-#: templates/mapit/area.html:40
+#: templates/mapit/area.html:42 templates/mapit/postcode.html:34
 msgid "Map data © OpenStreetMap contributors"
 msgstr "© dei dati di mappa: contributori a OpenStreetMap"
 
-#: templates/mapit/area.html:76 templates/mapit/area.html.py:78
+#: templates/mapit/area.html:78 templates/mapit/area.html.py:80
 msgid "Geometry"
 msgstr "Geometria"
 
-#: templates/mapit/area.html:82
+#: templates/mapit/area.html:84
 msgid "on a Google Map"
 msgstr "su una Google Map"
 
-#: templates/mapit/area.html:88 templates/mapit/postcode.html:47
+#: templates/mapit/area.html:90 templates/mapit/postcode.html:47
 msgid "Areas"
 msgstr "Aree"
 
-#: templates/mapit/area.html:90
+#: templates/mapit/area.html:92
 msgid "Touching this area"
 msgstr "Toccano quest'area"
 
-#: templates/mapit/area.html:91
+#: templates/mapit/area.html:93
 msgid "Overlapping this area"
 msgstr "Si sovrappongono a quest'area"
 
-#: templates/mapit/area.html:92
+#: templates/mapit/area.html:94
 msgid "Covered by this area"
 msgstr "Coperti da quest'area"
 
-#: templates/mapit/area.html:93
+#: templates/mapit/area.html:95
 msgid "Covering this area"
 msgstr "Coprono quest'area"
 
-#: templates/mapit/area.html:94
+#: templates/mapit/area.html:96
 msgid "Covered by or overlapping this area"
 msgstr "Coperte da o che si sovrappongono a quest'area"
 
-#: templates/mapit/area.html:95
+#: templates/mapit/area.html:97
 msgid "Intersects this area"
 msgstr "Intersecano quest'area"
 
-#: templates/mapit/area.html:100
+#: templates/mapit/area.html:102
 msgid "Codes"
 msgstr "Codici"
 
-#: templates/mapit/area.html:111
+#: templates/mapit/area.html:113
 msgid "No codes found"
 msgstr "Codici non trovati"
 
-#: templates/mapit/area.html:116
+#: templates/mapit/area.html:118
 msgid "Alternative Names"
 msgstr "Nomi alternativi"
 
-#: templates/mapit/area.html:121
+#: templates/mapit/area.html:123
 msgid "No alternative names found"
 msgstr "Nessun nome alternativo trovato"
 
@@ -484,6 +485,10 @@ msgstr "Tienici online, Dona ora!"
 msgid "Home &amp; Documentation"
 msgstr "Home e Documentazione"
 
+#: templates/mapit/base.html:75
+msgid "Django powered"
+msgstr ""
+
 #: templates/mapit/copyright.html:2
 msgid ""
 "<p>You should replace the text here with copyright statements describing the "
@@ -504,9 +509,14 @@ msgstr "Nuova installazione"
 msgid "Example postcode in"
 msgstr "Codice postale di esempio in"
 
-#: templates/mapit/example-postcode.html:9
-msgid "An example postcode for"
-msgstr "Codice postale di esempio"
+#: templates/mapit/example-postcode.html:11
+#, fuzzy
+#, python-format
+msgid ""
+"An example postcode for <a href=\"%(area_url)s\">%(area.name)s</a> is "
+"<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
+msgstr "Codice postale di esempio <a href=\"%(area_url)s\">%(area.name)s</a> is "
+"<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
 
 #: templates/mapit/generations.html:18
 msgid "Active"
@@ -515,6 +525,10 @@ msgstr "Attiva"
 #: templates/mapit/generations.html:18
 msgid "Inactive"
 msgstr "Inattiva"
+
+#: templates/mapit/index-cross-sell.html:4
+msgid "Also available: MapIt Global"
+msgstr ""
 
 #: templates/mapit/index-others.html:2
 msgid ""
@@ -576,6 +590,16 @@ msgstr "longitudine"
 msgid "Look up"
 msgstr "Ricerca"
 
+#: templates/mapit/index.html:35
+msgid "MapIt API"
+msgstr ""
+
+#: templates/mapit/index.html:39
+#, fuzzy
+#| msgid "Look up"
+msgid "Lookups"
+msgstr "Ricerca"
+
 #: templates/mapit/index.html:42
 msgid "Postcode"
 msgstr "Codice postale"
@@ -603,6 +627,12 @@ msgstr "Aree correlate"
 #: templates/mapit/index.html:53
 msgid "Multiple areas"
 msgstr "Aree multiple"
+
+#: templates/mapit/index.html:57
+#, fuzzy
+#| msgid "General information"
+msgid "Information"
+msgstr "Informazioni generali"
 
 #: templates/mapit/index.html:59 templates/mapit/index.html.py:82
 msgid "General information"
@@ -959,8 +989,9 @@ msgstr ""
 "fino a quando i valori medi non siano tornati nei limiti stabiliti."
 
 #: templates/mapit/postcode.html:5
-msgid "Results for"
-msgstr "Risultati per"
+#, python-format
+msgid "Results for “%(postcode.postcode)s”"
+msgstr "Risultati per “%(postcode.postcode)s”"
 
 #: templates/mapit/postcode.html:17
 msgid "WGS84 lat/lon"

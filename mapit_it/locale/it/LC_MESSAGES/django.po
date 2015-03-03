@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-24 16:57+0000\n"
+"POT-Creation-Date: 2015-03-03 11:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,23 +55,23 @@ msgstr "su una"
 msgid "Google Map"
 msgstr "Google Map"
 
-#: templates/mapit/api/areas-examples.html:1
+#: templates/mapit/api/areas-examples.html:3
 msgid "Examples"
 msgstr "Esempi"
 
-#: templates/mapit/api/areas-examples.html:4
+#: templates/mapit/api/areas-examples.html:6
 msgid "All areas starting with &ldquo;As&rdquo;"
 msgstr "Aree che iniziano per &ldquo;As&rdquo;"
 
-#: templates/mapit/api/areas-examples.html:5
+#: templates/mapit/api/areas-examples.html:7
 msgid "All regions"
 msgstr "Tutte le regioni"
 
-#: templates/mapit/api/areas-examples.html:6
+#: templates/mapit/api/areas-examples.html:8
 msgid "All provinces"
 msgstr "Tutte le province"
 
-#: templates/mapit/api/areas-examples.html:7
+#: templates/mapit/api/areas-examples.html:9
 msgid "Information on areas 5384 and 5815"
 msgstr "Informazioni sulle aree 5384 e 5815"
 
@@ -121,9 +121,17 @@ msgstr ""
 "Per definizione, la risposta è in JSON, se vuoi una pagina leggibile, allora "
 "appendi '<em>.html</em>' alla url."
 
-#: templates/mapit/base.html:59
+#: templates/mapit/base.html:72
 msgid "Home &amp; Documentation"
 msgstr "Home e Documentazione"
+
+#: templates/mapit/base.html:87
+msgid "Powered by"
+msgstr ""
+
+#: templates/mapit/base.html:90
+msgid "Django powered"
+msgstr ""
 
 #: templates/mapit/copyright.html:3
 msgid ""

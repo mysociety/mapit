@@ -6,6 +6,7 @@
 
 {% block content %}
 
+    {% url "mapit_index" as index_url %}
     <header class="area_info">
         <h2>{{ area.name }} <em class="area_id">ID {{ area.id }}</em></h2>
         <ul>
@@ -15,7 +16,9 @@
             <li>{% trans "Country" %}: {{ area.country }}</li>
             {% endif %}
             {% if area.parent_area %}
-            <li>{% trans "A child of" %} <a href="{% url "mapit_index" %}area/{{ area.parent_area.id }}.html">{{ area.parent_area.name }}</a>.</li>
+            {% with area.parent_area.id|slugify as area_id %}
+            <li>{% blocktrans with name=area.parent_area.name url=index_url|add:"area/"|add:area_id|add:".html" %}A child of <a href="{{ url }}">{{ name }}</a>.{% endblocktrans %}</li>
+            {% endwith %}
             {% endif %}
             {% if postcodes_available %}
             {% if area.polygons.count or area.postcodes.count %}
@@ -26,7 +29,6 @@
             <li><a href="{% url "mapit_index" %}area/{{ area.id }}/children.html">{% trans "Children" %}</a></li>
             {% endif %}
         </ul>
-        {% url "mapit_index" as index_url %}
         {% with area.id|slugify as area_id %}
         <p>{% blocktrans with json_url=index_url|add:"area/"|add:area_id %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
         {% endwith %}
