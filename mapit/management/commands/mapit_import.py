@@ -215,16 +215,15 @@ class Command(LabelCommand):
                 name = override_name
             else:
                 try:
-                    name = feat[name_field].value
-                except:
-                    choices = ', '.join(layer.fields)
-                    raise CommandError(
-                        "Could not find name using name field '%s' - should it be something else? "
-                        "It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
-                try:
+                    name = feat.get(name_field)
+                    if name is None:
+                        choices = ', '.join(layer.fields)
+                        raise CommandError(
+                            "Could not find name using name field '%s' - should it be something else? "
+                            "It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                     if not isinstance(name, six.text_type):
                         name = name.decode(encoding)
-                except:
+                except UnicodeDecodeError:
                     raise CommandError(
                         "Could not decode name using encoding '%s' - is it in another encoding? "
                         "Specify one with --encoding" % encoding)
