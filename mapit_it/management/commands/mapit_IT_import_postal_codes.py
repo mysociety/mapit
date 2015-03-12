@@ -13,6 +13,8 @@ from mapit.management.commands.mapit_import_postal_codes import Command as pcCom
 
 
 class Command(pcCommand):
+
+
     help = 'Import Postal codes from a CSV file or files'
     args = '<CSV files>'
     count = {'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0}
