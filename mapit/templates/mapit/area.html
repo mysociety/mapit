@@ -74,8 +74,7 @@
                     <li><a href="{% url "mapit_index" %}area/{{ area.id }}/geometry">Geometry (<small>JSON</small>)</a></li>
                     <li><a href="{% url "mapit_index" %}area/{{ area.id }}.wkt">WKT</a></li>
                     <li><a href="{% url "mapit_index" %}area/{{ area.id }}.geojson">GeoJSON</a></li>
-                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}.kml">KML</a>
-                    (<a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}{% url "mapit_index" %}area/{{ area.id }}.kml">on a Google Map</a>)</li>
+                    <li><a href="{% url "mapit_index" %}area/{{ area.id }}.kml">KML</a></li>
                 </ul>
 {% endif %}
             </li>
