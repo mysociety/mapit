@@ -29,11 +29,12 @@
     </header>
 
 {% if area.polygons.count %}
-<div id="map"></div>
+<div id="map"><div id="leaflet"></div></div>
 <script>
-    var map = new L.Map("map");
+    var map = new L.Map("leaflet");
+    map.attributionControl.setPrefix('');
     var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors',
+        attribution: 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 18
     });
     map.addLayer(osm);
@@ -44,21 +45,7 @@
         success: function(data) {
             var area = new L.GeoJSON(data);
             map.addLayer(area);
-
-            var bounds = new L.LatLngBounds();
-            area._iterateLayers(function (layer) {
-                if (layer instanceof L.MultiPolygon) {
-                    layer._iterateLayers(function(layer2) {
-                        var new_bounds = layer2.getBounds();
-                        bounds.extend(new_bounds.getSouthWest());
-                        bounds.extend(new_bounds.getNorthEast());
-                    });
-                }
-                if (layer instanceof L.Polygon) {
-                    bounds = layer.getBounds();
-                }
-            }, area);
-            map.fitBounds(bounds);
+            map.fitBounds(area.getBounds());
         }
     });
 

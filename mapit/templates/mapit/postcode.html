@@ -22,11 +22,12 @@ E/N: {{ postcode.easting }}, {{ postcode.northing }}
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
-<div id="map"></div>
+<div id="map"><div id="leaflet"></div></div>
 <script>
-    var map = new L.Map("map");
+    var map = new L.Map("leaflet");
+    map.attributionControl.setPrefix('');
     var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data © OpenStreetMap contributors',
+        attribution: 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 18
     });
 
