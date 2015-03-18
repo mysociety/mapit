@@ -44,6 +44,10 @@
         type: 'json',
         success: function(data) {
             var area = new L.GeoJSON(data);
+            area.on('dblclick', function(e){
+                var z = map.getZoom() + (e.originalEvent.shiftKey ? -1 : 1);
+                map.setZoomAround(e.containerPoint, z);
+            });
             map.addLayer(area);
             map.fitBounds(area.getBounds());
         }
