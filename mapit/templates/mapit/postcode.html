@@ -2,7 +2,7 @@
 {% load mapit_i18n %}
 {% load url from compat %}
 
-{% block title %}{% blocktrans %}Results for “{{ postcode.postcode }}”{% endblocktrans %}{% endblock title %}
+{% block title %}{% blocktrans with postcode=postcode.postcode %}Results for “{{ postcode }}”{% endblocktrans %}{% endblock title %}
 
 {% block content %}
 

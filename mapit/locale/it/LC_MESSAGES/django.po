@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-03-03 11:03+0000\n"
+"POT-Creation-Date: 2015-03-19 12:56+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -513,9 +513,10 @@ msgstr "Codice postale di esempio in"
 #, fuzzy
 #, python-format
 msgid ""
-"An example postcode for <a href=\"%(area_url)s\">%(area.name)s</a> is "
+"An example postcode for <a href=\"%(area_url)s\">%(area_name)s</a> is "
 "<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
-msgstr "Codice postale di esempio <a href=\"%(area_url)s\">%(area.name)s</a> is "
+msgstr ""
+"Codice postale di esempio <a href=\"%(area_url)s\">%(area_name)s</a> is "
 "<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
 
 #: templates/mapit/generations.html:18
@@ -990,8 +991,8 @@ msgstr ""
 
 #: templates/mapit/postcode.html:5
 #, python-format
-msgid "Results for “%(postcode.postcode)s”"
-msgstr "Risultati per “%(postcode.postcode)s”"
+msgid "Results for “%(postcode)s”"
+msgstr "Risultati per “%(postcode)s”"
 
 #: templates/mapit/postcode.html:17
 msgid "WGS84 lat/lon"
