@@ -19,6 +19,8 @@
     <script src="{% static "mapit/js/reqwest.min.js" %}"></script>
     <script src="{% static "mapit/leaflet/leaflet.js" %}"></script>
 
+    {% block extra_css %}{% endblock %}
+
 {% if norobots %}
     <meta name="robots" content="noindex, follow">
 {% endif %}
@@ -77,6 +79,7 @@
 
     </footer>
 
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
 
