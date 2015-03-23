@@ -1,3 +1,12 @@
+v1.3.1, 2015-03-23
+    * Make sure all country-specific templates use the compatibility template
+      tag for "url".
+    * Provide template blocks for extra CSS and JS in the base template.
+    * Package country-specific templates so that they can be reused.
+    * Allow double-clicking to zoom within a geometry map
+    * Upgrade the bundled leaflet to version 0.7.3.
+    * Remove the links to view geometries on Google maps that no longer work.
+
 v1.3, 2015-02-12
     * Ubuntu Trusty Tahr support. #156
     * Django 1.8 support, subject to it not being finished yet. #165
