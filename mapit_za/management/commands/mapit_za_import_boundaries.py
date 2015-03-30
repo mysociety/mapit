@@ -71,9 +71,9 @@ class Command(NoArgsCommand):
         if stop:
             sys.exit(1)
 
-        new_generation     = Generation.objects.new()
+        new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "There's no inactive generation for the import"
+            raise Exception("There's no inactive generation for the import")
 
         country = Country.objects.get(code='Z')
 

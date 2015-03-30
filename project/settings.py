@@ -213,14 +213,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 if django.get_version() >= '1.8':
-    TEMPLATES = [ {
+    processors = map(lambda x: x.replace('django.core', 'django.template'), TEMPLATE_CONTEXT_PROCESSORS)
+    TEMPLATES = [{
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': TEMPLATE_DIRS,
         'OPTIONS': {
-            'context_processors': map(lambda x: x.replace('django.core', 'django.template'), TEMPLATE_CONTEXT_PROCESSORS),
+            'context_processors': processors,
             'loaders': TEMPLATE_LOADERS,
         },
-    } ]
+    }]
 
 INSTALLED_APPS = [
     'django.contrib.auth',

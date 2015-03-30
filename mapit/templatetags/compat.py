@@ -8,6 +8,7 @@ else:
 
 register = Library()
 
+
 @register.tag
 def url(parser, token):
     return django_url(parser, token)
