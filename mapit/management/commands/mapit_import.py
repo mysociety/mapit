@@ -19,6 +19,9 @@ from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
+WITHAM = ['Witham West', 'Witham North', 'Witham Central', 'Witham South']
+
+
 class Command(LabelCommand):
     help = 'Import geometry data from .shp, .kml or .geojson files'
     args = '<SHP/KML/GeoJSON files>'
@@ -231,8 +234,8 @@ class Command(LabelCommand):
 
             name = re.sub('\s+', ' ', name)
             if not name:
-                self.stdout.write("Could not find a name to use for area, skipping...")
-                continue
+                name = WITHAM.pop(0)
+            name = name.title()
 
             code = None
             if override_code:

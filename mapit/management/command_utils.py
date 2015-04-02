@@ -52,24 +52,14 @@ def save_polygons(lookup):
                 shapes = [geos_geometry.ogr]
             elif p.geom_name == 'MULTILINESTRING':
                 sys.stdout.write('Converting {0} to Polygon in order to import it, this may lose some data.'.format(p.geom_name))
-                try:
-                    linearrings = []
-                    for linestring in p:
-                        # Convert to a GEOS geometry so that we can access it like
-                        # a list and mutate it if needs be
-                        geos_linestring = linestring.geos
-                        # Check it's a closed linestring
-                        print geos_linestring[0]
-                        print geos_linestring[-1]
-                        if geos_linestring[0] != geos_linestring[-1]:
-                            sys.stdout.write('LINESTRING is not closed. First point {0}, Last point: {1}. Adding a new last point to close it.'.format(geos_linestring[0], geos_linestring[-1]))
-                            geos_linestring.append(geos_linestring[0])
-                        linearrings += LinearRing(*geos_linestring)
-                    geos_geometry = Polygon(linearrings)
-                    shapes += geos_geometry.ogr
-                except Exception as e:
-                    sys.stdout.write(e.message)
-                    continue
+                shapes = []
+                for linestring in p:
+                    # Convert to a GEOS geometry so that we can access it like
+                    # a list and mutate it if needs be
+                    geos_linestring = linestring.geos
+                    if geos_linestring.length > 100:
+                        assert not shapes
+                        shapes = [Polygon(LinearRing(*geos_linestring)).ogr]
             else:
                 shapes = p
             for g in shapes:
