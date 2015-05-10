@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MapIt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-06-09 17:25+0100\n"
+"POT-Creation-Date: 2015-09-18 17:20+0100\n"
 "PO-Revision-Date: 2015-05-18 19:52+0000\n"
 "Last-Translator: Jon Kristensen <info@jonkri.com>\n"
 "Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/mapit/"
@@ -422,12 +422,12 @@ msgid "Overlapping this area"
 msgstr "Överlappar detta område"
 
 #: templates/mapit/area.html:84
-msgid "Covered by this area"
-msgstr "Täcks av detta område"
-
-#: templates/mapit/area.html:85
 msgid "Covering this area"
 msgstr "Täcker detta område"
+
+#: templates/mapit/area.html:85
+msgid "Covered by this area"
+msgstr "Täcks av detta område"
 
 #: templates/mapit/area.html:86
 msgid "Covered by or overlapping this area"
@@ -926,32 +926,32 @@ msgstr ""
 "(annars skulle du ha fått en 404), men ett postnummer för vilket vi inte vet "
 "dess plats."
 
-#: views/areas.py:56
+#: views/areas.py:57
 msgid "Bad generation specified"
 msgstr "Ogiltligt angiven min_tolerance"
 
-#: views/areas.py:63
+#: views/areas.py:64
 msgid "Bad min_generation specified"
 msgstr "Ogiltligt angiven min_tolerance"
 
-#: views/areas.py:99 views/areas.py:143
-msgid "Bad area ID specified"
-msgstr "Ogiltligt angivet områdes-ID"
-
-#: views/areas.py:154
+#: views/areas.py:94
 msgid "Badly specified tolerance"
 msgstr "Ogiltligt angiven tolerans"
 
-#: views/areas.py:159 views/areas.py:181 views/areas.py:268
+#: views/areas.py:98 views/areas.py:118
+msgid "Bad area ID specified"
+msgstr "Ogiltligt angivet områdes-ID"
+
+#: views/areas.py:168 views/areas.py:186 views/areas.py:294
 msgid "No polygons found"
 msgstr "Inga polygoner hittades"
 
-#: views/areas.py:175
+#: views/areas.py:180
 #, python-format
 msgid "Children of %s"
 msgstr "Barn till %s"
 
-#: views/areas.py:195
+#: views/areas.py:200
 msgid ""
 "That query was taking too long to compute - try restricting to a specific "
 "type, if you weren't already doing so."
@@ -959,73 +959,76 @@ msgstr ""
 "Det anropet tog för lång tid att beräkna - försök att begränsa sökningen "
 "till en specifik typ om du inte redan gjorde det."
 
-#: views/areas.py:198
+#: views/areas.py:203
 msgid "There was an internal error performing that query."
 msgstr "Ett internt fel uppstod då det anropet försökte utföras."
 
-#: views/areas.py:206
+#: views/areas.py:211
 #, python-format
 msgid "Areas touching %s"
 msgstr "Områden som berör %s"
 
-#: views/areas.py:211
+#: views/areas.py:216
 #, python-format
 msgid "Areas overlapping %s"
 msgstr "Områden som överlappar %s"
 
-#: views/areas.py:216
+#: views/areas.py:221
 #, python-format
 msgid "Areas covered by %s"
 msgstr "Områden som täcks av %s"
 
-#: views/areas.py:221
+#: views/areas.py:226
 #, python-format
 msgid "Areas covered by or overlapping %s"
 msgstr "Områden som täcks av eller överlappar %s"
 
-#: views/areas.py:226
+#: views/areas.py:231
 #, python-format
 msgid "Areas that cover %s"
 msgstr "Områden som täcker %s"
 
-#: views/areas.py:231
+#: views/areas.py:236
 #, python-format
 msgid "Areas that intersect %s"
 msgstr "Områden som genomskär %s"
 
-#: views/areas.py:238
+#: views/areas.py:243
 msgid "Areas ID lookup"
 msgstr "Uppslagning av områdes-ID"
 
-#: views/areas.py:245
+#: views/areas.py:250
 #, python-format
 msgid "Areas in %s"
 msgstr "Områden i %s"
 
-#: views/areas.py:253
+#: views/areas.py:258
 #, python-format
 msgid "Areas starting with %s"
 msgstr "Områden som börjar med %s"
 
-#: views/areas.py:313
-#, python-brace-format
+#: views/areas.py:268
+#, fuzzy
+#| msgid "No codes found"
+msgid "No areas found"
+msgstr "Inga koder hittades"
+
+#: views/areas.py:339
 msgid "No areas were found that matched code {0} = {1}."
 msgstr "Inga områden hittades som matchade kod {0} = {1}."
 
-#: views/areas.py:316
-#, python-brace-format
+#: views/areas.py:342
 msgid "There were multiple areas that matched code {0} = {1}."
 msgstr "Flera områden hittades som matchade kod {0} = {1}."
 
-#: views/areas.py:329
+#: views/areas.py:355
 msgid "Point outside the area geometry"
 msgstr "Punkt utanför områdets geometri"
 
-#: views/areas.py:359
-#, python-brace-format
+#: views/areas.py:385
 msgid "Areas covering the point ({0},{1})"
 msgstr "Områden som täcker punkten ({0},{1})"
 
-#: views/areas.py:396
+#: views/areas.py:422
 msgid "No content specified"
 msgstr "Inget innehåll angivet"

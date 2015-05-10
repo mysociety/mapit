@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-10 15:40+0100\n"
+"POT-Creation-Date: 2015-09-18 17:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -430,12 +430,12 @@ msgid "Overlapping this area"
 msgstr "Si sovrappongono a quest'area"
 
 #: templates/mapit/area.html:84
-msgid "Covered by this area"
-msgstr "Coperti da quest'area"
-
-#: templates/mapit/area.html:85
 msgid "Covering this area"
 msgstr "Coprono quest'area"
+
+#: templates/mapit/area.html:85
+msgid "Covered by this area"
+msgstr "Coperti da quest'area"
 
 #: templates/mapit/area.html:86
 msgid "Covered by or overlapping this area"
@@ -717,7 +717,7 @@ msgid ""
 "looking up the shapes of all those boundaries.</p>"
 msgstr ""
 
-#: templates/mapit/intro.html:17
+#: templates/mapit/intro.html:18
 msgid ""
 "<p>You can <a href=\"https://github.com/mysociety/mapit\">download the "
 "source on Github</a>.</p>"
@@ -905,32 +905,32 @@ msgstr ""
 "codicevalido (altrimenti si sarebbe ottenuto un errore 404), si tratta solo "
 "di un codice del quale non conosciamo la località."
 
-#: views/areas.py:56
+#: views/areas.py:57
 msgid "Bad generation specified"
 msgstr "Generazione non valida o inesistente"
 
-#: views/areas.py:63
+#: views/areas.py:64
 msgid "Bad min_generation specified"
 msgstr "min_generation invalida o inesistente"
 
-#: views/areas.py:99 views/areas.py:143
-msgid "Bad area ID specified"
-msgstr "ID dell'area invalido o inesistente"
-
-#: views/areas.py:154
+#: views/areas.py:94
 msgid "Badly specified tolerance"
 msgstr "Tolleranza invalida o inesistente"
 
-#: views/areas.py:159 views/areas.py:181 views/areas.py:268
+#: views/areas.py:98 views/areas.py:118
+msgid "Bad area ID specified"
+msgstr "ID dell'area invalido o inesistente"
+
+#: views/areas.py:168 views/areas.py:186 views/areas.py:294
 msgid "No polygons found"
 msgstr "Nessun poligono trovato"
 
-#: views/areas.py:175
+#: views/areas.py:180
 #, python-format
 msgid "Children of %s"
 msgstr "Figli di %s"
 
-#: views/areas.py:195
+#: views/areas.py:200
 msgid ""
 "That query was taking too long to compute - try restricting to a specific "
 "type, if you weren't already doing so."
@@ -938,73 +938,76 @@ msgstr ""
 "La query stava prendendo troppo tempo - prova a restringere a un "
 "tipospecifico, se non lo stavi già facendo"
 
-#: views/areas.py:198
+#: views/areas.py:203
 msgid "There was an internal error performing that query."
 msgstr "Si è verificato un errore interno durante la query"
 
-#: views/areas.py:206
+#: views/areas.py:211
 #, python-format
 msgid "Areas touching %s"
 msgstr "Aree che toccano %s"
 
-#: views/areas.py:211
+#: views/areas.py:216
 #, python-format
 msgid "Areas overlapping %s"
 msgstr "Aree che si sovrappongono a %s"
 
-#: views/areas.py:216
+#: views/areas.py:221
 #, python-format
 msgid "Areas covered by %s"
 msgstr "Aree coperte da %s"
 
-#: views/areas.py:221
+#: views/areas.py:226
 #, python-format
 msgid "Areas covered by or overlapping %s"
 msgstr "Aree coperte da o che si sovrappongono a %s"
 
-#: views/areas.py:226
+#: views/areas.py:231
 #, python-format
 msgid "Areas that cover %s"
 msgstr "Aree che coprono %s"
 
-#: views/areas.py:231
+#: views/areas.py:236
 #, python-format
 msgid "Areas that intersect %s"
 msgstr "Aree che intersecano %s"
 
-#: views/areas.py:238
+#: views/areas.py:243
 msgid "Areas ID lookup"
 msgstr "Ricerca per ID di aree"
 
-#: views/areas.py:245
+#: views/areas.py:250
 #, python-format
 msgid "Areas in %s"
 msgstr "Aree in %s"
 
-#: views/areas.py:253
+#: views/areas.py:258
 #, python-format
 msgid "Areas starting with %s"
 msgstr "Aree che iniziano per %s"
 
-#: views/areas.py:313
-#, python-brace-format
+#: views/areas.py:268
+#, fuzzy
+#| msgid "No codes found"
+msgid "No areas found"
+msgstr "Codici non trovati"
+
+#: views/areas.py:339
 msgid "No areas were found that matched code {0} = {1}."
 msgstr "Nessun area trovata che verifichi il codice {0} = {1}"
 
-#: views/areas.py:316
-#, python-brace-format
+#: views/areas.py:342
 msgid "There were multiple areas that matched code {0} = {1}."
 msgstr "Più di un'area trovata che verifia il codice {0} = {1}"
 
-#: views/areas.py:329
+#: views/areas.py:355
 msgid "Point outside the area geometry"
 msgstr "Punto fuori la geometria dell'area"
 
-#: views/areas.py:358
-#, python-brace-format
+#: views/areas.py:385
 msgid "Areas covering the point ({0},{1})"
 msgstr "Aree che coprono il punto ({0},{1})"
 
-#: views/areas.py:394
+#: views/areas.py:422
 msgid "No content specified"
 msgstr "Contenuto non valido o inesistente"
