@@ -1,0 +1,928 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-10 14:14+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: shortcuts.py:55 templates/mapit/areas.html:6
+msgid "No matching areas found."
+msgstr ""
+
+#: templates/404.html:4 templates/mapit/404.html:4
+msgid "404 Not Found"
+msgstr ""
+
+#: templates/404.html:8 templates/mapit/404.html:8
+msgid "Sorry, that could not be found."
+msgstr ""
+
+#: templates/mapit/400.html:4
+msgid "400 Bad Request"
+msgstr ""
+
+#: templates/mapit/400.html:8
+msgid "Sorry, you made a bad request: "
+msgstr ""
+
+#: templates/mapit/500.html:4
+msgid "500 Internal Server Error"
+msgstr ""
+
+#: templates/mapit/500.html:8
+msgid "Sorry, something's gone wrong."
+msgstr ""
+
+#: templates/mapit/api/area.html:4
+msgid "<em>lookup by</em> area"
+msgstr ""
+
+#: templates/mapit/api/area.html:8
+msgid "URL"
+msgstr ""
+
+#: templates/mapit/api/area.html:11
+msgid "area ID or ONS code"
+msgstr ""
+
+#: templates/mapit/api/area.html:13 templates/mapit/api/area.html.py:19
+#: templates/mapit/api/area.html:21 templates/mapit/api/area.html.py:22
+#: templates/mapit/api/area.html:23 templates/mapit/api/area.html.py:50
+#: templates/mapit/api/area.html:51 templates/mapit/api/area.html.py:53
+#: templates/mapit/api/area.html:54 templates/mapit/api/area.html.py:55
+#: templates/mapit/api/area.html:56 templates/mapit/api/area.html.py:57
+msgid "area ID"
+msgstr ""
+
+#: templates/mapit/api/area.html:16
+msgid "OSM relation ID"
+msgstr ""
+
+#: templates/mapit/api/area.html:17
+msgid "OSM way ID"
+msgstr ""
+
+#: templates/mapit/api/area.html:22
+msgid "kml or geojson or wkt"
+msgstr ""
+
+#: templates/mapit/api/area.html:23
+msgid "SRID"
+msgstr ""
+
+#: templates/mapit/api/area.html:23
+msgid "kml or json or wkt"
+msgstr ""
+
+#: templates/mapit/api/area.html:25 templates/mapit/api/area.html.py:60
+#: templates/mapit/api/areas.html:22 templates/mapit/api/postcode.html:26
+msgid "Optional query parameters"
+msgstr ""
+
+#: templates/mapit/api/area.html:26
+msgid "a floating point parameter to simplify the polygons returned"
+msgstr ""
+
+#: templates/mapit/api/area.html:27 templates/mapit/api/area.html.py:72
+#: templates/mapit/api/areas.html:29 templates/mapit/api/generations.html:10
+#: templates/mapit/api/point.html:65 templates/mapit/api/point.html.py:87
+#: templates/mapit/api/postcode.html:13 templates/mapit/api/postcode.html:45
+msgid "Returns"
+msgstr ""
+
+#: templates/mapit/api/area.html:29
+msgid ""
+"Information on a particular area, including name, type, parent, and any "
+"associated codes (see <a href=\"#general\">below for details</a>). The code "
+"lookups redirect to the area URI."
+msgstr ""
+
+#: templates/mapit/api/area.html:34
+msgid "example_postcode returns a random postcode within the area specified."
+msgstr ""
+
+#: templates/mapit/api/area.html:36
+msgid "geometry returns centroid, extent and area of the area."
+msgstr ""
+
+#: templates/mapit/api/area.html:46
+msgid "<em>lookup</em> related areas"
+msgstr ""
+
+#: templates/mapit/api/area.html:62
+msgid ""
+"<li><i>type</i>, to restrict results to a particular type or types.</li>"
+msgstr ""
+
+#: templates/mapit/api/area.html:65
+msgid ""
+"<li><i>generation</i>, to return results from a previous generation "
+"(children only).</li>"
+msgstr ""
+
+#: templates/mapit/api/area.html:68
+msgid ""
+"<li><i>min_generation</i>, to return areas since that generation (children "
+"only).</li>"
+msgstr ""
+
+#: templates/mapit/api/area.html:73
+msgid "A hash of areas that match the requested lookup."
+msgstr ""
+
+#: templates/mapit/api/areas.html:4
+msgid "<em>lookup</em> multiple areas"
+msgstr ""
+
+#: templates/mapit/api/areas.html:10 templates/mapit/api/areas.html.py:11
+msgid "area IDs"
+msgstr ""
+
+#: templates/mapit/api/areas.html:12
+msgid "type(s)"
+msgstr ""
+
+#: templates/mapit/api/areas.html:13
+msgid "name prefix"
+msgstr ""
+
+#: templates/mapit/api/areas.html:15 templates/mapit/api/point.html:13
+#: templates/mapit/api/point.html.py:85
+msgid "Parameters"
+msgstr ""
+
+#: templates/mapit/api/areas.html:16
+msgid ""
+"Separate multiple parameters with commas. Name prefix means it will return "
+"any area that starts with the string given."
+msgstr ""
+
+#: templates/mapit/api/areas.html:24
+msgid "to return areas in that generation (type and name lookups only)"
+msgstr ""
+
+#: templates/mapit/api/areas.html:25
+msgid "to return areas since that generation (type and name lookups only)"
+msgstr ""
+
+#: templates/mapit/api/areas.html:26
+msgid ""
+"to restrict results to a type or types (multiple separated by commas; name "
+"lookup only)"
+msgstr ""
+
+#: templates/mapit/api/areas.html:32
+msgid ""
+"Information on multiple areas that match the parameters provided, as a "
+"dictionary indexed by area ID. The geometry argument lets you fetch multiple "
+"single area geometry results at once."
+msgstr ""
+
+#: templates/mapit/api/generations.html:5 templates/mapit/generations.html:5
+#: templates/mapit/generations.html.py:9 templates/mapit/index.html:54
+msgid "Generations"
+msgstr ""
+
+#: templates/mapit/api/generations.html:11
+msgid "A list of all generations in this installation of MapIt."
+msgstr ""
+
+#: templates/mapit/api/generations.html:20
+msgid "Example"
+msgstr ""
+
+#: templates/mapit/api/generations.html:21
+msgid "List of generations"
+msgstr ""
+
+#: templates/mapit/api/intro.html:3
+msgid ""
+"<p>The documentation below is for developers who want to use MapIt as a web "
+"service, describing its REST API. If that&rsquo;s all Greek to you, please "
+"see <a href=\"/overview\">our page for non-developers</a>.</p>"
+msgstr ""
+
+#: templates/mapit/api/point.html:4
+msgid "<em>lookup by</em> point"
+msgstr ""
+
+#: templates/mapit/api/point.html:15
+msgid ""
+"<p><i>SRID</i> is a unique number referring to a particular co-ordinate "
+"system;"
+msgstr ""
+
+#: templates/mapit/api/point.html:20
+msgid ""
+"the ones you probably are interested in are 27700 for British National Grid, "
+"4326 for WGS84 lon/lat, and 29902 for the Irish National Grid."
+msgstr ""
+
+#: templates/mapit/api/point.html:26
+msgid ""
+"the ones you probably are interested in are 32632 o UTM zone 32N, for Italy "
+"or 4326 for WGS84 lon/lat."
+msgstr ""
+
+#: templates/mapit/api/point.html:31
+msgid ""
+"the one you probably are interested in is 4326 for WGS84 normal lon/lat."
+msgstr ""
+
+#: templates/mapit/api/point.html:37
+msgid ""
+"<p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-"
+"ordinate system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>"
+msgstr ""
+
+#: templates/mapit/api/point.html:42
+msgid "<dt>Optional query parameters:</dt>"
+msgstr ""
+
+#: templates/mapit/api/point.html:48
+msgid ""
+"<i>type</i>, to restrict results to a particular area type or types "
+"(multiple types separated by commas);"
+msgstr ""
+
+#: templates/mapit/api/point.html:53
+msgid "<i>generation</i>, to return results for a previous generation."
+msgstr ""
+
+#: templates/mapit/api/point.html:58
+msgid "<i>min_generation</i>, to return results since that generation."
+msgstr ""
+
+#: templates/mapit/api/point.html:67
+msgid ""
+"<p>A hash of the areas that the point is contained within. If the /box "
+"version is used, only the area bounding boxes are considered.</p>"
+msgstr ""
+
+#: templates/mapit/api/point.html:79
+msgid "<em>lookup</em>nearest postcode"
+msgstr ""
+
+#: templates/mapit/api/point.html:86
+msgid "Same as for"
+msgstr ""
+
+#: templates/mapit/api/point.html:86
+msgid "by point"
+msgstr ""
+
+#: templates/mapit/api/point.html:88
+msgid "The postcode closest to the particular point."
+msgstr ""
+
+#: templates/mapit/api/postcode.html:5
+msgid "<em>lookup by</em> postcode"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:11
+msgid "postcode"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:15
+msgid "<p>Information on a particular postcode, including its location in"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:19
+msgid "both National Grid and"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:20
+msgid "WGS84 latitude/longitude, and the areas it is contained within.</p>"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:28
+msgid "<p><i>generation</i>, to return results from a previous generation.</p>"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:39
+msgid "<em>lookup by</em> partial postcode"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:43
+msgid "partial postcode"
+msgstr ""
+
+#: templates/mapit/api/postcode.html:47
+msgid ""
+"<p>Geographical details for the centroid of the partial postcode specified.</"
+"p>"
+msgstr ""
+
+#: templates/mapit/area.html:13
+msgid "Type"
+msgstr ""
+
+#: templates/mapit/area.html:14
+msgid "Exists in generations"
+msgstr ""
+
+#: templates/mapit/area.html:16
+msgid "Country"
+msgstr ""
+
+#: templates/mapit/area.html:20 templates/mapit/areas_item.html:10
+#, python-format
+msgid "A child of <a href=\"%(url)s\">%(name)s</a>."
+msgstr ""
+
+#: templates/mapit/area.html:25
+msgid "Example postcode"
+msgstr ""
+
+#: templates/mapit/area.html:29
+msgid "Children"
+msgstr ""
+
+#: templates/mapit/area.html:33 templates/mapit/data.html:10
+#: templates/mapit/generations.html:12 templates/mapit/postcode.html:26
+#, python-format
+msgid "Get <a href=\"%(json_url)s\">this data as JSON</a>"
+msgstr ""
+
+#: templates/mapit/area.html:43 templates/mapit/postcode.html:35
+msgid ""
+"Map © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+"contributors"
+msgstr ""
+
+#: templates/mapit/area.html:69 templates/mapit/area.html.py:71
+msgid "Geometry"
+msgstr ""
+
+#: templates/mapit/area.html:80 templates/mapit/postcode.html:48
+msgid "Areas"
+msgstr ""
+
+#: templates/mapit/area.html:82
+msgid "Touching this area"
+msgstr ""
+
+#: templates/mapit/area.html:83
+msgid "Overlapping this area"
+msgstr ""
+
+#: templates/mapit/area.html:84
+msgid "Covered by this area"
+msgstr ""
+
+#: templates/mapit/area.html:85
+msgid "Covering this area"
+msgstr ""
+
+#: templates/mapit/area.html:86
+msgid "Covered by or overlapping this area"
+msgstr ""
+
+#: templates/mapit/area.html:87
+msgid "Intersects this area"
+msgstr ""
+
+#: templates/mapit/area.html:92
+msgid "Codes"
+msgstr ""
+
+#: templates/mapit/area.html:103
+msgid "No codes found"
+msgstr ""
+
+#: templates/mapit/area.html:108
+msgid "Alternative Names"
+msgstr ""
+
+#: templates/mapit/area.html:113
+msgid "No alternative names found"
+msgstr ""
+
+#: templates/mapit/base.html:10
+msgid ""
+"MapIt: a web service that maps postcodes and geographical points to "
+"administrative areas."
+msgstr ""
+
+#: templates/mapit/base.html:51
+msgid "MapIt is a charitable project from mySociety"
+msgstr ""
+
+#: templates/mapit/base.html:56
+msgid "Keep us online, Donate Now"
+msgstr ""
+
+#: templates/mapit/base.html:63
+msgid "Home &amp; Documentation"
+msgstr ""
+
+#: templates/mapit/base.html:77
+msgid "Django powered"
+msgstr ""
+
+#: templates/mapit/copyright.html:2
+msgid ""
+"<p>You should replace the text here with copyright statements describing the "
+"copyright and licenses of the data loaded into this instance of MapIt and "
+"the terms under which those data may be used. For an example of such "
+"statements, see <tt>mapit/templates/gb/mapit/copyright.html</tt>."
+msgstr ""
+
+#: templates/mapit/country.html:2
+msgid "New Install"
+msgstr ""
+
+#: templates/mapit/example-postcode.html:5
+msgid "Example postcode in"
+msgstr ""
+
+#: templates/mapit/example-postcode.html:11
+#, python-format
+msgid ""
+"An example postcode for <a href=\"%(area_url)s\">%(area_name)s</a> is "
+"<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
+msgstr ""
+
+#: templates/mapit/generations.html:18
+msgid "Active"
+msgstr ""
+
+#: templates/mapit/generations.html:18
+msgid "Inactive"
+msgstr ""
+
+#: templates/mapit/index-cross-sell.html:4
+msgid "Also available: MapIt Global"
+msgstr ""
+
+#: templates/mapit/index-others.html:2
+msgid ""
+"Versions have appeared in other countries, such as <a href=\"http://mapit."
+"nuug.no/\">Norway</a>, and in 2012 we released a <a href=\"http://global."
+"mapit.mysociety.org/\">global version</a> based on OpenStreetMap data."
+msgstr ""
+
+#: templates/mapit/index-usage.html:4
+msgid "Usage &amp; Licence"
+msgstr ""
+
+#: templates/mapit/index-usage.html:6
+msgid ""
+"<p>To maintain quality of service for our own websites, as well as our API "
+"users, this service is rate limited to an average of 1 call per second in a "
+"rolling 3 minute period.</p>"
+msgstr ""
+
+#: templates/mapit/index-usage.html:12
+msgid ""
+"<p>If you use this service, we ask that you attribute MapIt at the point of "
+"use on sites or apps. Attribution should use the text &ldquo;Powered by "
+"MapIt&rdquo;, with a link back to this page.</p>"
+msgstr ""
+
+#: templates/mapit/index.html:7
+msgid "MapIt : map postcodes and geographical points to administrative areas"
+msgstr ""
+
+#: templates/mapit/index.html:23
+msgid "Try it out, enter a postcode"
+msgstr ""
+
+#: templates/mapit/index.html:24
+msgid "Try it out, enter a lat,lon"
+msgstr ""
+
+#: templates/mapit/index.html:26
+msgid "latitude"
+msgstr ""
+
+#: templates/mapit/index.html:26
+msgid "longitude"
+msgstr ""
+
+#: templates/mapit/index.html:27
+msgid "Look up"
+msgstr ""
+
+#: templates/mapit/index.html:35
+msgid "MapIt API"
+msgstr ""
+
+#: templates/mapit/index.html:39
+msgid "Lookups"
+msgstr ""
+
+#: templates/mapit/index.html:42
+msgid "Postcode"
+msgstr ""
+
+#: templates/mapit/index.html:44
+msgid "Partial postcode"
+msgstr ""
+
+#: templates/mapit/index.html:47
+msgid "Point"
+msgstr ""
+
+#: templates/mapit/index.html:49
+msgid "Nearest postcode"
+msgstr ""
+
+#: templates/mapit/index.html:51
+msgid "Area"
+msgstr ""
+
+#: templates/mapit/index.html:52
+msgid "Related areas"
+msgstr ""
+
+#: templates/mapit/index.html:53
+msgid "Multiple areas"
+msgstr ""
+
+#: templates/mapit/index.html:57
+msgid "Information"
+msgstr ""
+
+#: templates/mapit/index.html:59 templates/mapit/index.html.py:82
+msgid "General information"
+msgstr ""
+
+#: templates/mapit/index.html:60 templates/mapit/index.html.py:110
+msgid "About MapIt"
+msgstr ""
+
+#: templates/mapit/index.html:61
+msgid "Usage &amp; licence"
+msgstr ""
+
+#: templates/mapit/index.html:62
+msgid "Source code"
+msgstr ""
+
+#: templates/mapit/index.html:64
+msgid "Changelog"
+msgstr ""
+
+#: templates/mapit/index.html:84
+msgid "Format"
+msgstr ""
+
+#: templates/mapit/index.html:87
+msgid ""
+"<p>All calls return JSON, you can generally get an HTML representation by "
+"sticking .html on the end.</p>"
+msgstr ""
+
+#: templates/mapit/index.html:92
+msgid ""
+"<p>Whenever an area is returned from MapIt, it is as a dictionary with the "
+"following keys: id, name, country, type, parent_area, generation_low, "
+"generation_high, codes.</p>"
+msgstr ""
+
+#: templates/mapit/index.html:98
+msgid "Historical areas"
+msgstr ""
+
+#: templates/mapit/index.html:100
+msgid ""
+"By default, calls will return active areas; for some calls you may specify a "
+"previous generation to look up instead."
+msgstr ""
+
+#: templates/mapit/index.html:112
+msgid ""
+"<p>MapIt was written back in 2003 as a postcode lookup to power the original "
+"<a href=\"http://www.mysociety.org/\">mySociety</a> sites such as <a href="
+"\"http://www.writetothem.com/\">WriteToThem</a>. Over time it gained "
+"features such as point lookup (for <a href=\"http://www.fixmystreet.com/"
+"\">FixMyStreet</a>), and when Ordnance Survey data became freely available "
+"in 2010, it was rewritten and made public for the whole UK."
+msgstr ""
+
+#: templates/mapit/intro.html:3
+msgid ""
+"<p>MapIt is a service that maps postcodes and geographical points to "
+"administrative areas. It&rsquo;s useful for anyone who has the co-ordinates "
+"of a particular point, and needs to find out what regions it lies within. "
+"It&rsquo;s also great for looking up the shapes of all those boundaries.</p>"
+msgstr ""
+
+#: templates/mapit/intro.html:10
+msgid ""
+"<p>MapIt is a service that maps geographical points to administrative areas. "
+"It&rsquo;s useful for anyone who has the co-ordinates of a particular point, "
+"and needs to find out what regions it lies within. It&rsquo;s also great for "
+"looking up the shapes of all those boundaries.</p>"
+msgstr ""
+
+#: templates/mapit/intro.html:17
+msgid ""
+"<p>You can <a href=\"https://github.com/mysociety/mapit\">download the "
+"source on Github</a>.</p>"
+msgstr ""
+
+#: templates/mapit/licensing.html:4 templates/mapit/licensing.html.py:8
+msgid "Usage and licensing"
+msgstr ""
+
+#: templates/mapit/licensing.html:10
+msgid ""
+"<p>This service is free of charge for non-profit low volume use. &lsquo;Non-"
+"profit low volume use&rsquo; means use by registered UK charities or "
+"individuals working unpaid on a non-profit project, and that does not exceed "
+"50,000 calls a year. Please attribute us with the text “Powered by Mapit” "
+"and a link back to the MapIt front page. If you are using the API for a "
+"charitable purpose and are unsure of the likely volume please contact us in "
+"advance by emailing <a href=\"mailto:enquiries&#64;mysociety.org"
+"\">enquiries&#64;mysociety.org</a>.</p> <p>All other users need to get a "
+"licence. We have a range of pricing options depending on the volumes you "
+"expect. Our licences cover 12 months, and we offer discounts to charities. "
+"Please email us on <a href=\"mailto:enquiries&#64;mysociety.org"
+"\">enquiries&#64;mysociety.org</a> with details of your expected volumes, "
+"and we will let you know the costs.</p>"
+msgstr ""
+
+#: templates/mapit/licensing.html:26 templates/mapit/overview.html:106
+msgid "Rate limiting"
+msgstr ""
+
+#: templates/mapit/licensing.html:28
+msgid ""
+"<p>The standard paid service is limited to an average of 1 call per second "
+"in a rolling 3 minute period. If you need more than this, we can set you up "
+"a dedicated service. Please get in touch.</p>"
+msgstr ""
+
+#: templates/mapit/licensing.html:34
+msgid "Self-installed versions of MapIt"
+msgstr ""
+
+#: templates/mapit/licensing.html:36
+msgid ""
+"<p>Some organisations prefer to install their own internal version on MapIt. "
+"We are happy to help with this. Depending on your needs, we can advise your "
+"technical team on how to do this, or our developers can install it for you.</"
+"p>"
+msgstr ""
+
+#: templates/mapit/licensing.html:42
+msgid "One-off data range searches"
+msgstr ""
+
+#: templates/mapit/licensing.html:44
+msgid ""
+"<p>We also offer one-off look-ups for large data sets &ndash; this is useful "
+"when you don’t need to use the API but simply have data that you need "
+"matched (e.g. a list of postcodes to match to the constituencies they fall "
+"into). We can do this for you quickly and easily.</p>"
+msgstr ""
+
+#: templates/mapit/licensing.html:51
+msgid "Geometry files"
+msgstr ""
+
+#: templates/mapit/licensing.html:53
+msgid ""
+"<p>If you need to use the API to download the MapIt geometry files, you can "
+"do so for free for up to 50,000 files if you are a registered UK charity or "
+"an individual working on a non-profit project. If you are not, or need more "
+"than 50,000 files, we can licence them to you. </p> <p><strong>For all "
+"enquiries about licensing, please drop us a line with some information about "
+"what you’re looking to do, and we’ll get in touch to discuss how we can help "
+"you.</strong></p>"
+msgstr ""
+
+#: templates/mapit/overview.html:4 templates/mapit/overview.html.py:8
+msgid "MapIt for non-developers"
+msgstr ""
+
+#: templates/mapit/overview.html:10
+msgid ""
+"<p>MapIt is a system that sends data about administrations and other "
+"location-related data in response to requests from a website or service. "
+"This is useful if you are building services that require these data, for "
+"example, to identify which ward a postcode is in, what the nearest postcode "
+"is to a point on a map, or what the boundaries of an administrative area are "
+"&ndash; and many, many others.</p> <p>In technical terms MapIt is classed as "
+"an API which stands for Application Programming Interface. It allows an "
+"external service to query data held in a database and return results. This "
+"removes the need to build such a database yourself &ndash; you can simply "
+"use MapIt in your application or site."
+msgstr ""
+
+#: templates/mapit/overview.html:24
+msgid "Example applications"
+msgstr ""
+
+#: templates/mapit/overview.html:26
+msgid ""
+"MapIt can be used for all sorts of websites and applications. For example"
+msgstr ""
+
+#: templates/mapit/overview.html:30
+msgid ""
+"<li><a href=\"http://www.fixmystreet.com/\">FixMyStreet</a> is "
+"mySociety&rsquo;s street problem reporting service, which uses MapIt to find "
+"the right area on the map when the user enters their postcode, and to assign "
+"problem reports to the correct local authority when the user drops a pin on "
+"the map to show the problem’s location. It also relies on MapIt to <a href="
+"\"http://www.fixmystreet.com/reports/Bromley\">plot local authority "
+"boundaries</a>.</li> <li><a href=\"http://www.landlayer.com/\">Land Layer</"
+"a> is a web-based resource aimed at the strategic land professional and "
+"others who need access via a single map-based tool to their business "
+"information. Land Layer was launched in 2012, and combines a series of "
+"functions and business information that benefits users by reducing the time "
+"to enter or retrieve data either at their desk or in the field. Users can "
+"quickly record information to a ‘Pin’ on a digital map, which has layers of "
+"public, private and inter-company data. Users can also 'flag' on the map "
+"projects where they have been involved, adding a spatially targeted "
+"dimension to marketing. Land Layer uses the Mapit API to display local "
+"authority boundaries and to provide information on the political control of "
+"that authority.</li> <li><a href=\"http://pepysrd.com/\">PepysRd.com</a> is "
+"an innovative marketing site for the novel Capital by John Lanchester, "
+"released by Faber in spring 2012. Storythings developed a 10 day experience "
+"that used live data from the web and new texts from John Lanchester to tell "
+"the story of the next 10 years. A core part of this experience was a series "
+"of data illustrations by James Bridle, using live data to reflect on the "
+"role of markets and infrastructure in our lives. Storythings used MapIt for "
+"a number of these illustrations, using its fantastic location data to "
+"provide unique and realtime story elements for the project.</li> <li><a href="
+"\"https://www.gov.uk/\">GOV.UK</a> &ndash; the UK Government’s digital "
+"portal &ndash; uses an installation of MapIt to enable visitors to its "
+"website find the right information on local public services based on their "
+"postcode.</li>"
+msgstr ""
+
+#: templates/mapit/overview.html:68
+msgid "Possible uses"
+msgstr ""
+
+#: templates/mapit/overview.html:70
+msgid "MapIt can be used for the following"
+msgstr ""
+
+#: templates/mapit/overview.html:74
+msgid ""
+"<li>For a postcode: find the National Grid and latitude and longitude co-"
+"ordinates for a postcode, and which administrative areas it belongs to, such "
+"as ward, the local authority area, super output areas, the parliamentary "
+"constituency, and the European region.</li> <li>Partial postcode such as "
+"SW1A: find the national grid and latitude/longitude co-ordinates for the "
+"centre of that partial postcode.</li> <li>Point: find out which "
+"administrative areas a point (expressed as a latitude/longitude) is "
+"contained in.</li> <li>Nearest postcode: find the nearest postcode to a "
+"point on the map.</li> <li>By area: find data on an administrative area, "
+"such as its boundaries, or an example postcode in this area. You can also "
+"get “digital boundaries” to map the area, in e.g. WKT, GeoJSON or KML "
+"formats, for use with maps and/or geographic information systems.</li> "
+"<li>Related areas: look up which administrative areas are contained within "
+"an area (e.g. all wards of a council), which areas it borders with, covers "
+"and/or overlaps with.</li> <li>Multiple areas: get information about several "
+"areas at once, by type of area (e.g. city council) or area name.</li> "
+"<li>Generations: shows a list of updates to MapIt information, with a unique "
+"number for each update (or “generation”). This helps with instances where "
+"you want to query historical data, for example.</li>"
+msgstr ""
+
+#: templates/mapit/overview.html:108
+msgid ""
+"<p>The service has an automatic counter that tracks the number of requests "
+"sent to it by a user, and limits requests if they reach a certain volume. "
+"This is set at an average of 1 call per second in a rolling 3 minute period. "
+"The reason to do this is to make sure the service does not get overwhelmed "
+"by huge requests volumes which could risk it going down for all users.</p> "
+"<p>Where the limit is exceeded, the service will stop sending data until the "
+"average goes back within the set limit.</p>"
+msgstr ""
+
+#: templates/mapit/postcode.html:5
+#, python-format
+msgid "Results for “%(postcode)s”"
+msgstr ""
+
+#: templates/mapit/postcode.html:17
+msgid "WGS84 lat/lon"
+msgstr ""
+
+#: templates/mapit/postcode.html:19
+msgid ""
+"No location information. Note this <em>is</em> a valid postcode (otherwise "
+"you would have got a 404), just one for which we don&rsquo;t know the "
+"location."
+msgstr ""
+
+#: views/areas.py:56
+msgid "Bad generation specified"
+msgstr ""
+
+#: views/areas.py:63
+msgid "Bad min_generation specified"
+msgstr ""
+
+#: views/areas.py:99 views/areas.py:143
+msgid "Bad area ID specified"
+msgstr ""
+
+#: views/areas.py:154
+msgid "Badly specified tolerance"
+msgstr ""
+
+#: views/areas.py:159 views/areas.py:181 views/areas.py:268
+msgid "No polygons found"
+msgstr ""
+
+#: views/areas.py:175
+#, python-format
+msgid "Children of %s"
+msgstr ""
+
+#: views/areas.py:195
+msgid ""
+"That query was taking too long to compute - try restricting to a specific "
+"type, if you weren't already doing so."
+msgstr ""
+
+#: views/areas.py:198
+msgid "There was an internal error performing that query."
+msgstr ""
+
+#: views/areas.py:206
+#, python-format
+msgid "Areas touching %s"
+msgstr ""
+
+#: views/areas.py:211
+#, python-format
+msgid "Areas overlapping %s"
+msgstr ""
+
+#: views/areas.py:216
+#, python-format
+msgid "Areas covered by %s"
+msgstr ""
+
+#: views/areas.py:221
+#, python-format
+msgid "Areas covered by or overlapping %s"
+msgstr ""
+
+#: views/areas.py:226
+#, python-format
+msgid "Areas that cover %s"
+msgstr ""
+
+#: views/areas.py:231
+#, python-format
+msgid "Areas that intersect %s"
+msgstr ""
+
+#: views/areas.py:238
+msgid "Areas ID lookup"
+msgstr ""
+
+#: views/areas.py:245
+#, python-format
+msgid "Areas in %s"
+msgstr ""
+
+#: views/areas.py:253
+#, python-format
+msgid "Areas starting with %s"
+msgstr ""
+
+#: views/areas.py:313
+#, python-brace-format
+msgid "No areas were found that matched code {0} = {1}."
+msgstr ""
+
+#: views/areas.py:316
+#, python-brace-format
+msgid "There were multiple areas that matched code {0} = {1}."
+msgstr ""
+
+#: views/areas.py:329
+msgid "Point outside the area geometry"
+msgstr ""
+
+#: views/areas.py:358
+#, python-brace-format
+msgid "Areas covering the point ({0},{1})"
+msgstr ""
+
+#: views/areas.py:394
+msgid "No content specified"
+msgstr ""
