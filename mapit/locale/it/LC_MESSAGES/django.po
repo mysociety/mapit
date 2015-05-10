@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-10 15:10+0100\n"
+"POT-Creation-Date: 2015-05-10 15:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,7 +88,7 @@ msgid "kml or json or wkt"
 msgstr "kml o json o wkt"
 
 #: templates/mapit/api/area.html:25 templates/mapit/api/area.html.py:60
-#: templates/mapit/api/areas.html:22 templates/mapit/api/postcode.html:26
+#: templates/mapit/api/areas.html:22 templates/mapit/api/postcode.html:22
 msgid "Optional query parameters"
 msgstr "Parametri di ricerca opzionali"
 
@@ -99,7 +99,7 @@ msgstr "un parametro decimale, per semplificare i poligoni restituiti"
 #: templates/mapit/api/area.html:27 templates/mapit/api/area.html.py:72
 #: templates/mapit/api/areas.html:29 templates/mapit/api/generations.html:10
 #: templates/mapit/api/point.html:65 templates/mapit/api/point.html.py:87
-#: templates/mapit/api/postcode.html:13 templates/mapit/api/postcode.html:45
+#: templates/mapit/api/postcode.html:13 templates/mapit/api/postcode.html:41
 msgid "Returns"
 msgstr "Restituisce"
 
@@ -343,34 +343,30 @@ msgid "postcode"
 msgstr "codice postale"
 
 #: templates/mapit/api/postcode.html:15
-msgid "<p>Information on a particular postcode, including its location in"
+#, fuzzy
+msgid ""
+"<p>Information on a particular postcode, including its location in WGS84 "
+"latitude/longitude, and the areas it is contained within.</p>"
 msgstr ""
 "<p>Informazioni su un particolare codice postale, inclusa la sua "
-"localizzazione, "
+"localizzazione nel sistema WGS84 di lat/long, e le aree in cui è contenuto.</"
+"p>"
 
-#: templates/mapit/api/postcode.html:19
-msgid "both National Grid and"
-msgstr "nella National Grid"
-
-#: templates/mapit/api/postcode.html:20
-msgid "WGS84 latitude/longitude, and the areas it is contained within.</p>"
-msgstr "nel sistema WGS84 di lat/long, e le aree in cui è contenuto."
-
-#: templates/mapit/api/postcode.html:28
+#: templates/mapit/api/postcode.html:24
 msgid "<p><i>generation</i>, to return results from a previous generation.</p>"
 msgstr ""
 "<p><i>generation</i>, per restituire risultati di una generazione precedente."
 "</p>"
 
-#: templates/mapit/api/postcode.html:39
+#: templates/mapit/api/postcode.html:35
 msgid "<em>lookup by</em> partial postcode"
 msgstr "<em>ricerca</em> per codice postale parziale"
 
-#: templates/mapit/api/postcode.html:43
+#: templates/mapit/api/postcode.html:39
 msgid "partial postcode"
 msgstr "codice postale parziale"
 
-#: templates/mapit/api/postcode.html:47
+#: templates/mapit/api/postcode.html:43
 msgid ""
 "<p>Geographical details for the centroid of the partial postcode specified.</"
 "p>"
