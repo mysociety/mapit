@@ -1,3 +1,4 @@
 {% load url from compat %}
-<dt>Example:</dt>
-<dd><a href="{% url "mapit_index" %}point/4326/10,59.html">Example of areas containing (59,10)</a>.</dd>
+{% load i18n %}
+<dt>{% trans "Example:" %}</dt>
+<dd><a href="{% url "mapit_index" %}point/4326/10,59.html">{% trans "Example of areas containing (59,10)" %}</a>.</dd>

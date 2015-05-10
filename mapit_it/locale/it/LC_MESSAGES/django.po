@@ -1,0 +1,200 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-03-03 11:09+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/mapit/api/area-example-related.html:3
+#: templates/mapit/api/area-example.html:3
+#: templates/mapit/api/areas-examples.html:3
+msgid "Examples:"
+msgstr "Esempi:"
+
+#: templates/mapit/api/area-example-related.html:6
+msgid "All province in Lazio"
+msgstr "Tutte le province del Lazio"
+
+#: templates/mapit/api/area-example-related.html:7
+msgid "All areas touching Rome"
+msgstr "Aree che toccano Roma"
+
+#: templates/mapit/api/area-example-related.html:8
+msgid "All areas overlapping Rome"
+msgstr "Aree sovrapposte a Roma"
+
+#: templates/mapit/api/area-example-related.html:9
+msgid "All areas covering Rome"
+msgstr "Aree che coprono Roma"
+
+#: templates/mapit/api/area-example.html:6
+msgid "Information held on an Trezzano sul Naviglio"
+msgstr "Informazioni su Trezzano sul Naviglio"
+
+#: templates/mapit/api/area-example.html:8
+msgid "KML file for Trezzano sul Nagiglio"
+msgstr "File KML per Trezzano sul Naviglio"
+
+#: templates/mapit/api/area-example.html:10
+msgid "on a"
+msgstr "su una"
+
+#: templates/mapit/api/area-example.html:10
+msgid "Google Map"
+msgstr "Google Map"
+
+#: templates/mapit/api/areas-examples.html:6
+msgid "All areas starting with &ldquo;As&rdquo;"
+msgstr "Aree che iniziano per &ldquo;As&rdquo;"
+
+#: templates/mapit/api/areas-examples.html:7
+msgid "All regions"
+msgstr "Tutte le regioni"
+
+#: templates/mapit/api/areas-examples.html:8
+msgid "All provinces"
+msgstr "Tutte le province"
+
+#: templates/mapit/api/areas-examples.html:9
+msgid "Information on areas 5384 and 5815"
+msgstr "Informazioni sulle aree 5384 e 5815"
+
+#: templates/mapit/api/areas-types.html:2
+msgid "The current area types are:"
+msgstr "I tipi di area corrente sono:"
+
+#: templates/mapit/api/areas-types.html:4
+msgid "Region"
+msgstr "Regione"
+
+#: templates/mapit/api/areas-types.html:5
+msgid "Province"
+msgstr "Provincia"
+
+#: templates/mapit/api/areas-types.html:6
+msgid "Municipality"
+msgstr "Comune"
+
+#: templates/mapit/api/point-example-nearest.html:3
+#: templates/mapit/api/point-example.html:3
+#: templates/mapit/api/postcode-example-partial.html:3
+#: templates/mapit/api/postcode-example.html:3
+msgid "Example:"
+msgstr "Esempio:"
+
+#: templates/mapit/api/point-example-nearest.html:4
+msgid "Example of postcode nearest to (41.8981,12.5042)"
+msgstr "Esempio di codice postale più vicino a (41.8981,12.5042)"
+
+#: templates/mapit/api/point-example.html:4
+msgid "Example of areas containing (41.8981,12.5042)"
+msgstr "Esempio di aree che contengono (41.8981,12.5042)"
+
+#: templates/mapit/api/postcode-example.html:5
+msgid "<p>If your postcode was <em>00185</em> you would load"
+msgstr "<p>Per il codice postale <em>00185</em>, la richiesta è"
+
+#: templates/mapit/api/postcode-example.html:11
+msgid ""
+"By default the response is in JSON, if you want a human readable page then "
+"append ‘<em>.html</em>’ to the url."
+msgstr ""
+"Per definizione, la risposta è in JSON, se vuoi una pagina leggibile, allora "
+"appendi '<em>.html</em>' alla url."
+
+#: templates/mapit/base.html:72
+msgid "Home &amp; Documentation"
+msgstr "Home e Documentazione"
+
+#: templates/mapit/base.html:87
+msgid "Powered by"
+msgstr ""
+
+#: templates/mapit/base.html:90
+msgid "Django powered"
+msgstr ""
+
+#: templates/mapit/copyright.html:3
+msgid ""
+"Boundaries administrative data are released by <a href=\"http://www.istat.it"
+"\">ISTAT</a> and downloadable in SHP format from <a href=\"http://www.istat."
+"it/storage/basi_territoriali_2013/LimAmm2011_WGS84.zip\">this link</a>."
+msgstr ""
+"I dati dei confini delle aree amministrative sono rilasciati da <a href="
+"\"http://www.istat.it\">ISTAT</a> e scaricabili, in formato SHP da <a href="
+"\"http://www.istat.it/storage/basi_territoriali_2013/LimAmm2011_WGS84.zip"
+"\">questo link</a>."
+
+#: templates/mapit/copyright.html:11
+msgid ""
+"The <a href=\"http://mapit.poplus.org/\">MapIt</a> platform has been "
+"developed by <a href=\"http://www.mysociety.org\">MySociety</a>, a UK "
+"registered charity with which Openpolis cohoperate on transparency projects "
+"since years."
+msgstr ""
+"La piattaforma <a href=\"http://mapit.poplus.org/\">MapIt</a> è stata "
+"sviluppata da <a href=\"http://www.mysociety.org\">MySociety</a>, no-profit "
+"inglese, con la quale l'Associazione Openpolis collabora da anni sui "
+"progetti di trasparenza."
+
+#: templates/mapit/copyright.html:19
+msgid ""
+"The application is released within the <a href=\"http://poplus.org\">Poplus</"
+"a> project."
+msgstr ""
+"L'applicazione è rilasciata all'interno del progetto <a href=\"http://poplus."
+"org\">Poplus</a>."
+
+#: templates/mapit/copyright.html:26
+msgid ""
+"The maps are powered by <a href=\"https://www.openstreetmap.org"
+"\">Openstreetmap</a>, a the <a href=\"http://nominatim.openstreetmap.org/"
+"\">nominatim</a> geo-localization service used to identify the centroid "
+"coordinates for postal codes."
+msgstr ""
+"Le mappe sono fornite da <a href=\"https://www.openstreetmap.org"
+"\">Openstreetmap</a>, così come il servizio di geo-localizzazione <a href="
+"\"http://nominatim.openstreetmap.org/\">nominatim</a>, che è stato usato per "
+"identificare le coordinate centrali dei CAP."
+
+#: templates/mapit/country.html:2
+msgid "Italy"
+msgstr "Italia"
+
+#: templates/mapit/index-others.html:2
+msgid ""
+"This version of MapIt, covering italian administrative areas, has appeared "
+"in 2015, and is an effort of <a href=\"http://www.openpolis.it\">Openpolis</"
+"a>."
+msgstr ""
+"Questa versione di MapIt, che riguarda le aree amministrative italiane, è "
+"stata pubblicata nel 2015 ed è opera dell'<a href=\"http://www.openpolis.it"
+"\">Associazione Openpolis</a>."
+
+#: templates/mapit/intro.html:2
+msgid ""
+"<p>MapIt is a service that maps postcodes and geographical points to "
+"administrative areas. It&rsquo;s useful for anyone who has a postcode or co-"
+"ordinates of a point in Italy, and needs to find out what municpality, "
+"province, region, or electoral constituency it lies within. It&rsquo;s also "
+"great for looking up the shapes of all those boundaries.</p>"
+msgstr ""
+"<p>MapIt è un servizio che associa i Codici di Avviamento Postale (CAP) e i "
+"punti geografici (latitudine, longitudine) alle aree amministrative. "
+"&Egrave; utile per chiunque, partendo da un CAP o da coordinate geografiche "
+"italiane, voglia trovare in quale comune, regione, provincia o collegio "
+"elettorale si trovi. &Egrave; anche utile per visualizzare i contorni delle "
+"aree amministrative.</p>"

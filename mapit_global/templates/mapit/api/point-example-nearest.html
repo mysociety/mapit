@@ -1,3 +1,4 @@
 {% load url from compat %}
-<dt>Example</dt>
-<dd><a href="{% url "mapit_index" %}nearest/4326/8.55,47.366667.html">Example of postcode nearest to (47.366667,8.55)</a>.</dd>
+{% load i18n %}
+<dt>{% trans "Example:" %}</dt>
+<dd><a href="{% url "mapit_index" %}nearest/4326/8.55,47.366667.html">{% trans "Example of postcode nearest to (47.366667,8.55)" %}</a>.</dd>

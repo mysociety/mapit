@@ -1,11 +1,16 @@
 {% extends "mapit/base.html" %}
 {% load url from compat %}
+{% load mapit_i18n %}
 
-{% block title %}Example postcode in {{ area.name }}{% endblock title %}
+{% block title %}{% trans "Example postcode in" %} {{ area.name }}{% endblock title %}
 
 {% block content %}
 
-<p>An example postcode for <a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a> is <strong>{{ postcode }}</strong>
-(<a href="{% url "mapit_index" %}area/{{ area.id }}/example_postcode">JSON</a>).</p>
+{% url "mapit_index" as index_url %}
+{% with area.id|slugify as area_id %}
+<p>{% blocktrans with area_name=area.name area_url=index_url|add:"area/"|add:area_id|add:".html" json_url=index_url|add:"area/"|add:area_id|add:"/example_postcode" trimmed %}
+An example postcode for <a href="{{ area_url }}">{{ area_name }}</a> is <strong>{{ postcode }}</strong> (<a href="{{ json_url }}">JSON</a>).
+{% endblocktrans %}</p>
+{% endwith %}
 
 {% endblock %}
