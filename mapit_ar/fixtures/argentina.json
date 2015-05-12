@@ -1,0 +1,7 @@
+[
+    { "pk": 1, "model": "mapit.country", "fields": { "code": "A", "name": "Argentina" } },
+    { "pk": 1, "model": "mapit.type", "fields": { "code": "PRV", "description": "Provincia" } },
+    { "pk": 2, "model": "mapit.type", "fields": { "code": "DPT", "description": "Departamento" } },
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "d", "description": "Department Code" } },
+    { "pk": 1, "model": "mapit.nametype", "fields": { "code": "S", "description": "Name from Shapefile" } }
+]
