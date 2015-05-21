@@ -2,16 +2,15 @@ import re
 import itertools
 
 from django.contrib.gis.db import models
-from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
-from django.utils.html import escape
 from django.utils.encoding import python_2_unicode_compatible
 
 from mapit.managers import Manager, GeoManager
 from mapit import countries
 from mapit.djangopatch import GetQuerySetMetaclass
+from mapit.geometryserialiser import GeometrySerialiser
 from django.utils import six
 
 
@@ -222,10 +221,6 @@ SELECT DISTINCT mapit_area.*
         return area
 
 
-class TransformError(Exception):
-    pass
-
-
 @python_2_unicode_compatible
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
@@ -318,59 +313,17 @@ class Area(models.Model):
         something else goes wrong with the spatial transform, then a
         TransformError exception is raised.
         """
-        all_areas = self.polygons.all()
-        if len(all_areas) > 1:
-            all_areas = all_areas.collect()
-        elif len(all_areas) == 1:
-            all_areas = all_areas[0].polygon
-        else:
+        all_polygons = self.polygons.all()
+        if len(all_polygons) == 0:
             return (None, None)
-
-        if srid != settings.MAPIT_AREA_SRID:
-            try:
-                all_areas.transform(srid)
-            except (SRSException, OGRException) as e:
-                raise TransformError("Error with transform: %s" % e)
-
-        num_points_before_simplification = all_areas.num_points
-        if simplify_tolerance:
-            all_areas = all_areas.simplify(simplify_tolerance)
-            if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise TransformError("Simplifying %s with tolerance %f left no boundary at all" % (
-                    self, simplify_tolerance))
-
+        areas = [self]
+        serialiser = GeometrySerialiser(areas, srid, simplify_tolerance)
         if export_format == 'kml':
-            if kml_type == "polygon":
-                out = all_areas.kml
-            elif kml_type == "full":
-                out = '''<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-    <Document>
-        <Style id="ourPolygonStyle">
-            <LineStyle>
-                <color>%s</color>
-                <width>2</width>
-            </LineStyle>
-            <PolyStyle>
-                <color>%s</color>
-            </PolyStyle>
-        </Style>
-        <Placemark>
-            <styleUrl>#ourPolygonStyle</styleUrl>
-            <name>%s</name>
-            %s
-        </Placemark>
-    </Document>
-</kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
-            else:
-                raise Exception("Unknown kml_type: '%s'" % (kml_type,))
-            content_type = 'application/vnd.google-earth.kml+xml'
+            out, content_type = serialiser.kml(kml_type, line_colour, fill_colour)
         elif export_format in ('json', 'geojson'):
-            out = all_areas.json
-            content_type = 'application/json'
+            out, content_type = serialiser.geojson()
         elif export_format == 'wkt':
-            out = all_areas.wkt
-            content_type = 'text/plain'
+            out, content_type = serialiser.wkt()
         return (out, content_type)
 
 

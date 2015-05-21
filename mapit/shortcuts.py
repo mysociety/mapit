@@ -98,6 +98,14 @@ def output_json(out, code=200):
     return response
 
 
+def output_polygon(content_type, output):
+    response = http.HttpResponse(content_type='%s; charset=utf-8' % content_type)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
+    response.write(output)
+    return response
+
+
 def get_object_or_404(klass, format='json', *args, **kwargs):
     try:
         return orig_get_object_or_404(klass, *args, **kwargs)
