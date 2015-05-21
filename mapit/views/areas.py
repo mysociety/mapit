@@ -22,6 +22,7 @@ from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
 from mapit.iterables import iterdict
+from mapit.outputformatter import OutputFormatter
 
 
 def add_codes(areas):
@@ -251,6 +252,50 @@ def areas_by_name(request, name, format='json'):
     args['name__istartswith'] = name
     areas = Area.objects.filter(**args)
     return output_areas(request, _('Areas starting with %s') % name, format, areas)
+
+
+@ratelimit(minutes=3, requests=100)
+def areas_polygon(request, area_ids, srid='', format='kml'):
+
+    if not srid:
+        srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
+    srid = int(srid)
+
+    try:
+        simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
+    except ValueError:
+        raise ViewException(format, _('Badly specified tolerance'), 400)
+
+    area_ids = area_ids.split(',')
+    polygons = []
+    for area_id in area_ids:
+
+        if not re.match('\d+$', area_id):
+            raise ViewException(format, _('Bad area ID specified'), 400)
+        area = get_object_or_404(Area, id=area_id)
+
+        try:
+            polygon, content_type = area.export(srid, format, simplify_tolerance=simplify_tolerance, kml_type='polygon')
+            polygons.append((polygon, area.name))
+
+            if polygon is None:
+                return output_json({'error': _('One or more polygons not found')}, code=404)
+        except TransformError as e:
+            return output_json({'error': e.args[0]}, code=400)
+
+    response = HttpResponse(content_type='%s; charset=utf-8' % content_type)
+    response['Access-Control-Allow-Origin'] = '*'
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
+
+    formatter = OutputFormatter()
+    output = ''
+    if format == 'kml':
+        output = formatter.merge_kml(polygons)
+    if format == 'geojson':
+        output = formatter.merge_geojson(polygons)
+
+    response.write(output)
+    return response
 
 
 @ratelimit(minutes=3, requests=100)

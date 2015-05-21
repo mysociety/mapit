@@ -45,6 +45,8 @@ urlpatterns = [
     url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)%s$' % format_end, postcodes.nearest),
 
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % format_end, areas.areas),
+    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
+    url(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', areas.areas_geometry),
     url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, areas.areas_by_type),
     url(r'^areas/(?P<name>.+?)%s$' % format_end, areas.areas_by_name),

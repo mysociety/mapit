@@ -12,6 +12,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from mapit.managers import Manager, GeoManager
 from mapit import countries
 from mapit.djangopatch import GetQuerySetMetaclass
+from mapit.outputformatter import OutputFormatter
 from django.utils import six
 
 
@@ -343,25 +344,11 @@ class Area(models.Model):
             if kml_type == "polygon":
                 out = all_areas.kml
             elif kml_type == "full":
-                out = '''<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-    <Document>
-        <Style id="ourPolygonStyle">
-            <LineStyle>
-                <color>%s</color>
-                <width>2</width>
-            </LineStyle>
-            <PolyStyle>
-                <color>%s</color>
-            </PolyStyle>
-        </Style>
-        <Placemark>
-            <styleUrl>#ourPolygonStyle</styleUrl>
-            <name>%s</name>
-            %s
-        </Placemark>
-    </Document>
-</kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
+                formatter = OutputFormatter()
+                out = ''
+                out += formatter.kml_header % (line_colour, fill_colour)
+                out += formatter.kml_placemark % (escape(self.name), all_areas.kml)
+                out += formatter.kml_footer
             else:
                 raise Exception("Unknown kml_type: '%s'" % (kml_type,))
             content_type = 'application/vnd.google-earth.kml+xml'
