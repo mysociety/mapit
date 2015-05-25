@@ -15,82 +15,21 @@
 # This script deals with this problem, importing the names into MapIt cleanly.
 
 from lxml import etree
-from optparse import make_option
 
-from django.core.management import call_command
-from django.core.management.base import LabelCommand, CommandError
-
+from django.core.management.base import CommandError
 from django.contrib.gis.gdal import DataSource
 
+from mapit.management.commands import mapit_import
 from mapit.models import Country, Area, Name
 
 
-class Command(LabelCommand):
+class Command(mapit_import.Command):
 
     help = 'Import NHS England CCG boundaries from .kml file'
     args = '<KML file>'
-    option_list = LabelCommand.option_list + (
-        make_option(
-            '--commit',
-            action='store_true',
-            dest='commit',
-            help='Actually update the database'
-        ),
-        make_option(
-            '--generation_id',
-            action="store",
-            dest='generation_id',
-            help='Which generation ID should be used',
-        ),
-        make_option(
-            '--area_type_code',
-            action="store",
-            dest='area_type_code',
-            help='Which area type should be used (specify using code)',
-        ),
-        make_option(
-            '--name_type_code',
-            action="store",
-            dest='name_type_code',
-            help='Which name type should be used (specify using code)',
-        ),
-        make_option(
-            '--code_type',
-            action="store",
-            dest='code_type',
-            help='Which code type should be used (specify using its code)',
-        ),
-        make_option(
-            '--use_code_as_id',
-            action="store_true",
-            dest='use_code_as_id',
-            help="Set to use the code from code_field as the MapIt ID"
-        ),
-        make_option(
-            '--preserve',
-            action="store_true",
-            dest='preserve',
-            help="Create a new area if the name's the same but polygons differ"
-        ),
-        make_option(
-            '--new',
-            action="store_true",
-            dest='new',
-            help="Don't look for existing areas at all, just import everything as new areas"
-        ),
-        make_option(
-            '--encoding',
-            action="store",
-            dest='encoding',
-            help="The encoding of names in this dataset"
-        ),
-        make_option(
-            '--fix_invalid_polygons',
-            action="store_true",
-            dest='fix_invalid_polygons',
-            help="Try to fix any invalid polygons and multipolygons found"
-        ),
-    )
+    option_list = mapit_import.Command.option_list[:7] + \
+                  mapit_import.Command.option_list[8:11] + \
+                  mapit_import.Command.option_list[15:20]
 
 
     # ensure all required_params are in options
@@ -171,12 +110,7 @@ class Command(LabelCommand):
         command_kwargs['code_field']    = 'name'
         command_kwargs['name_field']    = 'name'
 
-        call_command(
-            'mapit_import',
-            filename,
-            **command_kwargs
-        )
-
+        super(Command, self).handle_label(filename, **command_kwargs)
 
         # after importing the boundaries, extract area names
 
