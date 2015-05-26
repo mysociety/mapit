@@ -381,12 +381,29 @@ class Area(models.Model):
         polygons = polygons or self.polygons.all().collect()
         out = {
             'type': 'Feature',
+            'properties': self.as_dict(),
+            'geometry': json.loads(polygons.geojson),
+        }
+
+        if srid:
+            out['crs'] = {
+                'type': 'name',
+                'properties': {'name': 'EPSG:%d' % srid},
+            }
+
+        return out
+
+    @classmethod
+    def areas_as_geojson(cls, areas, srid=4326):
+        """ Return a geojson FeatureCollection dict for these areas.
+        """
+        out = {
+            'type': 'FeatureCollection',
             'crs': {
                 'type': 'name',
                 'properties': {'name': 'EPSG:%d' % srid},
             },
-            'properties': self.as_dict(),
-            'geometry': json.loads(polygons.geojson),
+            'features': [a.as_geojson() for a in areas],
         }
         return out
 
