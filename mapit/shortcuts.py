@@ -8,7 +8,7 @@ from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.template import loader
 from django.utils.six.moves import map
-from django.utils.encoding import smart_str
+from django.utils.encoding import smart_bytes
 from django.utils.translation import ugettext as _
 
 from mapit.iterables import defaultiter
@@ -54,7 +54,7 @@ def output_html(request, title, areas, **kwargs):
     areas = map(lambda area: item_tpl.render(Context({'area': area, 'indent_areas': indent_areas})), areas)
     areas = defaultiter(areas, '<li>' + _('No matching areas found.') + '</li>')
     content = itertools.chain(wraps[0:1], areas, wraps[1:])
-    content = map(smart_str, content)  # Workaround Django bug #24240
+    content = map(smart_bytes, content)  # Workaround Django bug #24240
 
     if django.get_version() >= '1.5':
         response_type = http.StreamingHttpResponse
@@ -76,7 +76,7 @@ def output_json(out, code=200):
         indent = 4
     encoder = GEOS_JSONEncoder(ensure_ascii=False, indent=indent)
     content = encoder.iterencode(out)
-    content = map(smart_str, content)  # Workaround Django bug #24240
+    content = map(smart_bytes, content)  # Workaround Django bug #24240
 
     types = {
         400: http.HttpResponseBadRequest,

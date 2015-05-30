@@ -70,7 +70,7 @@ class AreaViewsTest(TestCase):
 
     def test_areas_by_point(self):
         url = '/point/4326/-3.4,51.5.json'
-        response = self.client.get(url)
+        response = self.client.get(url, HTTP_ACCEPT_ENCODING='gzip')
 
         content = get_content(response)
 
