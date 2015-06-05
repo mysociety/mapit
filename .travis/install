@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Deal with issues on Travis installing gdal-bin
+sudo rm /etc/apt/sources.list.d/ubuntugis-stable-source.list
+sudo apt-get update -qq
+sudo apt-get install -qq gdal-bin binutils
+
+# The below is for Django 1.4 compatibility. If you don't need that, you could
+# just do the commented out before_script step
+createdb -E UTF8 template_postgis &&
+    ( createlang -d template_postgis -l | grep plpgsql || createlang -d template_postgis plpgsql ) &&
+    psql -d postgres -c "UPDATE pg_database SET datistemplate='true' WHERE datname='template_postgis';" &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/postgis.sql >/dev/null &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/spatial_ref_sys.sql >/dev/null &&
+    psql -d template_postgis -f /usr/share/postgresql/9.1/contrib/postgis-2.1/legacy_gist.sql >/dev/null &&
+    psql -d template_postgis -c "GRANT ALL ON geometry_columns TO PUBLIC;" &&
+    psql -d template_postgis -c "GRANT ALL ON spatial_ref_sys TO PUBLIC;" &&
+    psql -d template_postgis -c "GRANT ALL ON geography_columns TO PUBLIC;"
+
+sudo /etc/init.d/postgresql reload

@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Once 1.4 support is no longer needed, we can use this:
+# createdb -U postgres mapit
+# psql -U postgres -d mapit -c 'create extension postgis;'
+createdb -U postgres -T template_postgis mapit
+
+echo 'MAPIT_DB_NAME: mapit' > conf/general.yml
+echo 'MAPIT_DB_USER: postgres' >> conf/general.yml
+echo 'DJANGO_SECRET_KEY: secret' >> conf/general.yml
+echo 'COUNTRY: GB' >> conf/general.yml

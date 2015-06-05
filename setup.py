@@ -17,14 +17,18 @@ try:
 except OSError:
     css_mtime = 0
 
-packaging = False
+packaging = 0
 for arg in sys.argv:
     if arg == 'sdist' or 'bdist' in arg:
-        packaging = True
+        packaging = 1
+    if arg == 'upload':
+        packaging = 2
         break
 
 if css_mtime < sass_mtime and packaging:
-    raise Exception("Make sure the CSS is up-to-date and compiled before packaging.")
+    if packaging > 1:
+        raise Exception("Make sure the CSS is up-to-date and compiled before packaging.")
+    print("** Make sure the CSS is up-to-date and compiled before packaging. **")
 
 
 def read_file(filename):

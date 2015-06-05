@@ -12,6 +12,7 @@
 /django_mapit.egg-info
 *~
 /.coverage
+/.tox
 
 .sass-cache
 /mapit/static/mapit/css
