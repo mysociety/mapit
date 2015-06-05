@@ -11,7 +11,7 @@ def get_content(response):
     # Just in case the response is gzipped
     try:
         # http://www.zlib.net/manual.html - add 16 to decode only the gzip format
-        content = zlib.decompress(content, 16+zlib.MAX_WBITS)
+        content = zlib.decompress(content, 16 + zlib.MAX_WBITS)
     except zlib.error:
         pass
 

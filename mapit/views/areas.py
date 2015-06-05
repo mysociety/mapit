@@ -193,7 +193,7 @@ def area_intersect(query_type, title, request, area_id, format):
             raise
         raise ViewException(
             format, _('That query was taking too long to compute - '
-            'try restricting to a specific type, if you weren\'t already doing so.'), 500)
+                      'try restricting to a specific type, if you weren\'t already doing so.'), 500)
     except InternalError:
         raise ViewException(format, _('There was an internal error performing that query.'), 500)
 
@@ -355,7 +355,9 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
             args['polygons__in'] = geoms
         areas = Area.objects.filter(**args)
 
-    return output_areas(request, _('Areas covering the point ({0},{1})').format(x, y), format, areas, indent_areas=True)
+    return output_areas(
+        request, _('Areas covering the point ({0},{1})').format(x, y),
+        format, areas, indent_areas=True)
 
 
 @ratelimit(minutes=3, requests=100)

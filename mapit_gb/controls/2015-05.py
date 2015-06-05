@@ -20,7 +20,7 @@ def check(name, type, country, geometry):
 
     # County electoral divisions
     # New area: CED None 44530 Wyreside ED
-    # Geometry of None CED Earls Barton not valid
+    # Geometry of None CED Earls Barton not valid
     # Geometry of None CED Hatton Park not valid
 
     # Metropolitan wards
