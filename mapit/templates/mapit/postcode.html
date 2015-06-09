@@ -14,7 +14,7 @@
 E/N: {{ postcode.easting }}, {{ postcode.northing }}
 {% endif %}
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
-<li>{% trans "WGS84 lat/lon" %}: <a href="http://toolserver.org/~geohack/geohack.php?params={{ postcode.wgs84_lat|floatformat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
+<li>{% trans "WGS84 lat/lon" %}: <a href="https://tools.wmflabs.org/geohack/geohack.php?params={{ postcode.wgs84_lat|floatformat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
 {% else %}
 <li>{% blocktrans trimmed %}
     No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
