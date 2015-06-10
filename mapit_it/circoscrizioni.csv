@@ -1,0 +1,32 @@
+;CIRCCAM;Piemonte 1;21 Torino
+;CIRCCAM;Piemonte 2;26 Alessandria,25 Asti,103 Biella,24 Cuneo,23 Novara,110 Verbano-Cusio-Ossola,22 Vercelli
+;CIRCCAM;Lombardia 1;35 Milano,111 Monza e della Brianza
+;CIRCCAM;Lombardia 1;36 Bergamo,37 Brescia,33 Como,104 Lecco,34 Sondrio,32 Varese
+;CIRCCAM;Lombardia 2;39 Cremona,105 Lodi,40 Mantova,38 Pavia
+;CIRCCAM;Veneto 1;45 Belluno,46 Treviso,47 Venezia
+;CIRCCAM;Veneto 2;48 Padova,49 Rovigo,43 Verona,44 Vicenza
+;CIRCCAM;Lazio 1;78 Roma
+;CIRCCAM;Lazio 2;80 Frosinone,79 Latina,77 Rieti,76 Viterbo
+;CIRCCAM;Campania 1;83 Napoli
+;CIRCCAM;Campania 2;84 Avellino,82 Benevento,81 Caserta,85 Salerno
+;CIRCCAM;Sicilia 1;117 Agrigento,118 Caltanissetta,115 Palermo,114 Trapani
+;CIRCCAM;Sicilia 2;120 Catania,119 Enna,116 Messina,121 Ragusa,122 Siracusa
+;CIRCCAM;Abruzzo;89 Chieti,86 L'Aquila,88 Pescara,87 Teramo
+;CIRCCAM;Basilicata;97 Matera,96 Potenza
+;CIRCCAM;Calabria;99 Catanzaro,98 Cosenza,108 Crotone,100 Reggio di Calabria,109 Vibo Valentia
+;CIRCCAM;Emilia-Romagna;57 Bologna,58 Ferrara,60 Forli'-Cesena,56 Modena,54 Parma,53 Piacenza,59 Ravenna,55 Reggio nell'Emilia,106 Rimini
+;CIRCCAM;Friuli Venezia Giulia;51 Gorizia,101 Pordenone,52 Trieste,50 Udine
+;CIRCCAM;Liguria;30 Genova,28 Imperia,31 La Spezia,29 Savona
+;CIRCCAM;Marche;62 Ancona,64 Ascoli Piceno,112 Fermo,63 Macerata,61 Pesaro e Urbino
+;CIRCCAM;Molise;90 Campobasso,102 Isernia
+;CIRCCAM;Puglia;92 Bari,113 Barletta-Andria-Trani,94 Brindisi,91 Foggia,95 Lecce,93 Taranto
+;CIRCCAM;Sardegna;125 Cagliari,130 Carbonia-Iglesias,129 Medio Campidano,124 Nuoro,128 Ogliastra,127 Olbia-Tempio,126 Oristano,123 Sassari
+;CIRCCAM;Toscana;71 Arezzo,68 Firenze,73 Grosseto,69 Livorno,66 Lucca,65 Massa Carrara,70 Pisa,67 Pistoia,107 Prato,72 Siena
+;CIRCCAM;Trentino-Alto Adige;41 Bolzano,42 Trento
+;CIRCCAM;Umbria;74 Perugia,75 Terni
+;CIRCCAM;Valle D'Aosta;27 Aosta
+;CIRCEU;Nord-occidentale;7 Liguria,3 Lombardia,1 Piemonte
+;CIRCEU;Nord-orientale;8 Emilia-Romagna,6 Friuli Venezia Giulia,4 Trentino-Alto Adige,5 Veneto
+;CIRCEU;Centrale;12 Lazio,11 Marche,9 Toscana,10 Umbria
+;CIRCEU;Meridionale;13 Abruzzo,17 Basilicata,18 Calabria,15 Campania,14 Molise,16 Puglia
+;CIRCEU;Isole;20 Sardegna,19 Sicilia
