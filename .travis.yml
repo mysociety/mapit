@@ -29,7 +29,10 @@ matrix:
 install:
   - pip install tox
   - 'if [ $TOXENV != "flake8" ]; then .travis/install; fi'
+  - 'if [ $TOXENV == "py27-1.4" ]; then pip install "Django>=1.4,<1.5"; fi'
+  - 'if [ $TOXENV == "py27-1.4" ]; then pip install -e .; fi'
 before_script:
   - 'if [ $TOXENV != "flake8" ]; then .travis/before_script; fi'
 script:
-  - tox
+  - 'if [ $TOXENV == "py27-1.4" ]; then python -Wall manage.py test mapit mapit_gb; fi'
+  - 'if [ $TOXENV != "py27-1.4" ]; then tox; fi'
