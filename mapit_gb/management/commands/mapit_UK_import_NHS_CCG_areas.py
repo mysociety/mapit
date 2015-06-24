@@ -27,9 +27,18 @@ class Command(mapit_import.Command):
 
     help = 'Import NHS England CCG boundaries from .kml file'
     args = '<KML file>'
-    option_list = mapit_import.Command.option_list[:7] + \
-                  mapit_import.Command.option_list[8:11] + \
-                  mapit_import.Command.option_list[15:20]
+
+
+    def create_parser(self, prog_name, subcommand):
+        parser = super(Command, self).create_parser(prog_name, subcommand)
+        parser.set_defaults(**{
+            'override_name': None,
+            'override_code': None,
+            'country_code': 'E',
+            'code_field': 'name',
+            'name_field': 'name'
+        })
+        return parser
 
 
     # ensure all required_params are in options
@@ -102,15 +111,7 @@ class Command(mapit_import.Command):
 
         self.stdout.write("Importing NHS CCG areas from %s" % filename)
 
-        command_kwargs = options
-        # set up the hard-coded params
-        command_kwargs['override_name'] = None
-        command_kwargs['override_code'] = None
-        command_kwargs['country_code']  = 'E'
-        command_kwargs['code_field']    = 'name'
-        command_kwargs['name_field']    = 'name'
-
-        super(Command, self).handle_label(filename, **command_kwargs)
+        super(Command, self).handle_label(filename, **options)
 
         # after importing the boundaries, extract area names
 
