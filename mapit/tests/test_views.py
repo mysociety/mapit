@@ -93,7 +93,12 @@ class AreaViewsTest(TestCase):
     def test_multiple_area_geojson(self):
         url = '/areas/%d,%d.geojson' % (self.big_area.id, self.small_area_1.id)
         response = self.client.get(url)
-        content = json.loads("".join(response.streaming_content))
+
+        if hasattr(response, 'streaming_content'):
+            content = json.loads("".join(x.decode('utf-8') for x in response.streaming_content))
+        else:
+            content = json.loads(response.content)
+
         self.assertEqual(content['type'], 'FeatureCollection')
 
     def test_json_links(self):
