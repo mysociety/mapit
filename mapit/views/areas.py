@@ -245,14 +245,8 @@ def areas(request, area_ids, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_polygons(request, area_ids, format):
-    args = query_args(request, format)
-    areas = []
-
-    for area_id in area_ids.split(','):
-        area_args = query_args_for_area_id(request, area_id)
-        area_args.update(args)
-        areas.extend(get_list_or_404(Area, format, **area_args))
-
+    area_ids = area_ids.split(',')
+    areas = Area.objects.filter(id__in=area_ids)
     return output_areas(request, 'Area polygons by ID lookup', format, areas)
 
 

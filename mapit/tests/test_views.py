@@ -83,6 +83,19 @@ class AreaViewsTest(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'MapIt')
 
+    def test_geojson(self):
+        url = '/area/%d.geojson' % self.big_area.id
+        response = self.client.get(url)
+        content = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(content['type'], 'Feature')
+        self.assertEqual(content['properties']['name'], 'Big Area')
+
+    def test_multiple_area_geojson(self):
+        url = '/areas/%d,%d.geojson' % (self.big_area.id, self.small_area_1.id)
+        response = self.client.get(url)
+        content = json.loads("".join(response.streaming_content))
+        self.assertEqual(content['type'], 'FeatureCollection')
+
     def test_json_links(self):
         id = self.big_area.id
         url = '/area/%d/covers.html?type=SML' % id
