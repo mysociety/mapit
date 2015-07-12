@@ -316,8 +316,7 @@ class Area(models.Model):
         all_polygons = self.polygons.all()
         if len(all_polygons) == 0:
             return (None, None)
-        areas = [self]
-        serialiser = GeometrySerialiser(areas, srid, simplify_tolerance)
+        serialiser = GeometrySerialiser(self, srid, simplify_tolerance)
         if export_format == 'kml':
             out, content_type = serialiser.kml(kml_type, line_colour, fill_colour)
         elif export_format in ('json', 'geojson'):

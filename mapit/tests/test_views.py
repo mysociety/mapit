@@ -117,17 +117,12 @@ class AreaViewsTest(TestCase):
     def test_areas_polygon_one_id(self):
         id = self.small_area_1.id
 
-        url_area  = '/area/%d.geojson' % id
-        response_area = self.client.get(url_area)
-        self.assertEqual(response_area.status_code, 200)
-        content_area = json.loads(response_area.content.decode('utf-8'))
-
         url_areas = '/areas/%d.geojson' % id
         response_areas = self.client.get(url_areas)
         self.assertEqual(response_areas.status_code, 200)
         content_areas = json.loads(response_areas.content.decode('utf-8'))
 
-        self.assertEqual(content_area, content_areas)
+        self.assertEqual(content_areas['type'], 'FeatureCollection')
 
     def test_areas_polygon_bad_params(self):
         url = '/areas/99999.geojson'
