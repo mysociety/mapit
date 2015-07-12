@@ -38,6 +38,14 @@ class GeometrySerialiser(object):
 </kml>"""
 
     def __init__(self, areas, srid, simplify_tolerance):
+        # the geojson serialization format needs to know if we're
+        # serializer one item, or a list with one item
+        if not isinstance(areas, list):
+            self.single = True
+            areas = [areas]
+        else:
+            self.single = False
+
         self.areas = areas
         self.srid = srid
         self.simplify_tolerance = simplify_tolerance
@@ -110,7 +118,7 @@ class GeometrySerialiser(object):
     def geojson(self):
         content_type = 'application/json'
         processed_areas = self.__process_polygons()
-        if len(processed_areas) == 1:
+        if len(processed_areas) == 1 and self.single:
             return (processed_areas[0][0].json, content_type)
         else:
             output = {

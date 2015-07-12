@@ -127,7 +127,8 @@ class AreaViewsTest(TestCase):
         self.assertEqual(response_areas.status_code, 200)
         content_areas = json.loads(response_areas.content.decode('utf-8'))
 
-        self.assertEqual(content_area, content_areas)
+        self.assertEqual(content_area, content_areas['features'][0]['geometry'])
+        self.assertEqual(content_areas['type'], 'FeatureCollection')
 
     def test_areas_polygon_bad_params(self):
         url = '/areas/99999.geojson'
