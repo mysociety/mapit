@@ -8,6 +8,8 @@ import re
 from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
+from django.utils import six
+
 from mapit.models import Area, CodeType, Type, Country, Generation, NameType
 from utils import save_polygons
 
@@ -23,7 +25,9 @@ class Command(LabelCommand):
         code_version = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='O')
         for feat in DataSource(filename)[0]:
-            name = unicode(feat['NAME'].value, 'iso-8859-1')
+            name = feat['NAME'].value
+            if not isinstance(name, six.text_type):
+                name = name.decode('iso-8859-1')
             name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub('\s+', ' ', name)
             ons_code = feat['CODE'].value
