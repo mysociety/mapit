@@ -19,12 +19,12 @@ env:
     - TOXENV=py27-1.9
     - TOXENV=py32-1.7
     - TOXENV=py32-1.8
-    - TOXENV=py32-1.9
+    - TOXENV=py34-1.9
 
 matrix:
   allow_failures:
     - env: TOXENV=py27-1.9
-    - env: TOXENV=py32-1.9
+    - env: TOXENV=py34-1.9
 
 install:
   - pip install tox
