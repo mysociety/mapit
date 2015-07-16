@@ -135,7 +135,7 @@ class GeometrySerialiser:
     def area_as_geojson_feature(self, area, polygons):
         return {
             'type': 'Feature',
-            'properties': area.as_dict(),
+            'properties': {'name': area.name},
             'geometry': json.loads(polygons.json),
         }
 
