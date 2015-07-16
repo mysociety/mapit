@@ -5,7 +5,7 @@
 #
 # Example usage:
 #
-#   ./manage.py mapit_ar_import_boundaries \
+#   ./manage.py mapit_AR_import_boundaries \
 #       --provincias=provincias/provincias.shp \
 #       --departamentos=departamentos/departamentos.shp
 #
