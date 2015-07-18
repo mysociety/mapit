@@ -272,7 +272,7 @@ def areas_polygon(request, area_ids, srid='', format='kml'):
         if not re.match('\d+$', area_id):
             raise ViewException(format, _('Bad area ID specified'), 400)
 
-    areas = Area.objects.filter(id__in=area_ids)
+    areas = list(Area.objects.filter(id__in=area_ids))
     if not areas:
         return output_json({'error': _('No areas found')}, code=404)
 

@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.utils.html import escape
@@ -37,6 +39,14 @@ class GeometrySerialiser:
 </kml>"""
 
     def __init__(self, areas, srid, simplify_tolerance):
+        # the geojson serialization format needs to know if we're
+        # serializer one item, or a list with one item
+        if not isinstance(areas, list):
+            self.single = True
+            areas = [areas]
+        else:
+            self.single = False
+
         self.areas = areas
         self.srid = srid
         self.simplify_tolerance = simplify_tolerance
@@ -79,7 +89,7 @@ class GeometrySerialiser:
             if polygons:
                 polygons = self.__transform(polygons)
                 polygons = self.__simplify(polygons, area.name)
-                processed_areas.append((polygons, area.name))
+                processed_areas.append((polygons, area))
         if len(processed_areas) == 0:
             raise TransformError("No polygons found")
         else:
@@ -94,7 +104,7 @@ class GeometrySerialiser:
         if kml_type == "full":
             output = self.kml_header % (line_colour, fill_colour)
             for area in processed_areas:
-                output += self.kml_placemark % (escape(area[1]), area[0].kml)
+                output += self.kml_placemark % (escape(area[1].name), area[0].kml)
             output += self.kml_footer
             return (output, content_type)
         elif kml_type == "polygon":
@@ -110,16 +120,24 @@ class GeometrySerialiser:
     def geojson(self):
         content_type = 'application/json'
         processed_areas = self.__process_polygons()
-        if len(processed_areas) == 1:
+        if len(processed_areas) == 1 and self.single:
             return (processed_areas[0][0].json, content_type)
         else:
-            output = '{ "type": "FeatureCollection", "features": ['
-            for area in processed_areas:
-                output += '{ "properties": { "name": "%s" }, "type": "Feature", "geometry": %s },'\
-                    % (escape(area[1]), area[0].json)
-            output = output[:-1]
-            output += "] }"
-            return (output, content_type)
+            output = {
+                'type': 'FeatureCollection',
+                'features': [
+                    self.area_as_geojson_feature(area[1], area[0])
+                    for area in processed_areas
+                ]
+            }
+            return (json.dumps(output), content_type)
+
+    def area_as_geojson_feature(self, area, polygons):
+        return {
+            'type': 'Feature',
+            'properties': {'name': area.name},
+            'geometry': json.loads(polygons.json),
+        }
 
     # output self.areas as wkt
     def wkt(self):
