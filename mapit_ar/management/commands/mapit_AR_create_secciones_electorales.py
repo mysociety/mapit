@@ -135,9 +135,7 @@ class Command(BaseCommand):
                 u"General Pueyrredón",
                 u"La Costa",
                 u"Las Flores",
-                # FIXME: Lezama (the newest department) is missing
-                # from the official department shapefiles:
-                # u"Lezama",
+                u"Lezama",
                 u"Lobería",
                 u"Maipú",
                 u"Mar Chiquita",
