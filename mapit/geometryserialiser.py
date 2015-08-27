@@ -14,7 +14,7 @@ class TransformError(Exception):
 class GeometrySerialiser:
 
     kml_header =\
-"""<?xml version="1.0" encoding="UTF-8"?>
+        """<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
     <Document>
         <Style id="ourPolygonStyle">
@@ -27,14 +27,14 @@ class GeometrySerialiser:
             </PolyStyle>
         </Style>"""
     kml_placemark =\
-"""
+        """
         <Placemark>
             <styleUrl>#ourPolygonStyle</styleUrl>
             <name>%s</name>
             %s
         </Placemark>"""
     kml_footer =\
-"""
+        """
     </Document>
 </kml>"""
 
@@ -95,7 +95,6 @@ class GeometrySerialiser:
         else:
             return processed_areas
 
-
     # output self.areas as kml
     def kml(self, kml_type, line_colour="70ff0000", fill_colour="3dff5500"):
         content_type = 'application/vnd.google-earth.kml+xml'
@@ -111,7 +110,7 @@ class GeometrySerialiser:
             if len(processed_areas) == 1:
                 return (processed_areas[0][0].kml, content_type)
             else:
-                raise Exception("kml_type: '%s' not supported for multiple areas"\
+                raise Exception("kml_type: '%s' not supported for multiple areas"
                                 % (kml_type,))
         else:
             raise Exception("Unknown kml_type: '%s'" % (kml_type,))

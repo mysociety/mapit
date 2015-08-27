@@ -112,7 +112,7 @@ class AreaViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         content = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(len(content),2)
+        self.assertEqual(len(content), 2)
 
     def test_areas_polygon_one_id(self):
         id = self.small_area_1.id

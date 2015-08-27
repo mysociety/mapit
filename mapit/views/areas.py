@@ -194,7 +194,7 @@ def area_intersect(query_type, title, request, area_id, format):
             raise
         raise ViewException(
             format, _('That query was taking too long to compute - '
-            'try restricting to a specific type, if you weren\'t already doing so.'), 500)
+                      'try restricting to a specific type, if you weren\'t already doing so.'), 500)
     except InternalError:
         raise ViewException(format, _('There was an internal error performing that query.'), 500)
 
