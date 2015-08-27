@@ -28,7 +28,6 @@ class Command(mapit_import.Command):
     help = 'Import NHS England CCG boundaries from .kml file'
     args = '<KML file>'
 
-
     def create_parser(self, prog_name, subcommand):
         parser = super(Command, self).create_parser(prog_name, subcommand)
         parser.set_defaults(**{
@@ -39,7 +38,6 @@ class Command(mapit_import.Command):
             'name_field': 'name'
         })
         return parser
-
 
     # ensure all required_params are in options
     def check_params(self, required_params, options):
@@ -53,7 +51,6 @@ class Command(mapit_import.Command):
             message_start = "Missing arguments " if len(missing_options) > 1 else "Missing argument "
             message = message_start + " ".join('--{0}'.format(k) for k in missing_options)
             raise CommandError(message)
-
 
     def extract_name_from_description(self, description):
 
@@ -72,7 +69,6 @@ class Command(mapit_import.Command):
 
         return name
 
-
     def update_main_area_name(self, code_type, ccg_code, ccg_name):
         try:
             area = Area.objects.get(codes__type__code=code_type, codes__code=ccg_code)
@@ -84,7 +80,6 @@ class Command(mapit_import.Command):
         except:
             self.stdout.write("Failed to update area name for area code '%s'" % ccg_code)
 
-
     def update_specific_type_name(self, area_id, name_type_code, ccg_code, ccg_name):
         try:
             name = Name.objects.get(area=area_id, type__code=name_type_code)
@@ -94,8 +89,6 @@ class Command(mapit_import.Command):
             self.stdout.write("Updated %s name." % name_type_code)
         except:
             self.stdout.write("Failed to update %s name for area code '%s'" % (name_type_code, ccg_code))
-
-
 
     def handle_label(self, filename, **options):
 
@@ -107,7 +100,6 @@ class Command(mapit_import.Command):
             Country.objects.get(code='E')
         except Country.DoesNotExist:
             raise CommandError("England doesn't exist yet; load the UK fixture first.")
-
 
         self.stdout.write("Importing NHS CCG areas from %s" % filename)
 
@@ -129,7 +121,6 @@ class Command(mapit_import.Command):
             ccg_name = self.extract_name_from_description(description)
 
             self.stdout.write("Found name '%s' for area code '%s'" % (ccg_name, ccg_code))
-
 
             # if --commit param set, update DB with the name we've found.
             if options['commit']:
