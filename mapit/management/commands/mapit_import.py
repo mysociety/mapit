@@ -141,9 +141,6 @@ class Command(LabelCommand):
         code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
 
-        if len(area_type_code) > 3:
-            raise CommandError("Area type code must be 3 letters or fewer, sorry")
-
         if name_field and override_name:
             raise CommandError("You must not specify both --name_field and --override_name")
         if code_field and override_code:
