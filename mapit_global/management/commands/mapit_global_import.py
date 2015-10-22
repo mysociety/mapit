@@ -163,7 +163,7 @@ class Command(LabelCommand):
 
                 # Need to parse the KML manually to get the ExtendedData
                 kml_data = KML()
-                xml.sax.parse(kml_filename, kml_data)
+                xml.sax.parse(smart_str(kml_filename), kml_data)
 
                 useful_names = [n for n in kml_data.data.keys() if not n.startswith('Boundaries for')]
                 if len(useful_names) == 0:
