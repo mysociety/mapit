@@ -24,15 +24,14 @@ RESTful API for looking up postcodes, council boundaries, etc.
 MapIt has no dependencies on the rest of the GOV.UK stack, but does use PostgreSQL
 with some geo-spatial extensions. For the GOV.UK VM these are documented in [puppet](https://github.gds/gds/puppet/blob/master/modules/govuk/manifests/apps/mapit.pp), or you can follow the [standalone install guide](http://mapit.poplus.org/docs/self-hosted/install/).
 
-### Running the application
+### Running the application in development
 
-You'll need to be in a [virtualenv](http://docs.python-guide.org/en/latest/dev/virtualenvs/), and install dependencies with:
+Run this application with Bowler: `bowl mapit`.
 
-```pip install -r requirements.txt```
+Or use the startup script directly: `GOVUK_ENV=development ./startup.sh`.
 
-You can then run an instance of mapit with:
-
-```manage.py runserver 127.0.0.1:3108```
+To run any other management commands (`./manage.py ...`), you'll need the
+`GOVUK_ENV` environment variable set.
 
 ## Licence
 
