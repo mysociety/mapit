@@ -14,8 +14,14 @@ PARENT_DIR = os.path.dirname(BASE_DIR)
 # of the repo, containing a general.yml file of options. Use that file if
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
+ENVIRONMENT = os.environ.get('GOVUK_ENV', 'production')
+if ENVIRONMENT == 'development':
+    conffile = 'development.yml'
+else:
+    conffile = 'general.yml'
+
 try:
-    with open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') as fp:
+    with open(os.path.join(BASE_DIR, 'conf', conffile), 'r') as fp:
         config = yaml.load(fp)
 except:
     config = {}
