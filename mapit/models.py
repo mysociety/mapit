@@ -7,14 +7,11 @@ from django.db import connection
 from django.db.models.query import RawQuerySet
 from django.utils.encoding import python_2_unicode_compatible
 
-from mapit.managers import Manager, GeoManager
 from mapit import countries
-from mapit.djangopatch import GetQuerySetMetaclass
 from mapit.geometryserialiser import GeometrySerialiser
-from django.utils import six
 
 
-class GenerationManager(six.with_metaclass(GetQuerySetMetaclass, models.Manager)):
+class GenerationManager(models.Manager):
     def current(self):
         """Return the most recent active generation.
 
@@ -128,7 +125,7 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-class AreaManager(six.with_metaclass(GetQuerySetMetaclass, models.GeoManager)):
+class AreaManager(models.GeoManager):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related('type', 'country')
 
@@ -330,7 +327,7 @@ class Area(models.Model):
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
-    objects = GeoManager()
+    objects = models.GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
@@ -352,7 +349,7 @@ class NameType(models.Model):
         max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
-    objects = Manager()
+    objects = models.Manager()
 
     def __str__(self):
         return '%s (%s)' % (self.description, self.code)
@@ -363,7 +360,7 @@ class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
     type = models.ForeignKey(NameType, related_name='names')
     name = models.CharField(max_length=2000)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
@@ -403,7 +400,7 @@ class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
     type = models.ForeignKey(CodeType, related_name='codes')
     code = models.CharField(max_length=500)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
@@ -414,7 +411,7 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeManager(six.with_metaclass(GetQuerySetMetaclass, GeoManager)):
+class PostcodeManager(models.GeoManager):
     def get_queryset(self):
         return self.model.QuerySet(self.model)
 

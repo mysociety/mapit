@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.management import call_command, CommandError
-from django.utils.six import StringIO
+from django.utils.six import StringIO, assertRaisesRegex
 
 from ..models import Area, Country, Generation, Type
 
@@ -9,7 +9,7 @@ class GenerationCommandTests(TestCase):
     """Tests for commands that manipulate MapIt generations"""
 
     def test_no_generations(self):
-        with self.assertRaisesRegexp(CommandError, r'no new inactive'):
+        with assertRaisesRegex(self, CommandError, r'no new inactive'):
             call_command(
                 'mapit_generation_raise_on_current_areas',
                 commit=True,
@@ -22,7 +22,7 @@ class GenerationCommandTests(TestCase):
             active=False,
             description="One inactive generation",
         )
-        with self.assertRaisesRegexp(CommandError, r'no currently active'):
+        with assertRaisesRegex(self, CommandError, r'no currently active'):
             call_command(
                 'mapit_generation_raise_on_current_areas',
                 commit=True,

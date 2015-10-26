@@ -1,6 +1,3 @@
-from unittest import skipIf
-
-import django
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django import http
@@ -26,7 +23,6 @@ class JSONPMiddlewareTest(TestCase):
         middleware_response = self.middleware.process_response(request, response)
         self.assertEqual(middleware_response.content, b"typeof xyz === 'function' && xyz(blah)")
 
-    @skipIf(django.get_version() < '1.5', 'not supported in this version')
     def test_process_response_uses_callback_streaming(self):
         request = self.factory.get("/dummy_url", {"callback": "xyz"})
         response = http.StreamingHttpResponse("blah")

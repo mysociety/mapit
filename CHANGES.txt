@@ -1,3 +1,8 @@
+master
+    * Drop support for Django versions before 1.8. #209
+    * MapIt Global specific:
+        Fix issue parsing KML in python2 prior to 2.7.4. #206
+
 v1.4, 2015-09-18
     * Mark all strings for translation. #185
     * Italian translation and base templates. #185
