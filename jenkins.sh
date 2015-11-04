@@ -1,5 +1,6 @@
 #!/bin/sh
 
+export GOVUK_ENV=development
 set -e
 
 rm -rf ./test-venv
