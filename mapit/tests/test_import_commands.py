@@ -4,12 +4,20 @@ from django.test import TestCase
 from django.core.management import call_command
 from django.conf import settings
 from django.utils.six import StringIO
+from django.contrib.gis.gdal.prototypes import ds
 
 from ..models import Type, NameType, Area, Generation, Country
 
 
 class MapitImportTest(TestCase):
     """Test the mapit_import management command"""
+
+    def setUp(self):
+        # Forcefully register a GDAL datasource driver, because Django has a
+        # bug where it assumes that any existing drivers mean they're all
+        # available, which doesn't seem to be the case.
+        if not ds.get_driver_count():
+            ds.register_all()
 
     def test_loads_kml_files(self):
         # Assert no areas in db before
