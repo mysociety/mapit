@@ -17,6 +17,8 @@ PARENT_DIR = os.path.dirname(BASE_DIR)
 ENVIRONMENT = os.environ.get('GOVUK_ENV', 'production')
 if ENVIRONMENT == 'development':
     conffile = 'development.yml'
+elif ENVIRONMENT == 'ci':
+    conffile = 'ci.yml'
 else:
     conffile = 'general.yml'
 
@@ -25,6 +27,9 @@ try:
         config = yaml.load(fp)
 except:
     config = {}
+
+if ENVIRONMENT == 'ci':
+    config['MAPIT_DB_PASS'] = os.environ['MAPIT_ROLE_PASSWORD']
 
 # An EPSG code for what the areas are stored as, e.g. 27700 is OSGB, 4326 for
 # WGS84. Optional, defaults to 4326.

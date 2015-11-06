@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export GOVUK_ENV=development
+export GOVUK_ENV=ci
 set -e
 
 rm -rf ./test-venv
