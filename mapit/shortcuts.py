@@ -48,6 +48,11 @@ def output_json(out, code=200):
     encoder = GEOS_JSONEncoder(ensure_ascii=False, indent=indent)
     content = encoder.iterencode(out)
 
+    # We don't want a generator function (iterencode) to be passed to an
+    # HttpResponse, as it won't cache due to its close() function adding it to
+    # an instance attribute.
+    content = map(lambda x: x, content)
+
     types = {
         400: http.HttpResponseBadRequest,
         404: http.HttpResponseNotFound,
