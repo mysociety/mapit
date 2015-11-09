@@ -10,7 +10,7 @@ echo 'Installing packages...'
 ./test-venv/bin/pip -q install --download-cache "${HOME}/bundles/${JOB_NAME}" -r requirements.txt
 
 echo 'Running tests...'
-./test-venv/bin/python manage.py test
+./test-venv/bin/python manage.py test mapit mapit_gb
 
 echo 'Done'
 rm -rf ./test-venv
