@@ -230,6 +230,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.gis',
     'django.contrib.staticfiles',
+    'djorm_pgtrgm',
     'mapit',
 ]
 
