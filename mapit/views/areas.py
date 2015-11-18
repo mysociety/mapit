@@ -23,6 +23,7 @@ from mapit.ratelimitcache import ratelimit
 from mapit import countries
 from mapit.iterables import iterdict
 from mapit.geometryserialiser import GeometrySerialiser, TransformError
+from mapit.postgres_trigram import TrigramSimilarity
 
 
 def add_codes(areas):
@@ -263,14 +264,13 @@ def areas_by_name(request, name, format='json'):
 
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_name_fuzzy(request, name, format='json'):
+def areas_by_name_fuzzy(request, searchterm, format='json'):
     args = query_args(request, format)
-    args['name__similar'] = name
+    args['name__trigram_similar'] = searchterm
     areas = Area.objects.filter(**args)\
-                .extra(select={'distance': "similarity(mapit_area.name, %s)"},
-                       select_params=[name])\
-                .order_by('-distance')
-    return output_areas(request, 'Areas matching %s' % name, format, areas)
+        .annotate(distance=TrigramSimilarity('name', searchterm))\
+        .order_by('-distance')
+    return output_areas(request, 'Areas matching %s' % searchterm, format, areas)
 
 
 @ratelimit(minutes=3, requests=100)
