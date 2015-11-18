@@ -6,6 +6,7 @@
 
 import csv
 from optparse import make_option
+from django.db import transaction
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
 from django.conf import settings
@@ -90,14 +91,17 @@ class Command(LabelCommand):
         if options['header-row']:
             next(reader)
         for row in reader:
-            self.code = row[int(options['code-field']) - 1].strip()
-            if options['strip']:
-                self.code = self.code.replace(' ', '')
-            if not self.pre_row(row, options):
-                continue
+            self._process_row(row, options)
+        self.print_stats()
+
+    @transaction.atomic
+    def _process_row(self, row, options):
+        self.code = row[int(options['code-field']) - 1].strip()
+        if options['strip']:
+            self.code = self.code.replace(' ', '')
+        if self.pre_row(row, options):
             pc = self.handle_row(row, options)
             self.post_row(pc)
-        self.print_stats()
 
     def pre_row(self, row, options):
         return True
