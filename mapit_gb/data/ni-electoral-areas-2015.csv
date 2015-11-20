@@ -1,0 +1,464 @@
+# from http://www.legislation.gov.uk/uksi/2014/270/schedule/made,,,,,
+District,District GSS Code,Electoral area,Electoral area GSS code,Ward,Ward GSS code
+Antrim and Newtownabbey,N09000001,Dunsilly,N10000104,Cranfield,N08000115
+,,,,Parkgate,N08000129
+,,,,Randalstown,N08000130
+,,,,Shilvodan,N08000133
+,,,,Toome,N08000138
+,,Antrim,N10000102,Antrim Centre,N08000103
+,,,,Fountain Hill,N08000119
+,,,,Greystone,N08000122
+,,,,Springfarm,N08000134
+,,,,Steeple,N08000135
+,,,,Stiles,N08000136
+,,Airport,N10000101,Aldergrove,N08000102
+,,,,Clady,N08000113
+,,,,Crumlin,N08000116
+,,,,Mallusk,N08000125
+,,,,Templepatrick,N08000137
+,,Ballyclare,N10000103,Ballyclare East,N08000104
+,,,,Ballyclare West,N08000105
+,,,,Ballynure,N08000108
+,,,,Ballyrobert,N08000109
+,,,,Doagh,N08000117
+,,Three Mile Water,N10000107,Ballyduff,N08000106
+,,,,Fairview,N08000118
+,,,,Jordanstown,N08000124
+,,,,Monkstown,N08000126
+,,,,Mossley,N08000127
+,,,,Rostulla,N08000132
+,,Macedon,N10000106,Abbey,N08000101
+,,,,Carnmoney Hill,N08000112
+,,,,O’Neill,N08000128
+,,,,Rathcoole,N08000131
+,,,,Valley,N08000139
+,,,,Whitehouse,N08000140
+,,Glengormley Urban,N10000105,Ballyhenry,N08000107
+,,,,Burnthill,N08000110
+,,,,Carnmoney,N08000111
+,,,,Collinbridge,N08000114
+,,,,Glebe,N08000120
+,,,,Glengormley,N08000121
+,,,,Hightown,N08000123
+"Armagh, Banbridge and Craigavon",N09000002,Armagh,N10000201,Blackwatertown,N08000207
+,,,,Cathedral,N08000210
+,,,,Demesne,N08000213
+,,,,Keady,N08000220
+,,,,Navan,N08000231
+,,,,The Mall,N08000240
+,,Cusher,N10000204,Hamiltonsbawn,N08000219
+,,,,Markethill,N08000229
+,,,,Richhill,N08000235
+,,,,Seagahan,N08000236
+,,,,Tandragee,N08000238
+,,Portadown,N10000207,Ballybay,N08000202
+,,,,Corcrain,N08000211
+,,,,Killycomain,N08000222
+,,,,Loughgall,N08000226
+,,,,Mahon,N08000228
+,,,,The Birches,N08000239
+,,Craigavon,N10000203,Bleary,N08000208
+,,,,Brownlow,N08000209
+,,,,Craigavon Centre,N08000212
+,,,,Derrytrasna,N08000214
+,,,,Kernan,N08000221
+,,Lurgan,N10000206,Aghagallon,N08000201
+,,,,Knocknashane,N08000223
+,,,,Lough Road,N08000224
+,,,,Magheralin,N08000227
+,,,,Mourneview,N08000230
+,,,,Parklake,N08000232
+,,,,Shankill,N08000237
+,,Lagan River,N10000205,Donaghcloney,N08000215
+,,,,Dromore,N08000216
+,,,,Gransha,N08000218
+,,,,Quilly,N08000233
+,,,,Waringstown,N08000241
+,,Banbridge,N10000202,Banbridge East,N08000203
+,,,,Banbridge North,N08000204
+,,,,Banbridge South,N08000205
+,,,,Banbridge West,N08000206
+,,,,Gilford,N08000217
+,,,,Loughbrickland,N08000225
+,,,,Rathfriland,N08000234
+Belfast,N09000003,Castle,N10000304,Bellevue,N08000309
+,,,,Cavehill,N08000314
+,,,,Chichester Park,N08000316
+,,,,Duncairn,N08000322
+,,,,Fortwilliam,N08000328
+,,,,Innisfayle,N08000332
+,,Oldpark,N10000308,Ardoyne,N08000302
+,,,,Ballysillan,N08000306
+,,,,Cliftonville,N08000317
+,,,,Legoniel,N08000336
+,,,,New Lodge,N08000340
+,,,,Water Works,N08000357
+,,Court,N10000306,Ballygomartin,N08000303
+,,,,Clonard,N08000318
+,,,,Falls,N08000324
+,,,,Forth River,N08000327
+,,,,Shankill,N08000348
+,,,,Woodvale,N08000360
+,,Black Mountain,N10000302,Andersonstown,N08000301
+,,,,Ballymurphy,N08000305
+,,,,Beechmount,N08000307
+,,,,Collin Glen,N08000319
+,,,,Falls Park,N08000325
+,,,,Shaw’s Road,N08000349
+,,,,Turf Lodge,N08000354
+,,Collin,N10000305,Dunmurry,N08000323
+,,,,Ladybrook,N08000334
+,,,,Lagmore,N08000335
+,,,,Poleglass,N08000343
+,,,,Stewartstown,N08000350
+,,,,Twinbrook,N08000355
+,,Balmoral,N10000301,Belvoir,N08000311
+,,,,Finaghy,N08000326
+,,,,Malone,N08000337
+,,,,Musgrave,N08000339
+,,,,Upper Malone,N08000356
+,,Botanic,N10000303,Blackstaff,N08000312
+,,,,Central,N08000315
+,,,,Ormeau,N08000342
+,,,,Stranmillis,N08000352
+,,,,Windsor,N08000358
+,,Lisnasharragh,N10000307,Cregagh,N08000321
+,,,,Hillfoot,N08000331
+,,,,Merok,N08000338
+,,,,Orangefield,N08000341
+,,,,Ravenhill,N08000344
+,,,,Rosetta,N08000345
+,,Ormiston,N10000309,Belmont,N08000310
+,,,,Garnerville,N08000329
+,,,,Gilnahirk,N08000330
+,,,,Knock,N08000333
+,,,,Sandown,N08000346
+,,,,Shandon,N08000347
+,,,,Stormont,N08000351
+,,Titanic,N10000310,Ballymacarrett,N08000304
+,,,,Beersbridge,N08000308
+,,,,Bloomfield,N08000313
+,,,,Connswater,N08000320
+,,,,Sydenham,N08000353
+,,,,Woodstock,N08000359
+Causeway Coast and Glens,N09000004,The Glens,N10000407,Ballycastle,N08000404
+,,,,Kinbane,N08000425
+,,,,Loughguile and Stranocum,N08000426
+,,,,Lurigethan,N08000427
+,,,,Torr Head and Rathlin,N08000437
+,,Causeway,N10000404,Atlantic,N08000403
+,,,,Dervock,N08000413
+,,,,Dundooan,N08000415
+,,,,Giant’s Causeway,N08000420
+,,,,Hopefield,N08000423
+,,,,Portrush and Dunluce,N08000431
+,,,,Portstewart,N08000432
+,,Ballymoney,N10000401,Ballymoney East,N08000406
+,,,,Ballymoney North,N08000407
+,,,,Ballymoney South,N08000408
+,,,,Clogh Mills,N08000411
+,,,,Dunloy,N08000417
+,,,,Rasharkin,N08000434
+,,,,Route,N08000436
+,,Coleraine,N10000405,Churchland,N08000410
+,,,,Mountsandel,N08000430
+,,,,Quarry,N08000433
+,,,,University,N08000438
+,,,,Waterside,N08000439
+,,,,Windy Hall,N08000440
+,,Bann,N10000402,Aghadowey,N08000401
+,,,,Castlerock,N08000409
+,,,,Garvagh,N08000419
+,,,,Kilrea,N08000424
+,,,,Macosquin,N08000428
+,,Benbradagh,N10000403,Altahullion,N08000402
+,,,,Ballykelly,N08000405
+,,,,Dungiven,N08000416
+,,,,Feeny,N08000418
+,,,,Greysteel,N08000421
+,,Limavady,N10000406,Coolessan,N08000412
+,,,,Drumsurn,N08000414
+,,,,Greystone,N08000422
+,,,,Magilligan,N08000429
+,,,,Roeside,N08000435
+Derry and Strabane,N09000005,Ballyarnett,N10000501,Carn Hill,N08000505
+,,,,Culmore,N08000513
+,,,,Galliagh,N08000521
+,,,,Shantallow,N08000531
+,,,,Shantallow East,N08000532
+,,,,Skeoge,N08000535
+,,Foyleside,N10000504,Ballymagroarty,N08000503
+,,,,Foyle Springs,N08000520
+,,,,Madam’s Bank,N08000526
+,,,,Northland,N08000529
+,,,,Springtown,N08000537
+,,The Moor,N10000506,Brandywell,N08000504
+,,,,City Walls,N08000508
+,,,,Creggan,N08000511
+,,,,Creggan South,N08000512
+,,,,Sheriff’s Mountain,N08000533
+,,Waterside,N10000507,Caw,N08000507
+,,,,Clondermot,N08000510
+,,,,Drumahoe,N08000514
+,,,,Ebrington,N08000516
+,,,,Kilfennan,N08000524
+,,,,Lisnagelvin,N08000525
+,,,,Victoria,N08000540
+,,Faughan,N10000503,Claudy,N08000509
+,,,,Eglinton,N08000517
+,,,,Enagh,N08000518
+,,,,New Buildings,N08000527
+,,,,Slievekirk,N08000536
+,,Sperrin,N10000505,Artigarvan,N08000501
+,,,,Ballycolman,N08000502
+,,,,Dunnamanagh,N08000515
+,,,,Glenelly Valley,N08000523
+,,,,Park,N08000530
+,,,,Strabane North,N08000538
+,,,,Strabane West,N08000539
+,,Derg,N10000502,Castlederg,N08000506
+,,,,Finn,N08000519
+,,,,Glenderg,N08000522
+,,,,Newtownstewart,N08000528
+,,,,Sion Mills,N08000534
+Fermanagh and Omagh,N09000006,Erne West,N10000604,Belcoo and Garrison,N08000602
+,,,,"Boho, Cleenish and Letterbreen",N08000605
+,,,,Derrygonnelly,N08000611
+,,,,Derrylin,N08000612
+,,,,Florence Court and Kinawley,N08000621
+,,Erne North,N10000603,Ballinamallard,N08000601
+,,,,Belleek and Boa,N08000603
+,,,,Ederney and Kesh,N08000617
+,,,,Irvinestown,N08000624
+,,,,Tempo,N08000638
+,,Enniskillen,N10000601,Castlecoole,N08000608
+,,,,Erne,N08000618
+,,,,Lisbellaw,N08000626
+,,,,Lisnarrick,N08000627
+,,,,Portora,N08000633
+,,,,Rossorry,N08000635
+,,West Tyrone,N10000607,Dromore,N08000614
+,,,,Drumquin,N08000616
+,,,,Fairy Water,N08000619
+,,,,Fintona,N08000620
+,,,,Newtownsaville,N08000631
+,,,,Trillick,N08000640
+,,Omagh,N10000606,Camowen,N08000607
+,,,,Coolnagard,N08000609
+,,,,Dergmoney,N08000610
+,,,,Gortrush,N08000623
+,,,,Killyclogher,N08000625
+,,,,Strule,N08000637
+,,Mid Tyrone,N10000605,Beragh,N08000604
+,,,,Drumnakilly,N08000615
+,,,,Gortin,N08000622
+,,,,Owenkillew,N08000632
+,,,,Sixmilecross,N08000636
+,,,,Termon,N08000639
+,,Erne East,N10000602,Brookeborough,N08000606
+,,,,Donagh,N08000613
+,,,,Lisnaskea,N08000628
+,,,,Maguiresbridge,N08000629
+,,,,Newtownbutler,N08000630
+,,,,Rosslea,N08000634
+Lisburn and Castlereagh,N09000007,Killultagh,N10000705,Ballinderry,N08000701
+,,,,Glenavy,N08000718
+,,,,Maghaberry,N08000730
+,,,,Stonyford,N08000738
+,,,,White Mountain,N08000740
+,,Lisburn South,N10000707,Ballymacash,N08000703
+,,,,Ballymacoss,N08000705
+,,,,Knockmore,N08000725
+,,,,Lagan Valley,N08000727
+,,,,Lisnagarvey,N08000729
+,,,,Old Warren,N08000736
+,,Downshire East,N10000703,Ballymacbrennan,N08000704
+,,,,Dromara,N08000713
+,,,,Drumbo,N08000714
+,,,,Hillhall,N08000722
+,,,,Ravernet,N08000737
+,,Downshire West,N10000704,Blaris,N08000707
+,,,,Hillsborough,N08000723
+,,,,Lagan,N08000726
+,,,,Maze,N08000732
+,,,,Moira,N08000733
+,,Lisburn North,N10000706,Derryaghy,N08000712
+,,,,Harmony Hill,N08000720
+,,,,Hilden,N08000721
+,,,,Lambeg,N08000728
+,,,,Magheralave,N08000731
+,,,,Wallace Park,N08000739
+,,Castlereagh South,N10000702,Beechill,N08000706
+,,,,Cairnshill,N08000708
+,,,,Carryduff East,N08000710
+,,,,Carryduff West,N08000711
+,,,,Galwally,N08000717
+,,,,Knockbracken,N08000724
+,,,,Newtownbreda,N08000735
+,,Castlereagh East,N10000701,Ballyhanwood,N08000702
+,,,,Carrowreagh,N08000709
+,,,,Dundonald,N08000715
+,,,,Enler,N08000716
+,,,,Graham’s Bridge,N08000719
+,,,,Moneyreagh,N08000734
+Mid and East Antrim,N09000008,Knockagh,N10000806,Burleigh Hill,N08000810
+,,,,Gortalee,N08000823
+,,,,Greenisland,N08000825
+,,,,Sunnylands,N08000836
+,,,,Woodburn,N08000840
+,,Carrick Castle,N10000804,Boneybefore,N08000807
+,,,,Castle,N08000813
+,,,,Kilroot,N08000828
+,,,,Love Lane,N08000831
+,,,,Victoria,N08000838
+,,Larne Lough,N10000807,Ballycarry and Glynn,N08000805
+,,,,Curran and Inver,N08000817
+,,,,Islandmagee,N08000826
+,,,,Kilwaughter,N08000829
+,,,,Whitehead South,N08000839
+,,Coast Road,N10000805,Cairncastle,N08000811
+,,,,Carnlough and Glenarm,N08000812
+,,,,Craigyhill,N08000815
+,,,,Gardenmore,N08000820
+,,,,The Maidens,N08000837
+,,Braid,N10000803,Ballee and Harryville,N08000804
+,,,,Broughshane,N08000809
+,,,,Glenravel,N08000821
+,,,,Glenwhirry,N08000822
+,,,,Kells,N08000827
+,,,,Kirkinriola,N08000830
+,,,,Slemish,N08000835
+,,Ballymena,N10000801,Academy,N08000801
+,,,,Ardeevin,N08000803
+,,,,Ballykeel,N08000806
+,,,,Braidwater,N08000808
+,,,,Castle Demesne,N08000814
+,,,,Fair Green,N08000818
+,,,,Park,N08000833
+,,Bannside,N10000802,Ahoghill,N08000802
+,,,,Cullybackey,N08000816
+,,,,Galgorm,N08000819
+,,,,Grange,N08000824
+,,,,Maine,N08000832
+,,,,Portglenone,N08000834
+Mid Ulster,N09000009,Carntogher,N10000901,Lower Glenshane,N08000926
+,,,,Maghera,N08000927
+,,,,Swatragh,N08000934
+,,,,Tamlaght O’Crilly,N08000935
+,,,,Valley,N08000939
+,,Moyola,N10000906,Ballymaguigan,N08000905
+,,,,Bellaghy,N08000907
+,,,,Castledawson,N08000910
+,,,,Draperstown,N08000919
+,,,,Tobermore,N08000937
+,,Magherafelt,N10000905,Coolshinny,N08000917
+,,,,Glebe,N08000921
+,,,,Lissan,N08000924
+,,,,The Loup,N08000936
+,,,,Town Parks East,N08000938
+,,Cookstown,N10000903,Coagh,N08000911
+,,,,Cookstown East,N08000914
+,,,,Cookstown South,N08000915
+,,,,Cookstown West,N08000916
+,,,,Loughry,N08000925
+,,,,Oaklands,N08000931
+,,,,Pomeroy,N08000932
+,,Torrent,N10000907,Ardboe,N08000901
+,,,,Coalisland North,N08000912
+,,,,Coalisland South,N08000913
+,,,,Donaghmore,N08000918
+,,,,Stewartstown,N08000933
+,,,,Washing Bay,N08000940
+,,Dungannon,N10000904,Ballysaggart,N08000906
+,,,,Killyman,N08000922
+,,,,Killymeal,N08000923
+,,,,Moy,N08000928
+,,,,Moygashel,N08000929
+,,,,Mullaghmore,N08000930
+,,Clogher Valley,N10000902,Augher and Clogher,N08000902
+,,,,Aughnacloy,N08000903
+,,,,Ballygawley,N08000904
+,,,,Caledon,N08000908
+,,,,Castlecaulfield,N08000909
+,,,,Fivemiletown,N08000920
+"Newry, Mourne and Down",N09000010,Slieve Gullion,N10001006,Bessbrook,N08001007
+,,,,Camlough,N08001010
+,,,,Crossmaglen,N08001014
+,,,,Forkhill,N08001023
+,,,,Mullaghbane,N08001031
+,,,,Newtownhamilton,N08001033
+,,,,Whitecross,N08001041
+,,Newry,N10001003,Abbey,N08001001
+,,,,Ballybot,N08001003
+,,,,Damolly,N08001015
+,,,,Drumalane,N08001019
+,,,,Fathom,N08001022
+,,,,St. Patrick’s,N08001037
+,,Crotlieve,N10001001,Burren,N08001009
+,,,,Derryleckagh,N08001017
+,,,,Hilltown,N08001024
+,,,,Mayobridge,N08001030
+,,,,Rostrevor,N08001035
+,,,,Warrenpoint,N08001040
+,,The Mournes,N10001007,Annalong,N08001002
+,,,,Binnian,N08001008
+,,,,Donard,N08001018
+,,,,Kilkeel,N08001025
+,,,,Lisnacree,N08001029
+,,,,Murlough,N08001032
+,,,,Tollymore,N08001039
+,,Slieve Croob,N10001005,Ballydugan,N08001004
+,,,,Ballyward,N08001006
+,,,,Castlewellan,N08001011
+,,,,Drumaness,N08001020
+,,,,Dundrum,N08001021
+,,Downpatrick,N10001002,Cathedral,N08001012
+,,,,Knocknashinna,N08001027
+,,,,Lecale,N08001028
+,,,,Quoile,N08001034
+,,,,Strangford,N08001038
+,,Rowallane,N10001004,Ballynahinch,N08001005
+,,,,Crossgar and Killyleagh,N08001013
+,,,,Derryboy,N08001016
+,,,,Kilmore,N08001026
+,,,,Saintfield,N08001036
+North Down and Ards,N09000011,Ards Peninsula,N10001101,Ballywalter,N08001106
+,,,,Carrowdore,N08001110
+,,,,Kircubbin,N08001128
+,,,,Loughries,N08001129
+,,,,Portaferry,N08001132
+,,,,Portavogie,N08001133
+,,Comber,N10001105,Ballygowan,N08001102
+,,,,Comber North,N08001113
+,,,,Comber South,N08001114
+,,,,Comber West,N08001115
+,,,,Killinchy,N08001127
+,,Newtownards,N10001107,Conway Square,N08001116
+,,,,Cronstown,N08001117
+,,,,Glen,N08001120
+,,,,Gregstown,N08001121
+,,,,Movilla,N08001131
+,,,,Scrabo,N08001136
+,,,,West Winds,N08001140
+,,Bangor East and Donaghadee,N10001103,Ballycrochan,N08001101
+,,,,Ballymagee,N08001105
+,,,,Donaghadee,N08001119
+,,,,Groomsport,N08001122
+,,,,Silverbirch,N08001137
+,,,,Warren,N08001139
+,,Bangor Central,N10001102,Ballygrainey,N08001103
+,,,,Ballyholme,N08001104
+,,,,Bloomfield,N08001107
+,,,,Broadway,N08001108
+,,,,Castle,N08001111
+,,,,Harbour,N08001123
+,,Bangor West,N10001104,Bryansburn,N08001109
+,,,,Kilcooley,N08001126
+,,,,Rathgael,N08001134
+,,,,Rathmore,N08001135
+,,,,Silverstream,N08001138
+,,Holywood and Clandeboye,N10001106,Clandeboye,N08001112
+,,,,Cultra,N08001118
+,,,,Helen’s Bay,N08001124
+,,,,Holywood,N08001125
+,,,,Loughview,N08001130
