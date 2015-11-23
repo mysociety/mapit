@@ -100,13 +100,23 @@ class Command(Command):
             default=False,
             help='Set if you want to import terminated postcodes'
         ),
+        make_option(
+            '--allow-no-location-postcodes',
+            action='store_true',
+            dest='include-no-location',
+            default=False,
+            help='Set if you want to import postcodes without location info (quality: 9)'
+        ),
     )
 
     def pre_row(self, row, options):
         if row[4] and not options['include-terminated']:
             return False  # Terminated postcode
-        if row[11] == '9':
-            return False  # PO Box etc.
+        if not(self.location_available_for_row(row) or options['include-no-location']):
+            return False  # go no further unless we want codes with no location
         if self.code[0:2] in ('GY', 'JE', 'IM', 'BT'):
             return False  # NI and channel islands handled by other commands
         return True
+
+    def location_available_for_row(self, row):
+        return row[11] != '9'  # PO Box etc.
