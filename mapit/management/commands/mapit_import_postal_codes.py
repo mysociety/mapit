@@ -109,8 +109,11 @@ class Command(LabelCommand):
     def post_row(self, pc):
         return True
 
+    def location_available_for_row(self, row):
+        return True
+
     def handle_row(self, row, options):
-        if not options['location']:
+        if not options['location'] or not self.location_available_for_row(row):
             return self.do_postcode()
 
         if not options['coord-field-lon']:
