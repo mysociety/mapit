@@ -105,18 +105,70 @@ class Command(Command):
             action='store_true',
             dest='include-no-location',
             default=False,
-            help='Set if you want to import postcodes without location info (quality: 9)'
+            help='Set if you want to import postcodes without location info (quality: 9).  Note that Crown Dependency postcodes have no location and if you choose to import these postcodes they will be imported regardless of your choice for this option.'
+        ),
+        make_option(
+            '--crown-dependencies',
+            action='store',
+            dest='crown-dependencies',
+            default='exclude',
+            help=('How to handle crown dependency postocdes.  Set to "include" '
+                  'to import them, set to "exclude" to ignore them, set to '
+                  '"only" to import only these. (Default: exclude).  Note that '
+                  'Crown Dependency postcodes have no location info and are '
+                  'imported solely based on this option, regardless of the '
+                  'presence of --allow-no-location-postcodes.')
         ),
     )
 
+    def handle_label(self, file, **options):
+        # Check our crown-dependencies option is correct
+        if not options['crown-dependencies'] in ('include', 'exclude', 'only'):
+            raise RuntimeError('Invalid value for --crown-dependencies "%s" must be "include", "exclude", or "only".  ' % options['crown-dependencies'])
+        self.process(file, options)
+
     def pre_row(self, row, options):
-        if row[4] and not options['include-terminated']:
+        if self.northern_ireland(row):
+            return False  # NI handled by other importer
+        elif self.reject_row_based_on_termination_data(row, options):
             return False  # Terminated postcode
-        if not(self.location_available_for_row(row) or options['include-no-location']):
+        elif self.reject_row_based_on_location_data(row, options):
             return False  # go no further unless we want codes with no location
-        if self.code[0:2] in ('GY', 'JE', 'IM', 'BT'):
-            return False  # NI and channel islands handled by other commands
-        return True
+        elif self.reject_row_based_on_crown_dependency_data(row, options):
+            return False  # handle crown depenency options
+        else:
+            return True
 
     def location_available_for_row(self, row):
         return row[11] != '9'  # PO Box etc.
+
+    def crown_dependency(self, _row):
+        return self.code[0:2] in ('GY', 'JE', 'IM')
+
+    def northern_ireland(self, _row):
+        return self.code[0:2] == 'BT'
+
+    def reject_row_based_on_location_data(self, row, options):
+        if self.location_available_for_row(row):
+            return False  # don't reject rows with locations
+        elif self.allow_row_with_no_location(row, options):
+            return False  # don't reject rows without locations if we allow them
+        else:
+            return True   # no location and not allowed, reject
+
+    def reject_row_based_on_termination_data(self, row, options):
+        return row[4] and not options['include-terminated']
+
+    def allow_row_with_no_location(self, row, options):
+        # crown dependencies have no location data in ONSPD so we allow the
+        # row and defer the decision to reject the row until we examine the
+        # 'crown-dependencies' option.
+        return options['include-no-location'] or self.crown_dependency(row)
+
+    def reject_row_based_on_crown_dependency_data(self, row, options):
+        if self.crown_dependency_postcode():
+            return options['crown-dependencies'] == 'exclude'  # reject if we should exclude these codes
+        elif options['crown-dependencies'] == 'only':
+            return True  # if we're only importing these codes, reject other codes
+        else:
+            return False  # otherwise keep
