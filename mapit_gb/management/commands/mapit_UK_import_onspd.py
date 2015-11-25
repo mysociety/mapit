@@ -138,6 +138,22 @@ class Command(Command):
                   ' run mapit_UK_import_onspd_ni_areas before trying to import '
                   'any NI postcodes.')
         ),
+        make_option(
+            '--gb-srid',
+            action='store',
+            dest='gb-srid',
+            default=27700,
+            help=('SRID for GB & Crown Dependency postcodes. Overrides --srid '
+                  'value. (Default: 27700).')
+        ),
+        make_option(
+            '--ni-srid',
+            action='store',
+            dest='ni-srid',
+            default=29902,
+            help=('SRID for NI postcodes. Overrides --srid value for. (Default:'
+                  ' 29902).')
+        ),
     )
 
     def handle_label(self, file, **options):
@@ -153,6 +169,11 @@ class Command(Command):
             return False  # handle crown depenency options
         elif self.reject_row_based_on_northern_ireland_data(row, options):
             return False  # handle northern ireland options
+
+        if self.northern_ireland_postcode():
+            options['srid'] = options['ni-srid']
+        else:
+            options['srid'] = options['gb-srid']
 
         return True
 
