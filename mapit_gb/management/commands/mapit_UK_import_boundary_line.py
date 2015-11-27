@@ -119,7 +119,7 @@ class Command(LabelCommand):
             # Do parents in separate P-in-P code after this is done.
 
             try:
-                check = control.check(name, area_code, country, feat.geom)
+                check = control.check(name, area_code, country, feat.geom, ons_code=ons_code)
                 if check is True:
                     raise Area.DoesNotExist
                 if isinstance(check, Area):

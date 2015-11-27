@@ -9,5 +9,5 @@ def code_version():
     return 'gss'
 
 
-def check(name, type, country, geometry):
+def check(name, type, country, geometry, **args):
     return False
