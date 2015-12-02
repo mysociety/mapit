@@ -4,7 +4,7 @@
 /conf/general.yml.deployed
 /conf/httpd.conf
 /conf/httpd.conf.deployed
-/web/down.html
+/mapit/static/down.html
 /data/cache
 /MANIFEST
 /build
