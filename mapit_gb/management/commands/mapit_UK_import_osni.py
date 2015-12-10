@@ -79,6 +79,10 @@ class Command(NoArgsCommand):
         code_version = CodeType.objects.get(code=control.code_version())
         name_type = NameType.objects.get(code='N')
         code_type_osni = CodeType.objects.get(code='osni_oid')
+        if not hasattr(self, area_code):
+            raise Exception("Don't know how to extract features from %s files" % area_code)
+
+        area_code_info = getattr(self, area_code)()
 
         print(filename)
         current_generation = Generation.objects.current()
@@ -89,11 +93,9 @@ class Command(NoArgsCommand):
         ds = DataSource(filename)
         layer = ds[0]
 
-        if area_code not in self.area_code_to_feature_field:
-            raise Exception("Don't know how to extract features from %s files" % area_code)
-
         for feat in layer:
-            name, ons_code, osni_object_id = self.extract_fields_from_feature(feat, area_code)
+            name, ons_code, osni_object_id = area_code_info.extract_fields(feat)
+            name = self.format_name(name)
             if ons_code in self.ons_code_to_shape:
                 m, poly = self.ons_code_to_shape[ons_code]
                 try:
@@ -192,66 +194,64 @@ class Command(NoArgsCommand):
             save_polygons(self.osni_object_id_to_shape)
             save_polygons(self.ons_code_to_shape)
 
-    def extract_fields_from_feature(self, feature, area_code):
-        name = self.extract_field_from_feature(feature, area_code, 'name')
-        name = self.format_name(name)
+    class WMC:
+        def extract_fields(self, feature):
+            name = feature['PC_NAME'].value
+            ons_code = feature['PC_ID'].value
+            object_id = 'WMC-%s' % str(feature['OBJECTID'].value)
+            return (name, ons_code, object_id)
 
-        ons_code = self.extract_field_from_feature(feature, area_code, 'ons_code')
-
-        osni_object_id = self.extract_field_from_feature(feature, area_code, 'osni_object_id')
-        osni_object_id = "%s-%s" % (area_code, str(osni_object_id))
-
-        return (name, ons_code, osni_object_id)
-
-    def extract_field_from_feature(self, feature, area_code, field):
-        if field in self.area_code_to_feature_field[area_code]:
-            field_extractor = self.area_code_to_feature_field[area_code][field]
-            if hasattr(field_extractor, '__call__'):
-                return field_extractor(self, feature, area_code)
-            else:
-                return feature[field_extractor].value
-        else:
-            return None
-
-    lge_ons_codes = {}
-
-    def extract_lge_ons_code_from_fixture(self, feature, _area_code):
-        if not self.lge_ons_codes:
-            self.populate_osni_missing_ons_codes()
-
-        lge_name = self.format_name(self.extract_field_from_feature(feature, 'LGE', 'name'))
-        if lge_name in self.lge_ons_codes:
-            return self.lge_ons_codes[lge_name]
-        else:
-            return None
-
-    def ni_eur_name(self, _feature, _area_code):
-        return 'Northern Ireland'
-
-    def ni_eur_ons_code(self, _feature, _area_code):
-        return 'N07000001'
-
-    area_code_to_feature_field = {
-        'EUR': {'name': ni_eur_name, 'ons_code': ni_eur_ons_code, 'osni_object_id': 'OBJECTID'},
-        'WMC': {'name': 'PC_NAME', 'ons_code': 'PC_ID', 'osni_object_id': 'OBJECTID'},
+    class NIE:
         # We don't have GSS codes for NIE areas, because we generate them from
         # the WMC data and can't have duplicates
-        'NIE': {'name': 'PC_NAME', 'osni_object_id': 'OBJECTID'},
-        'LGD': {'name': 'LGDNAME', 'ons_code': 'LGDCode', 'osni_object_id': 'OBJECTID'},
-        'LGW': {'name': 'WARDNAME', 'ons_code': 'WardCode', 'osni_object_id': 'OBJECTID'},
-        'LGE': {'name': 'FinalR_DEA', 'ons_code': extract_lge_ons_code_from_fixture, 'osni_object_id': 'OBJECTID'}
-    }
+        def extract_fields(self, feature):
+            name = feature['PC_NAME'].value
+            object_id = 'NIE-%s' % str(feature['OBJECTID'].value)
+            return (name, None, object_id)
 
-    def populate_osni_missing_ons_codes(self):
-        ni_areas = csv.reader(open(os.path.dirname(__file__) + '/../../data/ni-electoral-areas-2015.csv'))
-        next(ni_areas)  # comment line
-        next(ni_areas)  # header row
-        for _lgd_name, _lgd_gss_code, lge_name, lge_gss_code, _lgw_name, _lgw_gss_code in ni_areas:
-            if not lge_name:
-                next
+    class LGW:
+        def extract_fields(self, feature):
+            name = feature['WARDNAME'].value
+            ons_code = feature['WardCode'].value
+            object_id = 'LGW-%s' % str(feature['OBJECTID'].value)
+            return (name, ons_code, object_id)
+
+    class LGD:
+        def extract_fields(self, feature):
+            name = feature['LGDNAME'].value
+            ons_code = feature['LGDCode'].value
+            object_id = 'LGD-%s' % str(feature['OBJECTID'].value)
+            return (name, ons_code, object_id)
+
+    class LGE:
+        def __init__(self):
+            self.lge_ons_codes = {}
+            self._populate_osni_missing_ons_codes()
+
+        def _populate_osni_missing_ons_codes(self):
+            ni_areas = csv.reader(open(os.path.dirname(__file__) + '/../../data/ni-electoral-areas-2015.csv'))
+            next(ni_areas)  # comment line
+            next(ni_areas)  # header row
+            for _lgd_name, _lgd_gss_code, lge_name, lge_gss_code, _lgw_name, _lgw_gss_code in ni_areas:
+                if not lge_name:
+                    next
+                else:
+                    if lge_name not in self.lge_ons_codes:
+                        self.lge_ons_codes[lge_name] = lge_gss_code
+
+        def extract_fields(self, feature):
+            name = feature['FinalR_DEA'].value
+            if name in self.lge_ons_codes:
+                ons_code = self.lge_ons_codes[name]
             else:
-                if lge_name not in self.lge_ons_codes:
-                    self.lge_ons_codes[lge_name] = lge_gss_code
+                ons_code = None
+            object_id = 'LGE-%s' % str(feature['OBJECTID'].value)
+            return (name, ons_code, object_id)
+
+    class EUR:
+        def extract_fields(self, feature):
+            object_id = 'EUR-%s' % str(feature['OBJECTID'].value)
+            return ('Northern Ireland', 'N07000001', object_id)
 
     def format_name(self, name):
         if not isinstance(name, six.text_type):
