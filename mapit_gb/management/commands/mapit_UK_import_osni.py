@@ -39,6 +39,9 @@ class Command(NoArgsCommand):
         make_option(
             '--lgd', action='store', dest='lgd_file',
             help='Name of OSNI shapefile that contains Council boundary information'),
+        make_option(
+            '--lge', action='store', dest='lge_file',
+            help='Name of OSNI shapefile that contains Electoral Area boundary information'),
     )
 
     ons_code_to_shape = {}
@@ -50,11 +53,14 @@ class Command(NoArgsCommand):
         __import__(options['control'])
         control = sys.modules[options['control']]
 
-        if all(options[x] is None for x in ['lgw_file', 'lgd_file', 'wmc_file']):
-            raise Exception("You must specify at least one of lgw, wmc, or lgd.")
+        if all(options[x] is None for x in ['lgw_file', 'lgd_file', 'lge_file', 'wmc_file']):
+            raise Exception("You must specify at least one of lgw, wmc, lgd, or lge.")
 
         if options['lgw_file']:
             self.process_file(options['lgw_file'], 'LGW', control, options)
+
+        if options['lge_file']:
+            self.process_file(options['lge_file'], 'LGE', control, options)
 
         if options['lgd_file']:
             self.process_file(options['lgd_file'], 'LGD', control, options)
@@ -193,7 +199,23 @@ class Command(NoArgsCommand):
 
     def extract_field_from_feature(self, feature, area_code, field):
         if field in self.area_code_to_feature_field[area_code]:
-            self.area_code_to_feature_field[area_code][field].value
+            field_extractor = self.area_code_to_feature_field[area_code][field]
+            if hasattr(field_extractor, '__call__'):
+                return field_extractor(self, feature, area_code)
+            else:
+                return feature[field_extractor].value
+        else:
+            return None
+
+    lge_ons_codes = {}
+
+    def extract_lge_ons_code_from_fixture(self, feature, _area_code):
+        if not self.lge_ons_codes:
+            self.populate_osni_missing_ons_codes()
+
+        lge_name = self.format_name(self.extract_field_from_feature(feature, 'LGE', 'name'))
+        if lge_name in self.lge_ons_codes:
+            return self.lge_ons_codes[lge_name]
         else:
             return None
 
@@ -204,7 +226,19 @@ class Command(NoArgsCommand):
         'NIE': {'name': 'PC_NAME', 'osni_object_id': 'OBJECTID'},
         'LGD': {'name': 'LGDNAME', 'ons_code': 'LGDCode', 'osni_object_id': 'OBJECTID'},
         'LGW': {'name': 'WARDNAME', 'ons_code': 'WardCode', 'osni_object_id': 'OBJECTID'},
+        'LGE': {'name': 'FinalR_DEA', 'ons_code': extract_lge_ons_code_from_fixture, 'osni_object_id': 'OBJECTID'}
     }
+
+    def populate_osni_missing_ons_codes(self):
+        ni_areas = csv.reader(open(os.path.dirname(__file__) + '/../../data/ni-electoral-areas-2015.csv'))
+        next(ni_areas)  # comment line
+        next(ni_areas)  # header row
+        for _lgd_name, _lgd_gss_code, lge_name, lge_gss_code, _lgw_name, _lgw_gss_code in ni_areas:
+            if not lge_name:
+                next
+            else:
+                if lge_name not in self.lge_ons_codes:
+                    self.lge_ons_codes[lge_name] = lge_gss_code
 
     def format_name(self, name):
         if not isinstance(name, six.text_type):
