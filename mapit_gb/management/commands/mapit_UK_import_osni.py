@@ -26,6 +26,10 @@ class Command(NoArgsCommand):
             help='Refer to a Python module that can tell us what has changed'),
         make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
         make_option(
+            '--lgw', action='store', dest='lgw_file',
+            help='Name of OSNI shapefile that contains Ward boundary information'
+        ),
+        make_option(
             '--wmc', action='store', dest='wmc_file',
             help= 'Name of OSNI shapefile that contains Westminister Parliamentary constituency boundary'
         ),
@@ -43,8 +47,11 @@ class Command(NoArgsCommand):
         __import__(options['control'])
         control = sys.modules[options['control']]
 
-        if all(options[x] is None for x in ['lgd_file', 'wmc_file']):
-            raise Exception("You must specify at least one of wmc, or lgd.")
+        if all(options[x] is None for x in ['lgw_file', 'lgd_file', 'wmc_file']):
+            raise Exception("You must specify at least one of lgw, wmc, or lgd.")
+
+        if options['lgw_file']:
+            self.process_file(options['lgw_file'], 'LGW', control, options)
 
         if options['lgd_file']:
             self.process_file(options['lgd_file'], 'LGD', control, options)
@@ -189,6 +196,7 @@ class Command(NoArgsCommand):
     area_code_to_feature_field = {
         'WMC': {'name': 'PC_NAME', 'ons_code': 'PC_ID', 'osni_object_id': 'OBJECTID'},
         'LGD': {'name': 'LGDNAME', 'ons_code': 'LGDCode', 'osni_object_id': 'OBJECTID'},
+        'LGW': {'name': 'WARDNAME', 'ons_code': 'WardCode', 'osni_object_id': 'OBJECTID'},
     }
 
     def format_name(self, name):
