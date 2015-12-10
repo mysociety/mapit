@@ -45,6 +45,34 @@ class Command(NoArgsCommand):
         make_option(
             '--eur', action='store', dest='eur_file',
             help='Name of OSNI shapefile that contains European Region boundary information'),
+
+        # OSNI datasets are exported in either 29902 or 102100 projections.
+        # PostGIS doesn't support 102100, but it is mathematically equivalent
+        # to 3857 which it does support.  Unfortunately using that projection
+        # causes failures during for point-based lookup of parents, but if we
+        # use 4326 instead it works.  Apparently 102100 and 4326 are both "web
+        # mercator" projections so are probably very similar (if not exactly
+        # mathematically equivalent).  Interestingly opening a shapefile that is
+        # in 102100 in a viewing tool such as qgis reports it as 4326 whereas a
+        # 29902 reports as a custom projection that is identical in all but name
+        # to 29902.  This suggests it's safe to use 4326 as a replacement for
+        # 102100.  The defaults here are based on the srids of the data
+        # downloaded in Dec 2015 - they may change over time.
+        make_option(
+            '--lgw-srid', action='store', type='int', dest='lgw_srid', default=4326,
+            help='SRID of Ward boundary information shapefile (default 4326)'),
+        make_option(
+            '--wmc-srid', action='store', type='int', dest='wmc_srid', default=4326,
+            help='SRID of Westminister Parliamentery constituency boundary information shapefile (default 4326)'),
+        make_option(
+            '--lgd-srid', action='store', type='int', dest='lgd_srid', default=4326,
+            help='SRID of Council boundary information shapefile (default 4326)'),
+        make_option(
+            '--lge-srid', action='store', type='int', dest='lge_srid', default=29902,
+            help='SRID of Electoral Area boundary information shapefile (default 29902)'),
+        make_option(
+            '--eur-srid', action='store', type='int', dest='eur_srid', default=29902,
+            help='SRID of European Region boundary information shapefile (default 29902)'),
     )
 
     ons_code_to_shape = {}
@@ -60,29 +88,29 @@ class Command(NoArgsCommand):
             raise Exception("You must specify at least one of lgw, wmc, lgd, lge, or eur.")
 
         if options['lgw_file']:
-            self.process_file(options['lgw_file'], 'LGW', control, options)
+            self.process_file(options['lgw_file'], 'LGW', options['lgw_srid'], control, options)
 
         if options['lge_file']:
-            self.process_file(options['lge_file'], 'LGE', control, options)
+            self.process_file(options['lge_file'], 'LGE', options['lge_srid'], control, options)
 
         if options['lgd_file']:
-            self.process_file(options['lgd_file'], 'LGD', control, options)
+            self.process_file(options['lgd_file'], 'LGD', options['lgd_srid'], control, options)
 
         if options['wmc_file']:
-            self.process_file(options['wmc_file'], 'WMC', control, options)
-            self.process_file(options['wmc_file'], 'NIE', control, options)
+            self.process_file(options['wmc_file'], 'WMC', options['wmc_srid'], control, options)
+            self.process_file(options['wmc_file'], 'NIE', options['wmc_srid'], control, options)
 
         if options['eur_file']:
-            self.process_file(options['eur_file'], 'EUR', control, options)
+            self.process_file(options['eur_file'], 'EUR', options['eur_srid'], control, options)
 
-    def process_file(self, filename, area_code, control, options):
+    def process_file(self, filename, area_code, srid, control, options):
         code_version = CodeType.objects.get(code=control.code_version())
         name_type = NameType.objects.get(code='N')
         code_type_osni = CodeType.objects.get(code='osni_oid')
         if not hasattr(self, area_code):
             raise Exception("Don't know how to extract features from %s files" % area_code)
 
-        area_code_info = getattr(self, area_code)()
+        area_code_info = getattr(self, area_code)(srid)
 
         print(filename)
         current_generation = Generation.objects.current()
@@ -177,6 +205,7 @@ class Command(NoArgsCommand):
                 else:
                     g = geos_g.ogr
 
+            g = area_code_info.transform_geom(g)
             poly = [g]
 
             if options['commit']:
@@ -194,14 +223,26 @@ class Command(NoArgsCommand):
             save_polygons(self.osni_object_id_to_shape)
             save_polygons(self.ons_code_to_shape)
 
-    class WMC:
+    class AreaCodeShapefileInterpreter(object):
+        def __init__(self, srid):
+            self.srid = srid
+
+        # Transform all shapefile geometry to 29902 for consistency if it's
+        # not already in that projection
+        def transform_geom(self, geom):
+            geom.srid = self.srid
+            if not(self.srid == 29902):
+                geom.transform(29902)
+            return geom
+
+    class WMC(AreaCodeShapefileInterpreter):
         def extract_fields(self, feature):
             name = feature['PC_NAME'].value
             ons_code = feature['PC_ID'].value
             object_id = 'WMC-%s' % str(feature['OBJECTID'].value)
             return (name, ons_code, object_id)
 
-    class NIE:
+    class NIE(AreaCodeShapefileInterpreter):
         # We don't have GSS codes for NIE areas, because we generate them from
         # the WMC data and can't have duplicates
         def extract_fields(self, feature):
@@ -209,22 +250,23 @@ class Command(NoArgsCommand):
             object_id = 'NIE-%s' % str(feature['OBJECTID'].value)
             return (name, None, object_id)
 
-    class LGW:
+    class LGW(AreaCodeShapefileInterpreter):
         def extract_fields(self, feature):
             name = feature['WARDNAME'].value
             ons_code = feature['WardCode'].value
             object_id = 'LGW-%s' % str(feature['OBJECTID'].value)
             return (name, ons_code, object_id)
 
-    class LGD:
+    class LGD(AreaCodeShapefileInterpreter):
         def extract_fields(self, feature):
             name = feature['LGDNAME'].value
             ons_code = feature['LGDCode'].value
             object_id = 'LGD-%s' % str(feature['OBJECTID'].value)
             return (name, ons_code, object_id)
 
-    class LGE:
-        def __init__(self):
+    class LGE(AreaCodeShapefileInterpreter):
+        def __init__(self, srid):
+            super(self.__class__, self).__init__(srid)
             self.lge_ons_codes = {}
             self._populate_osni_missing_ons_codes()
 
@@ -248,7 +290,7 @@ class Command(NoArgsCommand):
             object_id = 'LGE-%s' % str(feature['OBJECTID'].value)
             return (name, ons_code, object_id)
 
-    class EUR:
+    class EUR(AreaCodeShapefileInterpreter):
         def extract_fields(self, feature):
             object_id = 'EUR-%s' % str(feature['OBJECTID'].value)
             return ('Northern Ireland', 'N07000001', object_id)
