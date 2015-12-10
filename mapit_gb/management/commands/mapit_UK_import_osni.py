@@ -31,7 +31,10 @@ class Command(NoArgsCommand):
         ),
         make_option(
             '--wmc', action='store', dest='wmc_file',
-            help= 'Name of OSNI shapefile that contains Westminister Parliamentary constituency boundary'
+            help=(
+                'Name of OSNI shapefile that contains Westminister Parliamentary constituency boundary'
+                'information (also used for Northern Ireland Assembly constituencies)'
+            )
         ),
         make_option(
             '--lgd', action='store', dest='lgd_file',
@@ -58,6 +61,7 @@ class Command(NoArgsCommand):
 
         if options['wmc_file']:
             self.process_file(options['wmc_file'], 'WMC', control, options)
+            self.process_file(options['wmc_file'], 'NIE', control, options)
 
     def process_file(self, filename, area_code, control, options):
         code_version = CodeType.objects.get(code=control.code_version())
@@ -195,6 +199,9 @@ class Command(NoArgsCommand):
 
     area_code_to_feature_field = {
         'WMC': {'name': 'PC_NAME', 'ons_code': 'PC_ID', 'osni_object_id': 'OBJECTID'},
+        # We don't have GSS codes for NIE areas, because we generate them from
+        # the WMC data and can't have duplicates
+        'NIE': {'name': 'PC_NAME', 'osni_object_id': 'OBJECTID'},
         'LGD': {'name': 'LGDNAME', 'ons_code': 'LGDCode', 'osni_object_id': 'OBJECTID'},
         'LGW': {'name': 'WARDNAME', 'ons_code': 'WardCode', 'osni_object_id': 'OBJECTID'},
     }
