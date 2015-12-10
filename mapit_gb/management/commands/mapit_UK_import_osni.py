@@ -42,6 +42,9 @@ class Command(NoArgsCommand):
         make_option(
             '--lge', action='store', dest='lge_file',
             help='Name of OSNI shapefile that contains Electoral Area boundary information'),
+        make_option(
+            '--eur', action='store', dest='eur_file',
+            help='Name of OSNI shapefile that contains European Region boundary information'),
     )
 
     ons_code_to_shape = {}
@@ -53,8 +56,8 @@ class Command(NoArgsCommand):
         __import__(options['control'])
         control = sys.modules[options['control']]
 
-        if all(options[x] is None for x in ['lgw_file', 'lgd_file', 'lge_file', 'wmc_file']):
-            raise Exception("You must specify at least one of lgw, wmc, lgd, or lge.")
+        if all(options[x] is None for x in ['lgw_file', 'lgd_file', 'lge_file', 'wmc_file', 'eur_file']):
+            raise Exception("You must specify at least one of lgw, wmc, lgd, lge, or eur.")
 
         if options['lgw_file']:
             self.process_file(options['lgw_file'], 'LGW', control, options)
@@ -68,6 +71,9 @@ class Command(NoArgsCommand):
         if options['wmc_file']:
             self.process_file(options['wmc_file'], 'WMC', control, options)
             self.process_file(options['wmc_file'], 'NIE', control, options)
+
+        if options['eur_file']:
+            self.process_file(options['eur_file'], 'EUR', control, options)
 
     def process_file(self, filename, area_code, control, options):
         code_version = CodeType.objects.get(code=control.code_version())
@@ -219,7 +225,14 @@ class Command(NoArgsCommand):
         else:
             return None
 
+    def ni_eur_name(self, _feature, _area_code):
+        return 'Northern Ireland'
+
+    def ni_eur_ons_code(self, _feature, _area_code):
+        return 'N07000001'
+
     area_code_to_feature_field = {
+        'EUR': {'name': ni_eur_name, 'ons_code': ni_eur_ons_code, 'osni_object_id': 'OBJECTID'},
         'WMC': {'name': 'PC_NAME', 'ons_code': 'PC_ID', 'osni_object_id': 'OBJECTID'},
         # We don't have GSS codes for NIE areas, because we generate them from
         # the WMC data and can't have duplicates
