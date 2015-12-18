@@ -16,6 +16,10 @@ class Command(NoArgsCommand):
     def handle_noargs(self, **options):
         self.current_generation = Generation.objects.current()
         self.new_generation = Generation.objects.new()
+        if Generation.objects.filter(active=True).count() == 0:
+            # Let this work if you are running it on your 1st import before
+            # activation
+            self.current_generation = self.new_generation
         self.country = Country.objects.get(code='N')
         if not self.new_generation:
             raise Exception("No new generation to be used for import!")
