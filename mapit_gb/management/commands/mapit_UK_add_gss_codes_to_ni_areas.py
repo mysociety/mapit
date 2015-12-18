@@ -81,19 +81,29 @@ class Command(NoArgsCommand):
                        ' LGD "%s" to add GSS "%s" to') % (ward_name, lge.name, lgd.name, ward_gss_code)
 
     def fetch_and_update_area(self, area_source, area_type, area_name, area_gss_code):
+        area_name = area_name.replace('St. ', 'St ')
         try:
             area = area_source.get(
                 country=self.country, type__code=area_type,
-                names__name__iexact=area_name,
+                name__iexact=area_name,
                 generation_low__lte=self.current_generation,
                 generation_high__gte=self.current_generation
             )
+        except Area.DoesNotExist:
+            try:
+                area = area_source.get(
+                    country=self.country, type__code=area_type,
+                    name__istartswith=area_name,
+                    generation_low__lte=self.current_generation,
+                    generation_high__gte=self.current_generation
+                )
+            except Area.DoesNotExist:
+                return None, False
+        else:
             area.generation_high = self.new_generation
             area.save()
             _code, code_created = area.codes.get_or_create(type=self.gss_code_type, code=area_gss_code)
             return area, code_created
-        except Area.DoesNotExist:
-            return None, False
 
     def report_result(self, message, code_created):
         print message,
