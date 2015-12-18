@@ -1,6 +1,6 @@
 # from http://www.legislation.gov.uk/uksi/2014/270/schedule/made,,,,,
 District,District GSS Code,Electoral area,Electoral area GSS code,Ward,Ward GSS code
-Antrim and Newtownabbey,N09000001,Dunsilly,N10000104,Cranfield,N08000115
+Antrim and Newtownabbey Borough Council,N09000001,Dunsilly,N10000104,Cranfield,N08000115
 ,,,,Parkgate,N08000129
 ,,,,Randalstown,N08000130
 ,,,,Shilvodan,N08000133
@@ -40,7 +40,7 @@ Antrim and Newtownabbey,N09000001,Dunsilly,N10000104,Cranfield,N08000115
 ,,,,Glebe,N08000120
 ,,,,Glengormley,N08000121
 ,,,,Hightown,N08000123
-"Armagh, Banbridge and Craigavon",N09000002,Armagh,N10000201,Blackwatertown,N08000207
+"Armagh City, Banbridge and Craigavon Borough Council",N09000002,Armagh,N10000201,Blackwatertown,N08000207
 ,,,,Cathedral,N08000210
 ,,,,Demesne,N08000213
 ,,,,Keady,N08000220
@@ -81,7 +81,7 @@ Antrim and Newtownabbey,N09000001,Dunsilly,N10000104,Cranfield,N08000115
 ,,,,Gilford,N08000217
 ,,,,Loughbrickland,N08000225
 ,,,,Rathfriland,N08000234
-Belfast,N09000003,Castle,N10000304,Bellevue,N08000309
+Belfast City Council,N09000003,Castle,N10000304,Bellevue,N08000309
 ,,,,Cavehill,N08000314
 ,,,,Chichester Park,N08000316
 ,,,,Duncairn,N08000322
@@ -141,7 +141,7 @@ Belfast,N09000003,Castle,N10000304,Bellevue,N08000309
 ,,,,Connswater,N08000320
 ,,,,Sydenham,N08000353
 ,,,,Woodstock,N08000359
-Causeway Coast and Glens,N09000004,The Glens,N10000407,Ballycastle,N08000404
+Causeway Coast and Glens Borough Council,N09000004,The Glens,N10000407,Ballycastle,N08000404
 ,,,,Kinbane,N08000425
 ,,,,Loughguile and Stranocum,N08000426
 ,,,,Lurigethan,N08000427
@@ -181,7 +181,7 @@ Causeway Coast and Glens,N09000004,The Glens,N10000407,Ballycastle,N08000404
 ,,,,Greystone,N08000422
 ,,,,Magilligan,N08000429
 ,,,,Roeside,N08000435
-Derry and Strabane,N09000005,Ballyarnett,N10000501,Carn Hill,N08000505
+Derry City and Strabane District Council,N09000005,Ballyarnett,N10000501,Carn Hill,N08000505
 ,,,,Culmore,N08000513
 ,,,,Galliagh,N08000521
 ,,,,Shantallow,N08000531
@@ -221,7 +221,7 @@ Derry and Strabane,N09000005,Ballyarnett,N10000501,Carn Hill,N08000505
 ,,,,Glenderg,N08000522
 ,,,,Newtownstewart,N08000528
 ,,,,Sion Mills,N08000534
-Fermanagh and Omagh,N09000006,Erne West,N10000604,Belcoo and Garrison,N08000602
+Fermanagh and Omagh District Council,N09000006,Erne West,N10000604,Belcoo and Garrison,N08000602
 ,,,,"Boho, Cleenish and Letterbreen",N08000605
 ,,,,Derrygonnelly,N08000611
 ,,,,Derrylin,N08000612
@@ -261,7 +261,7 @@ Fermanagh and Omagh,N09000006,Erne West,N10000604,Belcoo and Garrison,N08000602
 ,,,,Maguiresbridge,N08000629
 ,,,,Newtownbutler,N08000630
 ,,,,Rosslea,N08000634
-Lisburn and Castlereagh,N09000007,Killultagh,N10000705,Ballinderry,N08000701
+Lisburn and Castlereagh City Council,N09000007,Killultagh,N10000705,Ballinderry,N08000701
 ,,,,Glenavy,N08000718
 ,,,,Maghaberry,N08000730
 ,,,,Stonyford,N08000738
@@ -301,7 +301,7 @@ Lisburn and Castlereagh,N09000007,Killultagh,N10000705,Ballinderry,N08000701
 ,,,,Enler,N08000716
 ,,,,Graham’s Bridge,N08000719
 ,,,,Moneyreagh,N08000734
-Mid and East Antrim,N09000008,Knockagh,N10000806,Burleigh Hill,N08000810
+Mid and East Antrim Borough Council,N09000008,Knockagh,N10000806,Burleigh Hill,N08000810
 ,,,,Gortalee,N08000823
 ,,,,Greenisland,N08000825
 ,,,,Sunnylands,N08000836
@@ -341,7 +341,7 @@ Mid and East Antrim,N09000008,Knockagh,N10000806,Burleigh Hill,N08000810
 ,,,,Grange,N08000824
 ,,,,Maine,N08000832
 ,,,,Portglenone,N08000834
-Mid Ulster,N09000009,Carntogher,N10000901,Lower Glenshane,N08000926
+Mid Ulster District Council,N09000009,Carntogher,N10000901,Lower Glenshane,N08000926
 ,,,,Maghera,N08000927
 ,,,,Swatragh,N08000934
 ,,,,Tamlaght O’Crilly,N08000935
@@ -381,7 +381,7 @@ Mid Ulster,N09000009,Carntogher,N10000901,Lower Glenshane,N08000926
 ,,,,Caledon,N08000908
 ,,,,Castlecaulfield,N08000909
 ,,,,Fivemiletown,N08000920
-"Newry, Mourne and Down",N09000010,Slieve Gullion,N10001006,Bessbrook,N08001007
+"Newry, Mourne and Down District Council",N09000010,Slieve Gullion,N10001006,Bessbrook,N08001007
 ,,,,Camlough,N08001010
 ,,,,Crossmaglen,N08001014
 ,,,,Forkhill,N08001023
@@ -422,7 +422,7 @@ Mid Ulster,N09000009,Carntogher,N10000901,Lower Glenshane,N08000926
 ,,,,Derryboy,N08001016
 ,,,,Kilmore,N08001026
 ,,,,Saintfield,N08001036
-North Down and Ards,N09000011,Ards Peninsula,N10001101,Ballywalter,N08001106
+Ards and North Down Borough Council,N09000011,Ards Peninsula,N10001101,Ballywalter,N08001106
 ,,,,Carrowdore,N08001110
 ,,,,Kircubbin,N08001128
 ,,,,Loughries,N08001129
