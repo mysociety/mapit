@@ -13,6 +13,7 @@ from django.core.management.base import NoArgsCommand
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
 from django.utils import six
+from django.conf import settings
 
 from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
@@ -227,12 +228,14 @@ class Command(NoArgsCommand):
         def __init__(self, srid):
             self.srid = srid
 
-        # Transform all shapefile geometry to 29902 for consistency if it's
-        # not already in that projection
+        # Transform all shapefile geometry to the MAPIT_AREA_SRID if it's
+        # not already in that projection - otherwise the data is assumed to
+        # be in that projection when saved, regardless of the srid specified
+        # on the geometry object
         def transform_geom(self, geom):
             geom.srid = self.srid
-            if not(self.srid == 29902):
-                geom.transform(29902)
+            if not(self.srid == settings.MAPIT_AREA_SRID):
+                geom.transform(settings.MAPIT_AREA_SRID)
             return geom
 
     class WMC(AreaCodeShapefileInterpreter):
