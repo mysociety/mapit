@@ -22,7 +22,7 @@ RESTful API for looking up postcodes, council boundaries, etc.
 ### Dependencies
 
 MapIt has no dependencies on the rest of the GOV.UK stack, but does use PostgreSQL
-with some geo-spatial extensions. For the GOV.UK VM these are documented in [puppet](https://github.gds/gds/puppet/blob/master/modules/govuk/manifests/apps/mapit.pp), or you can follow the [standalone install guide](http://mapit.poplus.org/docs/self-hosted/install/).
+with some geo-spatial extensions. For the GOV.UK VM these are documented in [puppet](https://github.com/alphagov/govuk-puppet/blob/master/modules/govuk/manifests/apps/mapit.pp), or you can follow the [standalone install guide](http://mapit.poplus.org/docs/self-hosted/install/).
 
 ### Running the application in development
 
