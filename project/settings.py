@@ -1,16 +1,6 @@
 import os
-import sys
 import yaml
-
-if sys.version_info[:2] >= (3, 4):
-    import importlib
-    find_module = lambda c: importlib.machinery.PathFinder.find_spec(c)
-elif sys.version_info[:2] >= (3, 1):
-    import importlib
-    find_module = lambda c: importlib.machinery.PathFinder.find_module(c)
-else:
-    import imp
-    find_module = lambda c: imp.find_module(c)
+from .utils import find_module
 
 # Path to here is something like
 # .../<repo>/<project_name>/settings.py

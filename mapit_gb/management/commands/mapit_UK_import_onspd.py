@@ -105,7 +105,9 @@ class Command(Command):
             action='store_true',
             dest='include-no-location',
             default=False,
-            help='Set if you want to import postcodes without location info (quality: 9).  Note that Crown Dependency postcodes have no location and if you choose to import these postcodes they will be imported regardless of your choice for this option.'
+            help=('Set if you want to import postcodes without location info (quality: 9).  Note that Crown '
+                  'Dependency postcodes have no location and if you choose to import these postcodes they will be '
+                  'imported regardless of your choice for this option.')
         ),
         make_option(
             '--crown-dependencies',
@@ -124,7 +126,8 @@ class Command(Command):
     def handle_label(self, file, **options):
         # Check our crown-dependencies option is correct
         if not options['crown-dependencies'] in ('include', 'exclude', 'only'):
-            raise RuntimeError('Invalid value for --crown-dependencies "%s" must be "include", "exclude", or "only".  ' % options['crown-dependencies'])
+            raise RuntimeError('Invalid value for --crown-dependencies "%s" must be "include", '
+                               '"exclude", or "only".  ' % options['crown-dependencies'])
         self.process(file, options)
 
     def pre_row(self, row, options):
