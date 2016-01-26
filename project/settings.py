@@ -1,6 +1,6 @@
 import os
 import yaml
-from .utils import find_module
+from .utils import skip_unreadable_post, find_module
 
 # Path to here is something like
 # .../<repo>/<project_name>/settings.py
@@ -221,6 +221,27 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mapit',
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_unreadable_post,
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'filters': ['require_debug_false', 'skip_unreadable_posts'],
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+}
 
 if MAPIT_COUNTRY:
     try:
