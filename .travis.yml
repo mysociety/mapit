@@ -29,6 +29,7 @@ matrix:
 
 install:
   - pip install tox
+  - pip install 'virtualenv<14'
 before_script:
   - 'if [ $TOXENV != "flake8" ]; then .travis/before_script; fi'
 script:
