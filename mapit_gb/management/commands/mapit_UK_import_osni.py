@@ -179,14 +179,25 @@ class Command(NoArgsCommand):
                 if int(options['verbosity']) > 1:
                     print("  Area matched, %s" % (m, ))
             except Area.DoesNotExist:
-                print("  New area: %s %s %s %s" % (area_code, ons_code, osni_object_id, name))
-                m = Area(
-                    name=name,  # If committing, this will be overwritten by the m.names.update_or_create
-                    type=Type.objects.get(code=area_code),
-                    country=Country.objects.get(code=country),
-                    generation_low=new_generation,
-                    generation_high=new_generation,
-                )
+                area_type = Type.objects.get(code=area_code)
+                # It's possible we already have NIE entries (without any codes) in the db
+                try:
+                    if area_code == 'NIE':
+                        matching_name = name.title().replace('And', 'and')
+                        m = Area.objects.get(name=matching_name, type=area_type, generation_high=current_generation)
+                        if int(options['verbosity']) > 1:
+                            print("  Area matched (via name), %s" % (m, ))
+                    else:
+                        raise Area.DoesNotExist("Still doesn't exist")
+                except Area.DoesNotExist:
+                    print("  New area: %s %s %s %s" % (area_code, ons_code, osni_object_id, name))
+                    m = Area(
+                        name=name,  # Not overwritten by m.names.update_or_create as no "N" use
+                        type=area_type,
+                        country=Country.objects.get(code=country),
+                        generation_low=new_generation,
+                        generation_high=new_generation,
+                    )
 
             if m.generation_high and current_generation and m.generation_high.id < current_generation.id:
                 raise Exception("Area %s found, but not in current generation %s" % (m, current_generation))
