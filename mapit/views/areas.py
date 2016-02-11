@@ -16,12 +16,13 @@ from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
 from django.shortcuts import redirect, render
 
-from mapit.models import Area, Generation, Geometry, Code, Name, TransformError
-from mapit.shortcuts import output_json, output_html, get_object_or_404, set_timeout
+from mapit.models import Area, Generation, Geometry, Code, Name
+from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit import countries
 from mapit.iterables import iterdict
+from mapit.geometryserialiser import GeometrySerialiser, TransformError
 
 
 def add_codes(areas):
@@ -77,6 +78,24 @@ def query_args(request, format, type=None):
         args['type__code__in'] = type.split(',')
     elif type:
         args['type__code'] = type
+
+    return args
+
+
+def query_args_polygon(request, format, srid, area_ids):
+    args = {}
+    if not srid:
+        srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
+    args['srid'] = int(srid)
+
+    try:
+        args['simplify_tolerance'] = float(request.GET.get('simplify_tolerance', 0))
+    except ValueError:
+        raise ViewException(format, _('Badly specified tolerance'), 400)
+
+    for area_id in area_ids:
+        if not re.match('\d+$', area_id):
+            raise ViewException(format, _('Bad area ID specified'), 400)
 
     return args
 
@@ -139,32 +158,18 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         if resp:
             return resp
 
-    if not re.match('\d+$', area_id):
-        raise ViewException(format, _('Bad area ID specified'), 400)
-
-    if not srid:
-        srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
-    srid = int(srid)
+    args = query_args_polygon(request, format, srid, [area_id])
 
     area = get_object_or_404(Area, id=area_id)
 
     try:
-        simplify_tolerance = float(request.GET.get('simplify_tolerance', 0))
-    except ValueError:
-        raise ViewException(format, _('Badly specified tolerance'), 400)
-
-    try:
-        output, content_type = area.export(srid, format, simplify_tolerance=simplify_tolerance)
+        output, content_type = area.export(args['srid'], format, simplify_tolerance=args['simplify_tolerance'])
         if output is None:
             return output_json({'error': _('No polygons found')}, code=404)
     except TransformError as e:
         return output_json({'error': e.args[0]}, code=400)
 
-    response = HttpResponse(content_type='%s; charset=utf-8' % content_type)
-    response['Access-Control-Allow-Origin'] = '*'
-    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
-    response.write(output)
-    return response
+    return output_polygon(content_type, output)
 
 
 @ratelimit(minutes=3, requests=100)
@@ -251,6 +256,27 @@ def areas_by_name(request, name, format='json'):
     args['name__istartswith'] = name
     areas = Area.objects.filter(**args)
     return output_areas(request, _('Areas starting with %s') % name, format, areas)
+
+
+@ratelimit(minutes=3, requests=100)
+def areas_polygon(request, area_ids, srid='', format='kml'):
+    area_ids = area_ids.split(',')
+    args = query_args_polygon(request, format, srid, area_ids)
+
+    areas = list(Area.objects.filter(id__in=area_ids))
+    if not areas:
+        return output_json({'error': _('No areas found')}, code=404)
+
+    serialiser = GeometrySerialiser(areas, args['srid'], args['simplify_tolerance'])
+    try:
+        if format == 'kml':
+            output, content_type = serialiser.kml('full')
+        elif format == 'geojson':
+            output, content_type = serialiser.geojson()
+    except TransformError as e:
+        return output_json({'error': e.args[0]}, code=400)
+
+    return output_polygon(content_type, output)
 
 
 @ratelimit(minutes=3, requests=100)

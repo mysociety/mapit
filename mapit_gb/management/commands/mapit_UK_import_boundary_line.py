@@ -59,7 +59,10 @@ class Command(LabelCommand):
             ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
-            patch = self.patch_boundary_line(ons_code, area_code)
+            if hasattr(control, 'patch_boundary_line'):
+                patch = control.patch_boundary_line(name, ons_code, area_code)
+            else:
+                patch = self.patch_boundary_line(ons_code, area_code)
             if patch is True:
                 ons_code = None
             elif patch:
@@ -116,7 +119,7 @@ class Command(LabelCommand):
             # Do parents in separate P-in-P code after this is done.
 
             try:
-                check = control.check(name, area_code, country, feat.geom)
+                check = control.check(name, area_code, country, feat.geom, ons_code=ons_code)
                 if check is True:
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
@@ -180,7 +183,9 @@ class Command(LabelCommand):
             save_polygons(self.ons_code_to_shape)
 
     def patch_boundary_line(self, ons_code, area_code):
-        """Fix mistakes in Boundary-Line"""
+        """Used to fix mistakes in Boundary-Line. This patch function should
+        return True if we want to ignore the provided ONS code (and match only
+        on unit ID), or a new ONS code to replace it."""
         if area_code == 'WMC' and ons_code == '42UH012':
             return True
         if area_code == 'UTA' and ons_code == 'S16000010':

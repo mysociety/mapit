@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load url from compat %}
 <li{% if indent_areas %} class="{{ area.css_indent_class }}"{% endif %}>
     <h3><a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
     <p>ID {{ area.id }}, {{ area.type.description }}

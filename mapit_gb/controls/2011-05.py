@@ -18,7 +18,7 @@ def code_version():
 # Harrogate: Parish of Markingfield renamed Markenfield
 # Wiltshire: Parishes of Allcannings and Bower Chalke renamed All Cannings and Bowerchalke
 
-def check(name, type, country, geometry):
+def check(name, type, country, geometry, **args):
     """Should return True if this area is NEW, False if we should match against ONS code,
        or an Area to be used as an override instead"""
 

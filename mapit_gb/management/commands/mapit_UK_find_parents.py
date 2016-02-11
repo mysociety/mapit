@@ -34,4 +34,8 @@ class Command(FindParentsCommand):
         #   Scilly Isles
         'CPC': ('DIS', 'UTA', 'MTD', 'LBO', 'COI'),
         'CPW': 'CPC',
+        # A Northern Ireland ward's parent is a Northern Ireland electoral area
+        'LGW': 'LGE',
+        # A Northern Ireland electoral area's parent is a Northern Ireland Council district
+        'LGE': 'LGD',
     }

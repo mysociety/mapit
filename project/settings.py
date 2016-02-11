@@ -1,8 +1,6 @@
-import imp
 import os
 import yaml
-
-import django
+from .utils import skip_unreadable_post, find_module
 
 # Path to here is something like
 # .../<repo>/<project_name>/settings.py
@@ -49,7 +47,6 @@ GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
 # Django settings for mapit project.
 
 DEBUG = config.get('DEBUG', True)
-TEMPLATE_DEBUG = DEBUG
 
 # (Note that even if DEBUG is true, output_json still sets a
 # Cache-Control header with max-age of 28 days.)
@@ -176,14 +173,6 @@ STATICFILES_FINDERS = (
     # 'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    ('django.template.loaders.cached.Loader', (
-        'django.template.loaders.filesystem.Loader',
-        'django.template.loaders.app_directories.Loader',
-    )),
-)
-
 # UpdateCacheMiddleware does ETag setting, and
 # ConditionalGetMiddleware does ETag checking.
 # So we don't want this flag, which runs very
@@ -191,50 +180,47 @@ TEMPLATE_LOADERS = (
 USE_ETAGS = False
 
 MIDDLEWARE_CLASSES = [
-    'mapit.middleware.gzip.GZipMiddleware',
-    # Not 'django.middleware.gzip.GZipMiddleware' to work around Django #24242
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
     'mapit.middleware.ViewExceptionMiddleware',
 ]
-if django.get_version() >= '1.7':
-    MIDDLEWARE_CLASSES.append('django.contrib.auth.middleware.SessionAuthenticationMiddleware')
 
 ROOT_URLCONF = 'project.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'project.wsgi.application'
 
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.request',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'mapit.context_processors.country',
-    'mapit.context_processors.analytics',
-)
-
-if django.get_version() >= '1.8':
-    processors = map(lambda x: x.replace('django.core', 'django.template'), TEMPLATE_CONTEXT_PROCESSORS)
-    TEMPLATES = [{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': TEMPLATE_DIRS,
-        'OPTIONS': {
-            'context_processors': processors,
-            'loaders': TEMPLATE_LOADERS,
-        },
-    }]
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': (
+        # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+        # Always use forward slashes, even on Windows.
+        # Don't forget to use absolute paths, not relative paths.
+    ),
+    'OPTIONS': {
+        'context_processors': (
+            'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth',
+            'django.contrib.messages.context_processors.messages',
+            'mapit.context_processors.country',
+            'mapit.context_processors.analytics',
+        ),
+        # List of callables that know how to import templates from various sources.
+        'loaders': (
+            ('django.template.loaders.cached.Loader', (
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            )),
+        ),
+    },
+}]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -246,13 +232,32 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mapit',
 ]
-if django.get_version() < '1.7':
-    INSTALLED_APPS.append('south')
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_unreadable_post,
+        },
+    },
+    'handlers': {
+        'mail_admins': {
+            'filters': ['require_debug_false', 'skip_unreadable_posts'],
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+    },
+}
 
 if MAPIT_COUNTRY:
     try:
         c = 'mapit_%s' % MAPIT_COUNTRY.lower()
-        imp.find_module(c)
+        find_module(c)
         # Put before 'mapit', so country templates take precedence
         INSTALLED_APPS.insert(INSTALLED_APPS.index('mapit'), c)
     except:

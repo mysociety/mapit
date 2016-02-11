@@ -8,6 +8,8 @@ handler500 = 'mapit.shortcuts.json_500'
 
 format_end = '(?:\.(?P<format>html|json))?'
 
+number = '-?\d*\.?\d+'
+
 urlpatterns = [
     url(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
     url(r'^licensing$', render, {'template_name': 'mapit/licensing.html'}),
@@ -35,16 +37,18 @@ urlpatterns = [
         areas.area_polygon),
 
     url(r'^point/$', areas.point_form_submitted),
-    url(r'^point/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,
+    url(r'^point/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
         areas.areas_by_point),
-    url(r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,
+    url(r'^point/latlon/(?P<lat>%s),(?P<lon>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
         areas.areas_by_point_latlon),
-    url(r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end,
+    url(r'^point/osgb/(?P<e>%s),(?P<n>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
         areas.areas_by_point_osgb),
 
-    url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)%s$' % format_end, postcodes.nearest),
+    url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)%s$' % (number, number, format_end), postcodes.nearest),
 
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % format_end, areas.areas),
+    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
+    url(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', areas.areas_geometry),
     url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, areas.areas_by_type),
     url(r'^areas/(?P<name>.+?)%s$' % format_end, areas.areas_by_name),

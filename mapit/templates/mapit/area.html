@@ -1,6 +1,5 @@
 {% extends "mapit/base.html" %}
 {% load i18n %}
-{% load url from compat %}
 
 {% block title %}{{ area.name }}{% endblock title %}
 
@@ -81,8 +80,8 @@
                 <ul>
                     <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/touches.html{{ geotype.touches.0 }}">{% trans "Touching this area" %}{{ geotype.touches.1 }}</a></li>
                     <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/overlaps.html{{ geotype.overlaps.0 }}">{% trans "Overlapping this area" %}{{ geotype.overlaps.1 }}</a></li>
-                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covered.html">{% trans "Covered by this area" %}</a></li>
-                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">{% trans "Covering this area" %}{{ geotype.covers.1 }}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covered.html">{% trans "Covering this area" %}</a></li>
+                    <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/covers.html{{ geotype.covers.0 }}">{% trans "Covered by this area" %}{{ geotype.covers.1 }}</a></li>
                     <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/coverlaps.html{{ geotype.coverlaps.0 }}">{% trans "Covered by or overlapping this area" %}{{ geotype.coverlaps.1 }}</a></li>
                     <li><a rel="nofollow" href="{% url "mapit_index" %}area/{{ area.id }}/intersects.html{{ geotype.intersects.0 }}">{% trans "Intersects this area" %}{{ geotype.intersects.1 }}</a></li>
                 </ul>

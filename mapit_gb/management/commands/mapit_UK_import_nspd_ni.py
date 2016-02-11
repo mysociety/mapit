@@ -15,7 +15,6 @@
 
 import csv
 import os.path
-from django.db import transaction
 from mapit.models import Area
 from mapit.management.commands.mapit_import_postal_codes import Command
 
@@ -25,7 +24,6 @@ class Command(Command):
     args = '<NSPD CSV file>'
     option_defaults = {'strip': True, 'srid': 29902, 'coord-field-lon': 10, 'coord-field-lat': 11}
 
-    @transaction.commit_manually
     def handle_label(self, file, **options):
         # First set up the areas needed (as we have to match to postcode manually)
         self.euro_area = Area.objects.get(country__code='N', type__code='EUR')
@@ -98,4 +96,3 @@ class Command(Command):
     def post_row(self, pc):
         pc.areas.clear()
         pc.areas.add(*self.areas)
-        transaction.commit()

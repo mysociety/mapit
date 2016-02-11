@@ -1,3 +1,29 @@
+master
+    * Drop support for Django versions before 1.8. #209
+    * MapIt Global specific:
+        Fix issue parsing KML in python2 prior to 2.7.4. #206
+
+v1.4, 2015-09-18
+    * Mark all strings for translation. #185
+    * Italian translation and base templates. #185
+    * Swedish translation and postcode code. #184
+    * Support GeoJSON/KML for multiple areas. #136
+    * Improved testing using tox.
+    * Better handling of bad float numbers in URL. #202
+    * New command to raise generation_high on current areas. #204
+    * Bugfixes:
+        * Include missing meta viewport tag for mobile display.
+        * Fix Python 3 issue with streamed JSON responses.
+        * Make sure the CSS has been compiled when packaging distribution. #179
+        * Avoid Unicode problems in find parents commands. #185
+        * Fix link to geohack tool. #195
+        * Remove unneeded three-character check from import script. #203
+    * MapIt UK specific:
+        * Boundary-Line May 2015. #190
+
+Thanks to chris48s, Guglielmo Celata, Greg Kempe, Jon Kristensen, Mark
+Longair, Chris Mytton, and Matthew Somerville for their work on this release.
+
 v1.3.1, 2015-03-23
     * Make sure all country-specific templates use the compatibility template
       tag for "url".

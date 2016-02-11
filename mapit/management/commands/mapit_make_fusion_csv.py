@@ -60,7 +60,8 @@ from random import random, seed
 import colorsys
 
 from django.core.management.base import BaseCommand
-from mapit.models import Area, Generation, TransformError
+from mapit.models import Area, Generation
+from mapit.geometryserialiser import TransformError
 
 
 def hsv_to_rgb(h, s, v):
