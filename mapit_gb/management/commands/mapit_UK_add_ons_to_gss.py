@@ -1,6 +1,7 @@
 # This script is for a one off import of all the old ONS codes to a MapIt
 # containing only the new ones from a modern Boundary-Line.
 
+import codecs
 import csv
 import os.path
 from django.core.management.base import NoArgsCommand
@@ -29,13 +30,21 @@ class Command(NoArgsCommand):
     help = 'Inserts the old ONS codes into mapit'
 
     def handle_noargs(self, **options):
-        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../data/BL-2010-10-code-change.csv'))
+        code_changes = codecs.open(os.path.join(
+            os.path.dirname(__file__),
+            '../../data/BL-2010-10-code-change.csv'
+            ), 'r', 'latin-1')
+        mapping = csv.reader(code_changes)
         next(mapping)
         for row in mapping:
             new_code, name, old_code = row[0], row[1], row[3]
             process(new_code, old_code)
 
-        mapping = csv.reader(open(os.path.dirname(__file__) + '/../../data/BL-2010-10-missing-codes.csv'))
+        missing_codes = codecs.open(os.path.join(
+            os.path.dirname(__file__),
+            '../../data/BL-2010-10-missing-codes.csv'
+            ), 'r', 'latin-1')
+        mapping = csv.reader(missing_codes)
         next(mapping)
         for row in mapping:
             type, new_code, old_code, name = row
