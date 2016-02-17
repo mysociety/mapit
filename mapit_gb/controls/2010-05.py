@@ -13,7 +13,7 @@ def code_version():
     return 'ons'
 
 
-def check(name, type, country, geometry):
+def check(name, type, country, geometry, **args):
     """Should return True if this area is NEW, False if we should match"""
     if type == 'WMC' and country in ('E', 'W'):
         return True

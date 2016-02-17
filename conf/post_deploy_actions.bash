@@ -43,7 +43,6 @@ find . -name '*.pyc' -delete
 bin/mapit_make_css
 
 # get the database up to speed
-python manage.py syncdb --noinput
 python manage.py migrate
 
 # gather all the static files in one place

@@ -2,8 +2,8 @@
 # and output it as either HTML or JSON appropriately
 
 from django import http
+from django.template.loader import render_to_string
 from mapit.shortcuts import output_json
-from mapit.djangopatch import render_to_string
 
 
 class ViewException(Exception):

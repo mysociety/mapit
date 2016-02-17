@@ -2,20 +2,16 @@ import re
 import itertools
 
 from django.contrib.gis.db import models
-from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
-from django.utils.html import escape
 from django.utils.encoding import python_2_unicode_compatible
 
-from mapit.managers import Manager, GeoManager
 from mapit import countries
-from mapit.djangopatch import GetQuerySetMetaclass
-from django.utils import six
+from mapit.geometryserialiser import GeometrySerialiser
 
 
-class GenerationManager(six.with_metaclass(GetQuerySetMetaclass, models.Manager)):
+class GenerationManager(models.Manager):
     def current(self):
         """Return the most recent active generation.
 
@@ -129,7 +125,7 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-class AreaManager(six.with_metaclass(GetQuerySetMetaclass, models.GeoManager)):
+class AreaManager(models.GeoManager):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related('type', 'country')
 
@@ -220,10 +216,6 @@ SELECT DISTINCT mapit_area.*
             area.generation_high = new_generation
             area.save()
         return area
-
-
-class TransformError(Exception):
-    pass
 
 
 @python_2_unicode_compatible
@@ -318,59 +310,16 @@ class Area(models.Model):
         something else goes wrong with the spatial transform, then a
         TransformError exception is raised.
         """
-        all_areas = self.polygons.all()
-        if len(all_areas) > 1:
-            all_areas = all_areas.collect()
-        elif len(all_areas) == 1:
-            all_areas = all_areas[0].polygon
-        else:
+        all_polygons = self.polygons.all()
+        if len(all_polygons) == 0:
             return (None, None)
-
-        if srid != settings.MAPIT_AREA_SRID:
-            try:
-                all_areas.transform(srid)
-            except (SRSException, OGRException) as e:
-                raise TransformError("Error with transform: %s" % e)
-
-        num_points_before_simplification = all_areas.num_points
-        if simplify_tolerance:
-            all_areas = all_areas.simplify(simplify_tolerance)
-            if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise TransformError("Simplifying %s with tolerance %f left no boundary at all" % (
-                    self, simplify_tolerance))
-
+        serialiser = GeometrySerialiser(self, srid, simplify_tolerance)
         if export_format == 'kml':
-            if kml_type == "polygon":
-                out = all_areas.kml
-            elif kml_type == "full":
-                out = '''<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-    <Document>
-        <Style id="ourPolygonStyle">
-            <LineStyle>
-                <color>%s</color>
-                <width>2</width>
-            </LineStyle>
-            <PolyStyle>
-                <color>%s</color>
-            </PolyStyle>
-        </Style>
-        <Placemark>
-            <styleUrl>#ourPolygonStyle</styleUrl>
-            <name>%s</name>
-            %s
-        </Placemark>
-    </Document>
-</kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
-            else:
-                raise Exception("Unknown kml_type: '%s'" % (kml_type,))
-            content_type = 'application/vnd.google-earth.kml+xml'
+            out, content_type = serialiser.kml(kml_type, line_colour, fill_colour)
         elif export_format in ('json', 'geojson'):
-            out = all_areas.json
-            content_type = 'application/json'
+            out, content_type = serialiser.geojson()
         elif export_format == 'wkt':
-            out = all_areas.wkt
-            content_type = 'text/plain'
+            out, content_type = serialiser.wkt()
         return (out, content_type)
 
 
@@ -378,7 +327,7 @@ class Area(models.Model):
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons')
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
-    objects = GeoManager()
+    objects = models.GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
@@ -400,7 +349,7 @@ class NameType(models.Model):
         max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
-    objects = Manager()
+    objects = models.Manager()
 
     def __str__(self):
         return '%s (%s)' % (self.description, self.code)
@@ -411,7 +360,7 @@ class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names')
     type = models.ForeignKey(NameType, related_name='names')
     name = models.CharField(max_length=2000)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
@@ -451,7 +400,7 @@ class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes')
     type = models.ForeignKey(CodeType, related_name='codes')
     code = models.CharField(max_length=500)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
@@ -462,7 +411,7 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeManager(six.with_metaclass(GetQuerySetMetaclass, GeoManager)):
+class PostcodeManager(models.GeoManager):
     def get_queryset(self):
         return self.model.QuerySet(self.model)
 
