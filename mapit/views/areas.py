@@ -314,7 +314,10 @@ def area_from_code(request, code_type, code_value, format='json'):
     except Area.MultipleObjectsReturned:
         message = 'There were multiple areas that matched code %s = %s.' % (code_type, code_value)
         raise ViewException(format, message, 500)
-    return HttpResponseRedirect("/area/%d%s" % (area.id, '.%s' % format if format else ''))
+    area_kwargs = {'area_id': area.id}
+    if format:
+        area_kwargs['format'] = format
+    return HttpResponseRedirect(reverse('area', kwargs=area_kwargs))
 
 
 @ratelimit(minutes=3, requests=100)
@@ -359,28 +362,36 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    return HttpResponseRedirect("/point/4326/%s,%s%s%s" % (
-        lon, lat, "/box" if bb else '', '.%s' % format if format else '')
-    )
+    point_kwargs = {'srid': '4326', 'x': lon, 'y': lat}
+    if bb:
+        point_kwargs['bb'] = bb
+    if format:
+        point_kwargs['format'] = format
+    redirect_path = reverse('areas-by-point', kwargs=point_kwargs)
+    return HttpResponseRedirect(redirect_path)
 
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_point_osgb(request, e, n, bb=False, format=''):
-    return HttpResponseRedirect("/point/27700/%s,%s%s%s" % (
-        e, n, "/box" if bb else '', '.%s' % format if format else '')
-    )
+    point_kwargs = {'e': e, 'n': n}
+    if bb:
+        point_kwargs['bb'] = bb
+    if format:
+        point_kwargs['format'] = format
+    redirect_path = reverse('areas-by-point-osgb', kwargs=point_kwargs)
+    return HttpResponseRedirect(redirect_path)
 
 
 def point_form_submitted(request):
     latlon = request.POST.get('pc', None)
     if not request.method == 'POST' or not latlon:
-        return redirect('/')
+        return redirect('mapit_index')
     m = re.match('\s*([0-9.-]+)\s*,\s*([0-9.-]+)', latlon)
     if not m:
-        return redirect('/')
+        return redirect('mapit_index')
     lat, lon = m.groups()
     return redirect(
-        'mapit.views.areas.areas_by_point',
+        'areas-by-point',
         srid=4326, x=lon, y=lat, format='html'
     )
 
