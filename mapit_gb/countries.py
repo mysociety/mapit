@@ -1,5 +1,6 @@
 import re
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 
 from mapit.shortcuts import get_object_or_404
@@ -24,12 +25,15 @@ def area_code_lookup(request, area_id, format):
         args['type__code'] = 'OMF'
 
     area = get_object_or_404(Area, **args)
-    path = '/area/%d%s' % (area.id, '.%s' % format if format else '')
+    area_kwargs = {'area_id': area.id}
+    if format:
+        area_kwargs['format'] = format
+    redirect_path = reverse('area', kwargs=area_kwargs)
     # If there was a query string, make sure it's passed on in the
     # redirect:
     if request.META['QUERY_STRING']:
-        path += "?" + request.META['QUERY_STRING']
-    return HttpResponseRedirect(path)
+        redirect_path += "?" + request.META['QUERY_STRING']
+    return HttpResponseRedirect(redirect_path)
 
 
 def canonical_postcode(pc):
