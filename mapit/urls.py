@@ -22,7 +22,7 @@ urlpatterns = [
     url(r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end,
         postcodes.partial_postcode, name="mapit-postcode-partial"),
 
-    url(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area),
+    url(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area, name='area'),
     url(r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, postcodes.example_postcode_for_area),
     url(r'^area/(?P<area_id>[0-9]+)/children%s$' % format_end, areas.area_children),
     url(r'^area/(?P<area_id>[0-9]+)/geometry$', areas.area_geometry),
@@ -38,11 +38,11 @@ urlpatterns = [
 
     url(r'^point/$', areas.point_form_submitted),
     url(r'^point/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
-        areas.areas_by_point),
+        areas.areas_by_point, name='areas-by-point'),
     url(r'^point/latlon/(?P<lat>%s),(?P<lon>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
-        areas.areas_by_point_latlon),
+        areas.areas_by_point_latlon, name='areas-by-point-latlon'),
     url(r'^point/osgb/(?P<e>%s),(?P<n>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
-        areas.areas_by_point_osgb),
+        areas.areas_by_point_osgb, name='areas-by-point-osgb'),
 
     url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)%s$' % (number, number, format_end), postcodes.nearest),
 
