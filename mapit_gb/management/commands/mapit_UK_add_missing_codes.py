@@ -38,6 +38,8 @@ class Command(NoArgsCommand):
             MissingOnsCode(code='26UD', area_type='DIS', area_name='East Hertfordshire District Council'),
             MissingOnsCode(code='26UH', area_type='DIS', area_name='Stevenage Borough Council'),
             MissingOnsCode(code='00CH', area_type='MTD', area_name='Gateshead Borough Council'),
+            # Adding GSS Code as an Ons code to try to support NI areas
+            MissingOnsCode(code='N09000011', area_type='LGD', area_name='Ards and North Down Borough Council'),
         ]
 
 
