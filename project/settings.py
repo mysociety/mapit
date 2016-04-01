@@ -67,6 +67,9 @@ if config.get('BUGS_EMAIL'):
         ('mySociety bugs', config['BUGS_EMAIL']),
     )
 
+if config.get('EMAIL_SUBJECT_PREFIX'):
+    EMAIL_SUBJECT_PREFIX = config['EMAIL_SUBJECT_PREFIX']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
