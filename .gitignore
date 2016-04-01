@@ -20,4 +20,7 @@
 # This is the name that the install notes suggest be used for the virtualenv
 .venv
 
+# This is the MapIt data which is downloaded from S3
+mapit.sql.gz
+
 .DS_Store
