@@ -32,8 +32,11 @@ GOOGLE_ANALYTICS: ""
 RATE_LIMIT:
   - '127.0.0.1'
 
-# Email address that errors should be sent to. Optional.
+# Email address that errors should be sent to. Optional. Only used if DEBUG=False
 BUGS_EMAIL: 'example@example.org'
+
+# Overrides the default subject prefix of '[Django] '
+# EMAIL_SUBJECT_PREFIX: '[MapIt Dev] '
 
 #########################################################################
 
