@@ -11,6 +11,7 @@ from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.gdal.error import OGRIndexError
 from django.conf import settings
 from django.utils import six
 from django.utils.six.moves import input
@@ -113,6 +114,17 @@ class Command(LabelCommand):
             dest='fix_invalid_polygons',
             help="Try to fix any invalid polygons and multipolygons found"
         ),
+        make_option(
+            '--only-with',
+            action="append",
+            dest='only_with',
+            metavar='FIELD_NAME:VALUE',
+            help=(
+                "Ignore features without this field / value combination "
+                "(If specified multiple times, the feature must have all "
+                "such specified combinations.)"
+            )
+        ),
     )
 
     def handle_label(self, filename, **options):
@@ -140,6 +152,14 @@ class Command(LabelCommand):
         code_field = options['code_field']
         code_type_code = options['code_type']
         encoding = options['encoding'] or 'utf-8'
+        only_with = {}
+        if options['only_with']:
+            for kv in options['only_with']:
+                m = re.search(r'^(.*?):(.*)', kv)
+                if not m:
+                    message = "The --only-with value '{0}' did not contain a ':'"
+                    raise CommandError(message.format(kv))
+                only_with[m.group(1)] = m.group(2)
 
         if name_field and override_name:
             raise CommandError("You must not specify both --name_field and --override_name")
@@ -241,6 +261,18 @@ class Command(LabelCommand):
                     raise CommandError(
                         "Could not find code using code field '%s' - should it be something else? "
                         "It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
+
+            # If some --only-with parameters were specified, the
+            # feature must have all such key / value combination:
+            if only_with:
+                try:
+                    if not all(
+                            feat.get(k) == str(v) for k, v in only_with.items()
+                    ):
+                        continue
+                except OGRIndexError:
+                    # This is raised if the key is not found in the feature:
+                    continue
 
             self.stdout.write("  looking at '%s'%s" % (name, (' (%s)' % code) if code else ''))
 
