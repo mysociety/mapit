@@ -62,7 +62,7 @@ class Command(LabelCommand):
             if hasattr(control, 'patch_boundary_line'):
                 patch = control.patch_boundary_line(name, ons_code, area_code)
             else:
-                patch = self.patch_boundary_line(ons_code, area_code)
+                patch = self.patch_boundary_line(name, ons_code, area_code)
             if patch is True:
                 ons_code = None
             elif patch:
@@ -182,12 +182,22 @@ class Command(LabelCommand):
             save_polygons(self.unit_id_to_shape)
             save_polygons(self.ons_code_to_shape)
 
-    def patch_boundary_line(self, ons_code, area_code):
+    def patch_boundary_line(self, name, ons_code, area_code):
         """Used to fix mistakes in Boundary-Line. This patch function should
         return True if we want to ignore the provided ONS code (and match only
-        on unit ID), or a new ONS code to replace it."""
+        on unit ID), or a new ONS code to replace it.
+
+        This function is here rather than the control file so that it will
+        still be used on a first import."""
         if area_code == 'WMC' and ons_code == '42UH012':
             return True
         if area_code == 'UTA' and ons_code == 'S16000010':
             return 'S12000010'
+
+        # Two incorrect IDs given in the October 2015 source
+        if name == 'Badgers Mount CP' and area_code == 'CPC' and ons_code == 'E04012604':
+            return 'E04012605'
+        if name == 'Shoreham CP' and area_code == 'CPC' and ons_code == 'E04012605':
+            return 'E04012606'
+
         return False
