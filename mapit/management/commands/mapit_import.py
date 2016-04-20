@@ -113,6 +113,11 @@ class Command(LabelCommand):
             dest='fix_invalid_polygons',
             help="Try to fix any invalid polygons and multipolygons found"
         ),
+        make_option(
+            '--ignore_blank',
+            action="store_true",
+            help="Skip over any entry with an empty name, rather than abort"
+        ),
     )
 
     def handle_label(self, filename, **options):
@@ -233,6 +238,8 @@ class Command(LabelCommand):
 
             name = re.sub('\s+', ' ', name)
             if not name:
+                if options['ignore_blank']:
+                    continue
                 raise Exception("Could not find a name to use for area")
 
             code = None
