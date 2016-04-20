@@ -63,7 +63,7 @@ class Command(LabelCommand):
             '--name_field',
             action="store",
             dest='name_field',
-            help="The field name containing the area's name"
+            help="The field name (or names separated by comma) to look at for the area's name"
         ),
         make_option(
             '--override_name',
@@ -211,9 +211,14 @@ class Command(LabelCommand):
             if override_name:
                 name = override_name
             else:
-                try:
-                    name = feat[name_field].value
-                except:
+                name = None
+                for nf in name_field.split(','):
+                    try:
+                        name = feat[nf].value
+                        break
+                    except:
+                        pass
+                if name is None:
                     choices = ', '.join(layer.fields)
                     raise CommandError(
                         "Could not find name using name field '%s' - should it be something else? "
