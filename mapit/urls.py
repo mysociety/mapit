@@ -32,7 +32,7 @@ urlpatterns = [
     url(r'^area/(?P<area_id>[0-9]+)/covered%s$' % format_end, areas.area_covered),
     url(r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % format_end, areas.area_coverlaps),
     url(r'^area/(?P<area_id>[0-9]+)/intersects%s$' % format_end, areas.area_intersects),
-    url(r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', areas.area_polygon),
+    url(r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', areas.area_polygon, name='area_polygon'),
     url(r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|geojson|wkt)$',
         areas.area_polygon),
 
