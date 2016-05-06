@@ -21,9 +21,11 @@ def process(new_code, old_code):
         return
 
     try:
-        area.codes.create(type=CodeType.objects.get(code='ons'), code=old_code)
+        area.codes.create(
+            type=CodeType.objects.get(code='ons'), code=old_code)
     except IntegrityError:
-        raise Exception("Key already exists for %s, can't give it %s" % (area, old_code))
+        raise Exception(
+            "Key already exists for %s, can't give it %s" % (area, old_code))
 
 
 class Command(NoArgsCommand):
