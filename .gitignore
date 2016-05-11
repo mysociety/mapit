@@ -24,3 +24,4 @@
 mapit.sql.gz
 
 .DS_Store
+.vagrant
