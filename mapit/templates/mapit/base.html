@@ -72,16 +72,7 @@
     </article>
     {% endif %}
 
-    <footer class="footer" role="contentinfo">
-        <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em>
-            <a href="http://www.djangoproject.com/"><img align="middle" src="{% static "mapit/img/pony.png" %}" border="0" alt="{% trans "Django powered" %}"></a>
-        </h1>
-
-        <div class="database-credits">
-            {% include "mapit/copyright.html" %}
-        </div>
-
-    </footer>
+    {% include "mapit/footer.html" %}
 
     {% block extra_js %}{% endblock %}
 </body>
