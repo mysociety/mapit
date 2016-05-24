@@ -1,0 +1,2217 @@
+{
+  "buckinghamshire": {
+    "name": "Buckinghamshire County Council",
+    "ons": "11",
+    "gss": "E10000002"
+  },
+  "cambridgeshire": {
+    "name": "Cambridgeshire County Council",
+    "ons": "12",
+    "gss": "E10000003"
+  },
+  "cumbria": {
+    "name": "Cumbria County Council",
+    "ons": "16",
+    "gss": "E10000006"
+  },
+  "derbyshire": {
+    "name": "Derbyshire County Council",
+    "ons": "17",
+    "gss": "E10000007"
+  },
+  "dorset": {
+    "name": "Dorset County Council",
+    "ons": "19",
+    "gss": "E10000009"
+  },
+  "county-durham": {
+    "name": "Durham County Council",
+    "ons": "00EJ",
+    "gss": "E06000047"
+  },
+  "east-sussex": {
+    "name": "East Sussex County Council",
+    "ons": "21",
+    "gss": "E10000011"
+  },
+  "essex": {
+    "name": "Essex County Council",
+    "ons": "22",
+    "gss": "E10000012"
+  },
+  "gloucestershire": {
+    "name": "Gloucestershire County Council",
+    "ons": "23",
+    "gss": "E10000013"
+  },
+  "hampshire": {
+    "name": "Hampshire County Council",
+    "ons": "24",
+    "gss": "E10000014"
+  },
+  "hertfordshire": {
+    "name": "Hertfordshire County Council",
+    "ons": "26",
+    "gss": "E10000015"
+  },
+  "kent": {
+    "name": "Kent County Council",
+    "ons": "29",
+    "gss": "E10000016"
+  },
+  "lancashire": {
+    "name": "Lancashire County Council",
+    "ons": "30",
+    "gss": "E10000017"
+  },
+  "leicestershire": {
+    "name": "Leicestershire County Council",
+    "ons": "31",
+    "gss": "E10000018"
+  },
+  "lincolnshire": {
+    "name": "Lincolnshire County Council",
+    "ons": "32",
+    "gss": "E10000019"
+  },
+  "norfolk": {
+    "name": "Norfolk County Council",
+    "ons": "33",
+    "gss": "E10000020"
+  },
+  "northamptonshire": {
+    "name": "Northamptonshire County Council",
+    "ons": "34",
+    "gss": "E10000021"
+  },
+  "north-yorkshire": {
+    "name": "North Yorkshire County Council",
+    "ons": "36",
+    "gss": "E10000023"
+  },
+  "nottinghamshire": {
+    "name": "Nottinghamshire County Council",
+    "ons": "37",
+    "gss": "E10000024"
+  },
+  "oxfordshire": {
+    "name": "Oxfordshire County Council",
+    "ons": "38",
+    "gss": "E10000025"
+  },
+  "shropshire": {
+    "name": "Shropshire Council",
+    "ons": "00GG",
+    "gss": "E06000051"
+  },
+  "somerset": {
+    "name": "Somerset County Council",
+    "ons": "40",
+    "gss": "E10000027"
+  },
+  "staffordshire": {
+    "name": "Staffordshire County Council",
+    "ons": "41",
+    "gss": "E10000028"
+  },
+  "suffolk": {
+    "name": "Suffolk County Council",
+    "ons": "42",
+    "gss": "E10000029"
+  },
+  "surrey": {
+    "name": "Surrey County Council",
+    "ons": "43",
+    "gss": "E10000030"
+  },
+  "warwickshire": {
+    "name": "Warwickshire County Council",
+    "ons": "44",
+    "gss": "E10000031"
+  },
+  "west-sussex": {
+    "name": "West Sussex County Council",
+    "ons": "45",
+    "gss": "E10000032"
+  },
+  "wiltshire": {
+    "name": "Wiltshire Council",
+    "ons": "00HY",
+    "gss": "E06000054"
+  },
+  "worcestershire": {
+    "name": "Worcestershire County Council",
+    "ons": "47",
+    "gss": "E10000034"
+  },
+  "northumberland": {
+    "name": "Northumberland County Council",
+    "ons": "00EM",
+    "gss": "E06000057"
+  },
+  "devon": {
+    "name": "Devon County Council",
+    "ons": "18",
+    "gss": "E10000008"
+  },
+  "cornwall": {
+    "name": "Cornwall Council",
+    "ons": "00HE",
+    "gss": "E06000052"
+  },
+  "isles-of-scilly": {
+    "name": "Isles of Scilly Council",
+    "ons": "00HF",
+    "gss": "E06000053"
+  },
+  "bedford": {
+    "name": "Bedford Borough Council",
+    "ons": "00KB",
+    "gss": "E06000055"
+  },
+  "wycombe": {
+    "name": "Wycombe District Council",
+    "ons": "11UF",
+    "gss": "E07000007"
+  },
+  "south-bucks": {
+    "name": "South Bucks District Council",
+    "ons": "11UE",
+    "gss": "E07000006"
+  },
+  "chiltern": {
+    "name": "Chiltern District Council",
+    "ons": "11UC",
+    "gss": "E07000005"
+  },
+  "aylesbury-vale": {
+    "name": "Aylesbury Vale District Council",
+    "ons": "11UB",
+    "gss": "E07000004"
+  },
+  "fenland": {
+    "name": "Fenland District Council",
+    "ons": "12UD",
+    "gss": "E07000010"
+  },
+  "south-cambridgeshire": {
+    "name": "South Cambridgeshire District Council",
+    "ons": "12UG",
+    "gss": "E07000012"
+  },
+  "east-cambridgeshire": {
+    "name": "East Cambridgeshire District Council",
+    "ons": "12UC",
+    "gss": "E07000009"
+  },
+  "huntingdonshire": {
+    "name": "Huntingdonshire District Council",
+    "ons": "12UE",
+    "gss": "E07000011"
+  },
+  "cambridge": {
+    "name": "Cambridge City Council",
+    "ons": "12UB",
+    "gss": "E07000008"
+  },
+  "copeland": {
+    "name": "Copeland Borough Council",
+    "ons": "16UE",
+    "gss": "E07000029"
+  },
+  "carlisle": {
+    "name": "Carlisle City Council",
+    "ons": "16UD",
+    "gss": "E07000028"
+  },
+  "south-lakeland": {
+    "name": "South Lakeland District Council",
+    "ons": "16UG",
+    "gss": "E07000031"
+  },
+  "allerdale": {
+    "name": "Allerdale Borough Council",
+    "ons": "16UB",
+    "gss": "E07000026"
+  },
+  "eden": {
+    "name": "Eden District Council",
+    "ons": "16UF",
+    "gss": "E07000030"
+  },
+  "barrow-in-furness": {
+    "name": "Barrow-in-Furness Borough Council",
+    "ons": "16UC",
+    "gss": "E07000027"
+  },
+  "high-peak": {
+    "name": "High Peak Borough Council",
+    "ons": "17UH",
+    "gss": "E07000037"
+  },
+  "south-derbyshire": {
+    "name": "South Derbyshire District Council",
+    "ons": "17UK",
+    "gss": "E07000039"
+  },
+  "erewash": {
+    "name": "Erewash Borough Council",
+    "ons": "17UG",
+    "gss": "E07000036"
+  },
+  "north-east-derbyshire": {
+    "name": "North East Derbyshire District Council",
+    "ons": "17UJ",
+    "gss": "E07000038"
+  },
+  "amber-valley": {
+    "name": "Amber Valley Borough Council",
+    "ons": "17UB",
+    "gss": "E07000032"
+  },
+  "bolsover": {
+    "name": "Bolsover District Council",
+    "ons": "17UC",
+    "gss": "E07000033"
+  },
+  "derbyshire-dales": {
+    "name": "Derbyshire Dales District Council",
+    "ons": "17UF",
+    "gss": "E07000035"
+  },
+  "chesterfield": {
+    "name": "Chesterfield Borough Council",
+    "ons": "17UD",
+    "gss": "E07000034"
+  },
+  "north-devon": {
+    "name": "North Devon Council",
+    "ons": "18UE",
+    "gss": "E07000043"
+  },
+  "east-devon": {
+    "name": "East Devon District Council",
+    "ons": "18UB",
+    "gss": "E07000040"
+  },
+  "teignbridge": {
+    "name": "Teignbridge District Council",
+    "ons": "18UH",
+    "gss": "E07000045"
+  },
+  "west-devon": {
+    "name": "West Devon Borough Council",
+    "ons": "18UL",
+    "gss": "E07000047"
+  },
+  "mid-devon": {
+    "name": "Mid Devon District Council",
+    "ons": "18UD",
+    "gss": "E07000042"
+  },
+  "exeter": {
+    "name": "Exeter City Council",
+    "ons": "18UC",
+    "gss": "E07000041"
+  },
+  "purbeck": {
+    "name": "Purbeck District Council",
+    "ons": "19UG",
+    "gss": "E07000051"
+  },
+  "christchurch": {
+    "name": "Christchurch Borough Council",
+    "ons": "19UC",
+    "gss": "E07000048"
+  },
+  "west-dorset": {
+    "name": "West Dorset District Council",
+    "ons": "19UH",
+    "gss": "E07000052"
+  },
+  "east-dorset": {
+    "name": "East Dorset District Council",
+    "ons": "19UD",
+    "gss": "E07000049"
+  },
+  "north-dorset": {
+    "name": "North Dorset District Council",
+    "ons": "19UE",
+    "gss": "E07000050"
+  },
+  "weymouth-and-portland": {
+    "name": "Weymouth and Portland Borough Council",
+    "ons": "19UJ",
+    "gss": "E07000053"
+  },
+  "lewes": {
+    "name": "Lewes District Council",
+    "ons": "21UF",
+    "gss": "E07000063"
+  },
+  "rother": {
+    "name": "Rother District Council",
+    "ons": "21UG",
+    "gss": "E07000064"
+  },
+  "wealden": {
+    "name": "Wealden District Council",
+    "ons": "21UH",
+    "gss": "E07000065"
+  },
+  "eastbourne": {
+    "name": "Eastbourne Borough Council",
+    "ons": "21UC",
+    "gss": "E07000061"
+  },
+  "hastings": {
+    "name": "Hastings Borough Council",
+    "ons": "21UD",
+    "gss": "E07000062"
+  },
+  "brentwood": {
+    "name": "Brentwood Borough Council",
+    "ons": "22UD",
+    "gss": "E07000068"
+  },
+  "rochford": {
+    "name": "Rochford District Council",
+    "ons": "22UL",
+    "gss": "E07000075"
+  },
+  "epping-forest": {
+    "name": "Epping Forest District Council",
+    "ons": "22UH",
+    "gss": "E07000072"
+  },
+  "tendring": {
+    "name": "Tendring District Council",
+    "ons": "22UN",
+    "gss": "E07000076"
+  },
+  "uttlesford": {
+    "name": "Uttlesford District Council",
+    "ons": "22UQ",
+    "gss": "E07000077"
+  },
+  "chelmsford": {
+    "name": "Chelmsford Borough Council",
+    "ons": "22UF",
+    "gss": "E07000070"
+  },
+  "colchester": {
+    "name": "Colchester Borough Council",
+    "ons": "22UG",
+    "gss": "E07000071"
+  },
+  "maldon": {
+    "name": "Maldon District Council",
+    "ons": "22UK",
+    "gss": "E07000074"
+  },
+  "braintree": {
+    "name": "Braintree District Council",
+    "ons": "22UC",
+    "gss": "E07000067"
+  },
+  "harlow": {
+    "name": "Harlow District Council",
+    "ons": "22UJ",
+    "gss": "E07000073"
+  },
+  "basildon": {
+    "name": "Basildon Borough Council",
+    "ons": "22UB",
+    "gss": "E07000066"
+  },
+  "castle-point": {
+    "name": "Castle Point Borough Council",
+    "ons": "22UE",
+    "gss": "E07000069"
+  },
+  "forest-of-dean": {
+    "name": "Forest of Dean District Council",
+    "ons": "23UD",
+    "gss": "E07000080"
+  },
+  "cotswold": {
+    "name": "Cotswold District Council",
+    "ons": "23UC",
+    "gss": "E07000079"
+  },
+  "stroud": {
+    "name": "Stroud District Council",
+    "ons": "23UF",
+    "gss": "E07000082"
+  },
+  "tewkesbury": {
+    "name": "Tewkesbury Borough Council",
+    "ons": "23UG",
+    "gss": "E07000083"
+  },
+  "gloucester": {
+    "name": "Gloucester City Council",
+    "ons": "23UE",
+    "gss": "E07000081"
+  },
+  "cheltenham": {
+    "name": "Cheltenham Borough Council",
+    "ons": "23UB",
+    "gss": "E07000078"
+  },
+  "basingstoke-and-deane": {
+    "name": "Basingstoke and Deane Borough Council",
+    "ons": "24UB",
+    "gss": "E07000084"
+  },
+  "new-forest": {
+    "name": "New Forest District Council",
+    "ons": "24UJ",
+    "gss": "E07000091"
+  },
+  "eastleigh": {
+    "name": "Eastleigh Borough Council",
+    "ons": "24UD",
+    "gss": "E07000086"
+  },
+  "east-hampshire": {
+    "name": "East Hampshire District Council",
+    "ons": "24UC",
+    "gss": "E07000085"
+  },
+  "winchester": {
+    "name": "Winchester City Council",
+    "ons": "24UP",
+    "gss": "E07000094"
+  },
+  "test-valley": {
+    "name": "Test Valley Borough Council",
+    "ons": "24UN",
+    "gss": "E07000093"
+  },
+  "hart": {
+    "name": "Hart District Council",
+    "ons": "24UG",
+    "gss": "E07000089"
+  },
+  "gosport": {
+    "name": "Gosport Borough Council",
+    "ons": "24UF",
+    "gss": "E07000088"
+  },
+  "fareham": {
+    "name": "Fareham Borough Council",
+    "ons": "24UE",
+    "gss": "E07000087"
+  },
+  "havant": {
+    "name": "Havant Borough Council",
+    "ons": "24UH",
+    "gss": "E07000090"
+  },
+  "rushmoor": {
+    "name": "Rushmoor Borough Council",
+    "ons": "24UL",
+    "gss": "E07000092"
+  },
+  "three-rivers": {
+    "name": "Three Rivers District Council",
+    "ons": "26UJ",
+    "gss": "E07000102"
+  },
+  "hertsmere": {
+    "name": "Hertsmere Borough Council",
+    "ons": "26UE",
+    "gss": "E07000098"
+  },
+  "broxbourne": {
+    "name": "Broxbourne Borough Council",
+    "ons": "26UB",
+    "gss": "E07000095"
+  },
+  "dacorum": {
+    "name": "Dacorum Borough Council",
+    "ons": "26UC",
+    "gss": "E07000096"
+  },
+  "east-hertfordshire": {
+    "name": "East Hertfordshire District Council",
+    "ons": "26UD",
+    "gss": "E07000242"
+  },
+  "st-albans": {
+    "name": "St Albans City Council",
+    "ons": "26UG",
+    "gss": "E07000240"
+  },
+  "welwyn-hatfield": {
+    "name": "Welwyn Hatfield Borough Council",
+    "ons": "26UL",
+    "gss": "E07000241"
+  },
+  "north-hertfordshire": {
+    "name": "North Hertfordshire District Council",
+    "ons": "26UF",
+    "gss": "E07000099"
+  },
+  "watford": {
+    "name": "Watford Borough Council",
+    "ons": "26UK",
+    "gss": "E07000103"
+  },
+  "stevenage": {
+    "name": "Stevenage Borough Council",
+    "ons": "26UH",
+    "gss": "E07000243"
+  },
+  "tunbridge-wells": {
+    "name": "Tunbridge Wells Borough Council",
+    "ons": "29UQ",
+    "gss": "E07000116"
+  },
+  "shepway": {
+    "name": "Shepway District Council",
+    "ons": "29UL",
+    "gss": "E07000112"
+  },
+  "sevenoaks": {
+    "name": "Sevenoaks District Council",
+    "ons": "29UK",
+    "gss": "E07000111"
+  },
+  "tonbridge-and-malling": {
+    "name": "Tonbridge and Malling Borough Council",
+    "ons": "29UP",
+    "gss": "E07000115"
+  },
+  "thanet": {
+    "name": "Thanet District Council",
+    "ons": "29UN",
+    "gss": "E07000114"
+  },
+  "ashford": {
+    "name": "Ashford Borough Council",
+    "ons": "29UB",
+    "gss": "E07000105"
+  },
+  "canterbury": {
+    "name": "Canterbury City Council",
+    "ons": "29UC",
+    "gss": "E07000106"
+  },
+  "dover": {
+    "name": "Dover District Council",
+    "ons": "29UE",
+    "gss": "E07000108"
+  },
+  "maidstone": {
+    "name": "Maidstone Borough Council",
+    "ons": "29UH",
+    "gss": "E07000110"
+  },
+  "swale": {
+    "name": "Swale Borough Council",
+    "ons": "29UM",
+    "gss": "E07000113"
+  },
+  "dartford": {
+    "name": "Dartford Borough Council",
+    "ons": "29UD",
+    "gss": "E07000107"
+  },
+  "gravesham": {
+    "name": "Gravesham Borough Council",
+    "ons": "29UG",
+    "gss": "E07000109"
+  },
+  "west-lancashire": {
+    "name": "West Lancashire Borough Council",
+    "ons": "30UP",
+    "gss": "E07000127"
+  },
+  "lancaster": {
+    "name": "Lancaster City Council",
+    "ons": "30UH",
+    "gss": "E07000121"
+  },
+  "chorley": {
+    "name": "Chorley Borough Council",
+    "ons": "30UE",
+    "gss": "E07000118"
+  },
+  "south-ribble": {
+    "name": "South Ribble Borough Council",
+    "ons": "30UN",
+    "gss": "E07000126"
+  },
+  "rossendale": {
+    "name": "Rossendale Borough Council",
+    "ons": "30UM",
+    "gss": "E07000125"
+  },
+  "fylde": {
+    "name": "Fylde Borough Council",
+    "ons": "30UF",
+    "gss": "E07000119"
+  },
+  "preston": {
+    "name": "Preston City Council",
+    "ons": "30UK",
+    "gss": "E07000123"
+  },
+  "wyre": {
+    "name": "Wyre Borough Council",
+    "ons": "30UQ",
+    "gss": "E07000128"
+  },
+  "pendle": {
+    "name": "Pendle Borough Council",
+    "ons": "30UJ",
+    "gss": "E07000122"
+  },
+  "ribble-valley": {
+    "name": "Ribble Valley Borough Council",
+    "ons": "30UL",
+    "gss": "E07000124"
+  },
+  "hyndburn": {
+    "name": "Hyndburn Borough Council",
+    "ons": "30UG",
+    "gss": "E07000120"
+  },
+  "burnley": {
+    "name": "Burnley Borough Council",
+    "ons": "30UD",
+    "gss": "E07000117"
+  },
+  "hinckley-and-bosworth": {
+    "name": "Hinckley and Bosworth Borough Council",
+    "ons": "31UE",
+    "gss": "E07000132"
+  },
+  "north-west-leicestershire": {
+    "name": "North West Leicestershire District Council",
+    "ons": "31UH",
+    "gss": "E07000134"
+  },
+  "melton": {
+    "name": "Melton Borough Council",
+    "ons": "31UG",
+    "gss": "E07000133"
+  },
+  "harborough": {
+    "name": "Harborough District Council",
+    "ons": "31UD",
+    "gss": "E07000131"
+  },
+  "blaby": {
+    "name": "Blaby District Council",
+    "ons": "31UB",
+    "gss": "E07000129"
+  },
+  "charnwood": {
+    "name": "Charnwood Borough Council",
+    "ons": "31UC",
+    "gss": "E07000130"
+  },
+  "oadby-and-wigston": {
+    "name": "Oadby and Wigston Borough Council",
+    "ons": "31UJ",
+    "gss": "E07000135"
+  },
+  "west-lindsey": {
+    "name": "West Lindsey District Council",
+    "ons": "32UH",
+    "gss": "E07000142"
+  },
+  "south-kesteven": {
+    "name": "South Kesteven District Council",
+    "ons": "32UG",
+    "gss": "E07000141"
+  },
+  "south-holland": {
+    "name": "South Holland District Council",
+    "ons": "32UF",
+    "gss": "E07000140"
+  },
+  "boston": {
+    "name": "Boston Borough Council",
+    "ons": "32UB",
+    "gss": "E07000136"
+  },
+  "north-kesteven": {
+    "name": "North Kesteven District Council",
+    "ons": "32UE",
+    "gss": "E07000139"
+  },
+  "east-lindsey": {
+    "name": "East Lindsey District Council",
+    "ons": "32UC",
+    "gss": "E07000137"
+  },
+  "lincoln": {
+    "name": "Lincoln City Council",
+    "ons": "32UD",
+    "gss": "E07000138"
+  },
+  "north-norfolk": {
+    "name": "North Norfolk District Council",
+    "ons": "33UF",
+    "gss": "E07000147"
+  },
+  "great-yarmouth": {
+    "name": "Great Yarmouth Borough Council",
+    "ons": "33UD",
+    "gss": "E07000145"
+  },
+  "south-norfolk": {
+    "name": "South Norfolk District Council",
+    "ons": "33UH",
+    "gss": "E07000149"
+  },
+  "kings-lynn-and-west-norfolk": {
+    "name": "King's Lynn and West Norfolk Borough Council",
+    "ons": "33UE",
+    "gss": "E07000146"
+  },
+  "breckland": {
+    "name": "Breckland District Council",
+    "ons": "33UB",
+    "gss": "E07000143"
+  },
+  "norwich": {
+    "name": "Norwich City Council",
+    "ons": "33UG",
+    "gss": "E07000148"
+  },
+  "south-northamptonshire": {
+    "name": "South Northamptonshire District Council",
+    "ons": "34UG",
+    "gss": "E07000155"
+  },
+  "east-northamptonshire": {
+    "name": "East Northamptonshire District Council",
+    "ons": "34UD",
+    "gss": "E07000152"
+  },
+  "daventry": {
+    "name": "Daventry District Council",
+    "ons": "34UC",
+    "gss": "E07000151"
+  },
+  "wellingborough": {
+    "name": "Wellingborough Borough Council",
+    "ons": "34UH",
+    "gss": "E07000156"
+  },
+  "kettering": {
+    "name": "Kettering Borough Council",
+    "ons": "34UE",
+    "gss": "E07000153"
+  },
+  "northampton": {
+    "name": "Northampton Borough Council",
+    "ons": "34UF",
+    "gss": "E07000154"
+  },
+  "corby": {
+    "name": "Corby Borough Council",
+    "ons": "34UB",
+    "gss": "E07000150"
+  },
+  "scarborough": {
+    "name": "Scarborough Borough Council",
+    "ons": "36UG",
+    "gss": "E07000168"
+  },
+  "selby": {
+    "name": "Selby District Council",
+    "ons": "36UH",
+    "gss": "E07000169"
+  },
+  "craven": {
+    "name": "Craven District Council",
+    "ons": "36UB",
+    "gss": "E07000163"
+  },
+  "richmondshire": {
+    "name": "Richmondshire District Council",
+    "ons": "36UE",
+    "gss": "E07000166"
+  },
+  "harrogate": {
+    "name": "Harrogate Borough Council",
+    "ons": "36UD",
+    "gss": "E07000165"
+  },
+  "ryedale": {
+    "name": "Ryedale District Council",
+    "ons": "36UF",
+    "gss": "E07000167"
+  },
+  "hambleton": {
+    "name": "Hambleton District Council",
+    "ons": "36UC",
+    "gss": "E07000164"
+  },
+  "bassetlaw": {
+    "name": "Bassetlaw District Council",
+    "ons": "37UC",
+    "gss": "E07000171"
+  },
+  "rushcliffe": {
+    "name": "Rushcliffe Borough Council",
+    "ons": "37UJ",
+    "gss": "E07000176"
+  },
+  "gedling": {
+    "name": "Gedling Borough Council",
+    "ons": "37UE",
+    "gss": "E07000173"
+  },
+  "ashfield": {
+    "name": "Ashfield District Council",
+    "ons": "37UB",
+    "gss": "E07000170"
+  },
+  "newark-and-sherwood": {
+    "name": "Newark and Sherwood District Council",
+    "ons": "37UG",
+    "gss": "E07000175"
+  },
+  "broxtowe": {
+    "name": "Broxtowe Borough Council",
+    "ons": "37UD",
+    "gss": "E07000172"
+  },
+  "mansfield": {
+    "name": "Mansfield District Council",
+    "ons": "37UF",
+    "gss": "E07000174"
+  },
+  "vale-of-white-horse": {
+    "name": "Vale of White Horse District Council",
+    "ons": "38UE",
+    "gss": "E07000180"
+  },
+  "south-oxfordshire": {
+    "name": "South Oxfordshire District Council",
+    "ons": "38UD",
+    "gss": "E07000179"
+  },
+  "cherwell": {
+    "name": "Cherwell District Council",
+    "ons": "38UB",
+    "gss": "E07000177"
+  },
+  "west-oxfordshire": {
+    "name": "West Oxfordshire District Council",
+    "ons": "38UF",
+    "gss": "E07000181"
+  },
+  "oxford": {
+    "name": "Oxford City Council",
+    "ons": "38UC",
+    "gss": "E07000178"
+  },
+  "west-somerset": {
+    "name": "West Somerset District Council",
+    "ons": "40UF",
+    "gss": "E07000191"
+  },
+  "mendip": {
+    "name": "Mendip District Council",
+    "ons": "40UB",
+    "gss": "E07000187"
+  },
+  "taunton-deane": {
+    "name": "Taunton Deane Borough Council",
+    "ons": "40UE",
+    "gss": "E07000190"
+  },
+  "south-somerset": {
+    "name": "South Somerset District Council",
+    "ons": "40UD",
+    "gss": "E07000189"
+  },
+  "sedgemoor": {
+    "name": "Sedgemoor District Council",
+    "ons": "40UC",
+    "gss": "E07000188"
+  },
+  "staffordshire-moorlands": {
+    "name": "Staffordshire Moorlands District Council",
+    "ons": "41UH",
+    "gss": "E07000198"
+  },
+  "south-staffordshire": {
+    "name": "South Staffordshire District Council",
+    "ons": "41UF",
+    "gss": "E07000196"
+  },
+  "lichfield": {
+    "name": "Lichfield District Council",
+    "ons": "41UD",
+    "gss": "E07000194"
+  },
+  "newcastle-under-lyme": {
+    "name": "Newcastle-under-Lyme Borough Council",
+    "ons": "41UE",
+    "gss": "E07000195"
+  },
+  "stafford": {
+    "name": "Stafford Borough Council",
+    "ons": "41UG",
+    "gss": "E07000197"
+  },
+  "east-staffordshire": {
+    "name": "East Staffordshire Borough Council",
+    "ons": "41UC",
+    "gss": "E07000193"
+  },
+  "cannock-chase": {
+    "name": "Cannock Chase District Council",
+    "ons": "41UB",
+    "gss": "E07000192"
+  },
+  "tamworth": {
+    "name": "Tamworth Borough Council",
+    "ons": "41UK",
+    "gss": "E07000199"
+  },
+  "waveney": {
+    "name": "Waveney District Council",
+    "ons": "42UH",
+    "gss": "E07000206"
+  },
+  "babergh": {
+    "name": "Babergh District Council",
+    "ons": "42UB",
+    "gss": "E07000200"
+  },
+  "suffolk-coastal": {
+    "name": "Suffolk Coastal District Council",
+    "ons": "42UG",
+    "gss": "E07000205"
+  },
+  "st-edmundsbury": {
+    "name": "St Edmundsbury Borough Council",
+    "ons": "42UF",
+    "gss": "E07000204"
+  },
+  "forest-heath": {
+    "name": "Forest Heath District Council",
+    "ons": "42UC",
+    "gss": "E07000201"
+  },
+  "mid-suffolk": {
+    "name": "Mid Suffolk District Council",
+    "ons": "42UE",
+    "gss": "E07000203"
+  },
+  "ipswich": {
+    "name": "Ipswich Borough Council",
+    "ons": "42UD",
+    "gss": "E07000202"
+  },
+  "waverley": {
+    "name": "Waverley Borough Council",
+    "ons": "43UL",
+    "gss": "E07000216"
+  },
+  "tandridge": {
+    "name": "Tandridge District Council",
+    "ons": "43UK",
+    "gss": "E07000215"
+  },
+  "woking": {
+    "name": "Woking Borough Council",
+    "ons": "43UM",
+    "gss": "E07000217"
+  },
+  "surrey-heath": {
+    "name": "Surrey Heath Borough Council",
+    "ons": "43UJ",
+    "gss": "E07000214"
+  },
+  "runnymede": {
+    "name": "Runnymede Borough Council",
+    "ons": "43UG",
+    "gss": "E07000212"
+  },
+  "guildford": {
+    "name": "Guildford Borough Council",
+    "ons": "43UD",
+    "gss": "E07000209"
+  },
+  "reigate-and-banstead": {
+    "name": "Reigate and Banstead Borough Council",
+    "ons": "43UF",
+    "gss": "E07000211"
+  },
+  "mole-valley": {
+    "name": "Mole Valley District Council",
+    "ons": "43UE",
+    "gss": "E07000210"
+  },
+  "elmbridge": {
+    "name": "Elmbridge Borough Council",
+    "ons": "43UB",
+    "gss": "E07000207"
+  },
+  "spelthorne": {
+    "name": "Spelthorne Borough Council",
+    "ons": "43UH",
+    "gss": "E07000213"
+  },
+  "epsom-and-ewell": {
+    "name": "Epsom and Ewell Borough Council",
+    "ons": "43UC",
+    "gss": "E07000208"
+  },
+  "north-warwickshire": {
+    "name": "North Warwickshire Borough Council",
+    "ons": "44UB",
+    "gss": "E07000218"
+  },
+  "rugby": {
+    "name": "Rugby Borough Council",
+    "ons": "44UD",
+    "gss": "E07000220"
+  },
+  "warwick": {
+    "name": "Warwick District Council",
+    "ons": "44UF",
+    "gss": "E07000222"
+  },
+  "stratford-on-avon": {
+    "name": "Stratford-on-Avon District Council",
+    "ons": "44UE",
+    "gss": "E07000221"
+  },
+  "nuneaton-and-bedworth": {
+    "name": "Nuneaton and Bedworth Borough Council",
+    "ons": "44UC",
+    "gss": "E07000219"
+  },
+  "arun": {
+    "name": "Arun District Council",
+    "ons": "45UC",
+    "gss": "E07000224"
+  },
+  "adur": {
+    "name": "Adur District Council",
+    "ons": "45UB",
+    "gss": "E07000223"
+  },
+  "chichester": {
+    "name": "Chichester District Council",
+    "ons": "45UD",
+    "gss": "E07000225"
+  },
+  "mid-sussex": {
+    "name": "Mid Sussex District Council",
+    "ons": "45UG",
+    "gss": "E07000228"
+  },
+  "horsham": {
+    "name": "Horsham District Council",
+    "ons": "45UF",
+    "gss": "E07000227"
+  },
+  "worthing": {
+    "name": "Worthing Borough Council",
+    "ons": "45UH",
+    "gss": "E07000229"
+  },
+  "crawley": {
+    "name": "Crawley Borough Council",
+    "ons": "45UE",
+    "gss": "E07000226"
+  },
+  "malvern-hills": {
+    "name": "Malvern Hills District Council",
+    "ons": "47UC",
+    "gss": "E07000235"
+  },
+  "wyre-forest": {
+    "name": "Wyre Forest District Council",
+    "ons": "47UG",
+    "gss": "E07000239"
+  },
+  "wychavon": {
+    "name": "Wychavon District Council",
+    "ons": "47UF",
+    "gss": "E07000238"
+  },
+  "bromsgrove": {
+    "name": "Bromsgrove District Council",
+    "ons": "47UB",
+    "gss": "E07000234"
+  },
+  "worcester": {
+    "name": "Worcester City Council",
+    "ons": "47UE",
+    "gss": "E07000237"
+  },
+  "redditch": {
+    "name": "Redditch Borough Council",
+    "ons": "47UD",
+    "gss": "E07000236"
+  },
+  "kingston-upon-thames": {
+    "name": "Kingston upon Thames Borough Council",
+    "ons": "00AX",
+    "gss": "E09000021"
+  },
+  "croydon": {
+    "name": "Croydon Borough Council",
+    "ons": "00AH",
+    "gss": "E09000008"
+  },
+  "bromley": {
+    "name": "Bromley Council",
+    "ons": "00AF",
+    "gss": "E09000006"
+  },
+  "hounslow": {
+    "name": "Hounslow Borough Council",
+    "ons": "00AT",
+    "gss": "E09000018"
+  },
+  "ealing": {
+    "name": "Ealing Borough Council",
+    "ons": "00AJ",
+    "gss": "E09000009"
+  },
+  "havering": {
+    "name": "Havering Borough Council",
+    "ons": "00AR",
+    "gss": "E09000016"
+  },
+  "hillingdon": {
+    "name": "Hillingdon Borough Council",
+    "ons": "00AS",
+    "gss": "E09000017"
+  },
+  "harrow": {
+    "name": "Harrow Borough Council",
+    "ons": "00AQ",
+    "gss": "E09000015"
+  },
+  "brent": {
+    "name": "Brent Borough Council",
+    "ons": "00AE",
+    "gss": "E09000005"
+  },
+  "barnet": {
+    "name": "Barnet Borough Council",
+    "ons": "00AC",
+    "gss": "E09000003"
+  },
+  "lambeth": {
+    "name": "Lambeth Borough Council",
+    "ons": "00AY",
+    "gss": "E09000022"
+  },
+  "southwark": {
+    "name": "Southwark Borough Council",
+    "ons": "00BE",
+    "gss": "E09000028"
+  },
+  "lewisham": {
+    "name": "Lewisham Borough Council",
+    "ons": "00AZ",
+    "gss": "E09000023"
+  },
+  "greenwich": {
+    "name": "Greenwich Borough Council",
+    "ons": "00AL",
+    "gss": "E09000011"
+  },
+  "bexley": {
+    "name": "Bexley Borough Council",
+    "ons": "00AD",
+    "gss": "E09000004"
+  },
+  "enfield": {
+    "name": "Enfield Borough Council",
+    "ons": "00AK",
+    "gss": "E09000010"
+  },
+  "waltham-forest": {
+    "name": "Waltham Forest Borough Council",
+    "ons": "00BH",
+    "gss": "E09000031"
+  },
+  "redbridge": {
+    "name": "Redbridge Borough Council",
+    "ons": "00BC",
+    "gss": "E09000026"
+  },
+  "sutton": {
+    "name": "Sutton Borough Council",
+    "ons": "00BF",
+    "gss": "E09000029"
+  },
+  "richmond-upon-thames": {
+    "name": "Richmond upon Thames Borough Council",
+    "ons": "00BD",
+    "gss": "E09000027"
+  },
+  "merton": {
+    "name": "Merton Borough Council",
+    "ons": "00BA",
+    "gss": "E09000024"
+  },
+  "wandsworth": {
+    "name": "Wandsworth Borough Council",
+    "ons": "00BJ",
+    "gss": "E09000032"
+  },
+  "hammersmith-and-fulham": {
+    "name": "Hammersmith and Fulham Borough Council",
+    "ons": "00AN",
+    "gss": "E09000013"
+  },
+  "kensington-and-chelsea": {
+    "name": "Kensington and Chelsea Borough Council",
+    "ons": "00AW",
+    "gss": "E09000020"
+  },
+  "westminster": {
+    "name": "Westminster City Council",
+    "ons": "00BK",
+    "gss": "E09000033"
+  },
+  "camden": {
+    "name": "Camden Borough Council",
+    "ons": "00AG",
+    "gss": "E09000007"
+  },
+  "tower-hamlets": {
+    "name": "Tower Hamlets Borough Council",
+    "ons": "00BG",
+    "gss": "E09000030"
+  },
+  "islington": {
+    "name": "Islington Borough Council",
+    "ons": "00AU",
+    "gss": "E09000019"
+  },
+  "hackney": {
+    "name": "Hackney Borough Council",
+    "ons": "00AM",
+    "gss": "E09000012"
+  },
+  "haringey": {
+    "name": "Haringey Borough Council",
+    "ons": "00AP",
+    "gss": "E09000014"
+  },
+  "newham": {
+    "name": "Newham Borough Council",
+    "ons": "00BB",
+    "gss": "E09000025"
+  },
+  "barking-and-dagenham": {
+    "name": "Barking and Dagenham Borough Council",
+    "ons": "00AB",
+    "gss": "E09000002"
+  },
+  "city-of-london": {
+    "name": "City of London Corporation",
+    "ons": "00AA",
+    "gss": "E09000001"
+  },
+  "barnsley": {
+    "name": "Barnsley Borough Council",
+    "ons": "00CC",
+    "gss": "E08000016"
+  },
+  "birmingham": {
+    "name": "Birmingham City Council",
+    "ons": "00CN",
+    "gss": "E08000025"
+  },
+  "bolton": {
+    "name": "Bolton Borough Council",
+    "ons": "00BL",
+    "gss": "E08000001"
+  },
+  "bradford": {
+    "name": "Bradford City Council",
+    "ons": "00CX",
+    "gss": "E08000032"
+  },
+  "bury": {
+    "name": "Bury Borough Council",
+    "ons": "00BM",
+    "gss": "E08000002"
+  },
+  "calderdale": {
+    "name": "Calderdale Borough Council",
+    "ons": "00CY",
+    "gss": "E08000033"
+  },
+  "wolverhampton": {
+    "name": "Wolverhampton City Council",
+    "ons": "00CW",
+    "gss": "E08000031"
+  },
+  "coventry": {
+    "name": "Coventry City Council",
+    "ons": "00CQ",
+    "gss": "E08000026"
+  },
+  "doncaster": {
+    "name": "Doncaster Borough Council",
+    "ons": "00CE",
+    "gss": "E08000017"
+  },
+  "dudley": {
+    "name": "Dudley Borough Council",
+    "ons": "00CR",
+    "gss": "E08000027"
+  },
+  "gateshead": {
+    "name": "Gateshead Borough Council",
+    "ons": "00CH",
+    "gss": "E08000037"
+  },
+  "kirklees": {
+    "name": "Kirklees Borough Council",
+    "ons": "00CZ",
+    "gss": "E08000034"
+  },
+  "knowsley": {
+    "name": "Knowsley Borough Council",
+    "ons": "00BX",
+    "gss": "E08000011"
+  },
+  "leeds": {
+    "name": "Leeds City Council",
+    "ons": "00DA",
+    "gss": "E08000035"
+  },
+  "liverpool": {
+    "name": "Liverpool City Council",
+    "ons": "00BY",
+    "gss": "E08000012"
+  },
+  "manchester": {
+    "name": "Manchester City Council",
+    "ons": "00BN",
+    "gss": "E08000003"
+  },
+  "newcastle-upon-tyne": {
+    "name": "Newcastle upon Tyne City Council",
+    "ons": "00CJ",
+    "gss": "E08000021"
+  },
+  "north-tyneside": {
+    "name": "North Tyneside Borough Council",
+    "ons": "00CK",
+    "gss": "E08000022"
+  },
+  "oldham": {
+    "name": "Oldham Borough Council",
+    "ons": "00BP",
+    "gss": "E08000004"
+  },
+  "rochdale": {
+    "name": "Rochdale Borough Council",
+    "ons": "00BQ",
+    "gss": "E08000005"
+  },
+  "rotherham": {
+    "name": "Rotherham Borough Council",
+    "ons": "00CF",
+    "gss": "E08000018"
+  },
+  "salford": {
+    "name": "Salford City Council",
+    "ons": "00BR",
+    "gss": "E08000006"
+  },
+  "sandwell": {
+    "name": "Sandwell Borough Council",
+    "ons": "00CS",
+    "gss": "E08000028"
+  },
+  "sefton": {
+    "name": "Sefton Borough Council",
+    "ons": "00CA",
+    "gss": "E08000014"
+  },
+  "sheffield": {
+    "name": "Sheffield City Council",
+    "ons": "00CG",
+    "gss": "E08000019"
+  },
+  "solihull": {
+    "name": "Solihull Borough Council",
+    "ons": "00CT",
+    "gss": "E08000029"
+  },
+  "south-tyneside": {
+    "name": "South Tyneside Borough Council",
+    "ons": "00CL",
+    "gss": "E08000023"
+  },
+  "stockport": {
+    "name": "Stockport Borough Council",
+    "ons": "00BS",
+    "gss": "E08000007"
+  },
+  "st-helens": {
+    "name": "St Helens Borough Council",
+    "ons": "00BZ",
+    "gss": "E08000013"
+  },
+  "sunderland": {
+    "name": "Sunderland City Council",
+    "ons": "00CM",
+    "gss": "E08000024"
+  },
+  "tameside": {
+    "name": "Tameside Borough Council",
+    "ons": "00BT",
+    "gss": "E08000008"
+  },
+  "trafford": {
+    "name": "Trafford Borough Council",
+    "ons": "00BU",
+    "gss": "E08000009"
+  },
+  "wakefield": {
+    "name": "Wakefield City Council",
+    "ons": "00DB",
+    "gss": "E08000036"
+  },
+  "walsall": {
+    "name": "Walsall Borough Council",
+    "ons": "00CU",
+    "gss": "E08000030"
+  },
+  "wigan": {
+    "name": "Wigan Borough Council",
+    "ons": "00BW",
+    "gss": "E08000010"
+  },
+  "wirral": {
+    "name": "Wirral Borough Council",
+    "ons": "00CB",
+    "gss": "E08000015"
+  },
+  "swansea": {
+    "name": "Swansea Council",
+    "ons": "00NX",
+    "gss": "W06000011"
+  },
+  "angus": {
+    "name": "Angus Council",
+    "ons": "00QC",
+    "gss": "S12000041"
+  },
+  "bath-and-north-east-somerset": {
+    "name": "Bath and North East Somerset Council",
+    "ons": "00HA",
+    "gss": "E06000022"
+  },
+  "blackburn-with-darwen": {
+    "name": "Blackburn with Darwen Borough Council",
+    "ons": "00EX",
+    "gss": "E06000008"
+  },
+  "blackpool": {
+    "name": "Blackpool Borough Council",
+    "ons": "00EY",
+    "gss": "E06000009"
+  },
+  "blaenau-gwent": {
+    "name": "Blaenau Gwent Council",
+    "ons": "00PL",
+    "gss": "W06000019"
+  },
+  "bournemouth": {
+    "name": "Bournemouth Borough Council",
+    "ons": "00HN",
+    "gss": "E06000028"
+  },
+  "bracknell-forest": {
+    "name": "Bracknell Forest Council",
+    "ons": "00MA",
+    "gss": "E06000036"
+  },
+  "vale-of-glamorgan": {
+    "name": "Vale of Glamorgan Council",
+    "ons": "00PD",
+    "gss": "W06000014"
+  },
+  "caerphilly": {
+    "name": "Caerphilly Council",
+    "ons": "00PK",
+    "gss": "W06000018"
+  },
+  "newport": {
+    "name": "Newport Council",
+    "ons": "00PR",
+    "gss": "W06000022"
+  },
+  "neath-port-talbot": {
+    "name": "Neath Port Talbot Council",
+    "ons": "00NZ",
+    "gss": "W06000012"
+  },
+  "bristol": {
+    "name": "Bristol City Council",
+    "ons": "00HB",
+    "gss": "E06000023"
+  },
+  "derby": {
+    "name": "Derby City Council",
+    "ons": "00FK",
+    "gss": "E06000015"
+  },
+  "kingston-upon-hull": {
+    "name": "Hull City Council",
+    "ons": "00FA",
+    "gss": "E06000010"
+  },
+  "leicester": {
+    "name": "Leicester City Council",
+    "ons": "00FN",
+    "gss": "E06000016"
+  },
+  "nottingham": {
+    "name": "Nottingham City Council",
+    "ons": "00FY",
+    "gss": "E06000018"
+  },
+  "peterborough": {
+    "name": "Peterborough City Council",
+    "ons": "00JA",
+    "gss": "E06000031"
+  },
+  "southampton": {
+    "name": "Southampton City Council",
+    "ons": "00MS",
+    "gss": "E06000045"
+  },
+  "stoke-on-trent": {
+    "name": "Stoke-on-Trent City Council",
+    "ons": "00GL",
+    "gss": "E06000021"
+  },
+  "clackmannanshire": {
+    "name": "Clackmannanshire Council",
+    "ons": "00QF",
+    "gss": "S12000005"
+  },
+  "conwy": {
+    "name": "Conwy Council",
+    "ons": "00NE",
+    "gss": "W06000003"
+  },
+  "herefordshire": {
+    "name": "Herefordshire Council",
+    "ons": "00GA",
+    "gss": "E06000019"
+  },
+  "darlington": {
+    "name": "Darlington Borough Council",
+    "ons": "00EH",
+    "gss": "E06000005"
+  },
+  "dundee": {
+    "name": "Dundee City Council",
+    "ons": "00QJ",
+    "gss": "S12000042"
+  },
+  "east-ayrshire": {
+    "name": "East Ayrshire Council",
+    "ons": "00QK",
+    "gss": "S12000008"
+  },
+  "east-dunbartonshire": {
+    "name": "East Dunbartonshire Council",
+    "ons": "00QL",
+    "gss": "S12000045"
+  },
+  "east-renfrewshire": {
+    "name": "East Renfrewshire Council",
+    "ons": "00QN",
+    "gss": "S12000011"
+  },
+  "east-riding-of-yorkshire": {
+    "name": "East Riding of Yorkshire Council",
+    "ons": "00FB",
+    "gss": "E06000011"
+  },
+  "falkirk": {
+    "name": "Falkirk Council",
+    "ons": "00QQ",
+    "gss": "S12000014"
+  },
+  "glasgow": {
+    "name": "Glasgow City Council",
+    "ons": "00QS",
+    "gss": "S12000046"
+  },
+  "halton": {
+    "name": "Halton Borough Council",
+    "ons": "00ET",
+    "gss": "E06000006"
+  },
+  "hartlepool": {
+    "name": "Hartlepool Borough Council",
+    "ons": "00EB",
+    "gss": "E06000001"
+  },
+  "inverclyde": {
+    "name": "Inverclyde Council",
+    "ons": "00QU",
+    "gss": "S12000018"
+  },
+  "luton": {
+    "name": "Luton Borough Council",
+    "ons": "00KA",
+    "gss": "E06000032"
+  },
+  "medway": {
+    "name": "Medway Council",
+    "ons": "00LC",
+    "gss": "E06000035"
+  },
+  "merthyr-tydfil": {
+    "name": "Merthyr Tydfil Council",
+    "ons": "00PH",
+    "gss": "W06000024"
+  },
+  "middlesbrough": {
+    "name": "Middlesbrough Council",
+    "ons": "00EC",
+    "gss": "E06000002"
+  },
+  "midlothian": {
+    "name": "Midlothian Council",
+    "ons": "00QW",
+    "gss": "S12000019"
+  },
+  "milton-keynes": {
+    "name": "Milton Keynes Council",
+    "ons": "00MG",
+    "gss": "E06000042"
+  },
+  "north-east-lincolnshire": {
+    "name": "North East Lincolnshire Council",
+    "ons": "00FC",
+    "gss": "E06000012"
+  },
+  "north-lanarkshire": {
+    "name": "North Lanarkshire Council",
+    "ons": "00QZ",
+    "gss": "S12000044"
+  },
+  "north-lincolnshire": {
+    "name": "North Lincolnshire Council",
+    "ons": "00FD",
+    "gss": "E06000013"
+  },
+  "bridgend": {
+    "name": "Bridgend Council",
+    "ons": "00PB",
+    "gss": "W06000013"
+  },
+  "perth-and-kinross": {
+    "name": "Perth and Kinross Council",
+    "ons": "00RB",
+    "gss": "S12000024"
+  },
+  "poole": {
+    "name": "Poole Borough Council",
+    "ons": "00HP",
+    "gss": "E06000029"
+  },
+  "powys": {
+    "name": "Powys Council",
+    "ons": "00NN",
+    "gss": "W06000023"
+  },
+  "reading": {
+    "name": "Reading Borough Council",
+    "ons": "00MC",
+    "gss": "E06000038"
+  },
+  "redcar-and-cleveland": {
+    "name": "Redcar and Cleveland Borough Council",
+    "ons": "00EE",
+    "gss": "E06000003"
+  },
+  "renfrewshire": {
+    "name": "Renfrewshire Council",
+    "ons": "00RC",
+    "gss": "S12000038"
+  },
+  "rhondda-cynon-taff": {
+    "name": "Rhondda Cynon Taf Council",
+    "ons": "00PF",
+    "gss": "W06000016"
+  },
+  "rutland": {
+    "name": "Rutland County Council",
+    "ons": "00FP",
+    "gss": "E06000017"
+  },
+  "scottish-borders": {
+    "name": "Scottish Borders Council",
+    "ons": "00QE",
+    "gss": "S12000026"
+  },
+  "denbighshire": {
+    "name": "Denbighshire Council",
+    "ons": "00NG",
+    "gss": "W06000004"
+  },
+  "monmouthshire": {
+    "name": "Monmouthshire Council",
+    "ons": "00PP",
+    "gss": "W06000021"
+  },
+  "carmarthenshire": {
+    "name": "Carmarthenshire Council",
+    "ons": "00NU",
+    "gss": "W06000010"
+  },
+  "flintshire": {
+    "name": "Flintshire Council",
+    "ons": "00NJ",
+    "gss": "W06000005"
+  },
+  "slough": {
+    "name": "Slough Borough Council",
+    "ons": "00MD",
+    "gss": "E06000039"
+  },
+  "southend-on-sea": {
+    "name": "Southend-on-Sea Borough Council",
+    "ons": "00KF",
+    "gss": "E06000033"
+  },
+  "south-gloucestershire": {
+    "name": "South Gloucestershire Council",
+    "ons": "00HD",
+    "gss": "E06000025"
+  },
+  "south-lanarkshire": {
+    "name": "South Lanarkshire Council",
+    "ons": "00RF",
+    "gss": "S12000029"
+  },
+  "stirling": {
+    "name": "Stirling Council",
+    "ons": "00RG",
+    "gss": "S12000030"
+  },
+  "stockton-on-tees": {
+    "name": "Stockton-on-Tees Borough Council",
+    "ons": "00EF",
+    "gss": "E06000004"
+  },
+  "swindon": {
+    "name": "Swindon Borough Council",
+    "ons": "00HX",
+    "gss": "E06000030"
+  },
+  "telford-and-wrekin": {
+    "name": "Telford and Wrekin Council",
+    "ons": "00GF",
+    "gss": "E06000020"
+  },
+  "brighton-and-hove": {
+    "name": "Brighton and Hove City Council",
+    "ons": "00ML",
+    "gss": "E06000043"
+  },
+  "thurrock": {
+    "name": "Thurrock Borough Council",
+    "ons": "00KG",
+    "gss": "E06000034"
+  },
+  "torfaen": {
+    "name": "Torfaen Council",
+    "ons": "00PM",
+    "gss": "W06000020"
+  },
+  "torbay": {
+    "name": "Torbay Borough Council",
+    "ons": "00HH",
+    "gss": "E06000027"
+  },
+  "warrington": {
+    "name": "Warrington Borough Council",
+    "ons": "00EU",
+    "gss": "E06000007"
+  },
+  "west-berkshire": {
+    "name": "West Berkshire Council",
+    "ons": "00MB",
+    "gss": "E06000037"
+  },
+  "west-dunbartonshire": {
+    "name": "West Dunbartonshire Council",
+    "ons": "00QG",
+    "gss": "S12000039"
+  },
+  "west-lothian": {
+    "name": "West Lothian Council",
+    "ons": "00RH",
+    "gss": "S12000040"
+  },
+  "windsor-and-maidenhead": {
+    "name": "Windsor and Maidenhead Council",
+    "ons": "00ME",
+    "gss": "E06000040"
+  },
+  "wokingham": {
+    "name": "Wokingham Borough Council",
+    "ons": "00MF",
+    "gss": "E06000041"
+  },
+  "wrexham": {
+    "name": "Wrexham Council",
+    "ons": "00NL",
+    "gss": "W06000006"
+  },
+  "york": {
+    "name": "City of York Council",
+    "ons": "00FF",
+    "gss": "E06000014"
+  },
+  "broadland": {
+    "name": "Broadland District Council",
+    "ons": "33UC",
+    "gss": "E07000144"
+  },
+  "south-hams": {
+    "name": "South Hams District Council",
+    "ons": "18UG",
+    "gss": "E07000044"
+  },
+  "torridge": {
+    "name": "Torridge District Council",
+    "ons": "18UK",
+    "gss": "E07000046"
+  },
+  "cheshire-west-and-chester": {
+    "name": "Cheshire West and Chester Council",
+    "ons": "00EW",
+    "gss": "E06000050"
+  },
+  "cheshire-east": {
+    "name": "Cheshire East Council",
+    "ons": "00EQ",
+    "gss": "E06000049"
+  },
+  "central-bedfordshire": {
+    "name": "Central Bedfordshire Council",
+    "ons": "00KC",
+    "gss": "E06000056"
+  },
+  "cardiff": {
+    "name": "Cardiff Council",
+    "ons": "00PT",
+    "gss": "W06000015"
+  },
+  "ceredigion": {
+    "name": "Ceredigion Council",
+    "ons": "00NQ",
+    "gss": "W06000008"
+  },
+  "pembrokeshire": {
+    "name": "Pembrokeshire Council",
+    "ons": "00NS",
+    "gss": "W06000009"
+  },
+  "north-somerset": {
+    "name": "North Somerset Council",
+    "ons": "00HC",
+    "gss": "E06000024"
+  },
+  "highland": {
+    "name": "Highland Council",
+    "ons": "00QT",
+    "gss": "S12000017"
+  },
+  "moray": {
+    "name": "Moray Council",
+    "ons": "00QX",
+    "gss": "S12000020"
+  },
+  "orkney-islands": {
+    "name": "Orkney Islands Council",
+    "ons": "00RA",
+    "gss": "S12000023"
+  },
+  "eilean-siar": {
+    "name": "Comhairle nan Eilean Siar",
+    "ons": "00RJ",
+    "gss": "S12000013"
+  },
+  "argyll-and-bute": {
+    "name": "Argyll and Bute Council",
+    "ons": "00QD",
+    "gss": "S12000035"
+  },
+  "aberdeenshire": {
+    "name": "Aberdeenshire Council",
+    "ons": "00QB",
+    "gss": "S12000034"
+  },
+  "fife": {
+    "name": "Fife Council",
+    "ons": "00QR",
+    "gss": "S12000015"
+  },
+  "aberdeen": {
+    "name": "Aberdeen City Council",
+    "ons": "00QA",
+    "gss": "S12000033"
+  },
+  "edinburgh": {
+    "name": "City of Edinburgh Council",
+    "ons": "00QP",
+    "gss": "S12000036"
+  },
+  "east-lothian": {
+    "name": "East Lothian Council",
+    "ons": "00QM",
+    "gss": "S12000010"
+  },
+  "shetland-islands": {
+    "name": "Shetland Islands Council",
+    "ons": "00RD",
+    "gss": "S12000027"
+  },
+  "north-ayrshire": {
+    "name": "North Ayrshire Council",
+    "ons": "00QY",
+    "gss": "S12000021"
+  },
+  "south-ayrshire": {
+    "name": "South Ayrshire Council",
+    "ons": "00RE",
+    "gss": "S12000028"
+  },
+  "dumfries-and-galloway": {
+    "name": "Dumfries and Galloway Council",
+    "ons": "00QH",
+    "gss": "S12000006"
+  },
+  "portsmouth": {
+    "name": "Portsmouth City Council",
+    "ons": "00MR",
+    "gss": "E06000044"
+  },
+  "plymouth": {
+    "name": "Plymouth City Council",
+    "ons": "00HG",
+    "gss": "E06000026"
+  },
+  "isle-of-wight": {
+    "name": "Isle of Wight Council",
+    "ons": "00MW",
+    "gss": "E06000046"
+  },
+  "isle-of-anglesey": {
+    "name": "Isle of Anglesey Council",
+    "ons": "00NA",
+    "gss": "W06000001"
+  },
+  "gwynedd": {
+    "name": "Gwynedd Council",
+    "ons": "00NC",
+    "gss": "W06000002"
+  },
+  "derry": {
+    "name": "Derry City Council",
+    "ons": "95A",
+    "gss": null
+  },
+  "limavady": {
+    "name": "Limavady Borough Council",
+    "ons": "95B",
+    "gss": null
+  },
+  "coleraine": {
+    "name": "Coleraine Borough Council",
+    "ons": "95C",
+    "gss": null
+  },
+  "ballymoney": {
+    "name": "Ballymoney Borough Council",
+    "ons": "95D",
+    "gss": null
+  },
+  "moyle": {
+    "name": "Moyle District Council",
+    "ons": "95E",
+    "gss": null
+  },
+  "larne": {
+    "name": "Larne Borough Council",
+    "ons": "95F",
+    "gss": null
+  },
+  "ballymena": {
+    "name": "Ballymena Borough Council",
+    "ons": "95G",
+    "gss": null
+  },
+  "magherafelt": {
+    "name": "Magherafelt District Council",
+    "ons": "95H",
+    "gss": null
+  },
+  "cookstown": {
+    "name": "Cookstown District Council",
+    "ons": "95I",
+    "gss": null
+  },
+  "strabane": {
+    "name": "Strabane District Council",
+    "ons": "95J",
+    "gss": null
+  },
+  "omagh": {
+    "name": "Omagh District Council",
+    "ons": "95K",
+    "gss": null
+  },
+  "fermanagh": {
+    "name": "Fermanagh District Council",
+    "ons": "95L",
+    "gss": null
+  },
+  "dungannon-and-south-tyrone": {
+    "name": "Dungannon and South Tyrone Borough Council",
+    "ons": "95M",
+    "gss": null
+  },
+  "craigavon": {
+    "name": "Craigavon Borough Council",
+    "ons": "95N",
+    "gss": null
+  },
+  "armagh": {
+    "name": "Armagh District Council",
+    "ons": "95O",
+    "gss": null
+  },
+  "newry-and-mourne": {
+    "name": "Newry and Mourne District Council",
+    "ons": "95P",
+    "gss": null
+  },
+  "banbridge": {
+    "name": "Banbridge District Council",
+    "ons": "95Q",
+    "gss": null
+  },
+  "down": {
+    "name": "Down District Council",
+    "ons": "95R",
+    "gss": null
+  },
+  "lisburn": {
+    "name": "Lisburn Borough Council",
+    "ons": "95S",
+    "gss": null
+  },
+  "antrim": {
+    "name": "Antrim Borough Council",
+    "ons": "95T",
+    "gss": null
+  },
+  "newtownabbey": {
+    "name": "Newtownabbey Borough Council",
+    "ons": "95U",
+    "gss": null
+  },
+  "carrickfergus": {
+    "name": "Carrickfergus Borough Council",
+    "ons": "95V",
+    "gss": null
+  },
+  "north-down": {
+    "name": "North Down Borough Council",
+    "ons": "95W",
+    "gss": null
+  },
+  "ards": {
+    "name": "Ards Borough Council",
+    "ons": "95X",
+    "gss": null
+  },
+  "castlereagh": {
+    "name": "Castlereagh Borough Council",
+    "ons": "95Y",
+    "gss": null
+  },
+  "antrim-newtownabbey": {
+    "name": "Antrim and Newtownabbey Borough Council",
+    "ons": "N09000001",
+    "gss": "N09000001"
+  },
+  "armagh-banbridge-craigavon": {
+    "name": "Armagh City, Banbridge and Craigavon Borough Council",
+    "ons": "N09000002",
+    "gss": "N09000002"
+  },
+  "belfast": {
+    "name": "Belfast City Council",
+    "ons": "N09000003",
+    "gss": "N09000003"
+  },
+  "causeway-coast-and-glens": {
+    "name": "Causeway Coast and Glens Borough Council",
+    "ons": "N09000004",
+    "gss": "N09000004"
+  },
+  "derry-strabane": {
+    "name": "Derry City and Strabane District Council",
+    "ons": "N09000005",
+    "gss": "N09000005"
+  },
+  "fermanagh-omagh": {
+    "name": "Fermanagh and Omagh District Council",
+    "ons": "N09000006",
+    "gss": "N09000006"
+  },
+  "lisburn-castlereagh": {
+    "name": "Lisburn and Castlereagh City Council",
+    "ons": "N09000007",
+    "gss": "N09000007"
+  },
+  "mid-and-east-antrim": {
+    "name": "Mid and East Antrim Borough Council",
+    "ons": "N09000008",
+    "gss": "N09000008"
+  },
+  "mid-ulster": {
+    "name": "Mid Ulster District Council",
+    "ons": "N09000009",
+    "gss": "N09000009"
+  },
+  "newry-mourne-down": {
+    "name": "Newry, Mourne and Down District Council",
+    "ons": "N09000010",
+    "gss": "N09000010"
+  },
+  "ards-and-north-down": {
+    "name": "Ards and North Down Borough Council",
+    "ons": "N09000011",
+    "gss": "N09000011"
+  }
+}
