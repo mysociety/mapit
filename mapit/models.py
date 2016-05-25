@@ -411,12 +411,20 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeManager(models.GeoManager):
-    def get_queryset(self):
-        return self.model.QuerySet(self.model)
-
-    def __getattr__(self, attr, *args):
-        return getattr(self.get_queryset(), attr, *args)
+class PostcodeQuerySet(models.query.GeoQuerySet):
+    # ST_CoveredBy on its own does not appear to use the index.
+    # Plus this way we can keep the polygons in the database
+    # without pulling out in a giant WKB string
+    def filter_by_area(self, area):
+        collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
+            where area_id=%s group by area_id), 4326)'''
+        return self.extra(
+            where=[
+                'location && %s' % collect,
+                'ST_CoveredBy(location, %s)' % collect
+            ],
+            params=[area.id, area.id]
+        )
 
 
 @python_2_unicode_compatible
@@ -426,25 +434,10 @@ class Postcode(models.Model):
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
-    objects = PostcodeManager()
+    objects = PostcodeQuerySet.as_manager()
 
     class Meta:
         ordering = ('postcode',)
-
-    class QuerySet(models.query.GeoQuerySet):
-        # ST_CoveredBy on its own does not appear to use the index.
-        # Plus this way we can keep the polygons in the database
-        # without pulling out in a giant WKB string
-        def filter_by_area(self, area):
-            collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
-                where area_id=%s group by area_id), 4326)'''
-            return self.extra(
-                where=[
-                    'location && %s' % collect,
-                    'ST_CoveredBy(location, %s)' % collect
-                ],
-                params=[area.id, area.id]
-            )
 
     def __str__(self):
         return self.get_postcode_display()
