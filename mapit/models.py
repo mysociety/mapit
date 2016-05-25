@@ -221,11 +221,11 @@ SELECT DISTINCT mapit_area.*
 @python_2_unicode_compatible
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
-    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
-    type = models.ForeignKey(Type, related_name='areas')
-    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)
-    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
-    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
+    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, related_name='areas', on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True, on_delete=models.CASCADE)
+    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True, on_delete=models.CASCADE)
+    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True, on_delete=models.CASCADE)
 
     objects = AreaManager()
 
@@ -325,7 +325,7 @@ class Area(models.Model):
 
 @python_2_unicode_compatible
 class Geometry(models.Model):
-    area = models.ForeignKey(Area, related_name='polygons')
+    area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
     objects = models.GeoManager()
 
@@ -357,8 +357,8 @@ class NameType(models.Model):
 
 @python_2_unicode_compatible
 class Name(models.Model):
-    area = models.ForeignKey(Area, related_name='names')
-    type = models.ForeignKey(NameType, related_name='names')
+    area = models.ForeignKey(Area, related_name='names', on_delete=models.CASCADE)
+    type = models.ForeignKey(NameType, related_name='names', on_delete=models.CASCADE)
     name = models.CharField(max_length=2000)
     objects = models.Manager()
 
@@ -397,8 +397,8 @@ class CodeType(models.Model):
 
 @python_2_unicode_compatible
 class Code(models.Model):
-    area = models.ForeignKey(Area, related_name='codes')
-    type = models.ForeignKey(CodeType, related_name='codes')
+    area = models.ForeignKey(Area, related_name='codes', on_delete=models.CASCADE)
+    type = models.ForeignKey(CodeType, related_name='codes', on_delete=models.CASCADE)
     code = models.CharField(max_length=500)
     objects = models.Manager()
 
