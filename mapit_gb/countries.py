@@ -1,6 +1,6 @@
 import re
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseRedirect
 
 from mapit.shortcuts import get_object_or_404
@@ -28,7 +28,11 @@ def area_code_lookup(request, area_id, format):
     area_kwargs = {'area_id': area.id}
     if format:
         area_kwargs['format'] = format
-    redirect_path = reverse('area', kwargs=area_kwargs)
+    # We're called either by area or area_polygon
+    try:
+        redirect_path = reverse('area', kwargs=area_kwargs)
+    except NoReverseMatch:
+        redirect_path = reverse('area_polygon', kwargs=area_kwargs)
     # If there was a query string, make sure it's passed on in the
     # redirect:
     if request.META['QUERY_STRING']:
