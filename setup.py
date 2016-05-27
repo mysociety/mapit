@@ -52,6 +52,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'Django >= 1.8.5',
+        'libsass',
         'psycopg2',
         'PyYAML',
         'Shapely',

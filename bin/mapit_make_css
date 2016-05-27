@@ -2,11 +2,6 @@
 #
 # mapit_make_css:
 # Generate CSS files from SCSS files.
-#
-# Requires sass which you can get from http://sass-lang.com/
-#
-# Copyright (c) 2012 UK Citizens Online Democracy. All rights reserved.
-# Email: matthew@mysociety.org. WWW: http://www.mysociety.org
 
 import os
 import subprocess
@@ -25,7 +20,7 @@ subprocess.check_call([
     "mkdir", "-p", "%s/static/mapit/css" % directory
 ])
 subprocess.check_call([
-    "sass", "--scss",
+    "sassc", "--sourcemap",
     "--style", "compressed",
     "%s/static/mapit/sass/mapit.scss" % directory,
     "%s/static/mapit/css/mapit.css" % directory
