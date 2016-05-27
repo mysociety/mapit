@@ -1,0 +1,33 @@
+{% load i18n %}
+    <section id="api-code">
+        <h3>{% blocktrans trimmed %}
+            <em>lookup by</em> code
+        {% endblocktrans %}</h3>
+        <dl>
+            <dt>URL:</dt>
+            <dd><ul>
+                <li>/code/<i>[{% trans "code type" %}]</i>/<i>[{% trans "code" %}]</i>
+            </ul></dd>
+            <dt>{% trans "Parameters" %}:</dt>
+            <dd>{% blocktrans trimmed %}
+            <i>code type</i> and a <i>code</i> should uniquely identify an area.
+            (MapIt uses code types and codes to associate external
+            identifiers with areas.)
+            {% endblocktrans %}
+            {% include "mapit/api/code-types.html" %}
+            </dd>
+
+            <dt>{% trans "Returns" %}:</dt>
+            <dd>
+            <p>
+                {% blocktrans trimmed %}
+                  This returns an HTTP 302 Found redirect to the corresponding
+                  /area/<i>[area ID]</i> page.  Any format extension
+                  (<tt>.html</tt> or <tt>.json</tt>) will be preserved in
+                  the URL that's redirected to.
+                {% endblocktrans %}
+            </p>
+            </dd>
+            {% include "mapit/api/code-examples.html" %}
+        </dl>
+    </section>
