@@ -1,6 +1,6 @@
 postgresql
-postgresql-9.3-postgis-2.1
-libgdal1h
+postgresql-9.5-postgis-2.2
+libgdal1i
 memcached
 python-virtualenv
 
