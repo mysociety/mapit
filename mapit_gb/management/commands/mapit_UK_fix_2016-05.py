@@ -21,7 +21,7 @@ class Command(NoArgsCommand):
 
     def get_generation_prior_to_current(self):
         latest_on = Generation.objects.filter(active=True).order_by('-id')
-        if latest_on:
+        if latest_on and len(latest_on) > 1:
             return latest_on[1]
         return None
 
