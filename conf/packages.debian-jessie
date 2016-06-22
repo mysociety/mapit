@@ -1,9 +1,8 @@
 postgresql
-postgresql-8.4-postgis
-libgdal1-1.6.0
+postgresql-9.4-postgis-2.1
+libgdal1h
 memcached
 python-virtualenv
-libhaml-ruby
 
 python-psycopg2
 python-shapely

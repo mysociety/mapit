@@ -63,7 +63,7 @@ class Command(LabelCommand):
             '--name_field',
             action="store",
             dest='name_field',
-            help="The field name containing the area's name"
+            help="The field name (or names separated by comma) to look at for the area's name"
         ),
         make_option(
             '--override_name',
@@ -112,6 +112,11 @@ class Command(LabelCommand):
             action="store_true",
             dest='fix_invalid_polygons',
             help="Try to fix any invalid polygons and multipolygons found"
+        ),
+        make_option(
+            '--ignore_blank',
+            action="store_true",
+            help="Skip over any entry with an empty name, rather than abort"
         ),
     )
 
@@ -211,9 +216,14 @@ class Command(LabelCommand):
             if override_name:
                 name = override_name
             else:
-                try:
-                    name = feat[name_field].value
-                except:
+                name = None
+                for nf in name_field.split(','):
+                    try:
+                        name = feat[nf].value
+                        break
+                    except:
+                        pass
+                if name is None:
                     choices = ', '.join(layer.fields)
                     raise CommandError(
                         "Could not find name using name field '%s' - should it be something else? "
@@ -228,6 +238,8 @@ class Command(LabelCommand):
 
             name = re.sub('\s+', ' ', name)
             if not name:
+                if options['ignore_blank']:
+                    continue
                 raise Exception("Could not find a name to use for area")
 
             code = None

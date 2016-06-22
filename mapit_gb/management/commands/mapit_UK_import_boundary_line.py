@@ -59,14 +59,11 @@ class Command(LabelCommand):
             ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)
             area_code = feat['AREA_CODE'].value
-            if hasattr(control, 'patch_boundary_line'):
-                patch = control.patch_boundary_line(name, ons_code, area_code)
-            else:
-                patch = self.patch_boundary_line(ons_code, area_code)
-            if patch is True:
-                ons_code = None
-            elif patch:
-                ons_code = patch
+            patch = self.patch_boundary_line(name, ons_code, unit_id, area_code)
+            if 'ons-code' in patch:
+                ons_code = patch['ons-code']
+            elif 'unit-id' in patch:
+                unit_id = patch['unit-id']
 
             if area_code == 'NCP':
                 continue  # Ignore Non Parished Areas
@@ -119,7 +116,7 @@ class Command(LabelCommand):
             # Do parents in separate P-in-P code after this is done.
 
             try:
-                check = control.check(name, area_code, country, feat.geom, ons_code=ons_code)
+                check = control.check(name, area_code, country, feat.geom, ons_code=ons_code, commit=options['commit'])
                 if check is True:
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
@@ -182,12 +179,27 @@ class Command(LabelCommand):
             save_polygons(self.unit_id_to_shape)
             save_polygons(self.ons_code_to_shape)
 
-    def patch_boundary_line(self, ons_code, area_code):
+    def patch_boundary_line(self, name, ons_code, unit_id, area_code):
         """Used to fix mistakes in Boundary-Line. This patch function should
-        return True if we want to ignore the provided ONS code (and match only
-        on unit ID), or a new ONS code to replace it."""
+        return an ons-code key to replace the provided ONS code (and if None,
+        match only on unit ID), or a unit-id key to replace the provided unit
+        ID (and match only on ONS code if None).
+
+        This function is here rather than the control file so that it will
+        still be used on a first import."""
         if area_code == 'WMC' and ons_code == '42UH012':
-            return True
+            return {'ons-code': None}
         if area_code == 'UTA' and ons_code == 'S16000010':
-            return 'S12000010'
-        return False
+            return {'ons-code': 'S12000010'}
+
+        # Two incorrect IDs given in the October 2015 source
+        if name == 'Badgers Mount CP' and area_code == 'CPC' and ons_code == 'E04012604':
+            return {'ons-code': 'E04012605'}
+        if name == 'Shoreham CP' and area_code == 'CPC' and ons_code == 'E04012605':
+            return {'ons-code': 'E04012606'}
+
+        # May 2016 has a duplicate unit ID
+        if name == 'Coaley & Uley Ward' and area_code == 'DIW' and unit_id == '41867':
+            return {'unit-id': None}
+
+        return {}

@@ -35,6 +35,9 @@ RATE_LIMIT:
 # Email address that errors should be sent to. Optional.
 BUGS_EMAIL: 'example@example.org'
 
+# Text to prepend to the subject of error emails. Overrides Django default. Optional.
+EMAIL_SUBJECT_PREFIX: '[MapIt] '
+
 #########################################################################
 
 # You can ignore all of the settings below this point in the file

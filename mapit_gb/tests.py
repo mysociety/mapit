@@ -57,6 +57,16 @@ class GBViewsTest(TestCase):
             area=self.area, polygon=polygon,
         )
 
+        code_type_gss = models.CodeType.objects.create(
+            code='gss',
+            description='GSS codes from ONS',
+        )
+        models.Code.objects.create(
+            area=self.area,
+            type=code_type_gss,
+            code='E05000025',
+        )
+
     def test_postcode_json(self):
         pc = self.postcode.postcode
         url = '/postcode/%s' % urllib.parse.quote(pc)
@@ -85,6 +95,7 @@ class GBViewsTest(TestCase):
                     'country_name': '-',
                     'codes': {
                         'CodeType': 'CODE',
+                        'gss': 'E05000025',
                     },
                     'all_names': {},
                 }
@@ -140,3 +151,10 @@ class GBViewsTest(TestCase):
         response = self.client.get(url)
         pc = self.postcode.postcode
         self.assertContains(response, '"/postcode/%s"' % url_postcode(pc))
+
+    def test_gss_code(self):
+        response = self.client.get('/area/E05000025')
+        self.assertRedirects(response, '/area/%d' % self.area.id)
+
+        response = self.client.get('/area/E05000025.geojson')
+        self.assertRedirects(response, '/area/%d.geojson' % self.area.id)
