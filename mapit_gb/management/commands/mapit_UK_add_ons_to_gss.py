@@ -4,6 +4,7 @@
 import codecs
 import csv
 import os.path
+import sys
 from django.core.management.base import NoArgsCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
@@ -30,22 +31,30 @@ class Command(NoArgsCommand):
     help = 'Inserts the old ONS codes into mapit'
 
     def handle_noargs(self, **options):
-        code_changes = codecs.open(os.path.join(
+        python_version = sys.version_info[0]
+
+        code_change_file_path = os.path.join(
             os.path.dirname(__file__),
-            '../../data/BL-2010-10-code-change.csv'
-            ), 'r', 'latin-1')
-        mapping = csv.reader(code_changes)
+            '../../data/BL-2010-10-code-change.csv')
+        if python_version < 3:
+            mapping = csv.reader(open(code_change_file_path))
+        else:
+            code_changes = codecs.open(code_change_file_path, 'r', 'latin-1')
+            mapping = csv.reader(code_changes)
         next(mapping)
         for row in mapping:
-            new_code, name, old_code = row[0], row[1], row[3]
+            new_code, old_code = row[0], row[3]
             process(new_code, old_code)
 
-        missing_codes = codecs.open(os.path.join(
+        missing_codes_file_path = os.path.join(
             os.path.dirname(__file__),
-            '../../data/BL-2010-10-missing-codes.csv'
-            ), 'r', 'latin-1')
-        mapping = csv.reader(missing_codes)
+            '../../data/BL-2010-10-missing-codes.csv')
+        if python_version < 3:
+            mapping = csv.reader(open(missing_codes_file_path))
+        else:
+            missing_codes = codecs.open(missing_codes_file_path, 'r', 'latin-1')
+            mapping = csv.reader(missing_codes)
         next(mapping)
         for row in mapping:
-            type, new_code, old_code, name = row
+            new_code, old_code = row[1], row[2]
             process(new_code, old_code)
