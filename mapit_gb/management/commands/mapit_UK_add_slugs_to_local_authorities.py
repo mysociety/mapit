@@ -31,6 +31,6 @@ class Command(NoArgsCommand):
                 except Area.DoesNotExist:
                     # An area that existed at the time of the mapping, but no longer
                     print 'Area for {authority} {gss_code} not found'.format(
-                        authority=authority,
+                        authority=slug,
                         gss_code=gss_code
                     )
