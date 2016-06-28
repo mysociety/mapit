@@ -40,7 +40,8 @@ class Command(NoArgsCommand):
             MissingOnsCode(code='00CH', area_type='MTD', area_name='Gateshead Borough Council'),
             # Adding GSS Code as an Ons code to try to support NI areas
             MissingOnsCode(code='N09000001', area_type='LGD', area_name='Antrim and Newtownabbey Borough Council'),
-            MissingOnsCode(code='N09000002', area_type='LGD', area_name='Armagh City, Banbridge and Craigavon Borough Council'),
+            MissingOnsCode(code='N09000002', area_type='LGD',
+                           area_name='Armagh City, Banbridge and Craigavon Borough Council'),
             MissingOnsCode(code='N09000003', area_type='LGD', area_name='Belfast City Council'),
             MissingOnsCode(code='N09000004', area_type='LGD', area_name='Causeway Coast and Glens Borough Council'),
             MissingOnsCode(code='N09000005', area_type='LGD', area_name='Derry City and Strabane District Council'),
@@ -51,6 +52,7 @@ class Command(NoArgsCommand):
             MissingOnsCode(code='N09000010', area_type='LGD', area_name='Newry, Mourne and Down District Council'),
             MissingOnsCode(code='N09000011', area_type='LGD', area_name='Ards and North Down Borough Council'),
         ]
+
 
 class MissingCode(object):
     def __init__(self, code, area_type, area_name):

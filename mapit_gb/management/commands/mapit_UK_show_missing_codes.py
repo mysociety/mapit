@@ -46,7 +46,8 @@ class Command(NoArgsCommand):
                 type=area_type
             )
             for code_type in used_code_types:
-                if self.is_code_type_not_required_for_area_type(code_type, area_type): continue
+                if self.is_code_type_not_required_for_area_type(code_type, area_type):
+                    continue
 
                 areas_without_codes = areas.exclude(codes__type__code=code_type)
                 if areas_without_codes.count() > 0:
