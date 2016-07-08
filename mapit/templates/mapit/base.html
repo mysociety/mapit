@@ -64,7 +64,7 @@
         <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
     </header>
 
-    <article class="content">
+    <article class="content {% block article-class %}{% endblock %}">
     {% endif %}
     {% block content %}
     {% endblock %}
