@@ -13,6 +13,7 @@
         {% include "mapit/index-cross-sell.html" %}
         <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></h1>
         {% include "mapit/intro.html" %}
+        {% block extra_intro %}{% endblock %}
     </header>
 
     <!-- Try out MapIt postcode bar -->
@@ -64,6 +65,8 @@
                     <li><a href="{% url 'mapit_changelog' %}">{% trans "Changelog" %}</a></li>
                     {% endif %}
                 </ul>
+
+                {% block extra_nav %}{% endblock %}
 
             </nav>
 
