@@ -10,6 +10,8 @@ class Command(FindParentsCommand):
     parentmap = {
         # A District council ward's parent is a District council:
         'DIW': 'DIS',
+        # A District council's parent is a County council:
+        'DIS': 'CTY',
         # A County council ward's parent is a County council:
         'CED': 'CTY',
         # A London borough ward's parent is a London borough:
