@@ -1,0 +1,445 @@
+local-authority	uk	local-authority-type	parent-local-authority	name	name-cy	official-name	website	start-date	end-date
+BAS	ENG	UA		Bath and North East Somerset		Bath and North East Somerset Council	http://www.bathnes.gov.uk	1996-04-01	
+BBD	ENG	UA		Blackburn with Darwen		Blackburn with Darwen Borough Council	http://www.blackburn.gov.uk	1998-04-01	
+BDF	ENG	UA		Bedford		Bedford Borough Council	http://www.bedford.gov.uk	2009-04-01	
+BIR	ENG	MD		Birmingham		Birmingham City Council	http://www.birmingham.gov.uk	1996-07-01	
+BMH	ENG	UA		Bournemouth		Bournemouth Borough Council	http://www.bournemouth.gov.uk	1905-06-19	
+BNH	ENG	UA		Brighton and Hove		Brighton and Hove City Council	http://www.brighton-hove.gov.uk	1905-06-19	
+BNS	ENG	MD		Barnsley		Barnsley Metropolitan Borough Council	http://www.barnsley.gov.uk	1974-04-01	
+BOL	ENG	MD		Bolton		Bolton Metropolitan Borough Council	http://www.bolton.gov.uk	1974-04-01	
+BPL	ENG	UA		Blackpool		Blackpool Borough Council	http://www.blackpool.gov.uk	1905-06-20	
+BRC	ENG	UA		Bracknell Forest		Bracknell Forest Council	http://www.bracknell-forest.gov.uk	1998-04-01	
+BRD	ENG	MD		Bradford		City of Bradford Metropolitan District Council	http://www.bradford.gov.uk	1974-04-01	
+BST	ENG	UA		City of Bristol		Bristol City Council	http://www.bristol.gov.uk	1905-06-18	
+BUR	ENG	MD		Bury		Bury Metropolitan Borough Council	http://www.bury.gov.uk	1974-04-01	
+CBF	ENG	UA		Central Bedfordshire		Central Bedfordshire Council	http://www.centralbedfordshire.gov.uk	2009-04-01	
+CHE	ENG	UA		Cheshire East		Cheshire East Council	http://www.cheshireeast.gov.uk	2009-04-01	
+CHW	ENG	UA		Cheshire West and Chester		Cheshire West and Chester Council	http://www.cheshirewestandchester.gov.uk	2009-04-01	
+CLD	ENG	MD		Calderdale		Calderdale Metropolitan Borough Council	http://www.calderdale.gov.uk	1974-04-01	
+CON	ENG	UA		Cornwall		Cornwall Council	http://www.cornwall.gov.uk	2009-04-01	
+COV	ENG	MD		Coventry		Coventry City Council	http://www.coventry.gov.uk	1974-04-01	
+DAL	ENG	UA		Darlington		Darlington Borough Council	http://www.darlington.gov.uk	1997-04-01	
+DNC	ENG	MD		Doncaster		Doncaster Metropolitan Borough Council	http://www.doncaster.gov.uk	1974-04-01	
+DUD	ENG	MD		Dudley		Dudley Metropolitan Borough Council	http://www.dudley.gov.uk	1974-04-01	
+DUR	ENG	UA		County Durham		Durham County Council	http://www.durham.gov.uk	2009-04-01	
+ERY	ENG	UA		East Riding of Yorkshire		East Riding of Yorkshire Council	http://www.eastriding.gov.uk	1996-04-01	
+GAT	ENG	MD		Gateshead		Gateshead Metropolitan Borough Council	http://www.gateshead.gov.uk	1974-04-01	
+GLA	ENG	CTY		Greater London		Greater London Authority	http://www.london.gov.uk	1905-06-22	
+HAL	ENG	UA		Halton		Halton Borough Council	http://www.halton.gov.uk	1998-04-01	
+HEF	ENG	UA		Herefordshire		Herefordshire Council	https://www.herefordshire.gov.uk	1998-04-01	
+HPL	ENG	UA		Hartlepool		Hartlepool Borough Council	http://www.hartlepool.gov.uk	1905-06-18	
+IOS	ENG	UA		Isles of Scilly		Council of the Isles of Scilly	http://www.scilly.gov.uk	1974-04-01	
+IOW	ENG	UA		Isle of Wight		Isle of Wight Council	http://www.iwight.com	1905-06-17	
+KHL	ENG	UA		Kingston upon Hull		Hull City Council	http://www.hullcc.gov.uk	1996-04-01	
+KIR	ENG	MD		Kirklees		Kirklees Council	http://www.kirklees.gov.uk	1974-04-01	
+KWL	ENG	MD		Knowsley		Knowsley Metropolitan Borough Council	http://www.knowsley.gov.uk	1974-04-01	
+LCE	ENG	UA		Leicester		Leicester City Council	http://www.leicester.gov.uk	1905-06-19	
+LDS	ENG	MD		Leeds		Leeds City Council	http://www.leeds.gov.uk	1905-06-08	
+LIV	ENG	MD		Liverpool		Liverpool City Council	http://www.liverpool.gov.uk	1905-06-08	
+LND	ENG	CTY		City of London		City of London Corporation	http://www.cityoflondon.gov.uk	1905-06-28	
+LUT	ENG	UA		Luton		Luton Borough Council	http://www.luton.gov.uk	1905-06-19	
+MAN	ENG	MD		Manchester		Manchester City Council	http://www.manchester.gov.uk	1974-04-01	
+MDB	ENG	UA		Middlesbrough		Middlesbrough Borough Council	http://www.middlesbrough.gov.uk	1905-06-18	
+MDW	ENG	UA		Medway		Medway Council	http://www.medway.gov.uk	1998-04-01	
+MIK	ENG	UA		Milton Keynes		Milton Keynes Council	http://www.milton-keynes.gov.uk	1905-06-19	
+NBL	ENG	UA		Northumberland		Northumberland County Council	http://www.northumberland.gov.uk	2009-04-01	
+NEL	ENG	UA		North East Lincolnshire		North East Lincolnshire Council	http://www.nelincs.gov.uk	1996-04-01	
+NET	ENG	MD		Newcastle upon Tyne		Newcastle City Council	http://www.newcastle.gov.uk	1974-04-01	
+NGM	ENG	UA		Nottingham		Nottingham City Council	http://www.nottinghamcity.gov.uk	1905-06-20	
+NLN	ENG	UA		North Lincolnshire		North Lincolnshire Council	http://www.northlincs.gov.uk	1996-04-01	
+NSM	ENG	UA		North Somerset		North Somerset  Council	http://www.n-somerset.gov.uk	1996-04-01	
+NTY	ENG	MD		North Tyneside		North Tyneside Council	http://my.northtyneside.gov.uk	1974-04-01	
+OLD	ENG	MD		Oldham		Oldham Metropolitan Borough Council	http://www.oldham.gov.uk	1905-06-07	
+PLY	ENG	UA		Plymouth		Plymouth City Council	http://www.plymouth.gov.uk	1998-04-01	
+POL	ENG	UA		Poole		Borough of Poole	http://www.poole.gov.uk	1997-04-01	
+POR	ENG	UA		Portsmouth		Portsmouth City Council	http://www.portsmouth.gov.uk	1905-06-20	
+PTE	ENG	UA		Peterborough		Peterborough City Council	http://www.peterborough.gov.uk	1905-06-20	
+RCC	ENG	UA		Redcar and Cleveland		Redcar and Cleveland Borough Council	http://www.redcar-cleveland.gov.uk	1996-04-01	
+RCH	ENG	MD		Rochdale		Rochdale Metropolitan Borough Council	http://www.rochdale.gov.uk	1905-05-27	
+RDG	ENG	UA		Reading		Reading Borough Council	http://www.reading.gov.uk/	1905-05-27	
+ROT	ENG	MD		Rotherham		Rotherham Metropolitan Borough Council	http://www.rotherham.gov.uk	1905-05-27	
+RUT	ENG	UA		Rutland		Rutland County Council	http://www.rutland.gov.uk	1997-04-01	
+SAW	ENG	MD		Sandwell		Sandwell Metropolitan Borough Council	http://www.sandwell.gov.uk	1905-06-07	
+SFT	ENG	MD		Sefton		Sefton Metropolitan Borough Council	http://www.sefton.gov.uk	1905-06-08	
+SGC	ENG	UA		South Gloucestershire		South Gloucestershire Council	http://www.southglos.gov.uk	1905-06-18	
+SHF	ENG	MD		Sheffield		Sheffield City Council	http://www.sheffield.gov.uk	1905-06-08	
+SHN	ENG	MD		St. Helens		St Helens Council	http://www.sthelens.gov.uk	1905-06-08	
+SHR	ENG	UA		Shropshire		Shropshire Council	http://www.shropshire.gov.uk	2009-04-01	
+SKP	ENG	MD		Stockport		Stockport Metropolitan Borough Council	http://www.stockport.gov.uk	1905-05-27	
+SLF	ENG	MD		Salford		Salford City Council	http://www.salford.gov.uk	1905-05-27	
+SLG	ENG	UA		Slough		Slough Borough Council	http://www.slough.gov.uk	1998-04-01	
+SND	ENG	MD		Sunderland		Sunderland City Council	http://www.sunderland.gov.uk	1905-05-27	
+SOL	ENG	MD		Solihull		Solihull Metropolitan Borough Council	http://www.solihull.gov.uk	1905-05-27	
+SOS	ENG	UA		Southend-on-Sea		Southend-on-Sea Borough Council	http://www.southend.gov.uk	1905-06-20	
+STE	ENG	UA		Stoke-on-Trent		Stoke-on-Trent City Council	http://www.stoke.gov.uk	1905-06-20	
+STH	ENG	UA		Southampton		Southampton City Council	http://www.southampton.gov.uk	1905-06-19	
+STT	ENG	UA		Stockton-on-Tees		Stockton-on-Tees Borough Council	http://www.stockton.gov.uk	1905-06-18	
+STY	ENG	MD		South Tyneside		South Tyneside Council	http://www.southtyneside.gov.uk	1974-04-01	
+SWD	ENG	UA		Swindon		Swindon Borough Council	http://www.swindon.gov.uk	1905-06-20	
+TAM	ENG	MD		Tameside		Tameside Metropolitan Borough Council	http://www.tameside.gov.uk	1974-04-01	
+TFW	ENG	UA		Telford and Wrekin		Telford & Wrekin Council	http://www.telford.gov.uk	1905-06-20	
+THR	ENG	UA		Thurrock		Thurrock Council	http://www.thurrock.gov.uk	1905-06-20	
+TOB	ENG	UA		Torbay		Torbay Council	http://www.torbay.gov.uk	1905-06-20	
+TRF	ENG	MD		Trafford		Trafford Metropolitan Borough Council	http://www.trafford.gov.uk	1974-04-01	
+WBK	ENG	UA		West Berkshire		West Berkshire Council	http://www.westberks.gov.uk	1905-06-20	
+WGN	ENG	MD		Wigan		Wigan Metropolitan Borough Council	http://www.wigan.gov.uk	1974-04-01	
+WIL	ENG	UA		Wiltshire		Wiltshire Council	http://www.wiltshire.gov.uk	2009-04-01	
+WKF	ENG	MD		Wakefield		Wakefield Metropolitan District Council	http://www.wakefield.gov.uk	1974-04-01	
+WLL	ENG	MD		Walsall		Walsall Metropolitan Borough Council	http://www.walsall.gov.uk	1974-04-01	
+WLV	ENG	MD		Wolverhampton		City of Wolverhampton Council	http://www.wolverhampton.gov.uk	1974-04-01	
+WNM	ENG	UA		Windsor and Maidenhead		Royal Borough of Windsor and Maidenhead	http://www.rbwm.gov.uk	1905-06-20	
+WOK	ENG	UA		Wokingham		Wokingham Borough Council	http://www.wokingham.gov.uk	1905-06-20	
+WRL	ENG	MD		Wirral		Wirral Council	http://www.wirral.gov.uk	1974-04-01	
+WRT	ENG	UA		Warrington		Warrington Borough Council	http://www.warrington.gov.uk	1905-06-20	
+YOR	ENG	UA		York		City of York Council	http://www.york.gov.uk	1905-06-18	
+BKM	ENG	CTY	BKM	Buckinghamshire		Buckinghamshire County Council	http://www.buckscc.gov.uk	1905-06-19	
+BKM-UB	ENG	NMD	BKM	Aylesbury Vale		Aylesbury Vale District Council	http://www.aylesburyvaledc.gov.uk		
+BKM-UC	ENG	NMD	BKM	Chiltern		Chiltern District Council	http://www.chiltern.gov.uk		
+BKM-UE	ENG	NMD	BKM	South Bucks		South Bucks District Council	http://www.southbucks.gov.uk		
+BKM-UF	ENG	NMD	BKM	Wycombe		Wycombe District Council	http://www.wycombe.gov.uk		
+CAM	ENG	CTY	CAM	Cambridgeshire		Cambridgeshire County Council	http://www.cambridgeshire.gov.uk		
+CAM-UB	ENG	NMD	CAM	Cambridge		Cambridge City Council	https://www.cambridge.gov.uk		
+CAM-UC	ENG	NMD	CAM	East Cambridgeshire		East Cambridgeshire District Council	http://www.eastcambs.gov.uk		
+CAM-UD	ENG	NMD	CAM	Fenland		Fenland District Council	http://www.fenland.gov.uk		
+CAM-UE	ENG	NMD	CAM	Huntingdonshire		Huntingdonshire District Council	http://www.huntingdonshire.gov.uk		
+CAM-UG	ENG	NMD	CAM	South Cambridgeshire		South Cambridgeshire District Council	http://www.scambs.gov.uk		
+CMA	ENG	CTY	CMA	Cumbria		Cumbria County Council	http://www.cumbria.gov.uk		
+CMA-UB	ENG	NMD	CMA	Allerdale		Allerdale Borough Council	http://www.allerdale.gov.uk		
+CMA-UC	ENG	NMD	CMA	Barrow-in-Furness		Borough of Barrow-in-Furness	http://www.barrowbc.gov.uk		
+CMA-UD	ENG	NMD	CMA	Carlisle		Carlisle City Council	http://www.carlisle.gov.uk		
+CMA-UE	ENG	NMD	CMA	Copeland		Copeland Borough Council	http://www.copeland.gov.uk		
+CMA-UF	ENG	NMD	CMA	Eden		Eden District Council	http://www.eden.gov.uk		
+CMA-UG	ENG	NMD	CMA	South Lakeland		South Lakeland District Council	http://www.southlakeland.gov.uk		
+DER	ENG	UA	DBY	Derby		Derby City 	http://www.derby.gov.uk		
+DBY	ENG	CTY	DBY	Derbyshire		Derbyshire County Council	http://www.derbyshire.gov.uk		
+DBY-UB	ENG	NMD	DBY	Amber Valley		Amber Valley Borough Council	http://www.ambervalley.gov.uk		
+DBY-UC	ENG	NMD	DBY	Bolsover		Bolsover District Council	http://www.bolsover.gov.uk		
+DBY-UD	ENG	NMD	DBY	Chesterfield		Chesterfield Borough Council	http://www.chesterfield.gov.uk		
+DBY-UF	ENG	NMD	DBY	Derbyshire Dales		Derbyshire Dales District Council	http://www.derbyshiredales.gov.uk		
+DBY-UG	ENG	NMD	DBY	Erewash		Erewash Borough Council	http://www.erewash.gov.uk		
+DBY-UH	ENG	NMD	DBY	High Peak		High Peak Borough Council	http://www.highpeak.gov.uk		
+DBY-UJ	ENG	NMD	DBY	North East Derbyshire		North East Derbyshire District Council	http://www.ne-derbyshire.gov.uk		
+DBY-UK	ENG	NMD	DBY	South Derbyshire		South Derbyshire District Council	http://www.south-derbys.gov.uk		
+DEV	ENG	CTY	DEV	Devon		Devon County Council	http://www.devon.gov.uk		
+DEV-UB	ENG	NMD	DEV	East Devon		East Devon District Council	http://eastdevon.gov.uk		
+DEV-UC	ENG	NMD	DEV	Exeter		Exeter City Council	http://exeter.gov.uk		
+DEV-UD	ENG	NMD	DEV	Mid Devon		Mid Devon District Council	http://www.middevon.gov.uk		
+DEV-UE	ENG	NMD	DEV	North Devon		North Devon Council	http://www.northdevon.gov.uk		
+DEV-UG	ENG	NMD	DEV	South Hams		South Hams District Council	http://www.southhams.gov.uk		
+DEV-UH	ENG	NMD	DEV	Teignbridge		Teignbridge District Council	http://www.teignbridge.gov.uk		
+DEV-UK	ENG	NMD	DEV	Torridge		Torridge District Council	http://www.torridge.gov.uk		
+DEV-UL	ENG	NMD	DEV	West Devon		West Devon Borough Council	http://www.westdevon.gov.uk		
+DOR	ENG	CTY	DOR	Dorset		Dorset County Council	http://www.dorsetforyou.com		
+DOR-UC	ENG	NMD	DOR	Christchurch		Christchurch Borough Council	http://www.dorsetforyou.com		
+DOR-UD	ENG	NMD	DOR	East Dorset		East Dorset District Council	http://www.dorsetforyou.com		
+DOR-UE	ENG	NMD	DOR	North Dorset		North Dorset District Council	http://www.dorsetforyou.com		
+DOR-UG	ENG	NMD	DOR	Purbeck		Purbeck District Council	http://www.dorsetforyou.com		
+DOR-UH	ENG	NMD	DOR	West Dorset		West Dorset District Council	http://www.dorsetforyou.com		
+DOR-UJ	ENG	NMD	DOR	Weymouth and Portland		Weymouth and Portland Borough Council	http://www.dorsetforyou.com		
+ESS	ENG	CTY	ESS	Essex		Essex County Council	http://www.essex.gov.uk		
+ESS-UB	ENG	NMD	ESS	Basildon		Basildon Borough Council	http://www.basildon.gov.uk		
+ESS-UC	ENG	NMD	ESS	Braintree		Braintree District Council	http://www.braintree.gov.uk		
+ESS-UD	ENG	NMD	ESS	Brentwood		Brentwood Borough Council	http://www.brentwood.gov.uk		
+ESS-UE	ENG	NMD	ESS	Castle Point		Castle Point Borough Council	http://www.castlepoint.gov.uk		
+ESS-UF	ENG	NMD	ESS	Chelmsford		Chelmsford City Council	http://www.chelmsford.gov.uk		
+ESS-UG	ENG	NMD	ESS	Colchester		Colchester Borough Council	http://www.colchester.gov.uk		
+ESS-UH	ENG	NMD	ESS	Epping Forest		Epping Forest District Council	http://www.eppingforestdc.gov.uk		
+ESS-UJ	ENG	NMD	ESS	Harlow		Harlow Council	http://www.harlow.gov.uk		
+ESS-UK	ENG	NMD	ESS	Maldon		Maldon District Council	http://www.maldon.gov.uk		
+ESS-UL	ENG	NMD	ESS	Rochford		Rochford District Council	http://www.rochford.gov.uk		
+ESS-UN	ENG	NMD	ESS	Tendring		Tendring District Council	http://www.tendringdc.gov.uk		
+ESS-UQ	ENG	NMD	ESS	Uttlesford		Uttlesford District Council	http://www.uttlesford.gov.uk		
+ESX	ENG	CTY	ESX	East Sussex		East Sussex County Council	http://www.eastsussex.gov.uk		
+ESX-UC	ENG	NMD	ESX	Eastbourne		Eastbourne Borough Council	http://www.eastbourne.gov.uk		
+ESX-UD	ENG	NMD	ESX	Hastings		Hastings Borough Council	http://www.hastings.gov.uk		
+ESX-UF	ENG	NMD	ESX	Lewes		Lewes District Council	http://www.lewes.gov.uk		
+ESX-UG	ENG	NMD	ESX	Rother		Rother District Council	http://www.rother.gov.uk		
+ESX-UH	ENG	NMD	ESX	Wealden		Wealden District Council	http://www.wealden.gov.uk		
+BDG	ENG	LBO	GLA	Barking and Dagenham		London Borough of Barking and Dagenham	https://www.lbbd.gov.uk		
+BEN	ENG	LBO	GLA	Brent		London Borough of Brent	http://www.brent.gov.uk		
+BEX	ENG	LBO	GLA	Bexley		London Borough of Bexley	http://www.bexley.gov.uk		
+BNE	ENG	LBO	GLA	Barnet		London Borough of Barnet	http://www.barnet.gov.uk		
+BRY	ENG	LBO	GLA	Bromley		London Borough of Bromley	http://www.bromley.gov.uk		
+CMD	ENG	LBO	GLA	Camden		London Borough of Camden	http://www.camden.gov.uk		
+CRY	ENG	LBO	GLA	Croydon		London Borough of Croydon	http://www.croydon.gov.uk		
+EAL	ENG	LBO	GLA	Ealing		London Borough of Ealing	http://www.ealing.gov.uk		
+ENF	ENG	LBO	GLA	Enfield		London Borough of Enfield	http://www.enfield.gov.uk		
+GRE	ENG	LBO	GLA	Greenwich		Royal Borough of Greenwich	http://www.royalgreenwich.gov.uk		
+HAV	ENG	LBO	GLA	Havering		London Borough of Havering	http://www.havering.gov.uk		
+HCK	ENG	LBO	GLA	Hackney		London Borough of Hackney	http://www.hackney.gov.uk		
+HIL	ENG	LBO	GLA	Hillingdon		London Borough of Hillingdon	http://www.hillingdon.gov.uk		
+HMF	ENG	LBO	GLA	Hammersmith and Fulham		London Borough of Hammersmith & Fulham	http://www.lbhf.gov.uk		
+HNS	ENG	LBO	GLA	Hounslow		London Borough of Hounslow	http://www.hounslow.gov.uk		
+HRW	ENG	LBO	GLA	Harrow		London Borough of Harrow	http://www.harrow.gov.uk		
+HRY	ENG	LBO	GLA	Haringey		London Borough of Haringey	http://www.haringey.gov.uk		
+ISL	ENG	LBO	GLA	Islington		London Borough of Islington	http://www.islington.gov.uk		
+KEC	ENG	LBO	GLA	Kensington and Chelsea		Royal Borough of Kensington and Chelsea	http://www.rbkc.gov.uk		
+KTT	ENG	LBO	GLA	Kingston upon Thames		Royal Borough of Kingston upon Thames	http://www.kingston.gov.uk		
+LBH	ENG	LBO	GLA	Lambeth		London Borough of Lambeth	http://www.lambeth.gov.uk		
+LEW	ENG	LBO	GLA	Lewisham		London Borough of Lewisham	http://www.lewisham.gov.uk		
+MRT	ENG	LBO	GLA	Merton		London Borough of Merton	http://www.merton.gov.uk		
+NWM	ENG	LBO	GLA	Newham		London Borough of Newham	http://www.newham.gov.uk		
+RDB	ENG	LBO	GLA	Redbridge		London Borough of Redbridge	http://www.redbridge.gov.uk		
+RIC	ENG	LBO	GLA	Richmond upon Thames		London Borough of Richmond upon Thames	http://www.richmond.gov.uk		
+STN	ENG	LBO	GLA	Sutton		London Borough of Sutton	http://www.sutton.gov.uk		
+SWK	ENG	LBO	GLA	Southwark		London Borough of Southwark	http://www.southwark.gov.uk		
+TWH	ENG	LBO	GLA	Tower Hamlets		London Borough of Tower Hamlets	http://www.towerhamlets.gov.uk		
+WFT	ENG	LBO	GLA	Waltham Forest		London Borough of Waltham Forest	http://www.walthamforest.gov.uk		
+WND	ENG	LBO	GLA	Wandsworth		London Borough of Wandsworth	http://www.wandsworth.gov.uk		
+WSM	ENG	LBO	GLA	Westminster		City of Westminster	http://www.westminster.gov.uk		
+GLS	ENG	CTY	GLS	Gloucestershire		Gloucestershire County Council	http://www.gloucestershire.gov.uk		
+GLS-UB	ENG	NMD	GLS	Cheltenham		Cheltenham Borough Council	http://www.cheltenham.gov.uk		
+GLS-UC	ENG	NMD	GLS	Cotswold		Cotswold District Council	http://www.cotswold.gov.uk		
+GLS-UD	ENG	NMD	GLS	Forest of Dean		Forest of Dean District Council	http://www.fdean.gov.uk		
+GLS-UE	ENG	NMD	GLS	Gloucester		Gloucester City Council	http://www.gloucester.gov.uk		
+GLS-UF	ENG	NMD	GLS	Stroud		Stroud District Council	http://www.stroud.gov.uk		
+GLS-UG	ENG	NMD	GLS	Tewkesbury		Tewkesbury Borough Council	http://tewkesbury.gov.uk		
+HAM	ENG	CTY	HAM	Hampshire		Hampshire County Council	http://www.hants.gov.uk		
+HAM-UB	ENG	NMD	HAM	Basingstoke and Deane		Basingstoke and Deane Borough Council	http://www.basingstoke.gov.uk		
+HAM-UC	ENG	NMD	HAM	East Hampshire		East Hampshire District Council	http://www.easthants.gov.uk		
+HAM-UD	ENG	NMD	HAM	Eastleigh		Eastleigh Borough Council	http://www.eastleigh.gov.uk		
+HAM-UE	ENG	NMD	HAM	Fareham		Fareham Borough Council	http://www.fareham.gov.uk		
+HAM-UF	ENG	NMD	HAM	Gosport		Gosport Borough Council	http://www.gosport.gov.uk		
+HAM-UG	ENG	NMD	HAM	Hart		Hart District Council	http://www.hart.gov.uk		
+HAM-UH	ENG	NMD	HAM	Havant		Havant Borough Council	http://www.havant.gov.uk		
+HAM-UJ	ENG	NMD	HAM	New Forest		New Forest District Council	http://www.newforest.gov.uk		
+HAM-UL	ENG	NMD	HAM	Rushmoor		Rushmoor Borough Council	http://www.rushmoor.gov.uk		
+HAM-UN	ENG	NMD	HAM	Test Valley		Test Valley Borough Council	http://www.testvalley.gov.uk		
+HAM-UP	ENG	NMD	HAM	Winchester		Winchester City Council	http://www.winchester.gov.uk		
+HRT	ENG	CTY	HRT	Hertfordshire		Hertfordshire County Council	http://www.hertsdirect.org		
+HRT-UB	ENG	NMD	HRT	Broxbourne		Borough of Broxbourne	http://www.broxbourne.gov.uk		
+HRT-UC	ENG	NMD	HRT	Dacorum		Dacorum Borough Council	http://www.dacorum.gov.uk		
+HRT-UD	ENG	NMD	HRT	East Hertfordshire		East Hertfordshire District Council	http://www.eastherts.gov.uk		
+HRT-UE	ENG	NMD	HRT	Hertsmere		Hertsmere Borough Council	http://www.hertsmere.gov.uk		
+HRT-UF	ENG	NMD	HRT	North Hertfordshire		North Hertfordshire District Council	http://www.north-herts.gov.uk		
+HRT-UG	ENG	NMD	HRT	St Albans City		St Albans City and District Council	http://www.stalbans.gov.uk		
+HRT-UH	ENG	NMD	HRT	Stevenage		Stevenage Borough Council	http://www.stevenage.gov.uk		
+HRT-UJ	ENG	NMD	HRT	Three Rivers		Three Rivers District Council	http://www.threerivers.gov.uk		
+HRT-UK	ENG	NMD	HRT	Watford		Watford Borough Council	http://www.watford.gov.uk		
+HRT-UL	ENG	NMD	HRT	Welwyn Hatfield		Welwyn Hatfield Council	http://www.welhat.gov.uk		
+KEN	ENG	CTY	KEN	Kent		Kent County Council	http://www.kent.gov.uk		
+KEN-UB	ENG	NMD	KEN	Ashford		Ashford Borough Council	http://www.ashford.gov.uk		
+KEN-UC	ENG	NMD	KEN	Canterbury		Canterbury City Council	https://www.canterbury.gov.uk		
+KEN-UD	ENG	NMD	KEN	Dartford		Dartford Borough Council	http://www.dartford.gov.uk		
+KEN-UE	ENG	NMD	KEN	Dover		Dover District Council	http://www.dover.gov.uk		
+KEN-UG	ENG	NMD	KEN	Gravesham		Gravesham Borough Council	http://www.gravesham.gov.uk		
+KEN-UH	ENG	NMD	KEN	Maidstone		Maidstone Borough Council	http://www.maidstone.gov.uk		
+KEN-UK	ENG	NMD	KEN	Sevenoaks		Sevenoaks District Council	http://www.sevenoaks.gov.uk		
+KEN-UL	ENG	NMD	KEN	Shepway		Shepway District Council	http://www.shepway.gov.uk		
+KEN-UM	ENG	NMD	KEN	Swale		Swale Borough Council	http://www.swale.gov.uk		
+KEN-UN	ENG	NMD	KEN	Thanet		Thanet District Council	http://thanet.gov.uk		
+KEN-UP	ENG	NMD	KEN	Tonbridge and Malling		Tonbridge and Malling Borough Council	http://www.tmbc.gov.uk		
+KEN-UQ	ENG	NMD	KEN	Tunbridge Wells		Tunbridge Wells Borough Council	http://www.tunbridgewells.gov.uk		
+LAN	ENG	CTY	LAN	Lancashire		Lancashire County Council	http://www.lancashire.gov.uk		
+LAN-UD	ENG	NMD	LAN	Burnley		Burnley Borough Council	http://www.burnley.gov.uk		
+LAN-UE	ENG	NMD	LAN	Chorley		Chorley Council	http://www.chorley.gov.uk		
+LAN-UF	ENG	NMD	LAN	Fylde		Fylde Borough Council	http://www.fylde.gov.uk		
+LAN-UG	ENG	NMD	LAN	Hyndburn		Hyndburn Borough Council	http://www.hyndburnbc.gov.uk		
+LAN-UH	ENG	NMD	LAN	Lancaster		Lancaster City Council	http://www.lancaster.gov.uk		
+LAN-UJ	ENG	NMD	LAN	Pendle		Pendle Borough Council	http://www.pendle.gov.uk		
+LAN-UK	ENG	NMD	LAN	Preston		Preston City Council	http://www.preston.gov.uk		
+LAN-UL	ENG	NMD	LAN	Ribble Valley		Ribble Valley Borough Council	https://www.ribblevalley.gov.uk		
+LAN-UM	ENG	NMD	LAN	Rossendale		Rossendale Borough Council	http://www.rossendale.gov.uk		
+LAN-UN	ENG	NMD	LAN	South Ribble		South Ribble Borough Council	http://www.southribble.gov.uk		
+LAN-UP	ENG	NMD	LAN	West Lancashire		West Lancashire Borough Council	http://www.westlancs.gov.uk		
+LAN-UQ	ENG	NMD	LAN	Wyre		Wyre Council	http://www.wyre.gov.uk		
+LEC	ENG	CTY	LEC	Leicestershire		Leicestershire County Council	http://www.leics.gov.uk		
+LEC-UB	ENG	NMD	LEC	Blaby		Blaby District Council	http://www.blaby.gov.uk		
+LEC-UC	ENG	NMD	LEC	Charnwood		Charnwood Borough Council	http://www.charnwood.gov.uk		
+LEC-UD	ENG	NMD	LEC	Harborough		Harborough District Council	http://www.harborough.gov.uk		
+LEC-UE	ENG	NMD	LEC	Hinckley and Bosworth		Hinckley and Bosworth Borough Council	http://www.hinckley-bosworth.gov.uk		
+LEC-UG	ENG	NMD	LEC	Melton		Melton Borough Council	http://www.melton.gov.uk		
+LEC-UH	ENG	NMD	LEC	North West Leicestershire		North West Leicestershire District Council	http://www.nwleics.gov.uk		
+LEC-UJ	ENG	NMD	LEC	Oadby and Wigston		Oadby and Wigston District Council	http://oadby-wigston.gov.uk		
+LIN	ENG	CTY	LIN	Lincolnshire		Lincolnshire County Council	http://www.lincolnshire.gov.uk		
+LIN-UB	ENG	NMD	LIN	Boston		Boston Borough Council	http://www.boston.gov.uk		
+LIN-UC	ENG	NMD	LIN	East Lindsey		East Lindsey District Council	http://www.e-lindsey.gov.uk		
+LIN-UD	ENG	NMD	LIN	City of Lincoln		City of Lincoln Council	http://www.lincoln.gov.uk		
+LIN-UE	ENG	NMD	LIN	North Kesteven		North Kesteven District Council	http://www.n-kesteven.gov.uk		
+LIN-UF	ENG	NMD	LIN	South Holland		South Holland District Council	http://www.sholland.gov.uk		
+LIN-UG	ENG	NMD	LIN	South Kesteven		South Kesteven District Council	http://www.southkesteven.gov.uk		
+LIN-UH	ENG	NMD	LIN	West Lindsey		West Lindsey District Council	http://www.west-lindsey.gov.uk		
+NFK	ENG	CTY	NFK	Norfolk		Norfolk County Council	http://www.norfolk.gov.uk		
+NFK-UB	ENG	NMD	NFK	Breckland		Breckland Council	http://www.breckland.gov.uk		
+NFK-UC	ENG	NMD	NFK	Broadland		Broadland District Council	http://www.broadland.gov.uk		
+NFK-UD	ENG	NMD	NFK	Great Yarmouth		Great Yarmouth Borough Council	http://www.great-yarmouth.gov.uk		
+NFK-UE	ENG	NMD	NFK	Kings Lynn and West Norfolk		Borough Council of Kings Lynn and West Norfolk	http://www.west-norfolk.gov.uk		
+NFK-UF	ENG	NMD	NFK	North Norfolk		North Norfolk District Council	http://www.northnorfolk.org		
+NFK-UG	ENG	NMD	NFK	Norwich		Norwich City Council	http://www.norwich.gov.uk		
+NFK-UH	ENG	NMD	NFK	South Norfolk		South Norfolk District Council	http://www.south-norfolk.gov.uk		
+NTH	ENG	CTY	NTH	Northamptonshire		Northamptonshire County Council	http://www.northamptonshire.gov.uk		
+NTH-UB	ENG	NMD	NTH	Corby		Corby Borough Council	http://www.corby.gov.uk		
+NTH-UC	ENG	NMD	NTH	Daventry		Daventry District Council	http://www.daventrydc.gov.uk		
+NTH-UD	ENG	NMD	NTH	East Northamptonshire		East Northamptonshire Council	http://www.east-northamptonshire.gov.uk		
+NTH-UE	ENG	NMD	NTH	Kettering		Kettering Borough Council	http://www.kettering.gov.uk		
+NTH-UF	ENG	NMD	NTH	Northampton		Northampton Borough Council	http://www.northampton.gov.uk		
+NTH-UG	ENG	NMD	NTH	South Northamptonshire		South Northamptonshire Council	http://www.southnorthants.gov.uk		
+NTH-UH	ENG	NMD	NTH	Wellingborough		Wellingborough Borough Council	http://www.wellingborough.gov.uk		
+NTT	ENG	CTY	NTT	Nottinghamshire		Nottinghamshire County Council	http://www.nottinghamshire.gov.uk		
+NTT-UB	ENG	NMD	NTT	Ashfield		Ashfield District Council	http://www.ashfield-dc.gov.uk		
+NTT-UC	ENG	NMD	NTT	Bassetlaw		Bassetlaw District Council	http://www.bassetlaw.gov.uk		
+NTT-UD	ENG	NMD	NTT	Broxtowe		Broxtowe Borough Council	http://www.broxtowe.gov.uk		
+NTT-UE	ENG	NMD	NTT	Gedling		Gedling Borough Council	http://www.gedling.gov.uk		
+NTT-UF	ENG	NMD	NTT	Mansfield		Mansfield District Council	http://www.mansfield.gov.uk		
+NTT-UG	ENG	NMD	NTT	Newark and Sherwood		Newark and Sherwood District Council	http://www.newark-sherwooddc.gov.uk		
+NTT-UJ	ENG	NMD	NTT	Rushcliffe		Rushcliffe Borough Council	http://www.rushcliffe.gov.uk		
+NYK	ENG	CTY	NYK	North Yorkshire		North Yorkshire County Council	http://www.northyorks.gov.uk		
+NYK-UB	ENG	NMD	NYK	Craven		Craven District Council	http://www.cravendc.gov.uk		
+NYK-UC	ENG	NMD	NYK	Hambleton		Hambleton District Council	http://www.hambleton.gov.uk		
+NYK-UD	ENG	NMD	NYK	Harrogate		Harrogate Borough Council	http://www.harrogate.gov.uk		
+NYK-UE	ENG	NMD	NYK	Richmondshire		Richmondshire District Council	http://richmondshire.gov.uk		
+NYK-UF	ENG	NMD	NYK	Ryedale		Ryedale District Council	http://www.ryedale.gov.uk		
+NYK-UG	ENG	NMD	NYK	Scarborough		Scarborough Borough Council	http://www.scarborough.gov.uk		
+NYK-UH	ENG	NMD	NYK	Selby		Selby District Council	http://www.selby.gov.uk		
+OXF	ENG	CTY	OXF	Oxfordshire		Oxfordshire County Council	http://www.oxfordshire.gov.uk		
+OXF-UB	ENG	NMD	OXF	Cherwell		Cherwell District Council	http://www.cherwell-dc.gov.uk		
+OXF-UC	ENG	NMD	OXF	Oxford		Oxford City Council	https://www.oxford.gov.uk		
+OXF-UD	ENG	NMD	OXF	South Oxfordshire		South Oxfordshire District Council	http://www.southoxon.gov.uk		
+OXF-UE	ENG	NMD	OXF	Vale of White Horse		Vale of White Horse District Council	http://www.whitehorsedc.gov.uk		
+OXF-UF	ENG	NMD	OXF	West Oxfordshire		West Oxfordshire District Council	http://www.westoxon.gov.uk		
+SFK	ENG	CTY	SFK	Suffolk		Suffolk County Council	http://www.suffolk.gov.uk		
+SFK-UB	ENG	NMD	SFK	Babergh		Babergh District Council	http://www.babergh.gov.uk		
+SFK-UC	ENG	NMD	SFK	Forest Heath		Forest Heath District Council	http://www.forest-heath.gov.uk		
+SFK-UD	ENG	NMD	SFK	Ipswich		Ipswich Borough Council	https://www.ipswich.gov.uk		
+SFK-UE	ENG	NMD	SFK	Mid Suffolk		Mid Suffolk District Council	http://www.midsuffolk.gov.uk		
+SFK-UF	ENG	NMD	SFK	St Edmundsbury		St Edmundsbury Borough Council	http://www.westsuffolk.gov.uk		
+SFK-UG	ENG	NMD	SFK	Suffolk Coastal		Suffolk Coastal District Council	http://www.suffolkcoastal.gov.uk		
+SFK-UH	ENG	NMD	SFK	Waveney		Waveney District Council	http://www.waveney.gov.uk		
+SOM	ENG	CTY	SOM	Somerset		Somerset County Council	http://www.somerset.gov.uk		
+SOM-UB	ENG	NMD	SOM	Mendip		Mendip District Council	http://www.mendip.gov.uk		
+SOM-UC	ENG	NMD	SOM	Sedgemoor		Sedgemoor District Council	http://www.sedgemoor.gov.uk		
+SOM-UD	ENG	NMD	SOM	South Somerset		South Somerset District Council	http://www.southsomerset.gov.uk		
+SOM-UE	ENG	NMD	SOM	Taunton Deane		Taunton Deane Borough Council	http://www.tauntondeane.gov.uk		
+SOM-UF	ENG	NMD	SOM	West Somerset		West Somerset Council	http://www.westsomersetonline.gov.uk		
+SRY	ENG	CTY	SRY	Surrey		Surrey County Council	http://www.surreycc.gov.uk		
+SRY-UB	ENG	NMD	SRY	Elmbridge		Elmbridge Borough Council	http://www.elmbridge.gov.uk		
+SRY-UC	ENG	NMD	SRY	Epsom and Ewell		Epsom and Ewell Borough Council	http://www.epsom-ewell.gov.uk		
+SRY-UD	ENG	NMD	SRY	Guildford		Guildford Borough Council	http://www.guildford.gov.uk		
+SRY-UE	ENG	NMD	SRY	Mole Valley		Mole Valley District Council	http://www.molevalley.gov.uk		
+SRY-UF	ENG	NMD	SRY	Reigate and Banstead		Reigate and Banstead Borough Council	http://www.reigate-banstead.gov.uk		
+SRY-UG	ENG	NMD	SRY	Runnymede		Runnymede Borough Council	http://www.runnymede.gov.uk		
+SRY-UH	ENG	NMD	SRY	Spelthorne		Spelthorne Borough Council	http://www.spelthorne.gov.uk		
+SRY-UJ	ENG	NMD	SRY	Surrey Heath		Surrey Heath Borough Council	http://www.surreyheath.gov.uk		
+SRY-UK	ENG	NMD	SRY	Tandridge		Tandridge District Council	http://www.tandridge.gov.uk		
+SRY-UL	ENG	NMD	SRY	Waverley		Waverley Borough Council	http://www.waverley.gov.uk		
+SRY-UM	ENG	NMD	SRY	Woking		Woking Borough Council	http://www.woking.gov.uk		
+STS	ENG	CTY	STS	Staffordshire		Staffordshire County Council	http://www.staffordshire.gov.uk		
+STS-UB	ENG	NMD	STS	Cannock Chase		Cannock Chase District Council	http://www.cannockchasedc.gov.uk		
+STS-UC	ENG	NMD	STS	East Staffordshire		East Staffordshire Borough Council	http://www.eaststaffsbc.gov.uk		
+STS-UD	ENG	NMD	STS	Lichfield		Lichfield District Council	https://www.lichfielddc.gov.uk		
+STS-UE	ENG	NMD	STS	Newcastle-under-Lyme		Newcastle-under-Lyme District Council	http://www.newcastle-staffs.gov.uk		
+STS-UF	ENG	NMD	STS	South Staffordshire		South Staffordshire Council	http://www.sstaffs.gov.uk		
+STS-UG	ENG	NMD	STS	Stafford		Stafford Borough Council	http://www.staffordbc.gov.uk		
+STS-UH	ENG	NMD	STS	Staffordshire Moorlands		Staffordshire Moorlands District Council	http://www.staffsmoorlands.gov.uk		
+STS-UK	ENG	NMD	STS	Tamworth		Tamworth Borough Council	http://www.tamworth.gov.uk		
+WAR	ENG	CTY	WAR	Warwickshire		Warwickshire County Council	http://www.warwickshire.gov.uk		
+WAR-UB	ENG	NMD	WAR	North Warwickshire		North Warwickshire Borough Council	http://www.northwarks.gov.uk		
+WAR-UC	ENG	NMD	WAR	Nuneaton and Bedworth		Nuneaton and Bedworth Borough Council	http://www.nuneatonandbedworth.gov.uk		
+WAR-UD	ENG	NMD	WAR	Rugby		Rugby Borough Council	http://www.rugby.gov.uk		
+WAR-UE	ENG	NMD	WAR	Stratford-on-Avon		Stratford-on-Avon District Council	http://www.stratford.gov.uk		
+WAR-UF	ENG	NMD	WAR	Warwick		Warwick District Council	http://www.warwickdc.gov.uk		
+WOR	ENG	CTY	WOR	Worcestershire		Worcestershire County Council	http://www.worcestershire.gov.uk		
+WOR-UB	ENG	NMD	WOR	Bromsgrove		Bromsgrove District Council	http://www.bromsgrove.gov.uk		
+WOR-UC	ENG	NMD	WOR	Malvern Hills		Malvern Hills District Council	http://www.malvernhills.gov.uk		
+WOR-UD	ENG	NMD	WOR	Redditch		Redditch Borough Council	http://www.redditchbc.gov.uk		
+WOR-UE	ENG	NMD	WOR	Worcester		Worcester City Council	http://www.worcester.gov.uk		
+WOR-UF	ENG	NMD	WOR	Wychavon		Wychavon District Council	http://www.wychavon.gov.uk		
+WOR-UG	ENG	NMD	WOR	Wyre Forest		Wyre Forest District Council	http://www.wyreforestdc.gov.uk		
+WSX	ENG	CTY	WSX	West Sussex		West Sussex County Council	http://www.westsussex.gov.uk		
+WSX-UB	ENG	NMD	WSX	Adur		Adur District Council	http://www.adur-worthing.gov.uk		
+WSX-UC	ENG	NMD	WSX	Arun		Arun District Council	http://www.arun.gov.uk		
+WSX-UD	ENG	NMD	WSX	Chichester		Chichester District Council	http://www.chichester.gov.uk	1974-04-01	
+WSX-UE	ENG	NMD	WSX	Crawley		Crawley Borough Council	http://www.crawley.gov.uk	1974-04-01	
+WSX-UF	ENG	NMD	WSX	Horsham		Horsham District Council	https://www.horsham.gov.uk	1974-04-01	
+WSX-UG	ENG	NMD	WSX	Mid Sussex		Mid Sussex District Council	http://www.midsussex.gov.uk	1974-04-01	
+WSX-UH	ENG	NMD	WSX	Worthing		Worthing Borough Council	http://www.adur-worthing.gov.uk	1905-06-25	
+ABC	NIR	DIS		Armagh City, Banbridge and Craigavon		Armagh City, Banbridge and Craigavon Borough Council	http://www.armaghbanbridgecraigavon.org	2015-04-01	
+AND	NIR	DIS		Ards and North Down		Ards and North Down Borough Council	http://www.ardsandnorthdown.gov.uk	2015-04-01	
+ANN	NIR	DIS		Antrim and Newtownabbey		Antrim and Newtownabbey Borough Council	http://www.antrimandnewtownabbey.gov.uk	2015-04-01	
+BFS	NIR	DIS		Belfast		Belfast City Council	http://www.belfastcity.gov.uk	2015-04-01	
+CCG	NIR	DIS		Causeway Coast and Glens		Causeway Coast and Glens Borough Council	http://www.causewaycoastandglens.gov.uk/	2015-04-01	
+DRS	NIR	DIS		Derry City and Strabane		Derry City and Strabane District Council	http://www.derrycityandstrabanedistrict.com	2015-04-01	
+FMO	NIR	DIS		Fermanagh and Omagh		Fermanagh and Omagh District Council	http://www.fermanaghomagh.com	2015-04-01	
+LBC	NIR	DIS		Lisburn and Castlereagh		Lisburn and Castlereagh City Council	https://www.lisburncastlereagh.gov.uk/	2015-04-01	
+MEA	NIR	DIS		Mid and East Antrim		Mid and East Antrim Borough Council	http://www.midandeastantrim.gov.uk	2015-04-01	
+MUL	NIR	DIS		Mid Ulster		Mid Ulster District Council	http://www.midulstercouncil.org	2015-04-01	
+NMD	NIR	DIS		Newry, Mourne and Down 		Newry, Mourne and Down District Council	http://www.newrymournedown.org/	2015-04-01	
+NIR-A	NIR	DIS		Derry		Derry City Council	http://www.derrycity.gov.uk		2015-03-31
+NIR-B	NIR	DIS		Limavady		Limavady Borough Council	http://www.limavady.gov.uk		2015-03-31
+NIR-C	NIR	DIS		Coleraine		Coleraine Borough Council	http://www.colerainebc.gov.uk		2015-03-31
+NIR-D	NIR	DIS		Ballymoney		Ballymoney Borough Council	http://www.ballymoney.gov.uk		2015-03-31
+NIR-E	NIR	DIS		Moyle		Moyle District Council	http://www.moyle-council.org		2015-03-31
+NIR-F	NIR	DIS		Larne		Larne Borough Council	http://www.larne.gov.uk		2015-03-31
+NIR-G	NIR	DIS		Ballymena		Ballymena Borough Council	http://www.ballymena.gov.uk		2015-03-31
+NIR-H	NIR	DIS		Magherafelt		Magherafelt District Council	http://www.magherafelt.gov.uk		2015-03-31
+NIR-I	NIR	DIS		Cookstown		Cookstown District Council	http://www.cookstown.gov.uk		2015-03-31
+NIR-J	NIR	DIS		Strabane		Strabane District Council	http://www.strabanedc.org.uk		2015-03-31
+NIR-K	NIR	DIS		Omagh		Omagh District Council	http://www.omagh.gov.uk		2015-03-31
+NIR-L	NIR	DIS		Fermanagh		Fermanagh District Council	http://www.fermanagh.gov.uk		2015-03-31
+NIR-M	NIR	DIS		Dungannon and South Tyrone		Dungannon and South Tyrone Borough Council	http://www.dungannon.gov.uk		2015-03-31
+NIR-N	NIR	DIS		Craigavon		Craigavon Borough Council	http://www.craigavon.gov.uk		2015-03-31
+NIR-O	NIR	DIS		Armagh City		Armagh City and District Council	http://www.armagh.gov.uk		2015-03-31
+NIR-P	NIR	DIS		Newry and Mourne		Newry and Mourne District Council	http://www.newryandmournedc.gov.uk		2015-03-31
+NIR-Q	NIR	DIS		Banbridge		Banbridge District Council	http://www.banbridge.com		2015-03-31
+NIR-R	NIR	DIS		Down		Down District Council	http://www.downdc.gov.uk		2015-03-31
+NIR-S	NIR	DIS		Lisburn		Lisburn City Council	http://www.lisburncity.gov.uk		2015-03-31
+NIR-T	NIR	DIS		Antrim		Antrim Borough Council	http://www.antrim.gov.uk		2015-03-31
+NIR-U	NIR	DIS		Newtownabbey		Newtownabbey Borough Council	http://www.newtownabbey.gov.uk		2015-03-31
+NIR-V	NIR	DIS		Carrickfergus		Carrickfergus Borough Council	http://www.carrickfergus.org		2015-03-31
+NIR-W	NIR	DIS		North Down		North Down Borough Council	http://www.northdown.gov.uk		2015-03-31
+NIR-X	NIR	DIS		Ards		Ards Borough Council	http://www.ards-council.gov.uk		2015-03-31
+NIR-Y	NIR	DIS		Castlereagh		Castlereagh Borough Council	http://www.castlereagh.gov.uk		2015-03-31
+ABD	SCT	CA		Aberdeenshire		Aberdeenshire Council	http://www.aberdeenshire.gov.uk	1905-06-18	
+ABE	SCT	CA		Aberdeen City		Aberdeen City Council	http://www.aberdeencity.gov.uk	1905-06-18	
+AGB	SCT	CA		Argyll and Bute		Argyll and Bute Council	http://www.argyll-bute.gov.uk	1905-06-18	
+ANS	SCT	CA		Angus		Angus Council	http://www.angus.gov.uk	1905-06-18	
+CLK	SCT	CA		Clackmannanshire		Clackmannanshire Council	http://www.clacksweb.org.uk	1905-06-18	
+DGY	SCT	CA		Dumfries and Galloway		Dumfries and Galloway Council	http://www.dumgal.gov.uk	1905-06-18	
+DND	SCT	CA		Dundee City		Dundee City Council	http://www.dundeecity.gov.uk	1905-06-18	
+EAY	SCT	CA		East Ayrshire		East Ayrshire Council	http://www.east-ayrshire.gov.uk	1905-06-18	
+EDH	SCT	CA		City of Edinburgh		City of Edinburgh Council	http://www.edinburgh.gov.uk	1905-06-18	
+EDU	SCT	CA		East Dunbartonshire		East Dunbartonshire Council	http://www.eastdunbarton.gov.uk	1905-06-18	
+ELN	SCT	CA		East Lothian		East Lothian Council	http://www.eastlothian.gov.uk	1905-06-18	
+ELS	SCT	CA		Eilean Siar		Comhairle nan Eilean Siar	http://www.cne-siar.gov.uk	1905-06-18	
+ERW	SCT	CA		East Renfrewshire		East Renfrewshire Council	http://www.eastrenfrewshire.gov.uk	1905-06-18	
+FAL	SCT	CA		Falkirk		Falkirk Council	http://www.falkirk.gov.uk	1905-06-18	
+FIF	SCT	CA		Fife		Fife Council	http://www.fifedirect.org.uk	1905-06-18	
+GLG	SCT	CA		Glasgow City		Glasgow City Council	http://www.glasgow.gov.uk	1905-06-18	
+HLD	SCT	CA		Highland		The Highland Council	http://www.highland.gov.uk	1905-06-18	
+IVC	SCT	CA		Inverclyde		Inverclyde Council	http://www.inverclyde.gov.uk	1905-06-18	
+MLN	SCT	CA		Midlothian		Midlothian Council	http://www.midlothian.gov.uk	1905-06-18	
+MRY	SCT	CA		Moray		The Moray Council	http://www.moray.gov.uk	1905-06-18	
+NAY	SCT	CA		North Ayrshire		North Ayrshire Council	http://www.north-ayrshire.gov.uk	1905-06-18	
+NLK	SCT	CA		North Lanarkshire		North Lanarkshire Council	http://www.northlanarkshire.gov.uk	1905-06-18	
+ORK	SCT	CA		Orkney Islands		Orkney Islands Council	http://www.orkney.gov.uk	1905-06-18	
+PKN	SCT	CA		Perth and Kinross		Perth and Kinross Council	http://www.pkc.gov.uk	1905-06-18	
+RFW	SCT	CA		Renfrewshire		Renfrewshire Council	http://www.renfrewshire.gov.uk	1905-06-18	
+SAY	SCT	CA		South Ayrshire		South Ayrshire Council	http://www.south-ayrshire.gov.uk	1905-06-18	
+SCB	SCT	CA		The Scottish Borders		Scottish Borders Council	http://www.scotborders.gov.uk	1905-06-18	
+SLK	SCT	CA		South Lanarkshire		South Lanarkshire Council	http://www.southlanarkshire.gov.uk	1905-06-18	
+STG	SCT	CA		Stirling		Stirling Council	http://www.stirling.gov.uk	1905-06-18	
+WDU	SCT	CA		West Dunbartonshire		West Dunbartonshire Council	http://www.west-dunbarton.gov.uk	1905-06-18	
+WLN	SCT	CA		West Lothian		West Lothian Council	http://www.westlothian.gov.uk	1905-06-18	
+ZET	SCT	CA		Shetland Islands		Shetland Islands Council	http://www.shetland.gov.uk	1905-06-18	
+AGY	WLS	UA		Isle of Anglesey	Sir Ynys Môn	Isle of Anglesey County Council	http://www.anglesey.gov.uk	1996-04-01	
+BGE	WLS	UA		Bridgend	Pen-y-bont ar Ogwr	Bridgend County Borough Council	http://www.bridgend.gov.uk	1996-04-01	
+BGW	WLS	UA		Blaenau Gwent	Blaenau Gwent	Blaenau Gwent County Borough Council	http://www.blaenau-gwent.gov.uk	1996-04-01	
+CAY	WLS	UA		Caerphilly	Caerffili	Caerphilly County Borough Council	http://www.caerphilly.gov.uk	1996-04-01	
+CGN	WLS	UA		Ceredigion	Ceredigion	Ceredigion County Council	http://www.ceredigion.gov.uk	1996-04-01	
+CMN	WLS	UA		Carmarthenshire	Sir Gaerfyrddin	Carmarthenshire County Council	http://www.carmarthenshire.gov.uk	1996-04-01	
+CRF	WLS	UA		Cardiff	Caerdydd	City of Cardiff Council	http://www.cardiff.gov.uk	1996-04-01	
+CWY	WLS	UA		Conwy	Conwy	Conwy County Borough Council	http://www.conwy.gov.uk	1996-04-01	
+DEN	WLS	UA		Denbighshire	Sir Ddinbych	Denbighshire County Council	http://www.denbighshire.gov.uk	1996-04-01	
+FLN	WLS	UA		Flintshire	Sir y Fflint	Flintshire County Council	http://www.flintshire.gov.uk	1996-04-01	
+GWN	WLS	UA		Gwynedd	Gwynedd	Gwynedd Council	http://www.gwynedd.gov.uk	1996-04-01	
+MON	WLS	UA		Monmouthshire	Sir Fynwy	Monmouthshire County Council	http://www.monmouthshire.gov.uk	1996-04-01	
+MTY	WLS	UA		Merthyr Tydfil	Merthyr Tudful	Merthyr Tydfil County Borough Council	http://www.merthyr.gov.uk	1996-04-01	
+NTL	WLS	UA		Neath Port Talbot	Castell-nedd Port Talbot	Neath Port Talbot County Borough Council	http://www.neath-porttalbot.gov.uk	1996-04-01	
+NWP	WLS	UA		Newport	Casnewydd	Newport City Council	http://www.newport.gov.uk	1996-04-01	
+PEM	WLS	UA		Pembrokeshire	Sir Benfro	Pembrokeshire County Council	http://www.pembrokeshire.gov.uk	1996-04-01	
+POW	WLS	UA		Powys	Powys	Powys County Council	http://www.powys.gov.uk	1996-04-01	
+RCT	WLS	UA		Rhondda Cynon Taff		Rhondda Cynon Taf County Borough Council	http://www.rctcbc.gov.uk	1996-04-01	
+SWA	WLS	UA		Swansea	Abertawe	City and County of Swansea Council	http://www.swansea.gov.uk	1996-04-01	
+TOF	WLS	UA		Torfaen	Tor-faen	Torfaen County Borough Council	http://www.torfaen.gov.uk	1996-04-01	
+VGL	WLS	UA		The Vale of Glamorgan	Bro Morgannwg	Vale of Glamorgan Council	http://www.valeofglamorgan.gov.uk	1996-04-01	
+WRX	WLS	UA		Wrexham	Wrecsam	Wrexham County Borough Council	http://www.wrexham.gov.uk	1996-04-01	
