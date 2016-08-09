@@ -2,8 +2,8 @@
 set -e
 
 # get the data from s3
-sudo -u deploy curl 'https://s3.amazonaws.com/gds-public-readable-tarballs/mapit-postgres93-May2016-dis-cty-hierarchy.sql.gz' -o mapit.sql.gz
-if ! echo "40f9c917719dc83cb5f24c86b9ee6da613e89a7b  mapit.sql.gz" | sha1sum -c -; then
+sudo -u deploy curl 'https://s3.amazonaws.com/gds-public-readable-tarballs/mapit-postgres93-May2016-dis-cty-hierarchy-and-la-names.sql.gz' -o mapit.sql.gz
+if ! echo "425080558e69471db3123744dd567559056aee1b  mapit.sql.gz" | sha1sum -c -; then
   echo "SHA1 does not match downloaded file!"
   exit 1
 fi
