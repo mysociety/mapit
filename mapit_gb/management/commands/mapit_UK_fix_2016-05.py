@@ -1,16 +1,15 @@
 # This script is to be run as a one-off to fix up some geometries in the May
 # 2016 edition of Boundary-Line that are incorrect.
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType, Generation, Geometry
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Fix the UK Boundary-Line import for May 2016'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     code_version = CodeType.objects.get(code='gss')
 
@@ -25,7 +24,7 @@ class Command(NoArgsCommand):
             return latest_on[1]
         return None
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         # The area that has been included as Cheriton and Bishops Sutton should
         # be part of Alresford & Itchen Valley.
         area_to_add_to = self.get_area('E05010995')  # Alresford & Itchen Valley

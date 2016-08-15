@@ -2,7 +2,6 @@
 # boundaries of the import that was Generation 4 of global MapIt.
 
 from glob import glob
-from optparse import make_option
 import os
 import re
 
@@ -19,9 +18,10 @@ from mapit.management.command_utils import fix_invalid_geos_multipolygon
 class Command(LabelCommand):
     help = 'Update OSM boundary data from KML files'
     args = '<KML-DIRECTORY>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, directory_name, **options):
         current_generation = Generation.objects.current()

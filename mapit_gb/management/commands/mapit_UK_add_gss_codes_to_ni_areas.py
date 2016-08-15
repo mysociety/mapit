@@ -5,15 +5,15 @@
 import csv
 import os.path
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, Country, CodeType
 from django.utils import six
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Uses fixtures to find NI areas and add any missing GSS codes to them'
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         try:
             self.latest_generation = Generation.objects.order_by('-id')[0]
         except IndexError:

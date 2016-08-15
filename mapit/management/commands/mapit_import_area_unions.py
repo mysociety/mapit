@@ -6,7 +6,6 @@
 # the GPL.  Based on import_norway_osm.py by Matthew Somerville
 
 import csv
-from optparse import make_option
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.geos import GEOSGeometry
@@ -39,9 +38,10 @@ class CommentedFile(Iterator):
 class Command(LabelCommand):
     help = 'Import region data'
     args = '<CSV file listing name and which existing areas to combine into regions>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, filename, **options):
         current_generation = Generation.objects.current()

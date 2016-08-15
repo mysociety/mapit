@@ -22,39 +22,26 @@ import re
 import sys
 
 from collections import namedtuple
-from optparse import make_option
 
 from django.core.management import call_command
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 
 from mapit.models import Generation, NameType, Country
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     """Import South African boundaries"""
 
     help = 'Import shapefiles with South African boundary data'
 
-    option_list = NoArgsCommand.option_list + (
-        make_option(
-            '--wards', '-w',
-            help="The wards shapefile"),
-        make_option(
-            '--districts', '-d',
-            help="The district municipalities shapefile"),
-        make_option(
-            '--provinces', '-p',
-            help="The provinces shapefile"),
-        make_option(
-            '--locals', '-l',
-            help="The local municipalities shapefile"),
-        make_option(
-            '--commit',
-            action='store_true',
-            dest='commit',
-            help='Actually update the database'),)
+    def add_arguments(self, parser):
+        parser.add_argument('--wards', '-w', help="The wards shapefile")
+        parser.add_argument('--districts', '-d', help="The district municipalities shapefile")
+        parser.add_argument('--provinces', '-p', help="The provinces shapefile")
+        parser.add_argument('--locals', '-l', help="The local municipalities shapefile")
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
 
         stop = False
         for k in ('wards',

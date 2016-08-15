@@ -7,14 +7,14 @@
 import csv
 import re
 import os.path
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Creates/updates Northern Ireland areas'
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
         country = Country.objects.get(code='N')

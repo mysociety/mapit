@@ -11,8 +11,7 @@
 # (originally this script only revoked 5 and 6, leaving 10 as it overlapped
 # with 8/9).
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area
 
 
@@ -22,11 +21,11 @@ def disp(areas):
     return ', '.join(a.all_codes['gss'] for a in areas)
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Fix the Torfaen wards in the May 2014 UK Boundary-Line import'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def move(self, name, code, starts=False):
         areas = Area.objects.filter(parent_area=self.torfaen, type__code=code)
@@ -42,7 +41,7 @@ class Command(NoArgsCommand):
         else:
             print('Would delete %s and reinstate %s' % (disp(new), disp(old)))
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         self.commit = options['commit']
         self.torfaen = Area.objects.get(name='Torfaen Council', type__code='UTA')
 

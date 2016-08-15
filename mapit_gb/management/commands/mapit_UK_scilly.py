@@ -5,7 +5,6 @@ from __future__ import print_function
 
 import csv
 import re
-from optparse import make_option
 from django.core.management.base import LabelCommand
 from mapit.models import Postcode, Area, Country, Type, CodeType, NameType
 
@@ -13,8 +12,10 @@ from mapit.models import Postcode, Area, Country, Type, CodeType, NameType
 class Command(LabelCommand):
     help = 'Sort out the Isles of Scilly'
     args = '<Code-Point Open TR file> or <ONSPD CSV file>'
-    option_list = LabelCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
             '--allow-terminated-postcodes',
             action='store_true',
             dest='include-terminated',
@@ -22,16 +23,15 @@ class Command(LabelCommand):
             help=('Set if you want to fix wards for terminated postcodes (only '
                   'relevant for ONSPD files, Code-Point Open contains no '
                   'terminated postcodes)')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--allow-no-location-postcodes',
             action='store_true',
             dest='include-no-location',
             default=False,
             help=('Set if you want to fix wards for postcodes with no location '
                   '(quality 9 in ONSPD, quality 90 in Code Point Open)')
-        ),
-    )
+        )
 
     def handle_label(self, file, **options):
         # The Isles of Scilly have changed their code in B-L, but Code-Point still has the old code currently

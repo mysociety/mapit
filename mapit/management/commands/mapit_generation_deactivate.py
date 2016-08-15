@@ -1,6 +1,5 @@
 # This script deactivates a particular generation
 
-from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
 from mapit.models import Generation
 
@@ -8,11 +7,11 @@ from mapit.models import Generation
 class Command(BaseCommand):
     help = 'Deactivate a generation'
     args = '<GENERATION-ID>'
-    option_list = BaseCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit',
-                    help='Actually update the database'),
-        make_option('--force', action='store_true', dest='force',
-                    help='Force deactivation, even if it would leave no active generations'))
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+        parser.add_argument('--force', action='store_true', dest='force',
+                            help='Force deactivation, even if it would leave no active generations')
 
     def handle(self, generation_id, **options):
         generation_to_deactivate = Generation.objects.get(id=int(generation_id, 10))

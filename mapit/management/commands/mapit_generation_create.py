@@ -1,17 +1,16 @@
 # This script is used to create a new inactive generation for
 # inputting new boundaries of some sort.
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Generation
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Create a new generation'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--desc', action='store', dest='desc', help='Description of this generation'),
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--desc', action='store', dest='desc', help='Description of this generation')
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle(self, **options):
         new_generation = Generation.objects.new()

@@ -9,7 +9,6 @@
 
 import os
 import re
-from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.utils.encoding import smart_str, smart_text
 
@@ -21,9 +20,10 @@ from lxml import etree
 class Command(LabelCommand):
     help = 'Find any "Unknown" names, and use place_name instead, if possible'
     args = '<KML-DIRECTORY>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, directory_name, **options):
 

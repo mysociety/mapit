@@ -3,18 +3,17 @@
 
 from __future__ import print_function
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Type, Geometry
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Puts the boundaries on the LGDs, LGWs and LGEs from the Output Areas'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
 
-    def handle_noargs(self, **options):
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+
+    def handle(self, **options):
         area_type = Type.objects.get(code='OUA')
         done = []
 
