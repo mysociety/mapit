@@ -2,22 +2,21 @@
 # their "parents". Provide a "parentmap" in your subclass mapping child area
 # type to parent area type.
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation
 
 
-class FindParentsCommand(NoArgsCommand):
+class FindParentsCommand(BaseCommand):
     help = 'Find parents for shapes'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     @property
     def parentmap(self):
         raise NotImplementedError("You must specify a parentmap attribute in your subclass")
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         new_generation = Generation.objects.new()
         if not new_generation:
             raise Exception("No new generation to be used for import!")

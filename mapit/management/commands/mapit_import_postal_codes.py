@@ -5,7 +5,6 @@
 # the command line
 
 import csv
-from optparse import make_option
 from django.db import transaction
 from django.contrib.gis.geos import Point
 from django.core.management.base import LabelCommand
@@ -20,64 +19,65 @@ class Command(LabelCommand):
     often = 1000
 
     option_defaults = {}
-    option_list = LabelCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
             '--code-field',
             action='store',
             dest='code-field',
             default=1,
             help='The column of the CSV containing the postal code (default 1, first)'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--coord-field-lat',
             action='store',
             dest='coord-field-lat',
             default=2,
             help='The column of the CSV containing the lat/y co-ordinate (default 2)'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--coord-field-lon',
             action='store',
             dest='coord-field-lon',
             default=None,
             help='The column of the CSV containing the lon/x co-ordinate (default --coord-field-lat + 1)'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--header-row',
             action='store_true',
             dest='header-row',
             default=False,
             help='Set if the CSV file has a header row'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--no-location',
             action="store_false",
             dest='location',
             default=True,
             help='Set if the postal codes have no associated location (still useful for existence checks)'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--srid',
             action="store",
             dest='srid',
             default=4326,
             help='The SRID of the projection for the data given (default 4326 WGS-84)'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--strip',
             action="store_true",
             dest='strip',
             default=False,
             help='Whether to strip all spaces from the postal code before import'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--tabs',
             action="store_true",
             dest='tabs',
             default=False,
             help='If the CSV file actually uses tab as its separator'
-        ),
-    )
+        )
 
     def handle_label(self, file, **options):
         self.process(file, options)

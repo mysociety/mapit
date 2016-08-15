@@ -4,7 +4,7 @@
 import codecs
 import csv
 import os.path
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
 
@@ -26,10 +26,10 @@ def process(new_code, old_code):
         raise Exception("Key already exists for %s, can't give it %s" % (area, old_code))
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Inserts the old ONS codes into mapit'
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         code_changes = codecs.open(os.path.join(
             os.path.dirname(__file__),
             '../../data/BL-2010-10-code-change.csv'

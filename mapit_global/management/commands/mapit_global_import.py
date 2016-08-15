@@ -17,7 +17,6 @@ from collections import namedtuple
 import csv
 from glob import glob
 import json
-from optparse import make_option
 import os
 import re
 import xml.sax
@@ -75,9 +74,10 @@ def get_iso639_2_table():
 class Command(LabelCommand):
     help = 'Import OSM boundary data from KML files'
     args = '<KML-DIRECTORY>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, directory_name, **options):
         current_generation = Generation.objects.current()

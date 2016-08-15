@@ -15,8 +15,6 @@ import json
 import os
 import sys
 
-from optparse import make_option
-
 from django.core.management import call_command
 from django.core.management.base import LabelCommand
 from django.utils.six.moves import urllib
@@ -30,56 +28,57 @@ DATA_DIRECTORY = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data
 class Command(LabelCommand):
     help = 'Import England, Wales and Northern Ireland police force area boundaries from .kml files'
     args = '<directory containing KML files from data.gov.uk>'
-    option_list = LabelCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
             '--commit',
             action='store_true',
             dest='commit',
             help='Actually update the database'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--generation_id',
             action="store",
             dest='generation_id',
             help='Which generation ID should be used',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--area_type_code',
             action="store",
             dest='area_type_code',
             help='Which area type should be used (specify using code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--name_type_code',
             action="store",
             dest='name_type_code',
             help='Which name type should be used (specify using code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--code_type',
             action="store",
             dest='code_type',
             help='Which code type should be used (specify using its code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--preserve',
             action="store_true",
             dest='preserve',
             help="Create a new area if the name's the same but polygons differ"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--new',
             action="store_true",
             dest='new',
             help="Don't look for existing areas at all, just import everything as new areas"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--fix_invalid_polygons',
             action="store_true",
             dest='fix_invalid_polygons',
             help="Try to fix any invalid polygons and multipolygons found"
-        ),
-    )
+        )
 
     def handle_label(self, directory, **options):
 

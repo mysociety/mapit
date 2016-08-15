@@ -55,7 +55,6 @@ from __future__ import print_function
 
 import sys
 import csv
-from optparse import make_option
 from random import random, seed
 import colorsys
 
@@ -85,26 +84,26 @@ def all_equal(iterator):
 
 class Command(BaseCommand):
     help = 'Generate a CSV file for Google Fusion Tables from MapIt'
-    option_list = BaseCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             "--types", dest="types",
             help="The comma-separated types of the areas to return",
-            metavar="TYPES"),
-        make_option(
+            metavar="TYPES")
+        parser.add_argument(
             "--coveredby", dest="coveredby", type="int",
             help="Only include areas covered by AREA-ID",
-            metavar="AREA-ID"),
-        make_option(
+            metavar="AREA-ID")
+        parser.add_argument(
             "--generation", dest="generation",
-            help="Specify the generation number", metavar="AREA-ID"),
-        make_option(
+            help="Specify the generation number", metavar="AREA-ID")
+        parser.add_argument(
             "--tolerance", dest="tolerance", type="float", default=0.0001,
-            help="Specify the simplifiy tolerance (default: 0.0001)", metavar="TOLERANCE"),
-        )
+            help="Specify the simplifiy tolerance (default: 0.0001)", metavar="TOLERANCE")
 
     def handle(self, *args, **options):
 
-        # To add a new query type, add it to this tuple, and option_list above:
+        # To add a new query type, add it to this tuple, and add_arguments above:
         possible_query_types = ('coveredby',)
 
         if len(args) != 1:

@@ -2,16 +2,16 @@
 # To include the ones not in the file from Ordnance Survey.
 
 import csv
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, CodeType
 from psycopg2 import IntegrityError
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Inserts all the new GSS codes into mapit'
     args = '<CSV file mapping old to new>'
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         current_generation = Generation.objects.current()
 
         # Read in ward name -> electoral area name/area

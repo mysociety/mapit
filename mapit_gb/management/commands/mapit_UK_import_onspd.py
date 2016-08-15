@@ -84,7 +84,6 @@
 # 52. Decimal degrees latitude
 # 53. Decimal degrees longitude
 
-from optparse import make_option
 from mapit.management.commands.mapit_import_postal_codes import Command
 
 
@@ -95,16 +94,17 @@ class Command(Command):
             'without locations.')
     args = '<ONSPD CSV file>'
     option_defaults = {'header-row': True, 'strip': True, 'srid': 27700, 'coord-field-lon': 10, 'coord-field-lat': 11}
-    option_list = Command.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--allow-terminated-postcodes',
             action='store_true',
             dest='include-terminated',
             default=False,
             help=('Set if you want to import terminated postcodes.  Affects all '
                   'postcodes: GB, NI, and Crown Dependencies')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--allow-no-location-postcodes',
             action='store_true',
             dest='include-no-location',
@@ -114,8 +114,8 @@ class Command(Command):
                   'Dependency postcodes have no location and will be imported '
                   'based on the value of --crown-dependencies, regardless of '
                   'your choice for this option.')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--crown-dependencies',
             action='store',
             dest='crown-dependencies',
@@ -126,8 +126,8 @@ class Command(Command):
                   'Crown Dependency postcodes have no location info and are '
                   'imported solely based on this option, regardless of the '
                   'presence of --allow-no-location-postcodes.')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--northern-ireland',
             action='store',
             dest='northern-ireland',
@@ -137,24 +137,23 @@ class Command(Command):
                   '"only" to import only these. (Default: exclude).  You should'
                   ' run mapit_UK_import_onspd_ni_areas before trying to import '
                   'any NI postcodes.')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--gb-srid',
             action='store',
             dest='gb-srid',
             default=27700,
             help=('SRID for GB & Crown Dependency postcodes. Overrides --srid '
                   'value. (Default: 27700).')
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--ni-srid',
             action='store',
             dest='ni-srid',
             default=29902,
             help=('SRID for NI postcodes. Overrides --srid value for. (Default:'
                   ' 29902).')
-        ),
-    )
+        )
 
     def handle_label(self, file, **options):
         self.check_options_are_valid(options)
