@@ -68,11 +68,16 @@ fi
 echo -n "Setting up database... "
 if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
 then
-    if [ trusty = "$(lsb_release -s -c)" ]
+    VERSION_POSTGIS=$(dpkg-query -W -f '${Version}\n' postgresql-*-postgis*|sort -rV|head -1)
+    if [ 2.0 = "$(echo -e '2.0\n'$VERSION_POSTGIS | sort -V | head -1)" ]
+    then POSTGIS_TWO=Yes
+    else POSTGIS_TWO=No
+    fi
+
+    if [ $POSTGIS_TWO = Yes ]
     then
-        # Currently the only supported distribution where we can just
-        # use CREATE EXTENSION to make this a PostGIS database is on
-        # Ubuntu trusty:
+        # If we're running PostGIS 2, we can just use CREATE EXTENSION to make
+        # this a PostGIS database:
         createdb --owner "$UNIX_USER" "$DB_NAME"
         COMMAND="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;"
         psql -c "$COMMAND" "$DB_NAME"

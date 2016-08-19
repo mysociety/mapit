@@ -31,11 +31,16 @@ install_website_packages
 
 install_postgis
 
-if [ x"$DISTRIBUTION" = x"ubuntu" ] && [ x"$DISTVERSION" = x"trusty" ]
+VERSION_POSTGIS=$(dpkg-query -W -f '${Version}\n' postgresql-*-postgis*|sort -rV|head -1)
+if [ 2.0 = "$(echo -e '2.0\n'$VERSION_POSTGIS | sort -V | head -1)" ]
+then POSTGIS_TWO=Yes
+else POSTGIS_TWO=No
+fi
+
+if [ $POSTGIS_TWO = Yes ]
 then
-    # On trusty, the database user will need to be a superuser so that
-    # it can create the PostGIS extension; we'll drop that privilege
-    # afterwards:
+    # With PostGIS 2, the database user will need to be a superuser so that it
+    # can create the PostGIS extension; we'll drop that privilege afterwards:
     add_postgresql_user --superuser
 else
     add_postgresql_user
@@ -45,7 +50,7 @@ make_log_directory
 
 su -l -c "$REPOSITORY/bin/install-as-user '$UNIX_USER' '$HOST' '$DIRECTORY'" "$UNIX_USER"
 
-if [ x"$DISTRIBUTION" = x"ubuntu" ] && [ x"$DISTVERSION" = x"trusty" ]
+if [ $POSTGIS_TWO = Yes ]
 then
     sudo -u postgres psql -c "ALTER USER $UNIX_USER WITH NOSUPERUSER"
 fi
