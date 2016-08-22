@@ -2,12 +2,6 @@ import re
 from psycopg2 import InternalError
 from django.db.utils import DatabaseError
 
-try:
-    from osgeo import gdal
-    PYGDAL = True
-except ImportError:
-    PYGDAL = False
-
 from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
 from django.db.models.query import QuerySet
@@ -350,8 +344,9 @@ def area_from_code(request, code_type, code_value, format='json'):
 @ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
-    if PYGDAL:
-        gdal.UseExceptions()
+
+    use_exceptions()
+
     try:
         location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
@@ -435,3 +430,13 @@ def deal_with_POST(request, call='areas'):
     request.GET = request.POST
     kwargs['request'] = request
     return view(*args, **kwargs)
+
+
+def use_exceptions():
+    if not hasattr(use_exceptions, 'done'):
+        use_exceptions.done = True
+        try:
+            from osgeo import gdal
+            gdal.UseExceptions()
+        except ImportError:
+            pass
