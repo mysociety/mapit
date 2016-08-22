@@ -52,7 +52,7 @@ su -l -c "$REPOSITORY/bin/install-as-user '$UNIX_USER' '$HOST' '$DIRECTORY'" "$U
 
 if [ $POSTGIS_TWO = Yes ]
 then
-    sudo -u postgres psql -c "ALTER USER $UNIX_USER WITH NOSUPERUSER"
+    su -l -c "psql -c 'ALTER USER $UNIX_USER WITH NOSUPERUSER'" postgres
 fi
 
 install_sysvinit_script
