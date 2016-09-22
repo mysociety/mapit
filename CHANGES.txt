@@ -1,7 +1,44 @@
-master
-    * Drop support for Django versions before 1.8. #209
+Version 1.5, 2016-09-22
+    * Add support for Django 1.9 and 1.10, drop older than 1.8. #209 #248
+    * Add support for Debian jessie/Ubuntu xenial. #254 #255
+    * Add documentation for the /code API endpoint. #242
+    * Add new footer. #238
+    * Area import
+        * Allow name_field to specify multiple options.
+        * Add option to skip entries with blank names.
+    * Postcode import
+        * Add detecting location availability per postcode.
+        * Allow updating locationless postcodes.
+    * Bugfixes:
+        * Only try and set GDAL exceptions on first use. #211 #231
+        * Fix redirects when MapIt is mounted on a subpath. #228 #236
+        * No need for a syncdb call, now covered by migrate. #221
+        * Fix and improve JSONP middleware handling. #212
+        * Disable project gzip middleware. #215
+        * Tweak install script for if sudo is not installed.
+        * Fix usage of imp module in newer Python versions.
+    * Development:
+        * Add VagrantFile and instructions for development. #237
+        * Allow overriding of email subject prefix. #229
+        * Add postgresql to SysV init script. #234
+        * Switch api-docs ID to sidebar class for other use. #246
+        * Add a couple of index page template hooks.
+        * Don't show deprecation warnings by default.
+        * Move to using libsass.
     * MapIt Global specific:
-        Fix issue parsing KML in python2 prior to 2.7.4. #206
+        * Fix issue parsing KML in python2 prior to 2.7.4. #206
+        * Add a missing '{% load i18n %}' which broke front page
+    * MapIt UK specific:
+        * ONSPD import and improvements. #214 #216
+        * October 2015 Boundary-Line. #210 #232
+        * May 2016 Boundary-Line. #240
+        * Script to add ONS codes to forward release.
+        * OSNI boundary data import.
+        * Open CSV files with the correct encoding. #225
+
+Thanks to Steven Day, Simon Hughesdon, Isabell Long, Mark Longair, Sym Roe,
+Matthew Somerville, Murray Steele, and Zarino Zappia for their work on this
+release.
 
 v1.4, 2015-09-18
     * Mark all strings for translation. #185
