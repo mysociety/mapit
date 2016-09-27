@@ -60,19 +60,19 @@ class Command(BaseCommand):
         # 102100.  The defaults here are based on the srids of the data
         # downloaded in Dec 2015 - they may change over time.
         parser.add_argument(
-            '--lgw-srid', action='store', type='int', dest='lgw_srid', default=4326,
+            '--lgw-srid', action='store', type=int, dest='lgw_srid', default=4326,
             help='SRID of Ward boundary information shapefile (default 4326)')
         parser.add_argument(
-            '--wmc-srid', action='store', type='int', dest='wmc_srid', default=4326,
+            '--wmc-srid', action='store', type=int, dest='wmc_srid', default=4326,
             help='SRID of Westminister Parliamentery constituency boundary information shapefile (default 4326)')
         parser.add_argument(
-            '--lgd-srid', action='store', type='int', dest='lgd_srid', default=4326,
+            '--lgd-srid', action='store', type=int, dest='lgd_srid', default=4326,
             help='SRID of Council boundary information shapefile (default 4326)')
         parser.add_argument(
-            '--lge-srid', action='store', type='int', dest='lge_srid', default=29902,
+            '--lge-srid', action='store', type=int, dest='lge_srid', default=29902,
             help='SRID of Electoral Area boundary information shapefile (default 29902)')
         parser.add_argument(
-            '--eur-srid', action='store', type='int', dest='eur_srid', default=29902,
+            '--eur-srid', action='store', type=int, dest='eur_srid', default=29902,
             help='SRID of European Region boundary information shapefile (default 29902)')
 
     ons_code_to_shape = {}

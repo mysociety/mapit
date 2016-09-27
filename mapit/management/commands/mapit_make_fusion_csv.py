@@ -91,14 +91,14 @@ class Command(BaseCommand):
             help="The comma-separated types of the areas to return",
             metavar="TYPES")
         parser.add_argument(
-            "--coveredby", dest="coveredby", type="int",
+            "--coveredby", dest="coveredby", type=int,
             help="Only include areas covered by AREA-ID",
             metavar="AREA-ID")
         parser.add_argument(
             "--generation", dest="generation",
             help="Specify the generation number", metavar="AREA-ID")
         parser.add_argument(
-            "--tolerance", dest="tolerance", type="float", default=0.0001,
+            "--tolerance", dest="tolerance", type=float, default=0.0001,
             help="Specify the simplifiy tolerance (default: 0.0001)", metavar="TOLERANCE")
 
     def handle(self, *args, **options):
