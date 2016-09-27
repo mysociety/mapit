@@ -96,6 +96,7 @@ class Command(Command):
     option_defaults = {'header-row': True, 'strip': True, 'srid': 27700, 'coord-field-lon': 10, 'coord-field-lat': 11}
 
     def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
         parser.add_argument(
             '--allow-terminated-postcodes',
             action='store_true',
