@@ -4,9 +4,22 @@
 import codecs
 import csv
 import os.path
+import sys
 from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
+
+python_version = sys.version_info[0]
+
+
+def open_csv(filename):
+    if python_version < 3:
+        o = open(filename)
+    else:
+        o = codecs.open(filename, 'r', 'latin-1')
+    mapping = csv.reader(o)
+    next(mapping)
+    return mapping
 
 
 def process(new_code, old_code):
@@ -30,22 +43,10 @@ class Command(BaseCommand):
     help = 'Inserts the old ONS codes into mapit'
 
     def handle(self, **options):
-        code_changes = codecs.open(os.path.join(
-            os.path.dirname(__file__),
-            '../../data/BL-2010-10-code-change.csv'
-            ), 'r', 'latin-1')
-        mapping = csv.reader(code_changes)
-        next(mapping)
-        for row in mapping:
-            new_code, name, old_code = row[0], row[1], row[3]
+        for row in open_csv(os.path.join(os.path.dirname(__file__), '../../data/BL-2010-10-code-change.csv')):
+            new_code, old_code = row[0], row[3]
             process(new_code, old_code)
 
-        missing_codes = codecs.open(os.path.join(
-            os.path.dirname(__file__),
-            '../../data/BL-2010-10-missing-codes.csv'
-            ), 'r', 'latin-1')
-        mapping = csv.reader(missing_codes)
-        next(mapping)
-        for row in mapping:
-            type, new_code, old_code, name = row
+        for row in open_csv(os.path.join(os.path.dirname(__file__), '../../data/BL-2010-10-missing-codes.csv')):
+            new_code, old_code = row[1], row[2]
             process(new_code, old_code)
