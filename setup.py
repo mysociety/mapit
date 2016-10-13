@@ -56,6 +56,7 @@ setup(
         'psycopg2',
         'PyYAML',
         'Shapely',
+        'uk-postcode-utils',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
