@@ -20,6 +20,7 @@ import xml.sax
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.db.models import Collect
 from django.utils.encoding import smart_str
 
 from mapit.models import Code, CodeType
@@ -148,7 +149,8 @@ class Command(LabelCommand):
                     most_recent_osm_code = None
                     if osm_codes:
                         most_recent_osm_code = osm_codes[-1]
-                        previous_geos_geometry = most_recent_osm_code.area.polygons.collect()
+                        previous_geos_geometry = most_recent_osm_code.area.polygons.aggregate(Collect('polygon'))
+                        previous_geos_geometry = previous_geos_geometry['polygon__collect']
                         previous_empty = previous_geos_geometry is None
 
                         if not previous_empty:

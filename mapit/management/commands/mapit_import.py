@@ -10,6 +10,7 @@ from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.db.models import Collect
 from django.conf import settings
 from django.utils import six
 from django.utils.six.moves import input
@@ -276,7 +277,7 @@ class Command(LabelCommand):
                 verbose("    found the area")
                 if options['preserve']:
                     # Find whether we need to create a new Area:
-                    previous_geos_geometry = m.polygons.collect()
+                    previous_geos_geometry = m.polygons.aggregate(Collect('polygon'))['polygon__collect']
                     if m.generation_high < current_generation.id:
                         # Then it was missing in current_generation:
                         verbose("    area existed previously, but was missing from", current_generation)

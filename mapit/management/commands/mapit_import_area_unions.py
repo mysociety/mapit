@@ -9,6 +9,7 @@ import csv
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.db.models import Union
 from django.utils.six import Iterator
 
 from mapit.models import Area, Generation, Geometry, Country, Type
@@ -100,7 +101,7 @@ class Command(LabelCommand):
                             geometry = Geometry.objects.filter(**args)
                     except:
                         raise Exception("Area or geometry with name %s was not found!" % name)
-                    unionoutline = geometry.unionagg()
+                    unionoutline = geometry.aggregate(Union('polygon'))['polygon__union']
 
                 def update_or_create():
                     try:

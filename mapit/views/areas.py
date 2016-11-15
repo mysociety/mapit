@@ -4,6 +4,7 @@ from django.db.utils import DatabaseError
 
 from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models import Collect
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
@@ -283,7 +284,7 @@ def area_geometry(request, area_id):
 
 def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
-    all_areas = area.polygons.all().collect()
+    all_areas = area.polygons.all().aggregate(Collect('polygon'))['polygon__collect']
     if not all_areas:
         return output_json({'error': _('No polygons found')}, code=404)
     out = {
