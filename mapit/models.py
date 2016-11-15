@@ -5,7 +5,7 @@ from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 
 from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
@@ -333,7 +333,7 @@ class Geometry(models.Model):
         verbose_name_plural = 'geometries'
 
     def __str__(self):
-        return '%s, polygon %d' % (self.area, self.id)
+        return '%s, polygon %d' % (smart_text(self.area), self.id)
 
 
 @python_2_unicode_compatible
