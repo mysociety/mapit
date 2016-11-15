@@ -60,6 +60,10 @@ class AreaViewsTest(TestCase):
         polygon.transform(settings.MAPIT_AREA_SRID)
         self.small_shape_2 = Geometry.objects.create(
             area=self.small_area_2, polygon=polygon)
+        polygon = Polygon(((-2, 53), (-2, 54), (-1, 54), (-1, 53), (-2, 53)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        self.small_shape_3 = Geometry.objects.create(
+            area=self.small_area_2, polygon=polygon)
 
         self.postcode = Postcode.objects.create(
             postcode='P', location=Point(-3.5, 51.5))
@@ -129,6 +133,22 @@ class AreaViewsTest(TestCase):
 
         self.assertEqual(content_area, content_areas['features'][0]['geometry'])
         self.assertEqual(content_areas['type'], 'FeatureCollection')
+
+    def test_areas_polygon_geometry(self):
+        id = self.small_area_1.id
+
+        url_area = '/area/%d/geometry' % id
+        response_area = self.client.get(url_area)
+        self.assertEqual(response_area.status_code, 200)
+        content_area = get_content(response_area)
+        self.assertEqual(content_area['centre_lat'], 51.5)
+        self.assertEqual(content_area['centre_lon'], -3.5)
+
+        url_areas = '/areas/%d/geometry' % id
+        response_areas = self.client.get(url_areas)
+        self.assertEqual(response_areas.status_code, 200)
+        content_areas = get_content(response_areas)
+        self.assertEqual(content_area, content_areas[str(id)])
 
     def test_areas_polygon_bad_params(self):
         url = '/areas/99999.geojson'

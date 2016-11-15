@@ -2,6 +2,7 @@ import json
 
 from django.conf import settings
 from django.contrib.gis.gdal import OGRException, SRSException
+from django.contrib.gis.db.models import Collect
 from django.utils.html import escape
 
 
@@ -54,7 +55,7 @@ class GeometrySerialiser(object):
     def __collect_polygons(self, area):
         all_polygons = area.polygons.all()
         if len(all_polygons) > 1:
-            all_polygons = all_polygons.collect()
+            all_polygons = all_polygons.aggregate(Collect('polygon'))['polygon__collect']
         elif len(all_polygons) == 1:
             all_polygons = all_polygons[0].polygon
         else:

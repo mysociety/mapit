@@ -7,6 +7,7 @@ import re
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.db.models import Collect
 from django.utils.encoding import smart_str, smart_text
 import shapely
 
@@ -117,7 +118,7 @@ class Command(LabelCommand):
 
                 m = osm_code.area
 
-                previous_geos_geometry = m.polygons.collect()
+                previous_geos_geometry = m.polygons.aggregate(Collect('polygon'))['polygon__collect']
                 previous_geos_geometry = shapely.wkb.loads(str(previous_geos_geometry.simplify(tolerance=0).ewkb))
                 new_geos_geometry = shapely.wkb.loads(str(g.geos.simplify(tolerance=0).ewkb))
                 if previous_geos_geometry.almost_equals(new_geos_geometry, decimal=7):
