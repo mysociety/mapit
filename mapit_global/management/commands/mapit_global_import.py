@@ -42,6 +42,7 @@ def make_missing_none(s):
     else:
         return s
 
+
 LanguageCodes = namedtuple('LanguageCodes',
                            ['three_letter',
                             'two_letter',
