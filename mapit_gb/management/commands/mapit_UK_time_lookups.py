@@ -43,6 +43,7 @@ def get_random_UK_location():
     location.coords = (new_lon, new_lat)
     return location
 
+
 random_locations = None
 
 
