@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 from django.core.management.base import BaseCommand
+from django.contrib.gis.db.models import Union
 from mapit.models import Area, Type, Geometry
 
 
@@ -21,7 +22,7 @@ class Command(BaseCommand):
             print('Working on', area.type.code, area.name, '...', end=' ')
             args['area__type'] = area_type
             geometry = Geometry.objects.filter(**args)
-            p = geometry.unionagg()
+            p = geometry.aggregate(Union('polygon'))['polygon__union']
             if options['commit']:
                 area.polygons.all().delete()
                 if p.geom_type == 'Polygon':

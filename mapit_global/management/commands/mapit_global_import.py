@@ -25,6 +25,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.db.models import Collect
 from django.utils.six.moves import urllib
 from django.utils.encoding import smart_str, smart_text
 
@@ -236,7 +237,7 @@ class Command(LabelCommand):
 
                     # First, we need to check if the polygons are
                     # still the same as in the previous generation:
-                    previous_geos_geometry = m.polygons.collect()
+                    previous_geos_geometry = m.polygons.aggregate(Collect('polygon'))['polygon__collect']
                     if previous_geos_geometry is None:
                         verbose('    In the current generation, that area was empty - skipping')
                     else:
