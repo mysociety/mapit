@@ -1,3 +1,7 @@
+Version 1.5.2, 2016-11-16
+    * Replace uses of old Django aggregate functions. #271
+    * Fix display of Geometry object in admin. #272
+
 Version 1.5.1, 2016-10-14
     * Fix a couple of command line argument issues. #265
     * Rename VagrantFile to Vagrantfile. #265
