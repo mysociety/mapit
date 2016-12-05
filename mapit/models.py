@@ -346,7 +346,7 @@ class NameType(models.Model):
     # and displayed in the alternative names section.
 
     code = models.CharField(
-        max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
+        max_length=500, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
     objects = models.Manager()
@@ -386,7 +386,7 @@ class CodeType(models.Model):
     # This could be extended to a more generic data store of information on an
     # object, perhaps.
 
-    code = models.CharField(max_length=10, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
+    code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
     description = models.CharField(
         max_length=200, blank=True,
         help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
