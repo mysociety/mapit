@@ -8,6 +8,11 @@ notifications:
 
 language: python
 
+addons:
+  apt:
+  packages:
+    - gdal-bin
+
 sudo: false
 
 env:
