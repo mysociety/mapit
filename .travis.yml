@@ -8,6 +8,8 @@ notifications:
 
 language: python
 
+dist: trusty
+
 addons:
   apt:
   packages:
