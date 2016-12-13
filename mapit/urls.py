@@ -57,10 +57,6 @@ urlpatterns = [
 ]
 
 # Include app-specific urls
-if (settings.MAPIT_COUNTRY == 'GB'):
-    urlpatterns.append(
-        url(r'^', include('mapit_gb.urls')),
-    )
 if settings.MAPIT_COUNTRY == 'IT':
     urlpatterns.append(
         url(r'^', include('mapit_it.urls')),
