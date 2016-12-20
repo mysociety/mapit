@@ -1,0 +1,445 @@
+gss	local-authority	name
+S12000033	local-authority-sct:ABE	Aberdeen City
+S12000034	local-authority-sct:ABD	Aberdeenshire
+E07000223	local-authority-eng:ADU	Adur
+E07000026	local-authority-eng:ALL	Allerdale
+E07000032	local-authority-eng:AMB	Amber Valley
+S12000041	local-authority-sct:ANS	Angus
+	local-authority-nir:NIR-T	
+N09000001	local-authority-nir:ANN	Antrim and Newtownabbey
+	local-authority-nir:NIR-X	
+N09000011	local-authority-nir:AND	North Down and Ards
+S12000035	local-authority-sct:AGB	Argyll and Bute
+	local-authority-nir:NIR-O	
+N09000002	local-authority-nir:ABC	Armagh, Banbridge and Craigavon
+E07000224	local-authority-eng:ARU	Arun
+E07000170	local-authority-eng:ASH	Ashfield
+E07000105	local-authority-eng:ASF	Ashford
+E07000004	local-authority-eng:AYL	Aylesbury Vale
+E07000200	local-authority-eng:BAB	Babergh
+	local-authority-nir:NIR-G	
+	local-authority-nir:NIR-D	
+	local-authority-nir:NIR-Q	
+E09000002	local-authority-eng:BDG	Barking and Dagenham
+E09000003	local-authority-eng:BNE	Barnet
+E08000016	local-authority-eng:BNS	Barnsley
+E07000027	local-authority-eng:BAR	Barrow-in-Furness
+E07000066	local-authority-eng:BAI	Basildon
+E07000084	local-authority-eng:BAN	Basingstoke and Deane
+E07000171	local-authority-eng:BAE	Bassetlaw
+E06000022	local-authority-eng:BAS	Bath and North East Somerset
+E06000055	local-authority-eng:BDF	Bedford
+N09000003	local-authority-nir:BFS	Belfast
+E09000004	local-authority-eng:BEX	Bexley
+E08000025	local-authority-eng:BIR	Birmingham
+E07000129	local-authority-eng:BLA	Blaby
+E06000008	local-authority-eng:BBD	Blackburn with Darwen
+E06000009	local-authority-eng:BPL	Blackpool
+W06000019	local-authority-wls:BGW	Blaenau Gwent
+E07000033	local-authority-eng:BOS	Bolsover
+E08000001	local-authority-eng:BOL	Bolton
+E07000136	local-authority-eng:BOT	Boston
+E06000028	local-authority-eng:BMH	Bournemouth
+E06000036	local-authority-eng:BRC	Bracknell Forest
+E08000032	local-authority-eng:BRD	Bradford
+E07000067	local-authority-eng:BRA	Braintree
+E07000143	local-authority-eng:BRE	Breckland
+E09000005	local-authority-eng:BEN	Brent
+E07000068	local-authority-eng:BRW	Brentwood
+W06000013	local-authority-wls:BGE	Bridgend
+E06000043	local-authority-eng:BNH	Brighton and Hove
+E07000144	local-authority-eng:BRO	Broadland
+E09000006	local-authority-eng:BRY	Bromley
+E07000234	local-authority-eng:BRM	Bromsgrove
+E07000095	local-authority-eng:BRX	Broxbourne
+E07000172	local-authority-eng:BRT	Broxtowe
+E10000002	local-authority-eng:BKM	Buckinghamshire
+E07000117	local-authority-eng:BUN	Burnley
+E08000002	local-authority-eng:BUR	Bury
+W06000018	local-authority-wls:CAY	Caerphilly
+E08000033	local-authority-eng:CLD	Calderdale
+E07000008	local-authority-eng:CAB	Cambridge
+E10000003	local-authority-eng:CAM	Cambridgeshire
+E09000007	local-authority-eng:CMD	Camden
+E07000192	local-authority-eng:CAN	Cannock Chase
+E07000106	local-authority-eng:CAT	Canterbury
+W06000015	local-authority-wls:CRF	Cardiff
+E07000028	local-authority-eng:CAR	Carlisle
+W06000010	local-authority-wls:CMN	Carmarthenshire
+	local-authority-nir:NIR-V	
+E07000069	local-authority-eng:CAS	Castle Point
+	local-authority-nir:NIR-Y	
+N09000004	local-authority-nir:CCG	Causeway Coast and Glens
+E06000056	local-authority-eng:CBF	Central Bedfordshire
+W06000008	local-authority-wls:CGN	Ceredigion
+E07000130	local-authority-eng:CHA	Charnwood
+E07000070	local-authority-eng:CHL	Chelmsford
+E07000078	local-authority-eng:CHT	Cheltenham
+E07000177	local-authority-eng:CHR	Cherwell
+E06000049	local-authority-eng:CHE	Cheshire East
+E06000050	local-authority-eng:CHW	Cheshire West and Chester
+E07000034	local-authority-eng:CHS	Chesterfield
+E07000225	local-authority-eng:CHI	Chichester
+E07000005	local-authority-eng:CHN	Chiltern
+E07000118	local-authority-eng:CHO	Chorley
+E07000048	local-authority-eng:CHC	Christchurch
+E06000023	local-authority-eng:BST	Bristol, City of
+S12000036	local-authority-sct:EDH	City of Edinburgh
+E07000138	local-authority-eng:LIC	Lincoln
+E09000001	local-authority-eng:LND	City of London
+S12000005	local-authority-sct:CLK	Clackmannanshire
+E07000071	local-authority-eng:COL	Colchester
+	local-authority-nir:NIR-C	
+W06000003	local-authority-wls:CWY	Conwy
+	local-authority-nir:NIR-I	
+E07000029	local-authority-eng:COP	Copeland
+E07000150	local-authority-eng:COR	Corby
+E06000052	local-authority-eng:CON	Cornwall
+E07000079	local-authority-eng:COT	Cotswold
+E06000047	local-authority-eng:DUR	County Durham
+E08000026	local-authority-eng:COV	Coventry
+	local-authority-nir:NIR-N	
+E07000163	local-authority-eng:CRA	Craven
+E07000226	local-authority-eng:CRW	Crawley
+E09000008	local-authority-eng:CRY	Croydon
+E10000006	local-authority-eng:CMA	Cumbria
+E07000096	local-authority-eng:DAC	Dacorum
+E06000005	local-authority-eng:DAL	Darlington
+E07000107	local-authority-eng:DAR	Dartford
+E07000151	local-authority-eng:DAV	Daventry
+W06000004	local-authority-wls:DEN	Denbighshire
+E06000015	local-authority-eng:DER	Derby
+E10000007	local-authority-eng:DBY	Derbyshire
+E07000035	local-authority-eng:DEB	Derbyshire Dales
+	local-authority-nir:NIR-A	
+N09000005	local-authority-nir:DRS	Derry and Strabane
+E10000008	local-authority-eng:DEV	Devon
+E08000017	local-authority-eng:DNC	Doncaster
+E10000009	local-authority-eng:DOR	Dorset
+E07000108	local-authority-eng:DOV	Dover
+	local-authority-nir:NIR-R	
+E08000027	local-authority-eng:DUD	Dudley
+S12000006	local-authority-sct:DGY	Dumfries and Galloway
+S12000042	local-authority-sct:DND	Dundee City
+	local-authority-nir:NIR-M	
+E09000009	local-authority-eng:EAL	Ealing
+S12000008	local-authority-sct:EAY	East Ayrshire
+E07000009	local-authority-eng:ECA	East Cambridgeshire
+E07000040	local-authority-eng:EDE	East Devon
+E07000049	local-authority-eng:EDO	East Dorset
+S12000045	local-authority-sct:EDU	East Dunbartonshire
+E07000085	local-authority-eng:EHA	East Hampshire
+E07000242	local-authority-eng:EHE	East Hertfordshire
+E07000137	local-authority-eng:ELI	East Lindsey
+S12000010	local-authority-sct:ELN	East Lothian
+E07000152	local-authority-eng:ENO	East Northamptonshire
+S12000011	local-authority-sct:ERW	East Renfrewshire
+E06000011	local-authority-eng:ERY	East Riding of Yorkshire
+E07000193	local-authority-eng:EST	East Staffordshire
+E10000011	local-authority-eng:ESX	East Sussex
+E07000061	local-authority-eng:EAS	Eastbourne
+E07000086	local-authority-eng:EAT	Eastleigh
+E07000030	local-authority-eng:EDN	Eden
+S12000013	local-authority-sct:ELS	Na h-Eileanan an Iar
+E07000207	local-authority-eng:ELM	Elmbridge
+E09000010	local-authority-eng:ENF	Enfield
+E07000072	local-authority-eng:EPP	Epping Forest
+E07000208	local-authority-eng:EPS	Epsom and Ewell
+E07000036	local-authority-eng:ERE	Erewash
+E10000012	local-authority-eng:ESS	Essex
+E07000041	local-authority-eng:EXE	Exeter
+S12000014	local-authority-sct:FAL	Falkirk
+E07000087	local-authority-eng:FAR	Fareham
+E07000010	local-authority-eng:FEN	Fenland
+	local-authority-nir:NIR-L	
+N09000006	local-authority-nir:FMO	Fermanagh and Omagh
+S12000015	local-authority-sct:FIF	Fife
+W06000005	local-authority-wls:FLN	Flintshire
+E07000201	local-authority-eng:FOR	Forest Heath
+E07000080	local-authority-eng:FOE	Forest of Dean
+E07000119	local-authority-eng:FYL	Fylde
+E08000037	local-authority-eng:GAT	Gateshead
+E07000173	local-authority-eng:GED	Gedling
+S12000046	local-authority-sct:GLG	Glasgow City
+E07000081	local-authority-eng:GLO	Gloucester
+E10000013	local-authority-eng:GLS	Gloucestershire
+E07000088	local-authority-eng:GOS	Gosport
+E07000109	local-authority-eng:GRA	Gravesham
+E07000145	local-authority-eng:GRY	Great Yarmouth
+E12000007	local-authority-eng:GLA	Greater London Authority
+E09000011	local-authority-eng:GRE	Greenwich
+E07000209	local-authority-eng:GRT	Guildford
+W06000002	local-authority-wls:GWN	Gwynedd
+E09000012	local-authority-eng:HCK	Hackney
+E06000006	local-authority-eng:HAL	Halton
+E07000164	local-authority-eng:HAE	Hambleton
+E09000013	local-authority-eng:HMF	Hammersmith and Fulham
+E10000014	local-authority-eng:HAM	Hampshire
+E07000131	local-authority-eng:HAO	Harborough
+E09000014	local-authority-eng:HRY	Haringey
+E07000073	local-authority-eng:HAR	Harlow
+E07000165	local-authority-eng:HAG	Harrogate
+E09000015	local-authority-eng:HRW	Harrow
+E07000089	local-authority-eng:HAT	Hart
+E06000001	local-authority-eng:HPL	Hartlepool
+E07000062	local-authority-eng:HAS	Hastings
+E07000090	local-authority-eng:HAA	Havant
+E09000016	local-authority-eng:HAV	Havering
+E06000019	local-authority-eng:HEF	Herefordshire, County of
+E10000015	local-authority-eng:HRT	Hertfordshire
+E07000098	local-authority-eng:HER	Hertsmere
+E07000037	local-authority-eng:HIG	High Peak
+S12000017	local-authority-sct:HLD	Highland
+E09000017	local-authority-eng:HIL	Hillingdon
+E07000132	local-authority-eng:HIN	Hinckley and Bosworth
+E07000227	local-authority-eng:HOR	Horsham
+E09000018	local-authority-eng:HNS	Hounslow
+E07000011	local-authority-eng:HUN	Huntingdonshire
+E07000120	local-authority-eng:HYN	Hyndburn
+S12000018	local-authority-sct:IVC	Inverclyde
+E07000202	local-authority-eng:IPS	Ipswich
+W06000001	local-authority-wls:AGY	Isle of Anglesey
+E06000046	local-authority-eng:IOW	Isle of Wight
+E06000053	local-authority-eng:IOS	Isles of Scilly
+E09000019	local-authority-eng:ISL	Islington
+E09000020	local-authority-eng:KEC	Kensington and Chelsea
+E10000016	local-authority-eng:KEN	Kent
+E07000153	local-authority-eng:KET	Kettering
+E07000146	local-authority-eng:KIN	King's Lynn and West Norfolk
+E06000010	local-authority-eng:KHL	Kingston upon Hull, City of
+E09000021	local-authority-eng:KTT	Kingston upon Thames
+E08000034	local-authority-eng:KIR	Kirklees
+E08000011	local-authority-eng:KWL	Knowsley
+E09000022	local-authority-eng:LBH	Lambeth
+E10000017	local-authority-eng:LAN	Lancashire
+E07000121	local-authority-eng:LAC	Lancaster
+	local-authority-nir:NIR-F	
+E08000035	local-authority-eng:LDS	Leeds
+E06000016	local-authority-eng:LCE	Leicester
+E10000018	local-authority-eng:LEC	Leicestershire
+E07000063	local-authority-eng:LEE	Lewes
+E09000023	local-authority-eng:LEW	Lewisham
+E07000194	local-authority-eng:LIF	Lichfield
+	local-authority-nir:NIR-B	
+E10000019	local-authority-eng:LIN	Lincolnshire
+	local-authority-nir:NIR-S	
+N09000007	local-authority-nir:LBC	Lisburn and Castlereagh
+E08000012	local-authority-eng:LIV	Liverpool
+E06000032	local-authority-eng:LUT	Luton
+	local-authority-nir:NIR-H	
+E07000110	local-authority-eng:MAI	Maidstone
+E07000074	local-authority-eng:MAL	Maldon
+E07000235	local-authority-eng:MAV	Malvern Hills
+E08000003	local-authority-eng:MAN	Manchester
+E07000174	local-authority-eng:MAS	Mansfield
+E06000035	local-authority-eng:MDW	Medway
+E07000133	local-authority-eng:MEL	Melton
+E07000187	local-authority-eng:MEN	Mendip
+W06000024	local-authority-wls:MTY	Merthyr Tydfil
+E09000024	local-authority-eng:MRT	Merton
+N09000008	local-authority-nir:MEA	Mid and East Antrim
+E07000042	local-authority-eng:MDE	Mid Devon
+E07000203	local-authority-eng:MSU	Mid Suffolk
+E07000228	local-authority-eng:MSS	Mid Sussex
+N09000009	local-authority-nir:MUL	Mid Ulster
+E06000002	local-authority-eng:MDB	Middlesbrough
+S12000019	local-authority-sct:MLN	Midlothian
+E06000042	local-authority-eng:MIK	Milton Keynes
+E07000210	local-authority-eng:MOL	Mole Valley
+W06000021	local-authority-wls:MON	Monmouthshire
+S12000020	local-authority-sct:MRY	Moray
+	local-authority-nir:NIR-E	
+W06000012	local-authority-wls:NTL	Neath Port Talbot
+E07000091	local-authority-eng:NEW	New Forest
+E07000175	local-authority-eng:NEA	Newark and Sherwood
+E08000021	local-authority-eng:NET	Newcastle upon Tyne
+E07000195	local-authority-eng:NEC	Newcastle-under-Lyme
+E09000025	local-authority-eng:NWM	Newham
+W06000022	local-authority-wls:NWP	Newport
+	local-authority-nir:NIR-P	
+N09000010	local-authority-nir:NMD	Newry, Mourne and Down
+	local-authority-nir:NIR-U	
+E10000020	local-authority-eng:NFK	Norfolk
+S12000021	local-authority-sct:NAY	North Ayrshire
+E07000043	local-authority-eng:NDE	North Devon
+E07000050	local-authority-eng:NDO	North Dorset
+	local-authority-nir:NIR-W	
+E07000038	local-authority-eng:NED	North East Derbyshire
+E06000012	local-authority-eng:NEL	North East Lincolnshire
+E07000099	local-authority-eng:NHE	North Hertfordshire
+E07000139	local-authority-eng:NKE	North Kesteven
+S12000044	local-authority-sct:NLK	North Lanarkshire
+E06000013	local-authority-eng:NLN	North Lincolnshire
+E07000147	local-authority-eng:NNO	North Norfolk
+E06000024	local-authority-eng:NSM	North Somerset
+E08000022	local-authority-eng:NTY	North Tyneside
+E07000218	local-authority-eng:NWA	North Warwickshire
+E07000134	local-authority-eng:NWL	North West Leicestershire
+E10000023	local-authority-eng:NYK	North Yorkshire
+E07000154	local-authority-eng:NOR	Northampton
+E10000021	local-authority-eng:NTH	Northamptonshire
+E06000057	local-authority-eng:NBL	Northumberland
+E07000148	local-authority-eng:NOW	Norwich
+E06000018	local-authority-eng:NGM	Nottingham
+E10000024	local-authority-eng:NTT	Nottinghamshire
+E07000219	local-authority-eng:NUN	Nuneaton and Bedworth
+E07000135	local-authority-eng:OAD	Oadby and Wigston
+E08000004	local-authority-eng:OLD	Oldham
+	local-authority-nir:NIR-K	
+S12000023	local-authority-sct:ORK	Orkney Islands
+E07000178	local-authority-eng:OXO	Oxford
+E10000025	local-authority-eng:OXF	Oxfordshire
+W06000009	local-authority-wls:PEM	Pembrokeshire
+E07000122	local-authority-eng:PEN	Pendle
+S12000024	local-authority-sct:PKN	Perth and Kinross
+E06000031	local-authority-eng:PTE	Peterborough
+E06000026	local-authority-eng:PLY	Plymouth
+E06000029	local-authority-eng:POL	Poole
+E06000044	local-authority-eng:POR	Portsmouth
+W06000023	local-authority-wls:POW	Powys
+E07000123	local-authority-eng:PRE	Preston
+E07000051	local-authority-eng:PUR	Purbeck
+E06000038	local-authority-eng:RDG	Reading
+E09000026	local-authority-eng:RDB	Redbridge
+E06000003	local-authority-eng:RCC	Redcar and Cleveland
+E07000236	local-authority-eng:RED	Redditch
+E07000211	local-authority-eng:REI	Reigate and Banstead
+S12000038	local-authority-sct:RFW	Renfrewshire
+W06000016	local-authority-wls:RCT	Rhondda Cynon Taf
+E07000124	local-authority-eng:RIB	Ribble Valley
+E09000027	local-authority-eng:RIC	Richmond upon Thames
+E07000166	local-authority-eng:RIH	Richmondshire
+E08000005	local-authority-eng:RCH	Rochdale
+E07000075	local-authority-eng:ROC	Rochford
+E07000125	local-authority-eng:ROS	Rossendale
+E07000064	local-authority-eng:ROH	Rother
+E08000018	local-authority-eng:ROT	Rotherham
+E07000220	local-authority-eng:RUG	Rugby
+E07000212	local-authority-eng:RUN	Runnymede
+E07000176	local-authority-eng:RUS	Rushcliffe
+E07000092	local-authority-eng:RUH	Rushmoor
+E06000017	local-authority-eng:RUT	Rutland
+E07000167	local-authority-eng:RYE	Ryedale
+E08000006	local-authority-eng:SLF	Salford
+E08000028	local-authority-eng:SAW	Sandwell
+E07000168	local-authority-eng:SCE	Scarborough
+E07000188	local-authority-eng:SEG	Sedgemoor
+E08000014	local-authority-eng:SFT	Sefton
+E07000169	local-authority-eng:SEL	Selby
+E07000111	local-authority-eng:SEV	Sevenoaks
+E08000019	local-authority-eng:SHF	Sheffield
+E07000112	local-authority-eng:SHE	Shepway
+S12000027	local-authority-sct:ZET	Shetland Islands
+E06000051	local-authority-eng:SHR	Shropshire
+E06000039	local-authority-eng:SLG	Slough
+E08000029	local-authority-eng:SOL	Solihull
+E10000027	local-authority-eng:SOM	Somerset
+S12000028	local-authority-sct:SAY	South Ayrshire
+E07000006	local-authority-eng:SBU	South Bucks
+E07000012	local-authority-eng:SCA	South Cambridgeshire
+E07000039	local-authority-eng:SDE	South Derbyshire
+E06000025	local-authority-eng:SGC	South Gloucestershire
+E07000044	local-authority-eng:SHA	South Hams
+E07000140	local-authority-eng:SHO	South Holland
+E07000141	local-authority-eng:SKE	South Kesteven
+E07000031	local-authority-eng:SLA	South Lakeland
+S12000029	local-authority-sct:SLK	South Lanarkshire
+E07000149	local-authority-eng:SNO	South Norfolk
+E07000155	local-authority-eng:SNR	South Northamptonshire
+E07000179	local-authority-eng:SOX	South Oxfordshire
+E07000126	local-authority-eng:SRI	South Ribble
+E07000189	local-authority-eng:SSO	South Somerset
+E07000196	local-authority-eng:SST	South Staffordshire
+E08000023	local-authority-eng:STY	South Tyneside
+E06000045	local-authority-eng:STH	Southampton
+E06000033	local-authority-eng:SOS	Southend-on-Sea
+E09000028	local-authority-eng:SWK	Southwark
+E07000213	local-authority-eng:SPE	Spelthorne
+E07000240	local-authority-eng:SAL	St Albans
+E07000204	local-authority-eng:SED	St Edmundsbury
+E08000013	local-authority-eng:SHN	St. Helens
+E07000197	local-authority-eng:STA	Stafford
+E10000028	local-authority-eng:STS	Staffordshire
+E07000198	local-authority-eng:STF	Staffordshire Moorlands
+E07000243	local-authority-eng:STV	Stevenage
+S12000030	local-authority-sct:STG	Stirling
+E08000007	local-authority-eng:SKP	Stockport
+E06000004	local-authority-eng:STT	Stockton-on-Tees
+E06000021	local-authority-eng:STE	Stoke-on-Trent
+	local-authority-nir:NIR-J	
+E07000221	local-authority-eng:STR	Stratford-on-Avon
+E07000082	local-authority-eng:STO	Stroud
+E10000029	local-authority-eng:SFK	Suffolk
+E07000205	local-authority-eng:SUF	Suffolk Coastal
+E08000024	local-authority-eng:SND	Sunderland
+E10000030	local-authority-eng:SRY	Surrey
+E07000214	local-authority-eng:SUR	Surrey Heath
+E09000029	local-authority-eng:STN	Sutton
+E07000113	local-authority-eng:SWL	Swale
+W06000011	local-authority-wls:SWA	Swansea
+E06000030	local-authority-eng:SWD	Swindon
+E08000008	local-authority-eng:TAM	Tameside
+E07000199	local-authority-eng:TAW	Tamworth
+E07000215	local-authority-eng:TAN	Tandridge
+E07000190	local-authority-eng:TAU	Taunton Deane
+E07000045	local-authority-eng:TEI	Teignbridge
+E06000020	local-authority-eng:TFW	Telford and Wrekin
+E07000076	local-authority-eng:TEN	Tendring
+E07000093	local-authority-eng:TES	Test Valley
+E07000083	local-authority-eng:TEW	Tewkesbury
+E07000114	local-authority-eng:THA	Thanet
+S12000026	local-authority-sct:SCB	Scottish Borders
+W06000014	local-authority-wls:VGL	Vale of Glamorgan
+E07000102	local-authority-eng:THE	Three Rivers
+E06000034	local-authority-eng:THR	Thurrock
+E07000115	local-authority-eng:TON	Tonbridge and Malling
+E06000027	local-authority-eng:TOB	Torbay
+W06000020	local-authority-wls:TOF	Torfaen
+E07000046	local-authority-eng:TOR	Torridge
+E09000030	local-authority-eng:TWH	Tower Hamlets
+E08000009	local-authority-eng:TRF	Trafford
+E07000116	local-authority-eng:TUN	Tunbridge Wells
+E07000077	local-authority-eng:UTT	Uttlesford
+E07000180	local-authority-eng:VAL	Vale of White Horse
+E08000036	local-authority-eng:WKF	Wakefield
+E08000030	local-authority-eng:WLL	Walsall
+E09000031	local-authority-eng:WFT	Waltham Forest
+E09000032	local-authority-eng:WND	Wandsworth
+E06000007	local-authority-eng:WRT	Warrington
+E07000222	local-authority-eng:WAW	Warwick
+E10000031	local-authority-eng:WAR	Warwickshire
+E07000103	local-authority-eng:WAT	Watford
+E07000206	local-authority-eng:WAV	Waveney
+E07000216	local-authority-eng:WAE	Waverley
+E07000065	local-authority-eng:WEA	Wealden
+E07000156	local-authority-eng:WEL	Wellingborough
+E07000241	local-authority-eng:WEW	Welwyn Hatfield
+E06000037	local-authority-eng:WBK	West Berkshire
+E07000047	local-authority-eng:WDE	West Devon
+E07000052	local-authority-eng:WDO	West Dorset
+S12000039	local-authority-sct:WDU	West Dunbartonshire
+E07000127	local-authority-eng:WLA	West Lancashire
+E07000142	local-authority-eng:WLI	West Lindsey
+S12000040	local-authority-sct:WLN	West Lothian
+E07000181	local-authority-eng:WOX	West Oxfordshire
+E07000191	local-authority-eng:WSO	West Somerset
+E10000032	local-authority-eng:WSX	Sussex
+E09000033	local-authority-eng:WSM	Westminster
+E07000053	local-authority-eng:WEY	Weymouth and Portland
+E08000010	local-authority-eng:WGN	Wigan
+E06000054	local-authority-eng:WIL	Wiltshire
+E07000094	local-authority-eng:WIN	Winchester
+E06000040	local-authority-eng:WNM	Windsor and Maidenhead
+E08000015	local-authority-eng:WRL	Wirral
+E07000217	local-authority-eng:WOI	Woking
+E06000041	local-authority-eng:WOK	Wokingham
+E08000031	local-authority-eng:WLV	Wolverhampton
+E07000237	local-authority-eng:WOC	Worcester
+E10000034	local-authority-eng:WOR	Worcestershire
+E07000229	local-authority-eng:WOT	Worthing
+W06000006	local-authority-wls:WRX	Wrexham
+E07000238	local-authority-eng:WYC	Wychavon
+E07000007	local-authority-eng:WYO	Wycombe
+E07000128	local-authority-eng:WYR	Wyre
+E07000239	local-authority-eng:WYE	Wyre Forest
+E06000014	local-authority-eng:YOR	York
