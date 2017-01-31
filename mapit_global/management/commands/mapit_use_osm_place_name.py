@@ -19,7 +19,7 @@ from lxml import etree
 
 class Command(LabelCommand):
     help = 'Find any "Unknown" names, and use place_name instead, if possible'
-    args = '<KML-DIRECTORY>'
+    label = 'KML-DIRECTORY'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

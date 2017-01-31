@@ -12,7 +12,7 @@ from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import NI Output Areas'
-    args = '<NI Super Output Area shapefile> <NI Output Area shapefile>'
+    label = '<NI (Super) Output Area shapefile>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

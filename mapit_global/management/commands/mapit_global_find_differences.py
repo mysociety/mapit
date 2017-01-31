@@ -34,7 +34,7 @@ def empty_if_none(o):
 
 class Command(LabelCommand):
     help = 'Import OSM administrative boundary data'
-    args = '<KML-DIRECTORY>'
+    label = 'KML-DIRECTORY'
 
     def handle_label(self, directory_name, **options):
         if not os.path.isdir(directory_name):

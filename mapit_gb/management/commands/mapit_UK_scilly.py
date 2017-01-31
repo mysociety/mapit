@@ -11,7 +11,7 @@ from mapit.models import Postcode, Area, Country, Type, CodeType, NameType
 
 class Command(LabelCommand):
     help = 'Sort out the Isles of Scilly'
-    args = '<Code-Point Open TR file> or <ONSPD CSV file>'
+    label = '<Code-Point Open TR file> or <ONSPD CSV file>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

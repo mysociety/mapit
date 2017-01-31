@@ -14,7 +14,7 @@ from mapit.models import Postcode
 
 class Command(LabelCommand):
     help = 'Import Postal codes from a CSV file or files'
-    args = '<CSV files>'
+    label = '<CSV file>'
     count = {'total': 0, 'updated': 0, 'unchanged': 0, 'created': 0}
     often = 1000
 

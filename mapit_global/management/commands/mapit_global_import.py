@@ -75,7 +75,7 @@ def get_iso639_2_table():
 
 class Command(LabelCommand):
     help = 'Import OSM boundary data from KML files'
-    args = '<KML-DIRECTORY>'
+    label = 'KML-DIRECTORY'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)
