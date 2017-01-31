@@ -1,3 +1,10 @@
+Version 1.5.3, 2017-01-31
+    * Switch LabelCommands from using 'args' to 'label'. #278
+    * Increase the max_length of CodeType.code & NameType.code
+    * MapIt UK specific:
+        * Script to import English local authority IDs. #275
+        * Remove some UK specific templates.
+
 Version 1.5.2, 2016-11-16
     * Replace uses of old Django aggregate functions. #271
     * Fix display of Geometry object in admin. #272
