@@ -32,7 +32,7 @@ lookup = {
 
 class Command(LabelCommand):
     help = 'Imports postcode->National Park from the NSPD, creates the areas if need be'
-    args = '<NSPD CSV file>'
+    label = '<NSPD CSV file>'
 
     def handle_label(self, file, **options):
         if not Generation.objects.new():

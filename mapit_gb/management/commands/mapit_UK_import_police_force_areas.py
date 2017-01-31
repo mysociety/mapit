@@ -27,7 +27,7 @@ DATA_DIRECTORY = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'data
 
 class Command(LabelCommand):
     help = 'Import England, Wales and Northern Ireland police force area boundaries from .kml files'
-    args = '<directory containing KML files from data.gov.uk>'
+    label = '<directory containing KML files from data.gov.uk>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

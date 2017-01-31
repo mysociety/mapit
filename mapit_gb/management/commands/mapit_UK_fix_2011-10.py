@@ -12,7 +12,7 @@ from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<October 2010 Boundary-Line parish and district ward SHP files>'
+    label = '<October 2010 Boundary-Line parish and district ward SHP file>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

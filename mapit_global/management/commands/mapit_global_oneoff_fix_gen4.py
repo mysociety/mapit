@@ -18,7 +18,7 @@ from mapit.management.command_utils import fix_invalid_geos_multipolygon
 
 class Command(LabelCommand):
     help = 'Update OSM boundary data from KML files'
-    args = '<KML-DIRECTORY>'
+    label = 'KML-DIRECTORY'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

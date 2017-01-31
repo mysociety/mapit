@@ -18,7 +18,7 @@ from mapit.management.command_utils import save_polygons, fix_invalid_geos_geome
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<Boundary-Line SHP files (wards before Westminster)>'
+    label = '<Boundary-Line SHP file>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

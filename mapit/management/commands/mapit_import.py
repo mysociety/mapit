@@ -21,7 +21,7 @@ from mapit.management.command_utils import save_polygons, fix_invalid_geos_geome
 
 class Command(LabelCommand):
     help = 'Import geometry data from .shp, .kml or .geojson files'
-    args = '<SHP/KML/GeoJSON files>'
+    label = '<SHP/KML/GeoJSON file>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)

@@ -38,7 +38,7 @@ class CommentedFile(Iterator):
 
 class Command(LabelCommand):
     help = 'Import region data'
-    args = '<CSV file listing name and which existing areas to combine into regions>'
+    label = '<CSV file listing name and which existing areas to combine into regions>'
 
     def add_arguments(self, parser):
         super(Command, self).add_arguments(parser)
