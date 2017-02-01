@@ -21,7 +21,7 @@ from mapit.management.commands.mapit_import_postal_codes import Command
 
 class Command(Command):
     help = 'Imports Northern Ireland postcodes from the NSPD, using existing areas only'
-    args = '<NSPD CSV file>'
+    label = '<NSPD CSV file>'
     option_defaults = {'strip': True, 'srid': 29902, 'coord-field-lon': 10, 'coord-field-lat': 11}
 
     def handle_label(self, file, **options):

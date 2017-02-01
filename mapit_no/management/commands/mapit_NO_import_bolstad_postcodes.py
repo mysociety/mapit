@@ -10,5 +10,5 @@ from mapit.management.commands.mapit_import_postal_codes import Command
 
 class Command(Command):
     help = 'Import Norwegian postcodes from the Erik Bolstad data set'
-    args = '<CSV file>'
+    label = '<CSV file>'
     option_defaults = {'coord-field-lat': 10, 'header-row': True, 'tabs': True}

@@ -9,7 +9,6 @@ from psycopg2 import IntegrityError
 
 class Command(BaseCommand):
     help = 'Inserts all the new GSS codes into mapit'
-    args = '<CSV file mapping old to new>'
 
     def handle(self, **options):
         current_generation = Generation.objects.current()
