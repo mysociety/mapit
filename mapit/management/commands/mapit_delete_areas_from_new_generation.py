@@ -9,7 +9,6 @@ from mapit.models import Generation, Area
 
 class Command(BaseCommand):
     help = 'Remove all areas from the new (inactive) generation'
-    args = '<GENERATION-ID>'
 
     def add_arguments(self, parser):
         parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')

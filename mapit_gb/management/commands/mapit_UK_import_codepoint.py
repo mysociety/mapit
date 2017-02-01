@@ -15,7 +15,7 @@ from mapit.management.commands.mapit_import_postal_codes import Command
 
 class Command(Command):
     help = 'Import OS Code-Point Open postcodes'
-    args = '<Code-Point CSV files>'
+    label = '<Code-Point CSV file>'
     often = 10000
     option_defaults = {'strip': True, 'srid': 27700}
 

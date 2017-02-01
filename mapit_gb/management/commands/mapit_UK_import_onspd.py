@@ -92,7 +92,7 @@ class Command(Command):
             'live GB postcodes with a lat/lng, options are available to also '
             'import terminated, NI, or Crown Dependency postcodes and those '
             'without locations.')
-    args = '<ONSPD CSV file>'
+    label = '<ONSPD CSV file>'
     option_defaults = {'header-row': True, 'strip': True, 'srid': 27700, 'coord-field-lon': 10, 'coord-field-lat': 11}
 
     def add_arguments(self, parser):
