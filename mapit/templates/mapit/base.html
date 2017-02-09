@@ -6,12 +6,12 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="imagetoolbar" content="false">
-    <meta name="description" content="{% trans "MapIt: a web service that maps postcodes and geographical points to administrative areas." %}">
+    <meta name="description" content="{% block description %}{% trans "MapIt: a web service that maps postcodes and geographical points to administrative areas." %}{% endblock %}">
 
     <title>{% block fulltitle %}{% block title %}{% endblock %} - MapIt{% endblock %}</title>
 
-    <meta name="viewport" content="initial-scale=1.0">
-    <link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block main_css %}<link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">{% endblock %}
     <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.css" %}" />
     <!--[if lte IE 8]>
         <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.ie.css" %}" />
@@ -41,40 +41,19 @@
 {% endif %}
 
 </head>
-<body id="mapit-mysociety-org" class="">
+<body>
 
-    <!-- mySociety top strip -->
-    <div id="mysociety-org-bar">
+    {% include "mapit/header.html" %}
 
-        <a class="mysociety-home-link" href="http://www.mysociety.org/">
-            <img src="{% static "mapit/img/page-top-mysociety.png" %}"
-                 alt="{% trans "MapIt is a charitable project from mySociety" %}" width="362" height="32">
-        </a>
-
-        <a class="mysociety-donate-link" href="http://www.mysociety.org/donate/">
-            <img src="{% static "mapit/img/page-top-donate.png" %}"
-                 alt="{% trans "Keep us online, Donate Now" %}" width="160" height="32">
-        </a>
-
-    </div>
-
-    {% if request.path != '/' %}
-    <header class="header">
-        <a class="docs_link" href="{% url "mapit_index" %}"><img src="{% static "mapit/img/home-icon.png" %}" alt="" width="16" height="14" /> {% trans "Home &amp; Documentation" %}</a>
-        <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
-    </header>
-
-    <article class="content {% block article-class %}{% endblock %}">
-    {% endif %}
-    {% block content %}
+    {% block content_outer %}
+        <div class="content {% block article-class %}{% endblock %}">
+            {% block content %}{% endblock %}
+        </div>
     {% endblock %}
-    {% if request.path != '/' %}
-    </article>
-    {% endif %}
 
     {% include "mapit/footer.html" %}
 
     {% block extra_js %}{% endblock %}
+
 </body>
 </html>
-

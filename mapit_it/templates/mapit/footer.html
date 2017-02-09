@@ -8,6 +8,7 @@
                 <h2 class="mysoc-footer__site-name">MapIt: {% include "mapit/country.html" %}</h2>
                 <div class="mysoc-footer__site-description">
                     <p>{% include "mapit/description.html" %}</p>
+                    <p>MapIt-it è un progetto no-profit di <a href="http://www.openpolis.it/">Openpolis</a>.</p>
                 </div>
                 <div class="mapit-copyright">
                   {% include "mapit/copyright.html" %}
@@ -19,8 +20,8 @@
 
             <div class="col-sm-3">
                 <div class="mysoc-footer__donate">
-                    <p>{% trans "Your donations keep this site and others like it running" %}</p>
-                    <a href="https://www.mysociety.org/donate?utm_source=mapit.mysociety.org&utm_content=footer+donate+now&utm_medium=link&utm_campaign=mysoc_footer" class="mysoc-footer__donate__button">{% trans "Donate now" %}</a>
+                    <p>Your donations keep this site and others like it running</p>
+                    <a href="https://www.mysociety.org/donate?utm_source=mapit.mysociety.org&utm_content=footer+donate+now&utm_medium=link&utm_campaign=mysoc_footer" class="mysoc-footer__donate__button">Donate now</a>
                 </div>
             </div>
 
@@ -28,16 +29,21 @@
         <hr class="mysoc-footer__divider" role="presentation">
         <div class="row">
 
-            <div class="col-sm-3">
+            <div class="col-sm-5">
                 <div class="mysoc-footer__orgs">
+                    <p class="mysoc-footer__org">
+                        È un progetto di
+                        <a href="http://www.openpolis.it" class="mysoc-footer__org__logo mysoc-footer__org__logo--openpolis">Openpolis</a>
+                    </p>
                     <p class="mysoc-footer__org">
                         {% trans "Built by" %}
                         <a href="https://www.mysociety.org?utm_source=mapit.mysociety.org&utm_content=footer+logo&utm_medium=link&utm_campaign=mysoc_footer" class="mysoc-footer__org__logo mysoc-footer__org__logo--mysociety">mySociety</a>
+
                     </p>
                 </div>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-sm-4">
                 <div class="mysoc-footer__legal">
                     <p>mySociety Limited is a project of UK Citizens Online Democracy, a registered charity in England and Wales. For full details visit <a href="https://www.mysociety.org?utm_source=mapit.mysociety.org&utm_content=footer+full+legal+details&utm_medium=link&utm_campaign=mysoc_footer">mysociety.org</a>.</p>
                 </div>

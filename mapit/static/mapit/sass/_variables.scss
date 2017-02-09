@@ -1,0 +1,11 @@
+$color_mysoc_blue: #4FADED;
+$color_mysoc_orange: #F4A140;
+$color_mysoc_red: #E04B4B;
+$color_mysoc_green: #62B356;
+$color_mysoc_dark_grey: #6C6B68;
+
+$theme_dir: '/static/mapit' !default; // tell docs-theme what to use in image urls
+$logo_path: '' !default; // tell docs-theme not to put a logo in the header
+$colour_brand: $color_mysoc_green !default; // used in docs-theme .site-header
+
+$mysoc-footer-donate-button-background-color: $color_mysoc_green !default;

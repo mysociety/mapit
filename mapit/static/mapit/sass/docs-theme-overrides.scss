@@ -1,0 +1,30 @@
+.ms-header__logo--openpolis {
+    background-size: 22px;
+    background-position: 11px 7px;
+    background-image: url("/static/mapit/img/openpolis-bloom.png");
+
+    @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+        background-image: url("/static/mapit/img/openpolis-bloom@2.png");
+    }
+
+    @media (min-width: $medium-screen) {
+        height: 45px;
+        background-position: 18px 9px;
+        background-size: 86px 26px;
+        background-image: url("/static/mapit/img/openpolis-tool.png");
+
+        @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+            background-image: url("/static/mapit/img/openpolis-tool@2x.png");
+        }
+    }
+}
+
+.mysoc-footer__org__logo--openpolis {
+    width: 133px;
+    background: transparent url("/static/mapit/img/footer-logo-openpolis.png") 0 0 no-repeat;
+    background-size: 133px 32px;
+
+    @media ($high-dpi-screen) {
+      background-image: url("/static/mapit/img/footer-logo-openpolis@2x.png");
+    }
+}

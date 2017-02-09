@@ -1,0 +1,96 @@
+#map {
+    width: 100%;
+    margin: 1em 0;
+}
+
+#leaflet {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-top: 100%; // means "100% of the width of this element" - ie: square
+}
+
+@media (min-width: $medium-screen) {
+    #map {
+        float: left;
+        width: 50%;
+        margin-top: 0;
+    }
+
+    section.details,
+    header.area_info {
+        float: right;
+        clear: right;
+        width: 50%;
+        padding-left: 2em;
+    }
+}
+
+.area_info {
+    .area_id {
+        font-style: inherit;
+        font-size: 0.7em;
+        color: $color_mysoc_dark_grey;
+        margin: 0 0.3em;
+    }
+}
+
+section.details {
+    // This is the top-level list on an area/country page,
+    // containing the "Geometry", "Areas", "Codes", etc headings.
+    & > ul {
+        @extend .unstyled-list;
+
+        @include flexbox();
+        @include flex-wrap(wrap);
+
+        & > li {
+            width: 50%;
+        }
+    }
+
+    // Deeper lists on the area/country page, eg: the list of
+    // json/wkt/kml download links.
+    ul ul {
+        list-style-type: disc;
+        margin-bottom: 1em;
+
+        h3 {
+            margin-bottom: 0;
+        }
+
+        li {
+            line-height: 1.3em;
+            margin-bottom: 0.4em;
+        }
+    }
+}
+
+// This is the <ol> list of "Areas" on a postcode or point page.
+.area_list {
+    @extend .unstyled-list;
+
+    li {
+        padding: 1em;
+        border-radius: 0.3em;
+        background-color: $colour_off_white;
+        margin-bottom: 1em;
+    }
+
+    h3 {
+        margin-bottom: 0.2em;
+    }
+
+    p {
+        margin: 0;
+    }
+
+    $area_level: 10;
+
+    @while $area_level > 0 {
+        li.area_level_#{$area_level} {
+            margin-left: 2.5% * $area_level;
+        }
+        $area_level: $area_level - 1;
+    }
+}

@@ -30,8 +30,8 @@ except:
 # WGS84. Optional, defaults to 4326.
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 
-# Country is currently one of GB, NO, KE or ZA. Optional; country specific things
-# won't happen if not set.
+# Country is currently one of GB, Global, NO, IT, KE, SA, or ZA.
+# Optional; country specific things won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
 
 # A list of IP addresses or User Agents that should be excluded from rate
