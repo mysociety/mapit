@@ -1,0 +1,101 @@
+.site-header {
+    color: #fff;
+
+    a {
+        color: inherit;
+    }
+
+    .container {
+        position: relative; // for positioning .site-nav on large screens
+    }
+}
+
+.site-title {
+    display: block;
+    text-decoration: none;
+
+    &:hover,
+    &:focus {
+        text-decoration: none;
+    }
+
+    h1 {
+        font-weight: 700;
+        font-size: 2em;
+        letter-spacing: -0.5px;
+
+        small {
+            opacity: 0.5;
+            font-weight: 600;
+        }
+    }
+}
+
+.site-nav {
+    ul {
+        @extend .unstyled-list;
+        margin: 0.5em -0.5em 0 -0.5em;
+
+        // Wrap items on narrow screens
+        @include flexbox();
+        @include flex-wrap(wrap);
+    }
+
+    li {
+        @include flex(1 0 auto);
+    }
+
+    a {
+        display: block;
+        padding: 0.25em 0.5em;
+    }
+
+    // We could potentially increase this breakpoint,
+    // if there are too many items in the nav.
+    @media (min-width: $medium-screen) {
+        ul {
+            @include clearfix();
+            display: block; // no more flexbox!
+        }
+
+        li {
+            display: inline;
+            float: left; // no more flexbox!
+        }
+    }
+
+    @media (min-width: $large-screen) {
+        position: absolute;
+        right: 180px; // leave space for mysociety tab
+        top: 50%;
+        margin-top: (1em + (28em/18)) * -0.5; // vertically centre
+
+        ul {
+            margin: 0 -1em;
+        }
+
+        a {
+            padding: 0.5em 1em;
+        }
+    }
+}
+
+.site-nav--hidden {
+    display: none;
+
+    @media (min-width: $medium-screen) {
+        display: block;
+    }
+}
+
+.site-nav-toggle {
+    color: #fff;
+    padding: 0.5em 1em;
+    background: transparent;
+    border: 1px solid transparentize(#fff, 0.8);
+    border-radius: 0.2em;
+
+    @media (min-width: $medium-screen) {
+        display: none;
+    }
+}
