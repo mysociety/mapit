@@ -6,6 +6,7 @@ from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models import Collect
+from django.views.decorators.csrf import csrf_exempt
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
@@ -140,6 +141,7 @@ def example_postcode_for_area(request, area_id, format='json'):
     return output_json(pc)
 
 
+@csrf_exempt
 def form_submitted(request):
     pc = request.POST.get('pc', None)
     if not request.method == 'POST' or not pc:

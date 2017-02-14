@@ -10,6 +10,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from mapit.models import Area, Generation, Geometry, Code, Name
 from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
@@ -407,6 +408,7 @@ def areas_by_point_osgb(request, e, n, bb=False, format=''):
     return HttpResponseRedirect(redirect_path)
 
 
+@csrf_exempt
 def point_form_submitted(request):
     latlon = request.POST.get('pc', None)
     if not request.method == 'POST' or not latlon:
