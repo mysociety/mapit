@@ -8,21 +8,22 @@
 <header class="area_info">
     <h2>{{ postcode.postcode }}</h2>
     <ul>
-{% if postcode.coordsyst %}
-<li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
-E/N: {{ postcode.easting }}, {{ postcode.northing }}
-{% endif %}
-{% if postcode.wgs84_lat or postcode.wgs84_lon %}
-<li>{% trans "WGS84 lat/lon" %}: <a href="https://tools.wmflabs.org/geohack/geohack.php?params={{ postcode.wgs84_lat|floatformat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
-{% else %}
-<li>{% blocktrans trimmed %}
+      {% if postcode.coordsyst %}
+        <li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
+        E/N: {{ postcode.easting }}, {{ postcode.northing }}
+      {% endif %}
+      {% if postcode.wgs84_lat or postcode.wgs84_lon %}
+        <li>{% trans "WGS84 lat/lon" %}: <a href="https://tools.wmflabs.org/geohack/geohack.php?params={{ postcode.wgs84_lat|floatformat }};{{ postcode.wgs84_lon }}">{{ postcode.wgs84_lat }}, {{ postcode.wgs84_lon }}</a>
+      {% else %}
+        <li>{% blocktrans trimmed %}
     No location information. Note this <em>is</em> a valid postcode (otherwise you would have got a 404), just one for which we don&rsquo;t know the location.
-    {% endblocktrans %}</li>
-
-{% endif %}
+        {% endblocktrans %}</li>
+      {% endif %}
+        {% url json_view postcode=postcode.postcode as json_url %}
+        <li>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</li>
     </ul>
-    {% url json_view postcode=postcode.postcode as json_url %}
-    <p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
+
+    {% block area_info_extra %}{% endblock %}
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
