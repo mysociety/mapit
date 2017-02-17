@@ -4,7 +4,7 @@
     background-image: url("/static/mapit/img/openpolis-bloom.png");
 
     @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
-        background-image: url("/static/mapit/img/openpolis-bloom@2.png");
+        background-image: url("/static/mapit/img/openpolis-bloom@2x.png");
     }
 
     @media (min-width: $medium-screen) {
