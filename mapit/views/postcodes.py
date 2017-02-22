@@ -148,7 +148,7 @@ def form_submitted(request):
     pc = request.POST.get('pc', None)
     if not request.method == 'POST' or not pc:
         return redirect('/')
-    return HttpResponseRedirect(reverse('mapit-postcode', kwargs={ 'postcode':pc, 'format':'html'}))
+    return HttpResponseRedirect(reverse('mapit-postcode', kwargs={'postcode': pc, 'format': 'html'}))
 
 
 @ratelimit(minutes=3, requests=100)
