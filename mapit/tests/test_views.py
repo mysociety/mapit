@@ -93,6 +93,8 @@ class AreaViewsTest(TestCase):
         mapit.views.countries = mapit_gb.countries
         response = self.client.post('/postcode/', {'pc': 'PO14 1NT'}, follow=True)
         self.assertRedirects(response, '/postcode/PO141NT.html')
+        response = self.client.post('/postcode/', {'pc': 'PO141NT.'}, follow=True)
+        self.assertRedirects(response, '/postcode/PO141NT.html')
 
     def test_json_links(self):
         id = self.big_area.id
