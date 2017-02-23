@@ -146,7 +146,7 @@ def form_submitted(request):
     pc = request.POST.get('pc', None)
     if not request.method == 'POST' or not pc:
         return redirect('/')
-    return redirect('mapit.views.postcodes.postcode', postcode=pc, format='html')
+    return redirect('mapit-postcode', postcode=pc, format='html')
 
 
 @ratelimit(minutes=3, requests=100)

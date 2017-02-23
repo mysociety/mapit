@@ -6,6 +6,8 @@ from django.contrib.gis.geos import Polygon, Point
 
 from mapit.models import Type, Area, Geometry, Generation, Postcode
 from mapit.tests.utils import get_content
+import mapit_gb.countries
+import mapit.views
 
 
 class AreaViewsTest(TestCase):
@@ -66,7 +68,7 @@ class AreaViewsTest(TestCase):
             area=self.small_area_2, polygon=polygon)
 
         self.postcode = Postcode.objects.create(
-            postcode='P', location=Point(-3.5, 51.5))
+            postcode='PO141NT', location=Point(-3.5, 51.5))
 
     def test_areas_by_latlon(self):
         response = self.client.get('/point/latlon/51.5,-3.5.json')
@@ -86,6 +88,11 @@ class AreaViewsTest(TestCase):
     def test_front_page(self):
         response = self.client.get('/')
         self.assertContains(response, 'MapIt')
+
+    def test_postcode_submission(self):
+        mapit.views.countries = mapit_gb.countries
+        response = self.client.post('/postcode/', {'pc': 'PO14 1NT'}, follow=True)
+        self.assertRedirects(response, '/postcode/PO141NT.html')
 
     def test_json_links(self):
         id = self.big_area.id
