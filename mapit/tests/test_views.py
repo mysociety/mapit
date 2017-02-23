@@ -150,8 +150,8 @@ class AreaViewsTest(TestCase):
         response_area = self.client.get(url_area)
         self.assertEqual(response_area.status_code, 200)
         content_area = get_content(response_area)
-        self.assertEqual(content_area['centre_lat'], 51.5)
-        self.assertEqual(content_area['centre_lon'], -3.5)
+        self.assertEqual(round(content_area['centre_lat'], 6), 51.5)
+        self.assertEqual(round(content_area['centre_lon'], 6), -3.5)
 
         url_areas = '/areas/%d/geometry' % id
         response_areas = self.client.get(url_areas)
