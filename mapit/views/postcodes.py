@@ -144,6 +144,8 @@ def example_postcode_for_area(request, area_id, format='json'):
 @csrf_exempt
 def form_submitted(request):
     pc = request.POST.get('pc', None)
+    if hasattr(countries, 'canonical_postcode'):
+        pc = countries.canonical_postcode(pc)
     if not request.method == 'POST' or not pc:
         return redirect('/')
     return redirect('mapit-postcode', postcode=pc, format='html')
