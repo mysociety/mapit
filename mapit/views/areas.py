@@ -16,6 +16,7 @@ from mapit.models import Area, Generation, Geometry, Code, Name
 from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
+from mapit.utils import re_number
 from mapit import countries
 from mapit.iterables import iterdict
 from mapit.geometryserialiser import GeometrySerialiser, TransformError
@@ -413,7 +414,7 @@ def point_form_submitted(request):
     latlon = request.POST.get('pc', None)
     if not request.method == 'POST' or not latlon:
         return redirect('mapit_index')
-    m = re.match('\s*([0-9.-]+)\s*,\s*([0-9.-]+)', latlon)
+    m = re.match('\s*(%s)\s*,\s*(%s)' % (re_number, re_number), latlon)
     if not m:
         return redirect('mapit_index')
     lat, lon = m.groups()
