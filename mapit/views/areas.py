@@ -411,7 +411,7 @@ def areas_by_point_osgb(request, e, n, bb=False, format=''):
 
 @csrf_exempt
 def point_form_submitted(request):
-    latlon = request.POST.get('pc', None)
+    latlon = request.POST.get('pc', '')
     if not request.method == 'POST' or not latlon:
         return redirect('mapit_index')
     m = re.match('\s*(%s)\s*,\s*(%s)' % (re_number, re_number), latlon)
