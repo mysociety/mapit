@@ -13,14 +13,14 @@ node {
     }
 
     stage('Installing Packages') {
-      sh("rm -rf ./test-venv")
-      sh("virtualenv --no-site-packages ./test-venv")
-      sh("./test-venv/bin/pip -q install -r requirements.txt")
+      sh("rm -rf ./venv")
+      sh("virtualenv --no-site-packages ./venv")
+      sh("./venv/bin/python ./venv/bin/pip -q install -r requirements.txt")
     }
 
     stage('Tests') {
       govuk.setEnvar("GOVUK_ENV", "ci")
-      sh("./test-venv/bin/python manage.py test mapit mapit_gb")
+      sh("./venv/bin/python manage.py test mapit mapit_gb")
     }
 
     if (env.BRANCH_NAME == 'master') {
