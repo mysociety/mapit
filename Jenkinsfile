@@ -7,7 +7,7 @@ node {
 
   try {
     stage('Checkout') {
-      checkout scm
+      govuk.checkoutFromGitHubWithSSH(REPOSITORY)
       govuk.cleanupGit()
       govuk.mergeMasterBranch()
     }
@@ -40,4 +40,7 @@ node {
           sendToIndividuals: true])
     throw e
   }
+
+  // Wipe the workspace
+  deleteDir()
 }
