@@ -51,7 +51,7 @@ mapit_type_to_tags = {
     'OIC': {'boundary': 'political', 'political_division': 'insular_council'},
     'OEC': {'boundary': 'political', 'political_division': 'euro_const'},
     'OCA': {'boundary': 'political', 'political_division': 'canton'},
-    'OCL': {'boundary': 'political', 'political_division': 'circonscription_législative'},
+    'OCL': {'boundary': 'political', 'political_division': u'circonscription_législative'},
     'OPC': {'boundary': 'political', 'political_division': 'parl_const'},
     'OCD': {'boundary': 'political', 'political_division': 'county_division'},
     'OWA': {'boundary': 'political', 'political_division': 'ward'},
@@ -80,7 +80,7 @@ for mapit_type, required_tags in sorted(mapit_type_to_tags.items()):
     file_basename = mapit_type + ".xml"
     output_directory = os.path.join(data_dir, "cache-with-political")
     query = get_query_relations_and_ways(required_tags)
-    data = get_osm3s(query)
+    data = get_osm3s(query.encode('utf-8'))
 
     level_directory = os.path.join(output_directory, mapit_type)
     mkdir_p(level_directory)
