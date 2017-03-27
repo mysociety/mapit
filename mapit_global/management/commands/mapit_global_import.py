@@ -303,6 +303,17 @@ class Command(LabelCommand):
                     if old_lang_codes:
                         verbose('Removing deleted languages codes: ' + ' '.join(old_lang_codes))
                     m.names.filter(type__code__in=old_lang_codes).delete()
+
+                    osm_attr_ref = CodeType.objects.get(code='osm_attr_ref')
+                    try:
+                        m.codes.update_or_create(
+                            type=osm_attr_ref,
+                            defaults={'code': kml_data.data[name]['ref']},
+                        )
+                    except KeyError:
+                        # No `ref` found in KML data, remove any existing `ref` from area.
+                        m.codes.filter(type=osm_attr_ref).delete()
+
                     # If the boundary was the same, the old Code
                     # object will still be pointing to the same Area,
                     # which just had its generation_high incremented.

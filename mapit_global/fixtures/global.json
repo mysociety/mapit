@@ -24,5 +24,6 @@
     { "pk": 20, "model": "mapit.type", "fields": { "code": "OWA", "description": "OSM Political Boundary (Ward)" } },
 
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "osm_rel", "description": "OSM relation" } },
-    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "osm_way", "description": "OSM way" } }
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "osm_way", "description": "OSM way" } },
+    { "pk": 3, "model": "mapit.codetype", "fields": { "code": "osm_attr_ref", "description": "OSM reference attribute" } }
 ]
