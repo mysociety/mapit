@@ -1,10 +1,5 @@
 notifications:
   email: false
-  irc:
-    channels:
-      - "irc.mysociety.org#mapit"
-    use_notice: true
-    skip_join: true
 
 language: python
 
