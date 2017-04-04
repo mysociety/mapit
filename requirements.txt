@@ -1,4 +1,4 @@
-Django==1.8.16
+Django==1.8.18
 PyYAML==3.11
 Shapely==1.5.9
 argparse==1.2.1
