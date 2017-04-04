@@ -30,7 +30,7 @@ except:
 # WGS84. Optional, defaults to 4326.
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 
-# Country is currently one of GB, Global, NO, IT, KE, SA, or ZA.
+# Country is currently one of GB, NO, IT, KE, SA, or ZA.
 # Optional; country specific things won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
 
@@ -117,10 +117,6 @@ elif MAPIT_COUNTRY == 'IT':
 elif MAPIT_COUNTRY == 'ZA':
     TIME_ZONE = 'Africa/Johannesburg'
     LANGUAGE_CODE = 'en-za'
-    POSTCODES_AVAILABLE = PARTIAL_POSTCODES_AVAILABLE = False
-elif MAPIT_COUNTRY == 'Global':
-    TIME_ZONE = 'Europe/London'
-    LANGUAGE_CODE = 'en'
     POSTCODES_AVAILABLE = PARTIAL_POSTCODES_AVAILABLE = False
 else:
     TIME_ZONE = 'Europe/London'

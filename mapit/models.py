@@ -265,20 +265,6 @@ class Area(models.Model):
             'all_names': dict(n.as_tuple() for n in all_names),
         }
 
-    def css_indent_class(self):
-        """Get a CSS class for use on <li> representations of this area
-
-        Currently this is only used to indicate the indentation level
-        that should be used on the code types O02, O03, O04 ... O011,
-        which are only used by global MapIt.
-        """
-        m = re.search(r'^O([01][0-9])$', self.type.code)
-        if m:
-            level = int(m.group(1), 10)
-            return "area_level_%d" % (level,)
-        else:
-            return ""
-
     def export(self,
                srid,
                export_format,
