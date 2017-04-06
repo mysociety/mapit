@@ -6,5 +6,4 @@ recursive-include mapit_gb *.html *.json *.csv *.tsv *.sql
 recursive-include mapit_no *.html *.json *.sql
 recursive-include mapit_it *.html *.json *.sql
 recursive-include mapit_za *.html *.json *.sql
-recursive-include mapit_global *.html *.json *.sql
 

@@ -1,5 +1,5 @@
 {% load i18n %}
-<li{% if indent_areas %} class="{{ area.css_indent_class }}"{% endif %}>
+<li>
     <h3><a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
     <p>ID {{ area.id }}, {{ area.type.description }}
         <small>({{ area.type.code }})</small>, {{ area.country }}</p>

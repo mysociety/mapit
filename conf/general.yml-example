@@ -37,26 +37,3 @@ BUGS_EMAIL: 'example@example.org'
 
 # Text to prepend to the subject of error emails. Overrides Django default. Optional.
 EMAIL_SUBJECT_PREFIX: '[MapIt] '
-
-#########################################################################
-
-# You can ignore all of the settings below this point in the file
-# unless you want to use the scripts for setting up MapIt Global.
-
-# The scripts for setting up global MapIt rely on a Overpass API
-# server.  For bulk imports (e.g. setting up a instance of Global
-# MapIt) you should set up your own Overpass server locally, but for
-# generating a few KML files from OSM, it's easier to just use a
-# remote server.
-LOCAL_OVERPASS: False
-
-# If you want to use a local overpass server (i.e. LOCAL_OVERPASS is
-# True) then you should specify here the path to the database
-# directory.
-OVERPASS_DB_DIRECTORY: '/home/overpass/db/'
-
-# If you're using a remote overpass server (i.e. LOCAL_OVERPASS is
-# False) you should set its URL here. Please be aware that these
-# scripts can put a lot of load on the remote server, so set up your
-# own Overpass server for bulk imports.
-OVERPASS_SERVER: 'http://overpass-api.de/api/interpreter'
