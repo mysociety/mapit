@@ -5,6 +5,17 @@ language: python
 
 sudo: false
 
+matrix:
+  include:
+    - python: 3.2
+      env: TOXENV=py32-1.8
+    - python: 3.5
+      env: TOXENV=py35-1.9
+    - python: 3.5
+      env: TOXENV=py35-1.10
+    - python: 3.5
+      env: TOXENV=py35-1.11
+
 env:
   global:
     - CFLAGS="-O0"
@@ -14,19 +25,9 @@ env:
     - TOXENV=py27-1.9
     - TOXENV=py27-1.10
     - TOXENV=py27-1.11
-    - TOXENV=py32-1.8
-    - TOXENV=py34-1.9
-    - TOXENV=py34-1.10
-    - TOXENV=py34-1.11
-
-matrix:
-  allow_failures:
-    - env: TOXENV=py27-1.11
-    - env: TOXENV=py34-1.11
 
 install:
-  - pip install tox
-  - pip install 'virtualenv<14'
+  - pip install 'virtualenv<14' tox
 before_script:
   - 'if [ $TOXENV != "flake8" ]; then .travis/before_script; fi'
 script:
