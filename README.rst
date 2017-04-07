@@ -7,7 +7,7 @@ the co-ordinates of a point on Earth, and who needs to find out what country,
 region, city, constituency, or state it lies within. It’s also great for
 looking up the shapes of all those boundaries.
 
-It was created in 2003 by `mySociety <http://www.mysociety.org/>`__, a UK
+It was created in 2003 by `mySociety <https://www.mysociety.org/>`__, a UK
 charity, for use by their various tools needing admin area lookup.
 
 Installation
@@ -20,19 +20,17 @@ and documentation.
 Examples
 --------
 
-`mySociety <http://www.mysociety.org>`__ runs public installations of MapIt that
+`mySociety <https://www.mysociety.org>`__ runs public installations of MapIt that
 you might be able to use:
 
     * `MapIt Global <http://global.mapit.mysociety.org/>`_ - global boundaries
       from the `OpenStreetMap <http://www.openstreetmap.org/>`_ project.
-    * `MapIt UK <http://mapit.mysociety.org/>`_ - UK boundaries from various
+    * `MapIt UK <https://mapit.mysociety.org/>`_ - UK boundaries from various
       sources.
 
 The above are free for non-commercial, low-volume use. For details of
 what constitutes "low-volume", and for commercial licensing arrangements,
-please consult `MapIt Usage and Licensing
-<http://mapit.mysociety.org/licensing>`_ .
-
+please consult `MapIt pricing <https://mapit.mysociety.org/pricing/>`_ .
 
 Rate limiting
 -------------
