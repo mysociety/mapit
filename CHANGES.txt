@@ -1,3 +1,15 @@
+Version 1.6, 2017-04-07
+    * Implement new front end design. #280
+    * Add block for extra content in area/postcode info. #284
+    * Factor out MapIt global code to its own repository. #291
+    * Exclude front-page submit views from any CSRF.
+    * Switch maps to HTTPS tiles.
+    * Bugfixes:
+        * Fix front page postcode redirect for Django 1.10+. #285
+        * Add some missing files from packaged django-mapit. #289
+        * Improve and sync number regex in URL/point form. #288
+    * [UK] Ignore non-postcode characters in form submit.
+
 Version 1.5.4, 2017-02-01
     * Switch LabelCommand subclasses from using 'args' to 'label',
       and stop BaseCommands fom using 'args'. #278
