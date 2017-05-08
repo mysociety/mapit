@@ -81,15 +81,10 @@ def augment_postcode(postcode, result):
     pc = postcode.postcode
     if is_special_postcode(pc):
         return
-    if pc[0:2] == 'BT':
-        loc = postcode.as_irish_grid()
-        result['coordsyst'] = 'I'
-    else:
-        loc = postcode.location
-        loc.transform(27700)
-        result['coordsyst'] = 'G'
-    result['easting'] = int(round(loc[0]))
-    result['northing'] = int(round(loc[1]))
+    loc = postcode.as_uk_grid()
+    result['coordsyst'] = 'I' if pc[0:2] == 'BT' else 'G'
+    result['easting'] = loc[0]
+    result['northing'] = loc[1]
 
 
 # Hacky function to restrict certain geographical links in the HTML pages to
