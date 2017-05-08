@@ -131,17 +131,12 @@ class Command(LabelCommand):
             pc = Postcode.objects.get(postcode=self.code)
             if location:
                 if pc.location:
-                    curr_location = (pc.location[0], pc.location[1])
+                    curr_location = pc.location
+                    # Postcode locations are stored as WGS84
                     if settings.MAPIT_COUNTRY == 'GB':
-                        if pc.postcode[0:2] == 'BT':
-                            curr_location = pc.as_irish_grid()
-                        else:
-                            pc.location.transform(27700)  # Postcode locations are stored as WGS84
-                            curr_location = (pc.location[0], pc.location[1])
-                        curr_location = tuple(map(round, curr_location))
+                        curr_location = pc.as_uk_grid()
                     elif srid != 4326:
-                        pc.location.transform(srid)  # Postcode locations are stored as WGS84
-                        curr_location = (pc.location[0], pc.location[1])
+                        curr_location = pc.location.transform(srid, clone=True)
                     if curr_location[0] != location[0] or curr_location[1] != location[1]:
                         pc.location = location
                         pc.save()

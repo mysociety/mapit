@@ -413,6 +413,10 @@ class PostcodeQuerySet(models.query.GeoQuerySet):
         )
 
 
+def str2int(s):
+    return int(round(float(s)))
+
+
 @python_2_unicode_compatible
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
@@ -449,12 +453,13 @@ class Postcode(models.Model):
             countries.augment_postcode(self, result)
         return result
 
-    # Doing this via self.location.transform(29902) gives incorrect results.
-    # The database has the right proj4 text, the proj file does not. I think.
-    def as_irish_grid(self):
+    # Doing this via self.location.transform(27700/29902) can give incorrect results
+    # with some versions of GDAL. Via the database produces a correct result.
+    def as_uk_grid(self):
         cursor = connection.cursor()
-        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (
-            self.location[0], self.location[1]))
+        srid = 29902 if self.postcode[0:2] == 'BT' else 27700
+        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), %d))" % (
+            self.location[0], self.location[1], srid))
         row = cursor.fetchone()
         m = re.match('POINT\((.*?) (.*)\)', row[0])
-        return list(map(float, m.groups()))
+        return list(map(str2int, m.groups()))
