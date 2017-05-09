@@ -1,4 +1,5 @@
 import json
+import unittest
 
 from django.test import TestCase
 from django.conf import settings
@@ -6,8 +7,6 @@ from django.contrib.gis.geos import Polygon, Point
 
 from mapit.models import Type, Area, Geometry, Generation, Postcode
 from mapit.tests.utils import get_content
-import mapit_gb.countries
-import mapit.views
 
 
 class AreaViewsTest(TestCase):
@@ -89,8 +88,8 @@ class AreaViewsTest(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'MapIt')
 
+    @unittest.skipUnless(settings.MAPIT_COUNTRY == 'GB', 'UK only test')
     def test_postcode_submission(self):
-        mapit.views.countries = mapit_gb.countries
         response = self.client.post('/postcode/', {'pc': 'PO14 1NT'}, follow=True)
         self.assertRedirects(response, '/postcode/PO141NT.html')
         response = self.client.post('/postcode/', {'pc': 'PO141NT.'}, follow=True)
@@ -107,7 +106,7 @@ class AreaViewsTest(TestCase):
         url = '/area/%d/example_postcode' % id
         response = self.client.get(url)
         content = get_content(response)
-        self.assertEqual(content, self.postcode.postcode)
+        self.assertEqual(content, str(self.postcode))
 
     def test_nearest_with_bad_srid(self):
         url = '/nearest/84/0,0.json'
