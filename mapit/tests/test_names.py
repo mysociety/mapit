@@ -41,14 +41,18 @@ class NamesTest(TestCase):
     def test_new_name_changes_area_name_in_gb(self):
         """We can't use override_settings, as mapit.countries has been set
         based upon MAPIT_COUNTRY already in initial import"""
+        orig_countries = mapit.models.countries
         mapit.models.countries = mapit_gb.countries
         Name.objects.create(name='New Name (B)', type=self.name_type, area=self.area)
         self.assertEqual(self.area.name, 'New Name Borough')
+        mapit.models.countries = orig_countries
 
     def test_new_name_does_not_change_area_name_elsewhere(self):
+        orig_countries = mapit.models.countries
         mapit.models.countries = None
         Name.objects.create(name='New Name', type=self.name_type, area=self.area)
         self.assertEqual(self.area.name, 'Big Area')
+        mapit.models.countries = orig_countries
 
     def test_geometry_name_works(self):
         name = smart_text('Big “Area”')

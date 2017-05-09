@@ -1,3 +1,4 @@
+import unittest
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon, Point
@@ -16,8 +17,8 @@ def url_postcode(pc):
 class GBViewsTest(TestCase):
     def setUp(self):
         # Make sure we're using the GB postcode functions here
-        models.countries = countries
-        utils.countries = countries
+        self.orig_countries = models.countries
+        models.countries = utils.countries = countries
 
         self.postcode = models.Postcode.objects.create(
             postcode='SW1A1AA',
@@ -66,6 +67,9 @@ class GBViewsTest(TestCase):
             type=code_type_gss,
             code='E05000025',
         )
+
+    def tearDown(self):
+        models.countries = utils.countries = self.orig_countries
 
     def test_ni_postcode(self):
         postcode = models.Postcode(postcode='BT170XD', location=Point(-6.037555, 54.556533))
@@ -158,6 +162,7 @@ class GBViewsTest(TestCase):
         pc = self.postcode.postcode
         self.assertContains(response, '"/postcode/%s"' % url_postcode(pc))
 
+    @unittest.skipUnless(settings.MAPIT_COUNTRY == 'GB', 'UK only tests')
     def test_gss_code(self):
         response = self.client.get('/area/E05000025')
         self.assertRedirects(response, '/area/%d' % self.area.id)
