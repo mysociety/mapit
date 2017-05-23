@@ -387,26 +387,21 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         format, areas, indent_areas=True)
 
 
-@ratelimit(minutes=3, requests=100)
-def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    point_kwargs = {'srid': '4326', 'x': lon, 'y': lat}
-    if bb:
-        point_kwargs['bb'] = bb
-    if format:
-        point_kwargs['format'] = format
-    redirect_path = reverse('areas-by-point', kwargs=point_kwargs)
+def _areas_by_point(x, y, srid, **kwargs):
+    kwargs.update({'srid': srid, 'x': kwargs.pop(x), 'y': kwargs.pop(y)})
+    kwargs = {k: v for k, v in kwargs.items() if v}
+    redirect_path = reverse('areas-by-point', kwargs=kwargs)
     return HttpResponseRedirect(redirect_path)
 
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_point_osgb(request, e, n, bb=False, format=''):
-    point_kwargs = {'e': e, 'n': n}
-    if bb:
-        point_kwargs['bb'] = bb
-    if format:
-        point_kwargs['format'] = format
-    redirect_path = reverse('areas-by-point-osgb', kwargs=point_kwargs)
-    return HttpResponseRedirect(redirect_path)
+def areas_by_point_latlon(request, **kwargs):
+    return _areas_by_point('lon', 'lat', 4326, **kwargs)
+
+
+@ratelimit(minutes=3, requests=100)
+def areas_by_point_osgb(request, **kwargs):
+    return _areas_by_point('e', 'n', 27700, **kwargs)
 
 
 @csrf_exempt
