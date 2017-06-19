@@ -35,6 +35,10 @@ Or if you use the GDS development VM you can run this application with Bowler: `
 
 To run any other management commands (`.venv/bin/python ./manage.py ...`), you'll need the `GOVUK_ENV` environment variable set.
 
+### Importing data
+
+Please see [the importing data instructions](./IMPORTING-DATA.md)
+
 ### Running the test suite
 
 `GOVUK_ENV=development .venv/bin/python ./manage.py test mapit mapit_gb`
