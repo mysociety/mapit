@@ -31,7 +31,7 @@ class Command(NoArgsCommand):
             MissingOnsCode(code='00QL', area_type='UTA', area_name='East Dunbartonshire Council'),
             MissingOnsCode(code='00QS', area_type='UTA', area_name='Glasgow City Council'),
             # Next 1 (and above 2) from:
-            # https://github.gds/gds/mapit-scripts/blob/master/README.md#notes
+            # https://github.com/alphagov/mapit-scripts/blob/master/README.md#notes
             MissingOnsCode(code='00EM', area_type='UTA', area_name='Northumberland Council'),
             # Following 3 used:
             # http://govuklocal.dafyddvaughan.co.uk/authorities/ to find the missing code

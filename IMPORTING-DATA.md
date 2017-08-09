@@ -56,7 +56,7 @@ To update a live mapit server we:
             $ sudo -u postgres psql -c "CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;" mapit
             $ govuk_setenv mapit .venv/bin/python ./manage.py migrate
 
-3.  Checkout the [mapit-scripts](https://github.digital.cabinet-office.gov.uk/gds/mapit-scripts)
+3.  Checkout the [mapit-scripts](https://github.com/alphagov/mapit-scripts)
     repo to your dev VM if you don't have it already.
 
 4.  Find the latest ONS Postcode Database, Boundary Line, and

@@ -25,7 +25,7 @@ RESTful API for looking up postcodes, council boundaries, etc.
 MapIt has no dependencies on the rest of the GOV.UK stack.
 
 - [puppet](https://github.com/alphagov/govuk-puppet/blob/master/modules/govuk/manifests/apps/mapit.pp) - definitions for the postgres and geo-spatial extensions used.
-- [mapit-scripts](https://github.gds/gds/mapit-scripts) - scripts we use when importing data.  The data sets are released between 4 and 2 times per year, these scripts automate the process of rebuilding the db to reflect this.
+- [mapit-scripts](https://github.com/alphagov/mapit-scripts) - scripts we use when importing data.  The data sets are released between 4 and 2 times per year, these scripts automate the process of rebuilding the db to reflect this.
 
 ### Running the application
 
