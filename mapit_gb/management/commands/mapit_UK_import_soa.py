@@ -11,7 +11,7 @@ from mapit.models import Area, Generation, Country, Type, NameType, CodeType
 
 class Command(LabelCommand):
     help = 'Creates Super Output Area boundaries from ONS shapefiles'
-    args = '<ONS SOA shapefile>'
+    label = '<ONS SOA shapefile>'
 
     def handle_label(self, filename, **options):
         print(filename)

@@ -1,3 +1,4 @@
+import unittest
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon, Point
@@ -16,8 +17,8 @@ def url_postcode(pc):
 class GBViewsTest(TestCase):
     def setUp(self):
         # Make sure we're using the GB postcode functions here
-        models.countries = countries
-        utils.countries = countries
+        self.orig_countries = models.countries
+        models.countries = utils.countries = countries
 
         self.postcode = models.Postcode.objects.create(
             postcode='SW1A1AA',
@@ -67,21 +68,30 @@ class GBViewsTest(TestCase):
             code='E05000025',
         )
 
+    def tearDown(self):
+        models.countries = utils.countries = self.orig_countries
+
+    def test_ni_postcode(self):
+        postcode = models.Postcode(postcode='BT170XD', location=Point(-6.037555, 54.556533))
+        grid = postcode.as_uk_grid()
+        self.assertEqual(grid, [327011, 369351])
+
     def test_postcode_json(self):
         pc = self.postcode.postcode
         url = '/postcode/%s' % urllib.parse.quote(pc)
         response = self.client.get(url)
         content = get_content(response)
 
-        in_gb_coords = self.postcode.location.transform(27700, clone=True)
+        in_gb_coords = self.postcode.as_uk_grid()
+        self.assertEqual(in_gb_coords, [529090, 179645])
         pc = countries.get_postcode_display(self.postcode.postcode)
         self.assertDictEqual(content, {
             'postcode': pc,
             'wgs84_lat': self.postcode.location.y,
             'wgs84_lon': self.postcode.location.x,
             'coordsyst': 'G',
-            'easting': round(in_gb_coords.x),
-            'northing': round(in_gb_coords.y),
+            'easting': round(in_gb_coords[0]),
+            'northing': round(in_gb_coords[1]),
             'areas': {
                 str(self.area.id): {
                     'id': self.area.id,
@@ -113,14 +123,14 @@ class GBViewsTest(TestCase):
         response = self.client.get(url)
         content = get_content(response)
         countries.get_postcode_display(self.postcode.postcode)
-        in_gb_coords = self.postcode.location.transform(27700, clone=True)
+        in_gb_coords = self.postcode.as_uk_grid()
         self.assertDictEqual(content, {
             'wgs84_lat': self.postcode.location.y,
             'wgs84_lon': self.postcode.location.x,
             'coordsyst': 'G',
             'postcode': 'SW1A',
-            'easting': round(in_gb_coords.x),
-            'northing': round(in_gb_coords.y)
+            'easting': round(in_gb_coords[0]),
+            'northing': round(in_gb_coords[1])
         })
 
     def test_partial_json_link(self):
@@ -133,7 +143,7 @@ class GBViewsTest(TestCase):
         response = self.client.get(url)
         content = get_content(response)
         pc = countries.get_postcode_display(self.postcode.postcode)
-        in_gb_coords = self.postcode.location.transform(27700, clone=True)
+        in_gb_coords = self.postcode.as_uk_grid()
         self.assertDictEqual(content, {
             'postcode': {
                 'distance': 0,
@@ -141,8 +151,8 @@ class GBViewsTest(TestCase):
                 'wgs84_lon': self.postcode.location.x,
                 'coordsyst': 'G',
                 'postcode': pc,
-                'easting': round(in_gb_coords.x),
-                'northing': round(in_gb_coords.y)
+                'easting': round(in_gb_coords[0]),
+                'northing': round(in_gb_coords[1])
             }
         })
 
@@ -152,6 +162,7 @@ class GBViewsTest(TestCase):
         pc = self.postcode.postcode
         self.assertContains(response, '"/postcode/%s"' % url_postcode(pc))
 
+    @unittest.skipUnless(settings.MAPIT_COUNTRY == 'GB', 'UK only tests')
     def test_gss_code(self):
         response = self.client.get('/area/E05000025')
         self.assertRedirects(response, '/area/%d' % self.area.id)

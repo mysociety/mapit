@@ -2,14 +2,14 @@ import csv
 import re
 import sys
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, CodeType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Adds GSS codes to new wards available in 2016 OS forward dated polygons'
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         code_type = CodeType.objects.get(code='gss')
         generation = Generation.objects.current()
 

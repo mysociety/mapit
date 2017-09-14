@@ -1,8 +1,6 @@
 # This script is used to import information from the Northern Ireland
 # Output Areas, available from http://www.nisra.gov.uk/geography/default.asp2.htm
 
-from optparse import make_option
-
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
@@ -14,10 +12,11 @@ from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import NI Output Areas'
-    args = '<NI Super Output Area shapefile> <NI Output Area shapefile>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+    label = '<NI (Super) Output Area shapefile>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     ons_code_to_shape = {}
     councils = []

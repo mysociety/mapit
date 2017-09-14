@@ -5,7 +5,6 @@
 
 import re
 import sys
-from optparse import make_option
 
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
@@ -19,13 +18,14 @@ from mapit.management.command_utils import save_polygons, fix_invalid_geos_geome
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<Boundary-Line SHP files (wards before Westminster)>'
-    option_list = LabelCommand.option_list + (
-        make_option(
+    label = '<Boundary-Line SHP file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
             '--control', action='store', dest='control',
-            help='Refer to a Python module that can tell us what has changed'),
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+            help='Refer to a Python module that can tell us what has changed')
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     ons_code_to_shape = {}
     unit_id_to_shape = {}

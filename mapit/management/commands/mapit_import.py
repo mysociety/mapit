@@ -5,12 +5,12 @@
 # Email: matthew@mysociety.org; WWW: http://www.mysociety.org
 
 import re
-from optparse import make_option
 
 from django.core.management.base import LabelCommand, CommandError
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
+from django.contrib.gis.db.models import Collect
 from django.conf import settings
 from django.utils import six
 from django.utils.six.moves import input
@@ -21,104 +21,105 @@ from mapit.management.command_utils import save_polygons, fix_invalid_geos_geome
 
 class Command(LabelCommand):
     help = 'Import geometry data from .shp, .kml or .geojson files'
-    args = '<SHP/KML/GeoJSON files>'
-    option_list = LabelCommand.option_list + (
-        make_option(
+    label = '<SHP/KML/GeoJSON file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument(
             '--commit',
             action='store_true',
             dest='commit',
             help='Actually update the database'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--generation_id',
             action="store",
             dest='generation_id',
             help='Which generation ID should be used',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--country_code',
             action="store",
             dest='country_code',
             help='Which country should be used',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--area_type_code',
             action="store",
             dest='area_type_code',
             help='Which area type should be used (specify using code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--name_type_code',
             action="store",
             dest='name_type_code',
             help='Which name type should be used (specify using code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--code_type',
             action="store",
             dest='code_type',
             help='Which code type should be used (specify using its code)',
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--name_field',
             action="store",
             dest='name_field',
             help="The field name (or names separated by comma) to look at for the area's name"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--override_name',
             action="store",
             dest='override_name',
             help="The name to use for the area"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--code_field',
             action="store",
             dest='code_field',
             help="The field name containing the area's ID code"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--override_code',
             action="store",
             dest='override_code',
             help="The ID code to use for the area"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--use_code_as_id',
             action="store_true",
             dest='use_code_as_id',
             help="Set to use the code from code_field as the MapIt ID"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--preserve',
             action="store_true",
             dest='preserve',
             help="Create a new area if the name's the same but polygons differ"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--new',
             action="store_true",
             dest='new',
             help="Don't look for existing areas at all, just import everything as new areas"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--encoding',
             action="store",
             dest='encoding',
             help="The encoding of names in this dataset"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--fix_invalid_polygons',
             action="store_true",
             dest='fix_invalid_polygons',
             help="Try to fix any invalid polygons and multipolygons found"
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--ignore_blank',
             action="store_true",
             help="Skip over any entry with an empty name, rather than abort"
-        ),
-    )
+        )
 
     def handle_label(self, filename, **options):
 
@@ -276,7 +277,7 @@ class Command(LabelCommand):
                 verbose("    found the area")
                 if options['preserve']:
                     # Find whether we need to create a new Area:
-                    previous_geos_geometry = m.polygons.collect()
+                    previous_geos_geometry = m.polygons.aggregate(Collect('polygon'))['polygon__collect']
                     if m.generation_high < current_generation.id:
                         # Then it was missing in current_generation:
                         verbose("    area existed previously, but was missing from", current_generation)

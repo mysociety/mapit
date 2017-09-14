@@ -6,9 +6,8 @@
 import sys
 import csv
 import os
-from optparse import make_option
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
@@ -19,33 +18,34 @@ from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameTy
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Import OSNI releases'
-    option_list = NoArgsCommand.option_list + (
-        make_option(
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--control', action='store', dest='control',
-            help='Refer to a Python module that can tell us what has changed'),
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-        make_option(
+            help='Refer to a Python module that can tell us what has changed')
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+        parser.add_argument(
             '--lgw', action='store', dest='lgw_file',
             help='Name of OSNI shapefile that contains Ward boundary information'
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--wmc', action='store', dest='wmc_file',
             help=(
                 'Name of OSNI shapefile that contains Westminister Parliamentary constituency boundary'
                 'information (also used for Northern Ireland Assembly constituencies)'
             )
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--lgd', action='store', dest='lgd_file',
-            help='Name of OSNI shapefile that contains Council boundary information'),
-        make_option(
+            help='Name of OSNI shapefile that contains Council boundary information')
+        parser.add_argument(
             '--lge', action='store', dest='lge_file',
-            help='Name of OSNI shapefile that contains Electoral Area boundary information'),
-        make_option(
+            help='Name of OSNI shapefile that contains Electoral Area boundary information')
+        parser.add_argument(
             '--eur', action='store', dest='eur_file',
-            help='Name of OSNI shapefile that contains European Region boundary information'),
+            help='Name of OSNI shapefile that contains European Region boundary information')
 
         # OSNI datasets are exported in either 29902 or 102100 projections.
         # PostGIS doesn't support 102100, but it is mathematically equivalent
@@ -59,27 +59,26 @@ class Command(NoArgsCommand):
         # to 29902.  This suggests it's safe to use 4326 as a replacement for
         # 102100.  The defaults here are based on the srids of the data
         # downloaded in Dec 2015 - they may change over time.
-        make_option(
-            '--lgw-srid', action='store', type='int', dest='lgw_srid', default=4326,
-            help='SRID of Ward boundary information shapefile (default 4326)'),
-        make_option(
-            '--wmc-srid', action='store', type='int', dest='wmc_srid', default=4326,
-            help='SRID of Westminister Parliamentery constituency boundary information shapefile (default 4326)'),
-        make_option(
-            '--lgd-srid', action='store', type='int', dest='lgd_srid', default=4326,
-            help='SRID of Council boundary information shapefile (default 4326)'),
-        make_option(
-            '--lge-srid', action='store', type='int', dest='lge_srid', default=29902,
-            help='SRID of Electoral Area boundary information shapefile (default 29902)'),
-        make_option(
-            '--eur-srid', action='store', type='int', dest='eur_srid', default=29902,
-            help='SRID of European Region boundary information shapefile (default 29902)'),
-    )
+        parser.add_argument(
+            '--lgw-srid', action='store', type=int, dest='lgw_srid', default=4326,
+            help='SRID of Ward boundary information shapefile (default 4326)')
+        parser.add_argument(
+            '--wmc-srid', action='store', type=int, dest='wmc_srid', default=4326,
+            help='SRID of Westminister Parliamentery constituency boundary information shapefile (default 4326)')
+        parser.add_argument(
+            '--lgd-srid', action='store', type=int, dest='lgd_srid', default=4326,
+            help='SRID of Council boundary information shapefile (default 4326)')
+        parser.add_argument(
+            '--lge-srid', action='store', type=int, dest='lge_srid', default=29902,
+            help='SRID of Electoral Area boundary information shapefile (default 29902)')
+        parser.add_argument(
+            '--eur-srid', action='store', type=int, dest='eur_srid', default=29902,
+            help='SRID of European Region boundary information shapefile (default 29902)')
 
     ons_code_to_shape = {}
     osni_object_id_to_shape = {}
 
-    def handle_noargs(self, **options):
+    def handle(self, **options):
         if not options['control']:
             raise Exception("You must specify a control file")
         __import__(options['control'])

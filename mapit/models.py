@@ -5,7 +5,7 @@ from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
-from django.utils.encoding import python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible, smart_text
 
 from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
@@ -221,11 +221,11 @@ SELECT DISTINCT mapit_area.*
 @python_2_unicode_compatible
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
-    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
-    type = models.ForeignKey(Type, related_name='areas')
-    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)
-    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
-    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
+    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, related_name='areas', on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True, on_delete=models.CASCADE)
+    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True, on_delete=models.CASCADE)
+    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True, on_delete=models.CASCADE)
 
     objects = AreaManager()
 
@@ -264,20 +264,6 @@ class Area(models.Model):
             'codes': self.all_codes,
             'all_names': dict(n.as_tuple() for n in all_names),
         }
-
-    def css_indent_class(self):
-        """Get a CSS class for use on <li> representations of this area
-
-        Currently this is only used to indicate the indentation level
-        that should be used on the code types O02, O03, O04 ... O011,
-        which are only used by global MapIt.
-        """
-        m = re.search(r'^O([01][0-9])$', self.type.code)
-        if m:
-            level = int(m.group(1), 10)
-            return "area_level_%d" % (level,)
-        else:
-            return ""
 
     def export(self,
                srid,
@@ -325,7 +311,7 @@ class Area(models.Model):
 
 @python_2_unicode_compatible
 class Geometry(models.Model):
-    area = models.ForeignKey(Area, related_name='polygons')
+    area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
     objects = models.GeoManager()
 
@@ -333,7 +319,7 @@ class Geometry(models.Model):
         verbose_name_plural = 'geometries'
 
     def __str__(self):
-        return '%s, polygon %d' % (self.area, self.id)
+        return '%s, polygon %d' % (smart_text(self.area), self.id)
 
 
 @python_2_unicode_compatible
@@ -346,7 +332,7 @@ class NameType(models.Model):
     # and displayed in the alternative names section.
 
     code = models.CharField(
-        max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
+        max_length=500, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
     objects = models.Manager()
@@ -357,8 +343,8 @@ class NameType(models.Model):
 
 @python_2_unicode_compatible
 class Name(models.Model):
-    area = models.ForeignKey(Area, related_name='names')
-    type = models.ForeignKey(NameType, related_name='names')
+    area = models.ForeignKey(Area, related_name='names', on_delete=models.CASCADE)
+    type = models.ForeignKey(NameType, related_name='names', on_delete=models.CASCADE)
     name = models.CharField(max_length=2000)
     objects = models.Manager()
 
@@ -386,7 +372,7 @@ class CodeType(models.Model):
     # This could be extended to a more generic data store of information on an
     # object, perhaps.
 
-    code = models.CharField(max_length=10, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
+    code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
     description = models.CharField(
         max_length=200, blank=True,
         help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
@@ -397,8 +383,8 @@ class CodeType(models.Model):
 
 @python_2_unicode_compatible
 class Code(models.Model):
-    area = models.ForeignKey(Area, related_name='codes')
-    type = models.ForeignKey(CodeType, related_name='codes')
+    area = models.ForeignKey(Area, related_name='codes', on_delete=models.CASCADE)
+    type = models.ForeignKey(CodeType, related_name='codes', on_delete=models.CASCADE)
     code = models.CharField(max_length=500)
     objects = models.Manager()
 
@@ -411,12 +397,24 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeManager(models.GeoManager):
-    def get_queryset(self):
-        return self.model.QuerySet(self.model)
+class PostcodeQuerySet(models.query.GeoQuerySet):
+    # ST_CoveredBy on its own does not appear to use the index.
+    # Plus this way we can keep the polygons in the database
+    # without pulling out in a giant WKB string
+    def filter_by_area(self, area):
+        collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
+            where area_id=%s group by area_id), 4326)'''
+        return self.extra(
+            where=[
+                'location && %s' % collect,
+                'ST_CoveredBy(location, %s)' % collect
+            ],
+            params=[area.id, area.id]
+        )
 
-    def __getattr__(self, attr, *args):
-        return getattr(self.get_queryset(), attr, *args)
+
+def str2int(s):
+    return int(round(float(s)))
 
 
 @python_2_unicode_compatible
@@ -426,25 +424,10 @@ class Postcode(models.Model):
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
-    objects = PostcodeManager()
+    objects = PostcodeQuerySet.as_manager()
 
     class Meta:
         ordering = ('postcode',)
-
-    class QuerySet(models.query.GeoQuerySet):
-        # ST_CoveredBy on its own does not appear to use the index.
-        # Plus this way we can keep the polygons in the database
-        # without pulling out in a giant WKB string
-        def filter_by_area(self, area):
-            collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
-                where area_id=%s group by area_id), 4326)'''
-            return self.extra(
-                where=[
-                    'location && %s' % collect,
-                    'ST_CoveredBy(location, %s)' % collect
-                ],
-                params=[area.id, area.id]
-            )
 
     def __str__(self):
         return self.get_postcode_display()
@@ -470,12 +453,13 @@ class Postcode(models.Model):
             countries.augment_postcode(self, result)
         return result
 
-    # Doing this via self.location.transform(29902) gives incorrect results.
-    # The database has the right proj4 text, the proj file does not. I think.
-    def as_irish_grid(self):
+    # Doing this via self.location.transform(27700/29902) can give incorrect results
+    # with some versions of GDAL. Via the database produces a correct result.
+    def as_uk_grid(self):
         cursor = connection.cursor()
-        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (
-            self.location[0], self.location[1]))
+        srid = 29902 if self.postcode[0:2] == 'BT' else 27700
+        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), %d))" % (
+            self.location[0], self.location[1], srid))
         row = cursor.fetchone()
         m = re.match('POINT\((.*?) (.*)\)', row[0])
-        return list(map(float, m.groups()))
+        return list(map(str2int, m.groups()))

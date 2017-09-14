@@ -5,9 +5,21 @@ import codecs
 import csv
 import os.path
 import sys
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 from psycopg2 import IntegrityError
+
+python_version = sys.version_info[0]
+
+
+def open_csv(filename):
+    if python_version < 3:
+        o = open(filename)
+    else:
+        o = codecs.open(filename, 'r', 'latin-1')
+    mapping = csv.reader(o)
+    next(mapping)
+    return mapping
 
 
 def process(new_code, old_code):
@@ -27,34 +39,14 @@ def process(new_code, old_code):
         raise Exception("Key already exists for %s, can't give it %s" % (area, old_code))
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Inserts the old ONS codes into mapit'
 
-    def handle_noargs(self, **options):
-        python_version = sys.version_info[0]
-
-        code_change_file_path = os.path.join(
-            os.path.dirname(__file__),
-            '../../data/BL-2010-10-code-change.csv')
-        if python_version < 3:
-            mapping = csv.reader(open(code_change_file_path))
-        else:
-            code_changes = codecs.open(code_change_file_path, 'r', 'latin-1')
-            mapping = csv.reader(code_changes)
-        next(mapping)
-        for row in mapping:
+    def handle(self, **options):
+        for row in open_csv(os.path.join(os.path.dirname(__file__), '../../data/BL-2010-10-code-change.csv')):
             new_code, old_code = row[0], row[3]
             process(new_code, old_code)
 
-        missing_codes_file_path = os.path.join(
-            os.path.dirname(__file__),
-            '../../data/BL-2010-10-missing-codes.csv')
-        if python_version < 3:
-            mapping = csv.reader(open(missing_codes_file_path))
-        else:
-            missing_codes = codecs.open(missing_codes_file_path, 'r', 'latin-1')
-            mapping = csv.reader(missing_codes)
-        next(mapping)
-        for row in mapping:
+        for row in open_csv(os.path.join(os.path.dirname(__file__), '../../data/BL-2010-10-missing-codes.csv')):
             new_code, old_code = row[1], row[2]
             process(new_code, old_code)

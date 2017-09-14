@@ -100,6 +100,7 @@ def _exiting():
         pass
     _thread.join()
 
+
 atexit.register(_exiting)
 
 

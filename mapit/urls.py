@@ -2,13 +2,12 @@ from django.conf.urls import include, url
 from django.conf import settings
 from django.shortcuts import render
 
+from mapit.utils import re_number as number
 from mapit.views import areas, postcodes
 
 handler500 = 'mapit.shortcuts.json_500'
 
 format_end = '(?:\.(?P<format>html|json))?'
-
-number = '-?\d*\.?\d+'
 
 urlpatterns = [
     url(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
@@ -57,10 +56,6 @@ urlpatterns = [
 ]
 
 # Include app-specific urls
-if (settings.MAPIT_COUNTRY == 'GB'):
-    urlpatterns.append(
-        url(r'^', include('mapit_gb.urls')),
-    )
 if settings.MAPIT_COUNTRY == 'IT':
     urlpatterns.append(
         url(r'^', include('mapit_it.urls')),

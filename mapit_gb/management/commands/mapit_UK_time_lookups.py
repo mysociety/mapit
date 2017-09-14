@@ -6,7 +6,7 @@
 from random import randint, uniform  # seed
 # from time import time
 from timeit import repeat  # timeit, Timer
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 # from django.db import connection
 from django.db.models import Min, Max
 from mapit.models import Postcode
@@ -43,22 +43,17 @@ def get_random_UK_location():
     location.coords = (new_lon, new_lat)
     return location
 
+
 random_locations = None
 
 
 class Command(BaseCommand):
-    args = '<iterations>'
     help = 'Time many point-in-polygon lookups'
 
-    def handle(self, *args, **options):
-        if len(args) != 1:
-            raise CommandError('There must be only one argument')
+    def add_arguments(self, parser):
+        parser.add_argument('iterations', type=int)
 
-        try:
-            iterations = int(args[0])
-        except ValueError:
-            raise CommandError('The iterations argument must be an integer')
-
+    def handle(self, **options):
         repeats = 5
 
         # So that the time to generate random locations isn't a factor
@@ -68,7 +63,7 @@ class Command(BaseCommand):
         # previous versions of this script generating random locations
         # was much slower.)
 
-        to_generate = repeats * iterations
+        to_generate = repeats * options['iterations']
         print("Generating %d random locations in the UK ..." % (to_generate,))
         global random_locations
         random_locations = [get_random_UK_location() for _ in range(to_generate)]
@@ -85,7 +80,7 @@ from mapit.models import Area
 from mapit.management.commands.mapit_UK_time_lookups import random_locations
 ''',
                         repeat=repeats,
-                        number=iterations)
+                        number=options['iterations'])
         print("... done.")
 
         print(result)

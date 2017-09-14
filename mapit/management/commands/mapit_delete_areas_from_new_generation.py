@@ -3,17 +3,15 @@
 
 from __future__ import print_function
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand, CommandError
+from django.core.management.base import BaseCommand, CommandError
 from mapit.models import Generation, Area
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Remove all areas from the new (inactive) generation'
-    args = '<GENERATION-ID>'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit',
-                    help='Actually update the database'),)
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle(self, **options):
         new = Generation.objects.new()

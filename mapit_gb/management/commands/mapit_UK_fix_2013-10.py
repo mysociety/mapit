@@ -5,7 +5,6 @@
 from __future__ import print_function
 
 import re
-from optparse import make_option
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
@@ -17,10 +16,11 @@ from mapit.management.command_utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<May 2013 Boundary-Line unitary/district SHP file>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+    label = '<May 2013 Boundary-Line unitary/district SHP file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, filename, **options):
         code_version = CodeType.objects.get(code='gss')

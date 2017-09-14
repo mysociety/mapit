@@ -5,6 +5,7 @@ argparse==1.2.1
 gunicorn==19.3.0
 numpy==1.9.2
 psycopg2==2.6.1
+uk-postcode-utils==1.0
 
 # Keep pygdal at the same minor version as the system gdal packages:
 #   - gdal-bin

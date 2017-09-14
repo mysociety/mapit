@@ -28,7 +28,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('code', models.CharField(max_length=500)),
-                ('area', models.ForeignKey(related_name='codes', to='mapit.Area')),
+                ('area', models.ForeignKey(related_name='codes', to='mapit.Area', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('polygon', django.contrib.gis.db.models.fields.PolygonField(srid=settings.MAPIT_AREA_SRID)),
-                ('area', models.ForeignKey(related_name='polygons', to='mapit.Area')),
+                ('area', models.ForeignKey(related_name='polygons', to='mapit.Area', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name_plural': 'geometries',
@@ -86,7 +86,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=2000)),
-                ('area', models.ForeignKey(related_name='names', to='mapit.Area')),
+                ('area', models.ForeignKey(related_name='names', to='mapit.Area', on_delete=models.CASCADE)),
             ],
             options={
             },
@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='name',
             name='type',
-            field=models.ForeignKey(related_name='names', to='mapit.NameType'),
+            field=models.ForeignKey(related_name='names', to='mapit.NameType', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -140,7 +140,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='code',
             name='type',
-            field=models.ForeignKey(related_name='codes', to='mapit.CodeType'),
+            field=models.ForeignKey(related_name='codes', to='mapit.CodeType', on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
@@ -150,31 +150,31 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='area',
             name='country',
-            field=models.ForeignKey(related_name='areas', blank=True, to='mapit.Country', null=True),
+            field=models.ForeignKey(related_name='areas', blank=True, to='mapit.Country', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='area',
             name='generation_high',
-            field=models.ForeignKey(related_name='final_areas', to='mapit.Generation', null=True),
+            field=models.ForeignKey(related_name='final_areas', to='mapit.Generation', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='area',
             name='generation_low',
-            field=models.ForeignKey(related_name='new_areas', to='mapit.Generation', null=True),
+            field=models.ForeignKey(related_name='new_areas', to='mapit.Generation', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='area',
             name='parent_area',
-            field=models.ForeignKey(related_name='children', blank=True, to='mapit.Area', null=True),
+            field=models.ForeignKey(related_name='children', blank=True, to='mapit.Area', null=True, on_delete=models.CASCADE),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='area',
             name='type',
-            field=models.ForeignKey(related_name='areas', to='mapit.Type'),
+            field=models.ForeignKey(related_name='areas', to='mapit.Type', on_delete=models.CASCADE),
             preserve_default=True,
         ),
     ]

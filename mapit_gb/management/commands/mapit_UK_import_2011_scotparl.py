@@ -1,7 +1,6 @@
 # This script is used to import the 2011 Scottish Parliament from OS Boundary-Line.
 
 import re
-from optparse import make_option
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
@@ -97,10 +96,11 @@ name_to_code = {
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line Scottish Parliament 2011 in advance'
-    args = '<Boundary-Line SHP files>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+    label = '<Boundary-Line SHP file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     ons_code_to_shape = {}
 

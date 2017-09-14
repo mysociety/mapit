@@ -1,4 +1,5 @@
 import json
+import unittest
 
 from django.test import TestCase
 from django.conf import settings
@@ -60,9 +61,13 @@ class AreaViewsTest(TestCase):
         polygon.transform(settings.MAPIT_AREA_SRID)
         self.small_shape_2 = Geometry.objects.create(
             area=self.small_area_2, polygon=polygon)
+        polygon = Polygon(((-2, 53), (-2, 54), (-1, 54), (-1, 53), (-2, 53)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        self.small_shape_3 = Geometry.objects.create(
+            area=self.small_area_2, polygon=polygon)
 
         self.postcode = Postcode.objects.create(
-            postcode='P', location=Point(-3.5, 51.5))
+            postcode='PO141NT', location=Point(-3.5, 51.5))
 
     def test_areas_by_latlon(self):
         response = self.client.get('/point/latlon/51.5,-3.5.json')
@@ -83,6 +88,13 @@ class AreaViewsTest(TestCase):
         response = self.client.get('/')
         self.assertContains(response, 'MapIt')
 
+    @unittest.skipUnless(settings.MAPIT_COUNTRY == 'GB', 'UK only test')
+    def test_postcode_submission(self):
+        response = self.client.post('/postcode/', {'pc': 'PO14 1NT'}, follow=True)
+        self.assertRedirects(response, '/postcode/PO141NT.html')
+        response = self.client.post('/postcode/', {'pc': 'PO141NT.'}, follow=True)
+        self.assertRedirects(response, '/postcode/PO141NT.html')
+
     def test_json_links(self):
         id = self.big_area.id
         url = '/area/%d/covers.html?type=SML' % id
@@ -94,7 +106,7 @@ class AreaViewsTest(TestCase):
         url = '/area/%d/example_postcode' % id
         response = self.client.get(url)
         content = get_content(response)
-        self.assertEqual(content, self.postcode.postcode)
+        self.assertEqual(content, str(self.postcode))
 
     def test_nearest_with_bad_srid(self):
         url = '/nearest/84/0,0.json'
@@ -129,6 +141,22 @@ class AreaViewsTest(TestCase):
 
         self.assertEqual(content_area, content_areas['features'][0]['geometry'])
         self.assertEqual(content_areas['type'], 'FeatureCollection')
+
+    def test_areas_polygon_geometry(self):
+        id = self.small_area_1.id
+
+        url_area = '/area/%d/geometry' % id
+        response_area = self.client.get(url_area)
+        self.assertEqual(response_area.status_code, 200)
+        content_area = get_content(response_area)
+        self.assertEqual(round(content_area['centre_lat'], 6), 51.5)
+        self.assertEqual(round(content_area['centre_lon'], 6), -3.5)
+
+        url_areas = '/areas/%d/geometry' % id
+        response_areas = self.client.get(url_areas)
+        self.assertEqual(response_areas.status_code, 200)
+        content_areas = get_content(response_areas)
+        self.assertEqual(content_area, content_areas[str(id)])
 
     def test_areas_polygon_bad_params(self):
         url = '/areas/99999.geojson'

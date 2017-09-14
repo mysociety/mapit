@@ -27,10 +27,12 @@
             {% if area.children.count %}
             <li><a href="{% url "mapit_index" %}area/{{ area.id }}/children.html">{% trans "Children" %}</a></li>
             {% endif %}
+            {% with area.id|slugify as area_id %}
+            <li>{% blocktrans with json_url=index_url|add:"area/"|add:area_id %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</li>
+            {% endwith %}
         </ul>
-        {% with area.id|slugify as area_id %}
-        <p>{% blocktrans with json_url=index_url|add:"area/"|add:area_id %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
-        {% endwith %}
+
+        {% block area_info_extra %}{% endblock %}
     </header>
 
 {% if area.polygons.count %}
@@ -38,7 +40,7 @@
 <script>
     var map = new L.Map("leaflet");
     map.attributionControl.setPrefix('');
-    var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '{% trans 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' %}',
         maxZoom: 18
     });

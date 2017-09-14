@@ -2,6 +2,7 @@ import re
 
 from django.core.urlresolvers import reverse, NoReverseMatch
 from django.http import HttpResponseRedirect
+from ukpostcodeutils import validation
 
 from mapit.shortcuts import get_object_or_404
 
@@ -45,70 +46,31 @@ def canonical_postcode(pc):
     return pc
 
 
+SPECIAL_POSTCODES = (
+    'ASCN1ZZ',  # Ascension Island
+    'BBND1ZZ',  # BIOT
+    'BIQQ1ZZ',  # British Antarctic Territory
+    'FIQQ1ZZ',  # Falkland Islands
+    'PCRN1ZZ',  # Pitcairn Islands
+    'SIQQ1ZZ',  # South Georgia and the South Sandwich Islands
+    'STHL1ZZ',  # St Helena
+    'TDCU1ZZ',  # Tristan da Cunha
+    'TKCA1ZZ',  # Turks and Caicos Islands
+    'GIR0AA', 'G1R0AA',  # Girobank
+    'SANTA1', 'XM45HQ',  # Santa Claus
+)
+
+
 def is_special_postcode(pc):
-    if pc in (
-        'ASCN1ZZ',  # Ascension Island
-        'BBND1ZZ',  # BIOT
-        'BIQQ1ZZ',  # British Antarctic Territory
-        'FIQQ1ZZ',  # Falkland Islands
-        'PCRN1ZZ',  # Pitcairn Islands
-        'SIQQ1ZZ',  # South Georgia and the South Sandwich Islands
-        'STHL1ZZ',  # St Helena
-        'TDCU1ZZ',  # Tristan da Cunha
-        'TKCA1ZZ',  # Turks and Caicos Islands
-        'GIR0AA', 'G1R0AA',  # Girobank
-        'SANTA1', 'XM45HQ',  # Santa Claus
-    ):
-        return True
-    return False
+    return pc in SPECIAL_POSTCODES
 
 
 def is_valid_postcode(pc):
-    # Our test postcode
-    if pc in ('ZZ99ZZ', 'ZZ99ZY'):
-        return True
-
-    if is_special_postcode(pc):
-        return True
-
-    # See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
-    inward = 'ABDEFGHJLNPQRSTUWXYZ'
-    fst = 'ABCDEFGHIJKLMNOPRSTUWYZ'
-    sec = 'ABCDEFGHJKLMNOPQRSTUVWXY'
-    thd = 'ABCDEFGHJKSTUW'
-    fth = 'ABEHMNPRVWXY'
-
-    if re.match('[%s][1-9]\d[%s][%s]$' % (fst, inward, inward), pc) or \
-        re.match('[%s][1-9]\d\d[%s][%s]$' % (fst, inward, inward), pc) or \
-        re.match('[%s][%s]\d\d[%s][%s]$' % (fst, sec, inward, inward), pc) or \
-        re.match('[%s][%s][1-9]\d\d[%s][%s]$' % (fst, sec, inward, inward), pc) or \
-        re.match('[%s][1-9][%s]\d[%s][%s]$' % (fst, thd, inward, inward), pc) or \
-            re.match('[%s][%s][1-9][%s]\d[%s][%s]$' % (fst, sec, fth, inward, inward), pc):
-        return True
-
-    return False
+    return validation.is_valid_postcode(pc, SPECIAL_POSTCODES + ('ZZ99ZZ', 'ZZ99ZY'))
 
 
 def is_valid_partial_postcode(pc):
-    # Our test postcode
-    if pc == 'ZZ9':
-        return True
-
-    # See http://www.govtalk.gov.uk/gdsc/html/noframes/PostCode-2-1-Release.htm
-    fst = 'ABCDEFGHIJKLMNOPRSTUWYZ'
-    sec = 'ABCDEFGHJKLMNOPQRSTUVWXY'
-    thd = 'ABCDEFGHJKSTUW'
-    fth = 'ABEHMNPRVWXY'
-
-    if re.match('[%s][1-9]$' % (fst), pc) or \
-        re.match('[%s][1-9]\d$' % (fst), pc) or \
-        re.match('[%s][%s]\d$' % (fst, sec), pc) or \
-        re.match('[%s][%s][1-9]\d$' % (fst, sec), pc) or \
-        re.match('[%s][1-9][%s]$' % (fst, thd), pc) or \
-            re.match('[%s][%s][1-9][%s]$' % (fst, sec, fth), pc):
-        return True
-
-    return False
+    return validation.is_valid_partial_postcode(pc, ('ZZ9',))
 
 
 def get_postcode_display(pc):
@@ -119,15 +81,10 @@ def augment_postcode(postcode, result):
     pc = postcode.postcode
     if is_special_postcode(pc):
         return
-    if pc[0:2] == 'BT':
-        loc = postcode.as_irish_grid()
-        result['coordsyst'] = 'I'
-    else:
-        loc = postcode.location
-        loc.transform(27700)
-        result['coordsyst'] = 'G'
-    result['easting'] = int(round(loc[0]))
-    result['northing'] = int(round(loc[1]))
+    loc = postcode.as_uk_grid()
+    result['coordsyst'] = 'I' if pc[0:2] == 'BT' else 'G'
+    result['easting'] = loc[0]
+    result['northing'] = loc[1]
 
 
 # Hacky function to restrict certain geographical links in the HTML pages to

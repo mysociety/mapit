@@ -2,7 +2,6 @@
 # one-off after that import in order to get the two old boundaries back in that
 # were removed due to a mistake in the 2011-05 Boundary-Line.
 
-from optparse import make_option
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
 from django.utils import six
@@ -13,10 +12,11 @@ from utils import save_polygons
 
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line'
-    args = '<October 2010 Boundary-Line parish and district ward SHP files>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+    label = '<October 2010 Boundary-Line parish and district ward SHP file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     def handle_label(self, filename, **options):
         code_version = CodeType.objects.get(code='gss')

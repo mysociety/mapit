@@ -6,8 +6,6 @@
 # safe way of raising the generation_high of all active areas to the
 # ID of the new inactive generation.
 
-from optparse import make_option
-
 from django.core.management.base import BaseCommand, CommandError
 
 from mapit.models import Area, Generation, Type, Country
@@ -36,14 +34,11 @@ def check_option(option_name, options, model_class):
 
 class Command(BaseCommand):
     help = "Raise generation_high on active areas to the new generation's ID"
-    option_list = BaseCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit',
-                    help='Actually update the database'),
-        make_option('--country',
-                    help='Only raise the generation on areas with this country code'),
-        make_option('--type',
-                    help='Only raise the generation on areas with this area type code'),
-    )
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+        parser.add_argument('--country', help='Only raise the generation on areas with this country code')
+        parser.add_argument('--type', help='Only raise the generation on areas with this area type code')
 
     def handle(self, **options):
         area_type = check_option('type', options, Type)

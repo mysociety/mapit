@@ -2,24 +2,21 @@ import re
 from psycopg2 import InternalError
 from django.db.utils import DatabaseError
 
-try:
-    from osgeo import gdal
-    PYGDAL = True
-except ImportError:
-    PYGDAL = False
-
 from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
+from django.contrib.gis.db.models import Collect
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
 from django.conf import settings
 from django.shortcuts import redirect, render
+from django.views.decorators.csrf import csrf_exempt
 
 from mapit.models import Area, Generation, Geometry, Code, Name
 from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
+from mapit.utils import re_number
 from mapit import countries
 from mapit.iterables import iterdict
 from mapit.geometryserialiser import GeometrySerialiser, TransformError
@@ -289,7 +286,7 @@ def area_geometry(request, area_id):
 
 def _area_geometry(area_id):
     area = get_object_or_404(Area, id=area_id)
-    all_areas = area.polygons.all().collect()
+    all_areas = area.polygons.all().aggregate(Collect('polygon'))['polygon__collect']
     if not all_areas:
         return output_json({'error': _('No polygons found')}, code=404)
     out = {
@@ -350,8 +347,9 @@ def area_from_code(request, code_type, code_value, format='json'):
 @ratelimit(minutes=3, requests=100)
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
-    if PYGDAL:
-        gdal.UseExceptions()
+
+    use_exceptions()
+
     try:
         location.transform(settings.MAPIT_AREA_SRID, clone=True)
     except:
@@ -389,33 +387,29 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
         format, areas, indent_areas=True)
 
 
-@ratelimit(minutes=3, requests=100)
-def areas_by_point_latlon(request, lat, lon, bb=False, format=''):
-    point_kwargs = {'srid': '4326', 'x': lon, 'y': lat}
-    if bb:
-        point_kwargs['bb'] = bb
-    if format:
-        point_kwargs['format'] = format
-    redirect_path = reverse('areas-by-point', kwargs=point_kwargs)
+def _areas_by_point(x, y, srid, **kwargs):
+    kwargs.update({'srid': srid, 'x': kwargs.pop(x), 'y': kwargs.pop(y)})
+    kwargs = {k: v for k, v in kwargs.items() if v}
+    redirect_path = reverse('areas-by-point', kwargs=kwargs)
     return HttpResponseRedirect(redirect_path)
 
 
 @ratelimit(minutes=3, requests=100)
-def areas_by_point_osgb(request, e, n, bb=False, format=''):
-    point_kwargs = {'e': e, 'n': n}
-    if bb:
-        point_kwargs['bb'] = bb
-    if format:
-        point_kwargs['format'] = format
-    redirect_path = reverse('areas-by-point-osgb', kwargs=point_kwargs)
-    return HttpResponseRedirect(redirect_path)
+def areas_by_point_latlon(request, **kwargs):
+    return _areas_by_point('lon', 'lat', 4326, **kwargs)
 
 
+@ratelimit(minutes=3, requests=100)
+def areas_by_point_osgb(request, **kwargs):
+    return _areas_by_point('e', 'n', 27700, **kwargs)
+
+
+@csrf_exempt
 def point_form_submitted(request):
-    latlon = request.POST.get('pc', None)
+    latlon = request.POST.get('pc', '')
     if not request.method == 'POST' or not latlon:
         return redirect('mapit_index')
-    m = re.match('\s*([0-9.-]+)\s*,\s*([0-9.-]+)', latlon)
+    m = re.match('\s*(%s)\s*,\s*(%s)' % (re_number, re_number), latlon)
     if not m:
         return redirect('mapit_index')
     lat, lon = m.groups()
@@ -435,3 +429,13 @@ def deal_with_POST(request, call='areas'):
     request.GET = request.POST
     kwargs['request'] = request
     return view(*args, **kwargs)
+
+
+def use_exceptions():
+    if not hasattr(use_exceptions, 'done'):
+        use_exceptions.done = True
+        try:
+            from osgeo import gdal
+            gdal.UseExceptions()
+        except ImportError:
+            pass

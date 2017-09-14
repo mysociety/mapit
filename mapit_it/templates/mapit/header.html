@@ -1,0 +1,23 @@
+{% load i18n %}
+
+<div class="ms-header">
+    <nav class="ms-header__row">
+        <a class="ms-header__logo ms-header__logo--openpolis" href="http://www.openpolis.it">Openpolis</a>
+    </nav>
+</div>
+
+<header class="site-header">
+    <div class="container">
+        <a href="{% url 'mapit_index' %}" class="site-title"><h1>MapIt <small>{% include "mapit/country.html" %}</small></h1></a>
+        <nav role="navigation" class="site-nav">
+            <ul>
+                <li>
+                    <a href="/overview">{% trans "Overview" %}</a>
+                </li>
+                <li>
+                    <a href="{% url 'mapit_index' %}">{% trans "API Documentation" %}</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>

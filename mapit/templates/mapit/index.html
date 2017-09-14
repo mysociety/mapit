@@ -6,32 +6,35 @@
     {% trans "MapIt : map postcodes and geographical points to administrative areas" %}
 {% endblock %}
 
-{% block content %}
+{% block content_outer %}
 
-    <!-- Main header -->
-    <header class="header homepage">
-        {% include "mapit/index-cross-sell.html" %}
-        <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></h1>
-        {% include "mapit/intro.html" %}
+    <header class="homepage-section homepage-intro">
+        <div class="container">
+            {% include "mapit/intro.html" %}
+            {% block extra_intro %}{% endblock %}
+        </div>
     </header>
 
-    <!-- Try out MapIt postcode bar -->
-    <div id="try-mapit">
-        <form method="post" action="{% url "mapit_index" %}{% if postcodes_available %}postcode{% else %}point{% endif %}/">
-            <label for="try-mapit-pc">
-                {% if postcodes_available %}{% trans "Try it out, enter a postcode" %}:
-                {% else %}{% trans "Try it out, enter a lat,lon" %}:{% endif %}
-            </label>
-            <input type="text" name="pc" id="try-mapit-pc"{% if not postcodes_available %} placeholder="{% trans "latitude" %},{% trans "longitude" %}"{% endif %}>
-            <input class="btn" type="submit" value="{% trans "Look up" %}">
+    <div class="homepage-section homepage-try homepage-section--contrasting">
+        <form method="post" action="{% url "mapit_index" %}{% if postcodes_available %}postcode{% else %}point{% endif %}/" class="homepage-try__form">
+            <div class="container">
+                <label for="try-mapit-pc">
+                    {% if postcodes_available %}{% trans "Try it out, enter a postcode" %}:
+                    {% else %}{% trans "Try it out, enter a lat,lon" %}:{% endif %}
+                </label>
+                <input type="text" name="pc" id="pc"{% if not postcodes_available %} placeholder="{% trans "latitude" %},{% trans "longitude" %}"{% endif %}>
+                <input class="btn" type="submit" value="{% trans "Look up" %}">
+            </div>
         </form>
     </div>
 
-    <article id="api-docs">
+    <article class="content content--with-sidebar content--api-docs">
+
+        <h2>{% trans "MapIt API Documentation" %}</h2>
+
+        {% include "mapit/api/intro.html" %}
 
         <header>
-
-            <h2>{% trans "MapIt API" %}</h2>
 
             <nav class="toc">
 
@@ -60,16 +63,17 @@
                     <li><a href="#about-mapit">{% trans "About MapIt" %}</a></li>
                     <li><a href="#usage-licence">{% trans "Usage &amp; licence" %}</a></li>
                     <li><a href="https://github.com/mysociety/mapit">{% trans "Source code" %}</a></li>
-                    {% if country == 'GB' or country == 'IT' %}
+                    {% if country == 'IT' %}
                     <li><a href="{% url 'mapit_changelog' %}">{% trans "Changelog" %}</a></li>
                     {% endif %}
                 </ul>
+
+                {% block extra_nav %}{% endblock %}
 
             </nav>
 
         </header>
 
-        {% include "mapit/api/intro.html" %}
         {% if postcodes_available %}
         {% include "mapit/api/postcode.html" %}
         {% endif %}

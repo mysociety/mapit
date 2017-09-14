@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-09-18 17:20+0100\n"
+"POT-Creation-Date: 2016-09-22 18:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: shortcuts.py:55 templates/mapit/areas.html:6
+#: shortcuts.py:34 templates/mapit/areas.html:6
 msgid "No matching areas found."
 msgstr "Nessun area trovata"
 
@@ -46,64 +46,65 @@ msgstr "500 Errore interno del server"
 msgid "Sorry, something's gone wrong."
 msgstr "Spiacenti, qualcosa è andato storto."
 
-#: templates/mapit/api/area.html:4
+#: templates/mapit/api/area.html:3
 msgid "<em>lookup by</em> area"
 msgstr "<em>ricerca per</em> area"
 
-#: templates/mapit/api/area.html:8
+#: templates/mapit/api/area.html:7
 msgid "URL"
 msgstr ""
 
-#: templates/mapit/api/area.html:11
+#: templates/mapit/api/area.html:10
 msgid "area ID or ONS code"
 msgstr "ID dell'area o codice ONS"
 
-#: templates/mapit/api/area.html:13 templates/mapit/api/area.html.py:19
-#: templates/mapit/api/area.html:21 templates/mapit/api/area.html.py:22
-#: templates/mapit/api/area.html:23 templates/mapit/api/area.html.py:50
-#: templates/mapit/api/area.html:51 templates/mapit/api/area.html.py:53
-#: templates/mapit/api/area.html:54 templates/mapit/api/area.html.py:55
-#: templates/mapit/api/area.html:56 templates/mapit/api/area.html.py:57
+#: templates/mapit/api/area.html:12 templates/mapit/api/area.html.py:18
+#: templates/mapit/api/area.html:20 templates/mapit/api/area.html.py:21
+#: templates/mapit/api/area.html:22 templates/mapit/api/area.html.py:49
+#: templates/mapit/api/area.html:50 templates/mapit/api/area.html.py:52
+#: templates/mapit/api/area.html:53 templates/mapit/api/area.html.py:54
+#: templates/mapit/api/area.html:55 templates/mapit/api/area.html.py:56
 msgid "area ID"
 msgstr "ID dell'area"
 
-#: templates/mapit/api/area.html:16
+#: templates/mapit/api/area.html:15
 msgid "OSM relation ID"
 msgstr "ID della relazione OSM"
 
-#: templates/mapit/api/area.html:17
+#: templates/mapit/api/area.html:16
 msgid "OSM way ID"
 msgstr "ID della via OSM"
 
-#: templates/mapit/api/area.html:22
+#: templates/mapit/api/area.html:21
 msgid "kml or geojson or wkt"
 msgstr "kml o geojson o wkt"
 
-#: templates/mapit/api/area.html:23
+#: templates/mapit/api/area.html:22
 msgid "SRID"
 msgstr ""
 
-#: templates/mapit/api/area.html:23
+#: templates/mapit/api/area.html:22
 msgid "kml or json or wkt"
 msgstr "kml o json o wkt"
 
-#: templates/mapit/api/area.html:25 templates/mapit/api/area.html.py:60
-#: templates/mapit/api/areas.html:22 templates/mapit/api/postcode.html:22
+#: templates/mapit/api/area.html:24 templates/mapit/api/area.html.py:59
+#: templates/mapit/api/areas.html:21 templates/mapit/api/postcode.html:21
 msgid "Optional query parameters"
 msgstr "Parametri di ricerca opzionali"
 
-#: templates/mapit/api/area.html:26
+#: templates/mapit/api/area.html:25
 msgid "a floating point parameter to simplify the polygons returned"
 msgstr "un parametro decimale, per semplificare i poligoni restituiti"
 
-#: templates/mapit/api/area.html:27 templates/mapit/api/area.html.py:72
-#: templates/mapit/api/areas.html:29 templates/mapit/api/generations.html:10
-#: templates/mapit/api/point.html:65 templates/mapit/api/point.html.py:87
-#: templates/mapit/api/postcode.html:13 templates/mapit/api/postcode.html:41
+#: templates/mapit/api/area.html:26 templates/mapit/api/area.html.py:71
+#: templates/mapit/api/areas.html:28 templates/mapit/api/code.html:20
+#: templates/mapit/api/generations.html:9 templates/mapit/api/point.html:64
+#: templates/mapit/api/point.html.py:86 templates/mapit/api/postcode.html:12
+#: templates/mapit/api/postcode.html:40
 msgid "Returns"
 msgstr "Restituisce"
 
-#: templates/mapit/api/area.html:29
+#: templates/mapit/api/area.html:28
 msgid ""
 "Information on a particular area, including name, type, parent, and any "
 "associated codes (see <a href=\"#general\">below for details</a>). The code "
@@ -113,30 +114,30 @@ msgstr ""
 "qualsiasi codice associato (vedere <a href=\"#general\">nel seguito per i "
 "dettagli</a>). Le ricerche per codice redirezionano alla URI dell'area."
 
-#: templates/mapit/api/area.html:34
+#: templates/mapit/api/area.html:33
 msgid "example_postcode returns a random postcode within the area specified."
 msgstr ""
 "example_postcode restituisce un codice postale casuale all'interno dell'area "
 "specificata."
 
-#: templates/mapit/api/area.html:36
+#: templates/mapit/api/area.html:35
 msgid "geometry returns centroid, extent and area of the area."
 msgstr ""
 "geometry restituisce il centroide, l'estensione e l'area dell'area "
 "specificata."
 
-#: templates/mapit/api/area.html:46
+#: templates/mapit/api/area.html:45
 msgid "<em>lookup</em> related areas"
 msgstr "<em>ricerca</em> aree correlate"
 
-#: templates/mapit/api/area.html:62
+#: templates/mapit/api/area.html:61
 msgid ""
 "<li><i>type</i>, to restrict results to a particular type or types.</li>"
 msgstr ""
 "<li><i>tipo</i>, per restringere i risultati a un particolare tipo (o tipi)."
 "</li>"
 
-#: templates/mapit/api/area.html:65
+#: templates/mapit/api/area.html:64
 msgid ""
 "<li><i>generation</i>, to return results from a previous generation "
 "(children only).</li>"
@@ -144,7 +145,7 @@ msgstr ""
 "<li><i>generation</i>, per restituire risultati di una generazione "
 "precedente (solo figli).</li>"
 
-#: templates/mapit/api/area.html:68
+#: templates/mapit/api/area.html:67
 msgid ""
 "<li><i>min_generation</i>, to return areas since that generation (children "
 "only).</li>"
@@ -152,32 +153,32 @@ msgstr ""
 "<li><i>min_generation</i>, per restituire risultati a partire da quella "
 "generazione (solo figli).</li>"
 
-#: templates/mapit/api/area.html:73
+#: templates/mapit/api/area.html:72
 msgid "A hash of areas that match the requested lookup."
 msgstr "Un gruppo di aree che verifica la ricerca inviata."
 
-#: templates/mapit/api/areas.html:4
+#: templates/mapit/api/areas.html:3
 msgid "<em>lookup</em> multiple areas"
 msgstr "<em>ricerca</em> per aree multiple"
 
-#: templates/mapit/api/areas.html:10 templates/mapit/api/areas.html.py:11
+#: templates/mapit/api/areas.html:9 templates/mapit/api/areas.html.py:10
 msgid "area IDs"
 msgstr "ID dell'area"
 
-#: templates/mapit/api/areas.html:12
+#: templates/mapit/api/areas.html:11
 msgid "type(s)"
 msgstr "tipo(i)"
 
-#: templates/mapit/api/areas.html:13
+#: templates/mapit/api/areas.html:12
 msgid "name prefix"
 msgstr "prefisso del nome"
 
-#: templates/mapit/api/areas.html:15 templates/mapit/api/point.html:13
-#: templates/mapit/api/point.html.py:85
+#: templates/mapit/api/areas.html:14 templates/mapit/api/code.html:11
+#: templates/mapit/api/point.html:12 templates/mapit/api/point.html.py:84
 msgid "Parameters"
 msgstr "Parametri"
 
-#: templates/mapit/api/areas.html:16
+#: templates/mapit/api/areas.html:15
 msgid ""
 "Separate multiple parameters with commas. Name prefix means it will return "
 "any area that starts with the string given."
@@ -186,18 +187,18 @@ msgstr ""
 "prefisso vengono restituite tutte le aree che iniziano con il prefisso "
 "inserito."
 
-#: templates/mapit/api/areas.html:24
+#: templates/mapit/api/areas.html:23
 msgid "to return areas in that generation (type and name lookups only)"
 msgstr ""
 "per restituire aree in quella generazione (solo ricerche per tipo e nome)"
 
-#: templates/mapit/api/areas.html:25
+#: templates/mapit/api/areas.html:24
 msgid "to return areas since that generation (type and name lookups only)"
 msgstr ""
 "per restituire aree a partire da quella generazione (solo ricerche per tipo "
 "e nome)"
 
-#: templates/mapit/api/areas.html:26
+#: templates/mapit/api/areas.html:25
 msgid ""
 "to restrict results to a type or types (multiple separated by commas; name "
 "lookup only)"
@@ -205,7 +206,7 @@ msgstr ""
 "per restringere i risultati a un particolare tipo o tipi(tipi multipli "
 "separati da virgole)"
 
-#: templates/mapit/api/areas.html:32
+#: templates/mapit/api/areas.html:31
 msgid ""
 "Information on multiple areas that match the parameters provided, as a "
 "dictionary indexed by area ID. The geometry argument lets you fetch multiple "
@@ -215,20 +216,49 @@ msgstr ""
 "un dizionario, che ha per chiave l'ID di area. L'argomento geometry, "
 "permette di ottenere più di una geometria di area singola per volta."
 
-#: templates/mapit/api/generations.html:5 templates/mapit/generations.html:5
-#: templates/mapit/generations.html.py:9 templates/mapit/index.html:54
+#: templates/mapit/api/code.html:3
+#, fuzzy
+#| msgid "<em>lookup by</em> postcode"
+msgid "<em>lookup by</em> code"
+msgstr "<em>ricerca</em> per codice postale"
+
+#: templates/mapit/api/code.html:9
+msgid "code type"
+msgstr ""
+
+#: templates/mapit/api/code.html:9
+#, fuzzy
+#| msgid "postcode"
+msgid "code"
+msgstr "codice postale"
+
+#: templates/mapit/api/code.html:12
+msgid ""
+"<i>code type</i> and a <i>code</i> should uniquely identify an area. (MapIt "
+"uses code types and codes to associate external identifiers with areas.)"
+msgstr ""
+
+#: templates/mapit/api/code.html:23
+msgid ""
+"This returns an HTTP 302 Found redirect to the corresponding /area/<i>[area "
+"ID]</i> page.  Any format extension (<tt>.html</tt> or <tt>.json</tt>) will "
+"be preserved in the URL that's redirected to."
+msgstr ""
+
+#: templates/mapit/api/generations.html:4 templates/mapit/generations.html:4
+#: templates/mapit/generations.html.py:8 templates/mapit/index.html:55
 msgid "Generations"
 msgstr "Generazioni"
 
-#: templates/mapit/api/generations.html:11
+#: templates/mapit/api/generations.html:10
 msgid "A list of all generations in this installation of MapIt."
 msgstr "L'elenco di generazioni in questa installazione di MapIt."
 
-#: templates/mapit/api/generations.html:20
+#: templates/mapit/api/generations.html:19
 msgid "Example"
 msgstr "Esempio"
 
-#: templates/mapit/api/generations.html:21
+#: templates/mapit/api/generations.html:20
 msgid "List of generations"
 msgstr "Lista delle generazioni"
 
@@ -243,11 +273,11 @@ msgstr ""
 "Greco, per favore vai alla <a href=\"/overview\">nostra pagina per non-"
 "sviluppatori</a>.</p>"
 
-#: templates/mapit/api/point.html:4
+#: templates/mapit/api/point.html:3
 msgid "<em>lookup by</em> point"
 msgstr "<em>ricerca</em> per punto"
 
-#: templates/mapit/api/point.html:15
+#: templates/mapit/api/point.html:14
 msgid ""
 "<p><i>SRID</i> is a unique number referring to a particular co-ordinate "
 "system;"
@@ -255,7 +285,7 @@ msgstr ""
 "<p><i>SRID</i> è un numero univoco, che si riferisce a un particolare "
 "sistema di coordinate;"
 
-#: templates/mapit/api/point.html:20
+#: templates/mapit/api/point.html:19
 msgid ""
 "the ones you probably are interested in are 27700 for British National Grid, "
 "4326 for WGS84 lon/lat, and 29902 for the Irish National Grid."
@@ -264,7 +294,7 @@ msgstr ""
 "Grid, 4326 per il sistema di lon/lat WGS84, e 29902 per l'Irish National "
 "Grid."
 
-#: templates/mapit/api/point.html:26
+#: templates/mapit/api/point.html:25
 msgid ""
 "the ones you probably are interested in are 32632 o UTM zone 32N, for Italy "
 "or 4326 for WGS84 lon/lat."
@@ -272,14 +302,14 @@ msgstr ""
 "quello cui sei interessato probabilmente sono 32632 o zona UTM 32N, per "
 "l'Italia e 4326 per il sistema normale di lon/lat WGS84."
 
-#: templates/mapit/api/point.html:31
+#: templates/mapit/api/point.html:30
 msgid ""
 "the one you probably are interested in is 4326 for WGS84 normal lon/lat."
 msgstr ""
 "quello cui sei interessato probabilmente è 4326 per il sistema normale di "
 "lon/lat WGS84."
 
-#: templates/mapit/api/point.html:37
+#: templates/mapit/api/point.html:36
 msgid ""
 "<p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-"
 "ordinate system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>"
@@ -287,11 +317,11 @@ msgstr ""
 "<p><i>x</i> e <i>y</i> sono le coordinate del punto nel sistema di "
 "coordinate; nota che <i>x,y</i> significa <i>longitudine,latitudine</i>.</p>"
 
-#: templates/mapit/api/point.html:42
+#: templates/mapit/api/point.html:41
 msgid "<dt>Optional query parameters:</dt>"
 msgstr "<d>Parametri di ricerca opzionali:</dt>"
 
-#: templates/mapit/api/point.html:48
+#: templates/mapit/api/point.html:47
 msgid ""
 "<i>type</i>, to restrict results to a particular area type or types "
 "(multiple types separated by commas);"
@@ -299,18 +329,18 @@ msgstr ""
 "<i>tipo</i>, per restringere i risultati a un particolare tipo o tipi(tipi "
 "multipli separati da virgole);"
 
-#: templates/mapit/api/point.html:53
+#: templates/mapit/api/point.html:52
 msgid "<i>generation</i>, to return results for a previous generation."
 msgstr ""
 "<i>generation</i>, per restituire risultati di una generazione precedente."
 
-#: templates/mapit/api/point.html:58
+#: templates/mapit/api/point.html:57
 msgid "<i>min_generation</i>, to return results since that generation."
 msgstr ""
 "<i>min_generation</i>, per restituire risultati a partire da quella "
 "generazione"
 
-#: templates/mapit/api/point.html:67
+#: templates/mapit/api/point.html:66
 msgid ""
 "<p>A hash of the areas that the point is contained within. If the /box "
 "version is used, only the area bounding boxes are considered.</p>"
@@ -318,31 +348,31 @@ msgstr ""
 "<p>Un gruppo di aree che contengono il punto. Se si usa la versione /box,"
 "sono considerate solamente le bounding box.</p>"
 
-#: templates/mapit/api/point.html:79
+#: templates/mapit/api/point.html:78
 msgid "<em>lookup</em>nearest postcode"
 msgstr "<em>ricerca</em> il codice postale più vicino"
 
-#: templates/mapit/api/point.html:86
+#: templates/mapit/api/point.html:85
 msgid "Same as for"
 msgstr "Gli stessi di"
 
-#: templates/mapit/api/point.html:86
+#: templates/mapit/api/point.html:85
 msgid "by point"
 msgstr "per punto"
 
-#: templates/mapit/api/point.html:88
+#: templates/mapit/api/point.html:87
 msgid "The postcode closest to the particular point."
 msgstr "Il codice postale più vicino al punto specificato."
 
-#: templates/mapit/api/postcode.html:5
+#: templates/mapit/api/postcode.html:4
 msgid "<em>lookup by</em> postcode"
 msgstr "<em>ricerca</em> per codice postale"
 
-#: templates/mapit/api/postcode.html:11
+#: templates/mapit/api/postcode.html:10
 msgid "postcode"
 msgstr "codice postale"
 
-#: templates/mapit/api/postcode.html:15
+#: templates/mapit/api/postcode.html:14
 #, fuzzy
 msgid ""
 "<p>Information on a particular postcode, including its location in WGS84 "
@@ -352,21 +382,21 @@ msgstr ""
 "localizzazione nel sistema WGS84 di lat/long, e le aree in cui è contenuto.</"
 "p>"
 
-#: templates/mapit/api/postcode.html:24
+#: templates/mapit/api/postcode.html:23
 msgid "<p><i>generation</i>, to return results from a previous generation.</p>"
 msgstr ""
 "<p><i>generation</i>, per restituire risultati di una generazione precedente."
 "</p>"
 
-#: templates/mapit/api/postcode.html:35
+#: templates/mapit/api/postcode.html:34
 msgid "<em>lookup by</em> partial postcode"
 msgstr "<em>ricerca</em> per codice postale parziale"
 
-#: templates/mapit/api/postcode.html:39
+#: templates/mapit/api/postcode.html:38
 msgid "partial postcode"
 msgstr "codice postale parziale"
 
-#: templates/mapit/api/postcode.html:43
+#: templates/mapit/api/postcode.html:42
 msgid ""
 "<p>Geographical details for the centroid of the partial postcode specified.</"
 "p>"
@@ -374,38 +404,38 @@ msgstr ""
 "<p>Dettagli geografici del centroide del codice postale parziale indicato.</"
 "p>"
 
-#: templates/mapit/area.html:13
+#: templates/mapit/area.html:12
 msgid "Type"
 msgstr "Tipo"
 
-#: templates/mapit/area.html:14
+#: templates/mapit/area.html:13
 msgid "Exists in generations"
 msgstr "Esiste nelle generazioni"
 
-#: templates/mapit/area.html:16
+#: templates/mapit/area.html:15
 msgid "Country"
 msgstr "Nazione"
 
-#: templates/mapit/area.html:20 templates/mapit/areas_item.html:10
+#: templates/mapit/area.html:19 templates/mapit/areas_item.html:9
 #, python-format
 msgid "A child of <a href=\"%(url)s\">%(name)s</a>."
 msgstr "Un figlio di <a href=\"%(url)s\">%(name)s</a>."
 
-#: templates/mapit/area.html:25
+#: templates/mapit/area.html:24
 msgid "Example postcode"
 msgstr "Codice postale di esempio"
 
-#: templates/mapit/area.html:29
+#: templates/mapit/area.html:28
 msgid "Children"
 msgstr "Figli"
 
-#: templates/mapit/area.html:33 templates/mapit/data.html:10
-#: templates/mapit/generations.html:12 templates/mapit/postcode.html:26
+#: templates/mapit/area.html:32 templates/mapit/data.html:10
+#: templates/mapit/generations.html:11 templates/mapit/postcode.html:25
 #, python-format
 msgid "Get <a href=\"%(json_url)s\">this data as JSON</a>"
 msgstr "Prendi <a href=\"%(json_url)s\">questi dati in formato JSON</a>"
 
-#: templates/mapit/area.html:43 templates/mapit/postcode.html:35
+#: templates/mapit/area.html:42 templates/mapit/postcode.html:34
 msgid ""
 "Map © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
 "contributors"
@@ -413,55 +443,55 @@ msgstr ""
 "© dei dati di mappa: contributori a <a href=\"https://www.openstreetmap.org/"
 "copyright\">OpenStreetMap</a>"
 
-#: templates/mapit/area.html:69 templates/mapit/area.html.py:71
+#: templates/mapit/area.html:68 templates/mapit/area.html.py:70
 msgid "Geometry"
 msgstr "Geometria"
 
-#: templates/mapit/area.html:80 templates/mapit/postcode.html:48
+#: templates/mapit/area.html:79 templates/mapit/postcode.html:47
 msgid "Areas"
 msgstr "Aree"
 
-#: templates/mapit/area.html:82
+#: templates/mapit/area.html:81
 msgid "Touching this area"
 msgstr "Toccano quest'area"
 
-#: templates/mapit/area.html:83
+#: templates/mapit/area.html:82
 msgid "Overlapping this area"
 msgstr "Si sovrappongono a quest'area"
 
-#: templates/mapit/area.html:84
+#: templates/mapit/area.html:83
 msgid "Covering this area"
 msgstr "Coprono quest'area"
 
-#: templates/mapit/area.html:85
+#: templates/mapit/area.html:84
 msgid "Covered by this area"
 msgstr "Coperti da quest'area"
 
-#: templates/mapit/area.html:86
+#: templates/mapit/area.html:85
 msgid "Covered by or overlapping this area"
 msgstr "Coperte da o che si sovrappongono a quest'area"
 
-#: templates/mapit/area.html:87
+#: templates/mapit/area.html:86
 msgid "Intersects this area"
 msgstr "Intersecano quest'area"
 
-#: templates/mapit/area.html:92
+#: templates/mapit/area.html:91
 msgid "Codes"
 msgstr "Codici"
 
-#: templates/mapit/area.html:103
+#: templates/mapit/area.html:102
 msgid "No codes found"
 msgstr "Codici non trovati"
 
-#: templates/mapit/area.html:108
+#: templates/mapit/area.html:107
 msgid "Alternative Names"
 msgstr "Nomi alternativi"
 
-#: templates/mapit/area.html:113
+#: templates/mapit/area.html:112
 msgid "No alternative names found"
 msgstr "Nessun nome alternativo trovato"
 
-#: templates/mapit/base.html:10
+#: templates/mapit/base.html:9
 msgid ""
 "MapIt: a web service that maps postcodes and geographical points to "
 "administrative areas."
@@ -469,21 +499,17 @@ msgstr ""
 "MapIt: un servizio web che associa codici postali e punti geografici ad aree "
 "amministrative."
 
-#: templates/mapit/base.html:52
+#: templates/mapit/base.html:51
 msgid "MapIt is a charitable project from mySociety"
 msgstr "MapIt è un progetto no-profit di mySociety"
 
-#: templates/mapit/base.html:57
+#: templates/mapit/base.html:56
 msgid "Keep us online, Donate Now"
 msgstr "Tienici online, Dona ora!"
 
-#: templates/mapit/base.html:64
+#: templates/mapit/base.html:63
 msgid "Home &amp; Documentation"
 msgstr "Home e Documentazione"
-
-#: templates/mapit/base.html:78
-msgid "Django powered"
-msgstr ""
 
 #: templates/mapit/copyright.html:2
 msgid ""
@@ -501,11 +527,11 @@ msgstr ""
 msgid "New Install"
 msgstr "Nuova installazione"
 
-#: templates/mapit/example-postcode.html:5
+#: templates/mapit/example-postcode.html:4
 msgid "Example postcode in"
 msgstr "Codice postale di esempio in"
 
-#: templates/mapit/example-postcode.html:11
+#: templates/mapit/example-postcode.html:10
 #, fuzzy, python-format
 msgid ""
 "An example postcode for <a href=\"%(area_url)s\">%(area_name)s</a> is "
@@ -514,11 +540,11 @@ msgstr ""
 "Codice postale di esempio <a href=\"%(area_url)s\">%(area_name)s</a> is "
 "<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
 
-#: templates/mapit/generations.html:18
+#: templates/mapit/generations.html:17
 msgid "Active"
 msgstr "Attiva"
 
-#: templates/mapit/generations.html:18
+#: templates/mapit/generations.html:17
 msgid "Inactive"
 msgstr "Inattiva"
 
@@ -561,7 +587,7 @@ msgstr ""
 "dovrebbe usare il testo &ldquo;Powered by MapIt&rdquo;, con un collegamento "
 "a questa pagina.</p>"
 
-#: templates/mapit/index.html:7
+#: templates/mapit/index.html:6
 msgid "MapIt : map postcodes and geographical points to administrative areas"
 msgstr ""
 "MapIt: associa codici postali e punti geografici ad aree amministrative"
@@ -624,37 +650,43 @@ msgstr "Aree correlate"
 msgid "Multiple areas"
 msgstr "Aree multiple"
 
-#: templates/mapit/index.html:57
+#: templates/mapit/index.html:54
+#, fuzzy
+#| msgid "Codes"
+msgid "Code"
+msgstr "Codici"
+
+#: templates/mapit/index.html:58
 #, fuzzy
 #| msgid "General information"
 msgid "Information"
 msgstr "Informazioni generali"
 
-#: templates/mapit/index.html:59 templates/mapit/index.html.py:82
+#: templates/mapit/index.html:60 templates/mapit/index.html.py:86
 msgid "General information"
 msgstr "Informazioni generali"
 
-#: templates/mapit/index.html:60 templates/mapit/index.html.py:110
+#: templates/mapit/index.html:61 templates/mapit/index.html.py:114
 msgid "About MapIt"
 msgstr "A proposito di MapIt"
 
-#: templates/mapit/index.html:61
+#: templates/mapit/index.html:62
 msgid "Usage &amp; licence"
 msgstr "Uso e Licenza"
 
-#: templates/mapit/index.html:62
+#: templates/mapit/index.html:63
 msgid "Source code"
 msgstr "Codice sorgente"
 
-#: templates/mapit/index.html:64
+#: templates/mapit/index.html:65
 msgid "Changelog"
 msgstr "Elenco dei cambiamenti"
 
-#: templates/mapit/index.html:84
+#: templates/mapit/index.html:88
 msgid "Format"
 msgstr "Formato"
 
-#: templates/mapit/index.html:87
+#: templates/mapit/index.html:91
 msgid ""
 "<p>All calls return JSON, you can generally get an HTML representation by "
 "sticking .html on the end.</p>"
@@ -662,7 +694,7 @@ msgstr ""
 "<p>Tutte le chiamate restituiscono JSON, puoi ottenere una rappresentazione "
 "HTML attaccando .html alla fine.</p>"
 
-#: templates/mapit/index.html:92
+#: templates/mapit/index.html:96
 msgid ""
 "<p>Whenever an area is returned from MapIt, it is as a dictionary with the "
 "following keys: id, name, country, type, parent_area, generation_low, "
@@ -672,11 +704,11 @@ msgstr ""
 "chiavi: id, name, country, type, parent_area, generation_low, "
 "generation_high, codes.</p>"
 
-#: templates/mapit/index.html:98
+#: templates/mapit/index.html:102
 msgid "Historical areas"
 msgstr "Aree storiche"
 
-#: templates/mapit/index.html:100
+#: templates/mapit/index.html:104
 msgid ""
 "By default, calls will return active areas; for some calls you may specify a "
 "previous generation to look up instead."
@@ -684,7 +716,7 @@ msgstr ""
 "Per definizione, le chiamate restituiscono esclusivamente le aree attive; "
 "per alcune chiamate puoi specificare di voler ricercare generazioni passate."
 
-#: templates/mapit/index.html:112
+#: templates/mapit/index.html:116
 msgid ""
 "<p>MapIt was written back in 2003 as a postcode lookup to power the original "
 "<a href=\"http://www.mysociety.org/\">mySociety</a> sites such as <a href="
@@ -886,16 +918,16 @@ msgstr ""
 "<p>Quando il limite viene raggiunto, il servizio smettera di rispondere, "
 "fino a quando i valori medi non siano tornati nei limiti stabiliti."
 
-#: templates/mapit/postcode.html:5
+#: templates/mapit/postcode.html:4
 #, python-format
 msgid "Results for “%(postcode)s”"
 msgstr "Risultati per “%(postcode)s”"
 
-#: templates/mapit/postcode.html:17
+#: templates/mapit/postcode.html:16
 msgid "WGS84 lat/lon"
 msgstr "lat/lon WGS84"
 
-#: templates/mapit/postcode.html:19
+#: templates/mapit/postcode.html:18
 msgid ""
 "No location information. Note this <em>is</em> a valid postcode (otherwise "
 "you would have got a 404), just one for which we don&rsquo;t know the "
@@ -905,32 +937,32 @@ msgstr ""
 "codicevalido (altrimenti si sarebbe ottenuto un errore 404), si tratta solo "
 "di un codice del quale non conosciamo la località."
 
-#: views/areas.py:57
+#: views/areas.py:51
 msgid "Bad generation specified"
 msgstr "Generazione non valida o inesistente"
 
-#: views/areas.py:64
+#: views/areas.py:58
 msgid "Bad min_generation specified"
 msgstr "min_generation invalida o inesistente"
 
-#: views/areas.py:94
+#: views/areas.py:88
 msgid "Badly specified tolerance"
 msgstr "Tolleranza invalida o inesistente"
 
-#: views/areas.py:98 views/areas.py:118
+#: views/areas.py:92 views/areas.py:112
 msgid "Bad area ID specified"
 msgstr "ID dell'area invalido o inesistente"
 
-#: views/areas.py:168 views/areas.py:186 views/areas.py:294
+#: views/areas.py:162 views/areas.py:180 views/areas.py:288
 msgid "No polygons found"
 msgstr "Nessun poligono trovato"
 
-#: views/areas.py:180
+#: views/areas.py:174
 #, python-format
 msgid "Children of %s"
 msgstr "Figli di %s"
 
-#: views/areas.py:200
+#: views/areas.py:194
 msgid ""
 "That query was taking too long to compute - try restricting to a specific "
 "type, if you weren't already doing so."
@@ -938,76 +970,79 @@ msgstr ""
 "La query stava prendendo troppo tempo - prova a restringere a un "
 "tipospecifico, se non lo stavi già facendo"
 
-#: views/areas.py:203
+#: views/areas.py:197
 msgid "There was an internal error performing that query."
 msgstr "Si è verificato un errore interno durante la query"
 
-#: views/areas.py:211
+#: views/areas.py:205
 #, python-format
 msgid "Areas touching %s"
 msgstr "Aree che toccano %s"
 
-#: views/areas.py:216
+#: views/areas.py:210
 #, python-format
 msgid "Areas overlapping %s"
 msgstr "Aree che si sovrappongono a %s"
 
-#: views/areas.py:221
+#: views/areas.py:215
 #, python-format
 msgid "Areas covered by %s"
 msgstr "Aree coperte da %s"
 
-#: views/areas.py:226
+#: views/areas.py:220
 #, python-format
 msgid "Areas covered by or overlapping %s"
 msgstr "Aree coperte da o che si sovrappongono a %s"
 
-#: views/areas.py:231
+#: views/areas.py:225
 #, python-format
 msgid "Areas that cover %s"
 msgstr "Aree che coprono %s"
 
-#: views/areas.py:236
+#: views/areas.py:230
 #, python-format
 msgid "Areas that intersect %s"
 msgstr "Aree che intersecano %s"
 
-#: views/areas.py:243
+#: views/areas.py:237
 msgid "Areas ID lookup"
 msgstr "Ricerca per ID di aree"
 
-#: views/areas.py:250
+#: views/areas.py:244
 #, python-format
 msgid "Areas in %s"
 msgstr "Aree in %s"
 
-#: views/areas.py:258
+#: views/areas.py:252
 #, python-format
 msgid "Areas starting with %s"
 msgstr "Aree che iniziano per %s"
 
-#: views/areas.py:268
+#: views/areas.py:262
 #, fuzzy
 #| msgid "No codes found"
 msgid "No areas found"
 msgstr "Codici non trovati"
 
-#: views/areas.py:339
+#: views/areas.py:333
+#, python-brace-format
 msgid "No areas were found that matched code {0} = {1}."
 msgstr "Nessun area trovata che verifichi il codice {0} = {1}"
 
-#: views/areas.py:342
+#: views/areas.py:336
+#, python-brace-format
 msgid "There were multiple areas that matched code {0} = {1}."
 msgstr "Più di un'area trovata che verifia il codice {0} = {1}"
 
-#: views/areas.py:355
+#: views/areas.py:353
 msgid "Point outside the area geometry"
 msgstr "Punto fuori la geometria dell'area"
 
-#: views/areas.py:385
+#: views/areas.py:383
+#, python-brace-format
 msgid "Areas covering the point ({0},{1})"
 msgstr "Aree che coprono il punto ({0},{1})"
 
-#: views/areas.py:422
+#: views/areas.py:428
 msgid "No content specified"
 msgstr "Contenuto non valido o inesistente"

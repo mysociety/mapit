@@ -3,18 +3,18 @@
 
 from __future__ import print_function
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
+from django.contrib.gis.db.models import Union
 from mapit.models import Area, Type, Geometry
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Puts the boundaries on the LGDs, LGWs and LGEs from the Output Areas'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
 
-    def handle_noargs(self, **options):
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+
+    def handle(self, **options):
         area_type = Type.objects.get(code='OUA')
         done = []
 
@@ -22,7 +22,7 @@ class Command(NoArgsCommand):
             print('Working on', area.type.code, area.name, '...', end=' ')
             args['area__type'] = area_type
             geometry = Geometry.objects.filter(**args)
-            p = geometry.unionagg()
+            p = geometry.aggregate(Union('polygon'))['polygon__union']
             if options['commit']:
                 area.polygons.all().delete()
                 if p.geom_type == 'Polygon':
