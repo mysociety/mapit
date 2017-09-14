@@ -78,19 +78,27 @@ if config.get('BUGS_EMAIL'):
 if config.get('EMAIL_SUBJECT_PREFIX'):
     EMAIL_SUBJECT_PREFIX = config['EMAIL_SUBJECT_PREFIX']
 
+if ENVIRONMENT == 'production':
+    MAPIT_DB_PASS = os.environ['MAPIT_DB_PASS']
+else:
+    MAPIT_DB_PASS = config.get('MAPIT_DB_PASS', 'mapit')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
         'USER': config.get('MAPIT_DB_USER', 'mapit'),
-        'PASSWORD': config.get('MAPIT_DB_PASS', ''),
+        'PASSWORD': MAPIT_DB_PASS,
         'HOST': config.get('MAPIT_DB_HOST', ''),
         'PORT': config.get('MAPIT_DB_PORT', ''),
     }
 }
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
+if ENVIRONMENT == 'production':
+    SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+else:
+    SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
 
 ALLOWED_HOSTS = ['*']
 
