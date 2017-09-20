@@ -227,7 +227,13 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.staticfiles',
     'mapit',
+    'raven.contrib.django.raven_compat',
 ]
+
+RAVEN_CONFIG = {
+    'dsn': os.getenv('SENTRY_DSN'),
+    'environment': os.getenv('SENTRY_CURRENT_ENV'),
+}
 
 LOGGING = {
     'version': 1,
