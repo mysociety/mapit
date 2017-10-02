@@ -64,6 +64,7 @@ def query_args(request, format, type=None):
 
     if type is None:
         type = request.GET.get('type', '')
+    country_code = request.GET.get('country', '')
 
     args = {}
     if min_generation > -1:
@@ -71,10 +72,14 @@ def query_args(request, format, type=None):
             'generation_low__lte': generation,
             'generation_high__gte': min_generation,
         }
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
+    for attr, value in [
+            ('type', type),
+            ('country', country_code),
+    ]:
+        if ',' in value:
+            args[attr + '__code__in'] = value.split(',')
+        elif value:
+            args[attr + '__code'] = value
 
     return args
 

@@ -102,3 +102,25 @@ class QueryArgsTest(TestCase):
                 'generation_low__lte': self.active_generation.id,
             }
         )
+
+    def test_one_country_in_query(self):
+        args = query_args(FakeRequest({'country': 'DE'}), 'json', None)
+        self.assertEqual(
+            args,
+            {
+                'generation_high__gte': self.active_generation.id,
+                'generation_low__lte': self.active_generation.id,
+                'country__code': 'DE',
+            }
+        )
+
+    def test_two_countries_in_query(self):
+        args = query_args(FakeRequest({'country': 'DE,FR'}), 'json', None)
+        self.assertEqual(
+            args,
+            {
+                'generation_high__gte': self.active_generation.id,
+                'generation_low__lte': self.active_generation.id,
+                'country__code__in': ['DE', 'FR'],
+            }
+        )
