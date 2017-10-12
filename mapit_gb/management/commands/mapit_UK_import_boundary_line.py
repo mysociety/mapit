@@ -12,7 +12,7 @@ from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
 from django.utils import six
 
-from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
+from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType, Code
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
@@ -105,7 +105,10 @@ class Command(LabelCommand):
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
                     m = check
-                    ons_code = m.codes.get(type=code_version).code
+                    try:
+                        ons_code = m.codes.get(type=code_version).code
+                    except Code.DoesNotExist:
+                        ons_code = None
                 elif ons_code:
                     m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:
