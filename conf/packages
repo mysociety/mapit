@@ -1,6 +1,4 @@
-postgresql
-postgresql-9.1-postgis
-libgdal1
+libgdal20 | libgdal1h | libgdal1
 memcached
 python-virtualenv
 libapache2-mod-wsgi
