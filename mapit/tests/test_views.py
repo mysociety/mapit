@@ -117,6 +117,19 @@ class AreaViewsTest(TestCase):
             'code': 400, 'error': 'GetProj4StringSPI: Cannot find SRID (84) in spatial_ref_sys\n'
         })
 
+    def test_nearest(self):
+        url = '/nearest/4326/4,52.json'
+        response = self.client.get(url)
+        content = get_content(response)
+        self.assertEqual(content, {'postcode': {
+            'coordsyst': 'G',
+            'distance': 519051.0,
+            'easting': 295977,
+            'northing': 178963,
+            'postcode': 'PO14 1NT',
+            'wgs84_lat': 51.5, 'wgs84_lon': -3.5
+        }})
+
     def test_areas_polygon_valid(self):
         id1 = self.small_area_1.id
         id2 = self.small_area_2.id
