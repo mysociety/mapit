@@ -1,12 +1,17 @@
+from operator import attrgetter
 import re
 import itertools
 from django.db.utils import DatabaseError
 
+from django.utils.translation import ugettext as _
 from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
-from django.contrib.gis.measure import D
+from django.contrib.gis.geometry.backend import Geometry
 from django.contrib.gis.db.models import Collect
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import FloatField
+from django.db.models.expressions import Func
+from django.contrib.gis.db.backends.postgis.adapter import PostGISAdapter
 
 from mapit.models import Postcode, Area, Generation
 from mapit.utils import is_valid_postcode, is_valid_partial_postcode
@@ -34,6 +39,19 @@ enclosing_areas = {
     'WMC': [WMP_AREA_ID],
     'EUR': [EUP_AREA_ID],
 }
+
+
+class GeometryCentroidDistance(Func):
+    function = ''
+    arg_joiner = ' <-> '
+
+    def __init__(self, expression, geom, **extra):
+        if not isinstance(geom, Geometry):
+            raise TypeError("Please provide a geometry object.")
+        if not hasattr(geom, 'srid') or not geom.srid:
+            raise ValueError("Please provide a geometry attribute with a defined SRID.")
+        super(GeometryCentroidDistance, self).__init__(
+            expression, PostGISAdapter(geom), output_field=FloatField(), **extra)
 
 
 @ratelimit(minutes=3, requests=100)
@@ -155,9 +173,20 @@ def form_submitted(request):
 def nearest(request, srid, x, y, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
     set_timeout(format)
+
     try:
-        postcode = Postcode.objects.filter(
-            location__distance_gte=(location, D(mi=0))).distance(location).order_by('distance')[0]
+        # Transform to database SRID for comparison (GeometryCentroidDistance does not yet do this)
+        location.transform(4326)
+    except:
+        raise ViewException(format, _('Point outside the area geometry'), 400)
+
+    try:
+        # Ordering will be in 'degrees', so fetch a few and sort by actual distance
+        postcodes = Postcode.objects.annotate(
+            centroid_distance=GeometryCentroidDistance('location', location)
+            ).distance(location).order_by('centroid_distance')[:100]
+        postcodes = sorted(postcodes, key=attrgetter('distance'))
+        postcode = postcodes[0]
     except DatabaseError as e:
         if 'Cannot find SRID' in e.args[0]:
             raise ViewException(format, e.args[0], 400)
