@@ -10,3 +10,8 @@
     {% endwith %}
     {% endif %}
 </li>
+{% if show_map %}
+<script>
+mapit_areas.push({{ area.id }});
+</script>
+{% endif %}

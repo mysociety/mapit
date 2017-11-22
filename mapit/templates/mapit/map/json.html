@@ -1,0 +1,16 @@
+{% url "mapit_index" as index_url %}
+<script>
+    reqwest({
+        url: '{{ index_url }}{{ geojson_url }}.geojson?simplify_tolerance=0.0001',
+        type: 'json',
+        success: function(data) {
+            var area = new L.GeoJSON(data);
+            area.on('dblclick', function(e){
+                var z = map.getZoom() + (e.originalEvent.shiftKey ? -1 : 1);
+                map.setZoomAround(e.containerPoint, z);
+            });
+            map.addLayer(area);
+            map.fitBounds(area.getBounds());
+        }
+    });
+</script>
