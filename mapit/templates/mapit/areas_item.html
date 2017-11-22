@@ -2,7 +2,7 @@
 <li>
     <h3><a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
     <p>ID {{ area.id }}, {{ area.type.description }}
-        <small>({{ area.type.code }})</small>, {{ area.country }}</p>
+        <small>({{ area.type.code }})</small>, {{ area.list_countries|join:", "|default:"-" }}</p>
     {% if area.parent_area %}
     {% url "mapit_index" as index_url %}
     {% with area.parent_area.id|slugify as area_id %}

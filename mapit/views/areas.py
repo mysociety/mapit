@@ -5,6 +5,7 @@ from django.db.utils import DatabaseError
 from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models import Collect
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import resolve, reverse
@@ -75,16 +76,22 @@ def query_args(request, format, type=None):
             'generation_low__lte': generation,
             'generation_high__gte': min_generation,
         }
-    for attr, value in [
-            ('type', type),
-            ('country', country_code),
-    ]:
-        if ',' in value:
-            args[attr + '__code__in'] = value.split(',')
-        elif value:
-            args[attr + '__code'] = value
 
-    return args
+    query = Q(**args)
+
+    for attr, value in [
+            (['type'], type),
+            (['country', 'countries'], country_code),
+    ]:
+        q = Q()
+        for a in attr:
+            if ',' in value:
+                q |= Q(**{a + '__code__in': value.split(',')})
+            elif value:
+                q |= Q(**{a + '__code': value})
+        query &= q
+
+    return query
 
 
 def query_args_polygon(request, format, srid, area_ids):
@@ -179,9 +186,9 @@ def area_polygon(request, srid='', area_id='', format='kml'):
 
 @ratelimit(minutes=3, requests=100)
 def area_children(request, area_id, format='json'):
-    args = query_args(request, format)
+    q = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
-    children = area.children.filter(**args)
+    children = area.children.filter(q).distinct()
     return output_areas(request, _('Children of %s') % area.name, format, children)
 
 
@@ -250,16 +257,16 @@ def areas(request, area_ids, format='json'):
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_type(request, type, format='json'):
-    args = query_args(request, format, type)
-    areas = Area.objects.filter(**args)
+    q = query_args(request, format, type)
+    areas = Area.objects.filter(q).distinct()
     return output_areas(request, _('Areas in %s') % type, format, areas)
 
 
 @ratelimit(minutes=3, requests=100)
 def areas_by_name(request, name, format='json'):
-    args = query_args(request, format)
-    args['name__istartswith'] = name
-    areas = Area.objects.filter(**args)
+    q = query_args(request, format)
+    q &= Q(name__istartswith=name)
+    areas = Area.objects.filter(q).distinct()
     return output_areas(request, _('Areas starting with %s') % name, format, areas)
 
 
@@ -335,11 +342,10 @@ def areas_geometry(request, area_ids):
 
 @ratelimit(minutes=3, requests=100)
 def area_from_code(request, code_type, code_value, format='json'):
-    args = query_args(request, format)
-    args['codes__type__code'] = code_type
-    args['codes__code'] = code_value
+    q = query_args(request, format)
+    q &= Q(codes__type__code=code_type, codes__code=code_value)
     try:
-        area = Area.objects.get(**args)
+        area = Area.objects.get(q)
     except Area.DoesNotExist:
         message = _('No areas were found that matched code {0} = {1}.').format(code_type, code_value)
         raise ViewException(format, message, 404)
@@ -365,13 +371,13 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
-    args = query_args(request, format)
+    q = query_args(request, format)
 
     if method == 'box':
-        args['polygons__polygon__bbcontains'] = location
+        q &= Q(polygons__polygon__bbcontains=location)
     else:
-        args['polygons__polygon__contains'] = location
-    areas = Area.objects.filter(**args)
+        q &= Q(polygons__polygon__contains=location)
+    areas = Area.objects.filter(q).distinct()
 
     return output_areas(
         request, _('Areas covering the point ({0},{1})').format(x, y),

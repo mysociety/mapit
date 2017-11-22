@@ -11,9 +11,7 @@
         <ul>
             <li>{%trans "Type" %}: <a href="{% url "mapit_index" %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
             <li>{%trans "Exists in generations" %}: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
-            {% if country != 'Global' %}
-            <li>{% trans "Country" %}: {{ area.country }}</li>
-            {% endif %}
+            <li>{% trans "Country" %}: {{ area.list_countries|join:", "|default:"-" }}</li>
             {% if area.parent_area %}
             {% with area.parent_area.id|slugify as area_id %}
             <li>{% blocktrans with name=area.parent_area.name url=index_url|add:"area/"|add:area_id|add:".html" %}A child of <a href="{{ url }}">{{ name }}</a>.{% endblocktrans %}</li>
