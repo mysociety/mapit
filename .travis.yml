@@ -16,8 +16,6 @@ matrix:
     - python: 3.2
       env: TOXENV=py32-1.8
     - python: 3.5
-      env: TOXENV=py35-1.9
-    - python: 3.5
       env: TOXENV=py35-1.10
     - python: 3.5
       env: TOXENV=py35-1.11
@@ -28,7 +26,6 @@ env:
   matrix:
     - TOXENV=flake8
     - TOXENV=py27-1.8
-    - TOXENV=py27-1.9
     - TOXENV=py27-1.10
     - TOXENV=py27-1.11
 
