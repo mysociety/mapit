@@ -42,6 +42,9 @@ def add_codes(areas):
 
 def output_areas(request, title, format, areas, **kwargs):
     areas = add_codes(areas)
+    if format == 'map.html':
+        format = 'html'
+        kwargs['show_map'] = True
     if format == 'html':
         return output_html(request, title, areas, **kwargs)
     return output_json(iterdict((area.id, area.as_dict()) for area in areas))

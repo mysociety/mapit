@@ -5,12 +5,36 @@
 
 {% block content %}
 
+{% if show_map %}
+    <header class="area_info">
+{% endif %}
+
 <h2>{{ title|safe }}</h2>
 
 <p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
 
+{% if show_map %}
+    </header>
+
+    {% include "mapit/map/init.html" %}
+    <script>
+        var mapit_areas = [];
+    </script>
+
+    <section class="details">
+{% endif %}
+
 <ol class="area_list">
     !!!DATA!!!
 </ol>
+
+{% if show_map %}
+    </section>
+
+    <script>
+        mapit_areas = mapit_areas.slice(0, 200);
+    </script>
+    {% include "mapit/map/json.html" with geojson_url="areas/' + mapit_areas + '"|safe %}
+{% endif %}
 
 {% endblock %}

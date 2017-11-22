@@ -8,6 +8,7 @@ from mapit.views import areas, postcodes
 handler500 = 'mapit.shortcuts.json_500'
 
 format_end = '(?:\.(?P<format>html|json))?'
+map_format_end = '(?:\.(?P<format>map\.html|html|json))?'
 
 urlpatterns = [
     url(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
@@ -23,34 +24,34 @@ urlpatterns = [
 
     url(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area, name='area'),
     url(r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, postcodes.example_postcode_for_area),
-    url(r'^area/(?P<area_id>[0-9]+)/children%s$' % format_end, areas.area_children),
+    url(r'^area/(?P<area_id>[0-9]+)/children%s$' % map_format_end, areas.area_children),
     url(r'^area/(?P<area_id>[0-9]+)/geometry$', areas.area_geometry),
-    url(r'^area/(?P<area_id>[0-9]+)/touches%s$' % format_end, areas.area_touches),
-    url(r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % format_end, areas.area_overlaps),
-    url(r'^area/(?P<area_id>[0-9]+)/covers%s$' % format_end, areas.area_covers),
-    url(r'^area/(?P<area_id>[0-9]+)/covered%s$' % format_end, areas.area_covered),
-    url(r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % format_end, areas.area_coverlaps),
-    url(r'^area/(?P<area_id>[0-9]+)/intersects%s$' % format_end, areas.area_intersects),
+    url(r'^area/(?P<area_id>[0-9]+)/touches%s$' % map_format_end, areas.area_touches),
+    url(r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % map_format_end, areas.area_overlaps),
+    url(r'^area/(?P<area_id>[0-9]+)/covers%s$' % map_format_end, areas.area_covers),
+    url(r'^area/(?P<area_id>[0-9]+)/covered%s$' % map_format_end, areas.area_covered),
+    url(r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % map_format_end, areas.area_coverlaps),
+    url(r'^area/(?P<area_id>[0-9]+)/intersects%s$' % map_format_end, areas.area_intersects),
     url(r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', areas.area_polygon, name='area_polygon'),
     url(r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|geojson|wkt)$',
         areas.area_polygon),
 
     url(r'^point/$', areas.point_form_submitted),
-    url(r'^point/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
+    url(r'^point/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
         areas.areas_by_point, name='areas-by-point'),
-    url(r'^point/latlon/(?P<lat>%s),(?P<lon>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
+    url(r'^point/latlon/(?P<lat>%s),(?P<lon>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
         areas.areas_by_point_latlon, name='areas-by-point-latlon'),
-    url(r'^point/osgb/(?P<e>%s),(?P<n>%s)(?:/(?P<bb>box))?%s$' % (number, number, format_end),
+    url(r'^point/osgb/(?P<e>%s),(?P<n>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
         areas.areas_by_point_osgb, name='areas-by-point-osgb'),
 
     url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)%s$' % (number, number, format_end), postcodes.nearest),
 
-    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % format_end, areas.areas),
+    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % map_format_end, areas.areas),
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
     url(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', areas.areas_geometry),
-    url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, areas.areas_by_type),
-    url(r'^areas/(?P<name>.+?)%s$' % format_end, areas.areas_by_name),
+    url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % map_format_end, areas.areas_by_type),
+    url(r'^areas/(?P<name>.+?)%s$' % map_format_end, areas.areas_by_name),
     url(r'^areas$', areas.deal_with_POST, {'call': 'areas'}),
     url(r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, areas.area_from_code),
 ]

@@ -1,0 +1,11 @@
+{% load i18n %}
+<div id="map"><div id="leaflet"></div></div>
+<script>
+    var map = new L.Map("leaflet");
+    map.attributionControl.setPrefix('');
+    var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '{% trans 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' %}',
+        maxZoom: 18
+    });
+    map.addLayer(osm);
+</script>

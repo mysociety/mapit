@@ -27,20 +27,12 @@
 </header>
 
 {% if postcode.wgs84_lat or postcode.wgs84_lon %}
-<div id="map"><div id="leaflet"></div></div>
+{% include "mapit/map/init.html" %}
 <script>
-    var map = new L.Map("leaflet");
-    map.attributionControl.setPrefix('');
-    var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '{% trans 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' %}',
-        maxZoom: 18
-    });
-
     var point = new L.LatLng({{ postcode.wgs84_lat|floatformat:-6 }}, {{ postcode.wgs84_lon|floatformat:-6 }});
     var marker = new L.Marker(point);
     map.addLayer(marker);
     map.setView(point, 14);
-    map.addLayer(osm);
 </script>
 {% endif %}
 
