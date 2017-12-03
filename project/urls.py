@@ -5,5 +5,5 @@ handler500 = 'mapit.shortcuts.json_500'
 
 urlpatterns = [
     url(r'^', include('mapit.urls')),
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 ]

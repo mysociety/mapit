@@ -7,7 +7,12 @@ from .view_error import ViewException, ViewExceptionMiddleware  # noqa
 
 
 class JSONPMiddleware(object):
-    def process_response(self, request, response):
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+
         # If the response is a redirect, the callback will be dealt with on the next request
         if response.status_code == 302:
             return response

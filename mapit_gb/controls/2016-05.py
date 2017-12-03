@@ -27,17 +27,17 @@ def check(name, type, country, geometry, ons_code, commit, **args):
             old_but_new = Area.objects.get(
                 codes__type__code='gss', codes__code=ons_code, generation_high__lt=Generation.objects.current())
             assert current.generation_low.id == old_but_new.generation_high.id + 1
-            print "* Wales change, before: %d %s (%d-%d), %d %s (%d-%d)" % (
+            print("* Wales change, before: %d %s (%d-%d), %d %s (%d-%d)" % (
                 old_but_new.id, old_but_new.name, old_but_new.generation_low_id, old_but_new.generation_high_id,
-                current.id, current.name, current.generation_low_id, current.generation_high_id)
+                current.id, current.name, current.generation_low_id, current.generation_high_id))
             current.generation_low = old_but_new.generation_low
             if commit:
                 current.save()
             old_but_new.generation_low = Generation.objects.new()
             old_but_new.generation_high = Generation.objects.new()
-            print "  After: %d %s (%d-%d), %d %s (%d-%d)" % (
+            print("  After: %d %s (%d-%d), %d %s (%d-%d)" % (
                 current.id, current.name, current.generation_low_id, current.generation_high_id,
-                old_but_new.id, old_but_new.name, old_but_new.generation_low_id, old_but_new.generation_high_id)
+                old_but_new.id, old_but_new.name, old_but_new.generation_low_id, old_but_new.generation_high_id))
             return old_but_new
         except Area.DoesNotExist:
             pass

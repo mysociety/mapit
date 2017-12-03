@@ -125,7 +125,7 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-class AreaManager(models.GeoManager):
+class AreaManager(models.Manager):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related('type', 'country').prefetch_related('countries')
 
@@ -324,7 +324,6 @@ class Area(models.Model):
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
-    objects = models.GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
@@ -408,7 +407,7 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeQuerySet(models.query.GeoQuerySet):
+class PostcodeQuerySet(models.QuerySet):
     # ST_CoveredBy on its own does not appear to use the index.
     # Plus this way we can keep the polygons in the database
     # without pulling out in a giant WKB string

@@ -2,6 +2,7 @@ notifications:
   email: false
 
 language: python
+python: 3.5
 
 sudo: false
 
@@ -13,18 +14,16 @@ addons:
 
 matrix:
   include:
-    - python: 3.5
-      env: TOXENV=py35-1.8
-    - python: 3.5
-      env: TOXENV=py35-1.11
+    - python: 2.7
+      env: TOXENV=py27-1.11
 
 env:
   global:
     - CFLAGS="-O0"
   matrix:
     - TOXENV=flake8
-    - TOXENV=py27-1.8
-    - TOXENV=py27-1.11
+    - TOXENV=py35-1.11
+    - TOXENV=py35-2.0
 
 install:
   - pip install tox codecov

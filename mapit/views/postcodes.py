@@ -6,11 +6,12 @@ from django.db.utils import DatabaseError
 from django.utils.translation import ugettext as _
 from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
-from django.contrib.gis.geometry.backend import Geometry
+from django.contrib.gis.geos.geometry import GEOSGeometry
 from django.contrib.gis.db.models import Collect
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import FloatField
 from django.db.models.expressions import Func
+from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.db.backends.postgis.adapter import PostGISAdapter
 
 from mapit.models import Postcode, Area, Generation
@@ -46,7 +47,7 @@ class GeometryCentroidDistance(Func):
     arg_joiner = ' <-> '
 
     def __init__(self, expression, geom, **extra):
-        if not isinstance(geom, Geometry):
+        if not isinstance(geom, GEOSGeometry):
             raise TypeError("Please provide a geometry object.")
         if not hasattr(geom, 'srid') or not geom.srid:
             raise ValueError("Please provide a geometry attribute with a defined SRID.")
@@ -184,7 +185,9 @@ def nearest(request, srid, x, y, format='json'):
         # Ordering will be in 'degrees', so fetch a few and sort by actual distance
         postcodes = Postcode.objects.annotate(
             centroid_distance=GeometryCentroidDistance('location', location)
-            ).distance(location).order_by('centroid_distance')[:100]
+            ).annotate(
+                distance=Distance('location', location)
+            ).order_by('centroid_distance')[:100]
         postcodes = sorted(postcodes, key=attrgetter('distance'))
         postcode = postcodes[0]
     except DatabaseError as e:
