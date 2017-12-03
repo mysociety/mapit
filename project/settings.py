@@ -167,13 +167,12 @@ STATICFILES_FINDERS = (
 # similar ETag code in CommonMiddleware.
 USE_ETAGS = False
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',

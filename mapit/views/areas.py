@@ -8,7 +8,7 @@ from django.contrib.gis.db.models import Collect
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt

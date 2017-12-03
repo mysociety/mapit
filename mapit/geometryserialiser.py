@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.contrib.gis.gdal import OGRException, SRSException
+from django.contrib.gis.gdal import GDALException, SRSException
 from django.contrib.gis.db.models import Collect
 from django.utils.html import escape
 
@@ -67,7 +67,7 @@ class GeometrySerialiser(object):
         if self.srid != settings.MAPIT_AREA_SRID:
             try:
                 polygons.transform(self.srid)
-            except (SRSException, OGRException) as e:
+            except (SRSException, GDALException) as e:
                 raise TransformError("Error with transform: %s" % e)
         return polygons
 

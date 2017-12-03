@@ -1,6 +1,6 @@
 import re
 
-from django.core.urlresolvers import reverse, NoReverseMatch
+from django.urls import reverse, NoReverseMatch
 from django.http import HttpResponseRedirect
 from ukpostcodeutils import validation
 
