@@ -29,6 +29,27 @@
     </section>
 
     <script>
+(function() {
+    function hover_start(e) {
+        var id = this.id;
+        mapit.areas.eachLayer(function(area) {
+            if (area.mapit_id == id) {
+                area.setStyle({ color: '#f00' });
+            }
+        });
+    }
+    function hover_end(e) {
+        mapit.areas.eachLayer(function(area) {
+            area.setStyle({ color: '#38f' });
+        });
+    }
+    var items = document.querySelectorAll('.js-map-hover');
+    for (var i=0; i<items.length; i++) {
+        var item = items[i];
+        item.onmouseenter = hover_start;
+        item.onmouseleave = hover_end;
+    }
+})();
     </script>
 {% endif %}
 

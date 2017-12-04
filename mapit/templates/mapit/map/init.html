@@ -16,6 +16,16 @@
             var z = map.getZoom() + (e.originalEvent.shiftKey ? -1 : 1);
             map.setZoomAround(e.containerPoint, z);
         });
+        area.mapit_id = this.mapit.id;
+        if (this.mapit.text) {
+            area.on('mouseover', function(e) {
+                e.target.setStyle({ color: '#f00' });
+            });
+            area.on('mouseout', function(e) {
+                e.target.setStyle({ color: '#38f' });
+            });
+            area.bindPopup(this.mapit.text);
+        }
         mapit.areas.addLayer(area);
         map.fitBounds(mapit.areas.getBounds());
     };

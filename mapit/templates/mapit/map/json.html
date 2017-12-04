@@ -3,6 +3,10 @@
     reqwest({
         url: '{{ index_url }}{{ geojson_url }}.geojson?simplify_tolerance=0.0001',
         type: 'json',
+        mapit: {
+            id: "{{ geojson_url }}",
+            text: "{{ geojson_text }}"
+        },
         success: mapit.area_loaded
     });
 </script>
