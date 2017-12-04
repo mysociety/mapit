@@ -8,4 +8,16 @@
         maxZoom: 18
     });
     map.addLayer(osm);
+
+    var mapit = mapit || {};
+    mapit.area_loaded = function(data) {
+        var area = new L.GeoJSON(data);
+        area.on('dblclick', function(e){
+            var z = map.getZoom() + (e.originalEvent.shiftKey ? -1 : 1);
+            map.setZoomAround(e.containerPoint, z);
+        });
+        mapit.areas.addLayer(area);
+        map.fitBounds(mapit.areas.getBounds());
+    };
+    mapit.areas = L.featureGroup().addTo(map);
 </script>

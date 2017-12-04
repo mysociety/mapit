@@ -11,7 +11,7 @@
     {% endif %}
 </li>
 {% if show_map %}
-<script>
-mapit_areas.push({{ area.id }});
-</script>
+    {% with area.id|slugify as area_id %}
+    {% include "mapit/map/json.html" with geojson_url="area/"|add:area_id %}
+    {% endwith %}
 {% endif %}

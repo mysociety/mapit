@@ -17,9 +17,6 @@
     </header>
 
     {% include "mapit/map/init.html" %}
-    <script>
-        var mapit_areas = [];
-    </script>
 
     <section class="details">
 {% endif %}
@@ -32,9 +29,7 @@
     </section>
 
     <script>
-        mapit_areas = mapit_areas.slice(0, 200);
     </script>
-    {% include "mapit/map/json.html" with geojson_url="areas/' + mapit_areas + '"|safe %}
 {% endif %}
 
 {% endblock %}
