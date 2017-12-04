@@ -1,3 +1,22 @@
+Version 2.0, 2017-12-18
+    * Breaking changes
+        * Add support for Django 2.0, drop support for older than 1.11.
+    * New features
+        * Add .map.html endpoint to show map of areas. #307
+        * Add support for a 'country' filter in query parameters. #55
+        * Improve performance of /nearest using <->. #305
+    * Bugfixes:
+        * Use 6 decimal places on postcode HTML page. #299
+        * Remove workaround for inefficient query planning. #302
+    * Development improvements:
+        * Support more Debian/Ubuntu versions. #301
+        * More tests, improved running with changed settings/order.
+        * MapIt international-specific code is now in its own repo.
+    * MapIt UK specific:
+        * 2017 Boundary-Line imports; new Scilly Isles data,
+          remove references to old ONS codes. #304
+        * Use database for co-ordinate transformation. #299
+
 Version 1.6, 2017-04-07
     * Implement new front end design. #280
     * Add block for extra content in area/postcode info. #284
