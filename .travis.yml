@@ -27,8 +27,10 @@ env:
     - TOXENV=py27-1.11
 
 install:
-  - pip install 'virtualenv<14' tox
+  - pip install tox codecov
 before_script:
   - 'if [ $TOXENV != "flake8" ]; then .travis/before_script; fi'
 script:
   - tox
+after_success:
+  - codecov
