@@ -26,9 +26,9 @@ MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 # Optional; country specific things won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
 
-# A list of IP addresses or User Agents that should be excluded from rate
-# limiting. Optional.
-MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
+# A dictionary of IP addresses, User Agents, or functions that should be
+# excluded from rate limiting. Optional.
+MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', {})
 
 # A GA code for analytics
 GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')

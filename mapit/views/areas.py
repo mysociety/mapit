@@ -112,7 +112,7 @@ def generations(request, format='json'):
     return output_json(dict((g.id, g.as_dict()) for g in generations))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area(request, area_id, format='json'):
     if hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
@@ -156,7 +156,7 @@ def area(request, area_id, format='json'):
     return output_json(area.as_dict(names))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid and hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
@@ -177,7 +177,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     return output_polygon(content_type, output)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_children(request, area_id, format='json'):
     args = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
@@ -211,51 +211,51 @@ def area_intersect(query_type, title, request, area_id, format):
     return output_areas(request, title, format, areas, norobots=True)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_touches(request, area_id, format='json'):
     return area_intersect('touches', _('Areas touching %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_overlaps(request, area_id, format='json'):
     return area_intersect('overlaps', _('Areas overlapping %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_covers(request, area_id, format='json'):
     return area_intersect('coveredby', _('Areas covered by %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_coverlaps(request, area_id, format='json'):
     return area_intersect(['overlaps', 'coveredby'], _('Areas covered by or overlapping %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_covered(request, area_id, format='json'):
     return area_intersect('covers', _('Areas that cover %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_intersects(request, area_id, format='json'):
     return area_intersect('intersects', _('Areas that intersect %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
     areas = Area.objects.filter(id__in=area_ids)
     return output_areas(request, _('Areas ID lookup'), format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_type(request, type, format='json'):
     args = query_args(request, format, type)
     areas = Area.objects.filter(**args)
     return output_areas(request, _('Areas in %s') % type, format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_name(request, name, format='json'):
     args = query_args(request, format)
     args['name__istartswith'] = name
@@ -263,7 +263,7 @@ def areas_by_name(request, name, format='json'):
     return output_areas(request, _('Areas starting with %s') % name, format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_polygon(request, area_ids, srid='', format='kml'):
     area_ids = area_ids.split(',')
     args = query_args_polygon(request, format, srid, area_ids)
@@ -284,7 +284,7 @@ def areas_polygon(request, area_ids, srid='', format='kml'):
     return output_polygon(content_type, output)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_geometry(request, area_id):
     area = _area_geometry(area_id)
     if isinstance(area, HttpResponse):
@@ -321,7 +321,7 @@ def _area_geometry(area_id):
     return out
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
     out = {}
@@ -333,7 +333,7 @@ def areas_geometry(request, area_ids):
     return output_json(out)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_from_code(request, code_type, code_value, format='json'):
     args = query_args(request, format)
     args['codes__type__code'] = code_type
@@ -352,7 +352,7 @@ def area_from_code(request, code_type, code_value, format='json'):
     return HttpResponseRedirect(reverse('area', kwargs=area_kwargs))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
 
@@ -385,12 +385,12 @@ def _areas_by_point(x, y, srid, **kwargs):
     return HttpResponseRedirect(redirect_path)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point_latlon(request, **kwargs):
     return _areas_by_point('lon', 'lat', 4326, **kwargs)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point_osgb(request, **kwargs):
     return _areas_by_point('e', 'n', 27700, **kwargs)
 
