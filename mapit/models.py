@@ -127,7 +127,7 @@ class Type(models.Model):
 
 class AreaManager(models.GeoManager):
     def get_queryset(self):
-        return super(AreaManager, self).get_queryset().select_related('type', 'country')
+        return super(AreaManager, self).get_queryset().select_related('type', 'country').prefetch_related('countries')
 
     def by_location(self, location, generation=None):
         if generation is None:
@@ -223,7 +223,8 @@ class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
     type = models.ForeignKey(Type, related_name='areas', on_delete=models.CASCADE)
-    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name='areas_direct', null=True, blank=True, on_delete=models.CASCADE)
+    countries = models.ManyToManyField(Country, related_name='areas_m2m', blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True, on_delete=models.CASCADE)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True, on_delete=models.CASCADE)
 
@@ -251,7 +252,7 @@ class Area(models.Model):
 
     def as_dict(self, all_names=None):
         all_names = all_names or []
-        return {
+        out = {
             'id': self.id,
             'name': self.name,
             'parent_area': self.parent_area_id,
@@ -264,6 +265,16 @@ class Area(models.Model):
             'codes': self.all_codes,
             'all_names': dict(n.as_tuple() for n in all_names),
         }
+        countries = [{'code': c.code, 'name': c.name} for c in self.countries.all()]
+        if countries:
+            out['countries'] = countries
+        return out
+
+    def list_countries(self):
+        countries = [c.name for c in self.countries.all()]
+        if self.country:
+            countries.append(self.country.name)
+        return countries
 
     def export(self,
                srid,

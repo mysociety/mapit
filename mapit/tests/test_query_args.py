@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from django.db.models import Q
 from django.test import TestCase
 
 from mapit.models import Generation
@@ -23,104 +24,101 @@ class QueryArgsTest(TestCase):
             description="Test generation",
         )
 
+    def q_equality(self, act, exp):
+        self.assertEqual(str(act), str(exp))
+
     def test_no_type(self):
-        args = query_args(FakeRequest({}), 'json', None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-            }
+        q = query_args(FakeRequest({}), 'json', None)
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            )
         )
 
     def test_one_type_in_query(self):
-        args = query_args(FakeRequest({'type': 'WMC'}), 'json', None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'type__code': 'WMC',
-            }
+        q = query_args(FakeRequest({'type': 'WMC'}), 'json', None)
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(type__code='WMC'))
         )
 
     def test_two_types_in_query(self):
-        args = query_args(FakeRequest({'type': 'WMC,EUR'}), 'json', None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'type__code__in': ['WMC', 'EUR'],
-            }
+        q = query_args(FakeRequest({'type': 'WMC,EUR'}), 'json', None)
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(type__code__in=['WMC', 'EUR']))
         )
 
     def test_one_type_in_params(self):
-        args = query_args(FakeRequest({}), 'json', 'WMC')
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'type__code': 'WMC',
-            }
+        q = query_args(FakeRequest({}), 'json', 'WMC')
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(type__code='WMC'))
         )
 
     def test_two_types_in_params(self):
-        args = query_args(FakeRequest({}), 'json', 'WMC,EUR')
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'type__code__in': ['WMC', 'EUR'],
-            }
+        q = query_args(FakeRequest({}), 'json', 'WMC,EUR')
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(type__code__in=['WMC', 'EUR']))
         )
 
     def test_generation_specified(self):
-        args = query_args(
+        q = query_args(
             FakeRequest({'generation': self.old_generation.id}),
             'json',
             None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.old_generation.id,
-                'generation_low__lte': self.old_generation.id,
-            }
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.old_generation.id,
+                generation_low__lte=self.old_generation.id,
+            )
         )
 
     def test_min_generation_specified(self):
-        args = query_args(
+        q = query_args(
             FakeRequest({'min_generation': self.old_generation.id}),
             'json',
             None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.old_generation.id,
-                'generation_low__lte': self.active_generation.id,
-            }
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.old_generation.id,
+                generation_low__lte=self.active_generation.id,
+            )
         )
 
     def test_one_country_in_query(self):
-        args = query_args(FakeRequest({'country': 'DE'}), 'json', None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'country__code': 'DE',
-            }
+        q = query_args(FakeRequest({'country': 'DE'}), 'json', None)
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(country__code='DE') | Q(countries__code='DE'))
         )
 
     def test_two_countries_in_query(self):
-        args = query_args(FakeRequest({'country': 'DE,FR'}), 'json', None)
-        self.assertEqual(
-            args,
-            {
-                'generation_high__gte': self.active_generation.id,
-                'generation_low__lte': self.active_generation.id,
-                'country__code__in': ['DE', 'FR'],
-            }
+        q = query_args(FakeRequest({'country': 'DE,FR'}), 'json', None)
+        self.q_equality(
+            q,
+            Q(
+                generation_high__gte=self.active_generation.id,
+                generation_low__lte=self.active_generation.id,
+            ) & (Q() | Q(country__code__in=['DE', 'FR']) | Q(countries__code__in=['DE', 'FR']))
         )
