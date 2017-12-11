@@ -6,7 +6,12 @@ from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.conf import settings
 
-CONFIG = settings.MAPIT_RATE_LIMIT
+CONFIG = settings.MAPIT_RATE_LIMIT or {}
+if isinstance(CONFIG, list):
+    CONFIG = {
+        'ips': CONFIG,
+        'user_agents': CONFIG,
+    }
 _sentinel = object()
 
 
