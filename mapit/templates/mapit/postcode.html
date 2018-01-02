@@ -30,6 +30,7 @@
 {% include "mapit/map/init.html" %}
 <script>
     var point = new L.LatLng({{ postcode.wgs84_lat|floatformat:-6 }}, {{ postcode.wgs84_lon|floatformat:-6 }});
+    L.Icon.Default.prototype.options.imagePath = '/static/mapit/leaflet/images/';
     var marker = new L.Marker(point);
     map.addLayer(marker);
     map.setView(point, 14);
