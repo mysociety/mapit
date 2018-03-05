@@ -147,6 +147,11 @@ class AreaViewsTest(TestCase):
         self.assertEqual(response_area.status_code, 200)
         content_area = json.loads(response_area.content.decode('utf-8'))
 
+        url_area = '/area/%d.kml' % id
+        response_area = self.client.get(url_area)
+        self.assertEqual(response_area.status_code, 200)
+        self.assertContains(response_area, '<kml')
+
         url_areas = '/areas/%d.geojson' % id
         response_areas = self.client.get(url_areas)
         self.assertEqual(response_areas.status_code, 200)
