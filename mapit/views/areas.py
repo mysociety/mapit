@@ -418,6 +418,7 @@ def point_form_submitted(request):
 # ---
 
 
+@csrf_exempt
 def deal_with_POST(request, call='areas'):
     url = request.POST.get('URL', '')
     if not url:
