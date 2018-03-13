@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
 from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.functional import cached_property
 
 from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
@@ -233,18 +234,9 @@ class Area(models.Model):
     class Meta:
         ordering = ('name', 'type')
 
-    @property
+    @cached_property
     def all_codes(self):
-        if not hasattr(self, '_all_codes'):
-            code_list = self.codes.select_related('type')
-            self._all_codes = {}
-            for code in code_list:
-                self._all_codes[code.type.code] = code.code
-        return self._all_codes
-
-    @all_codes.setter
-    def all_codes(self, value):
-        self._all_codes = value
+        return {code.type.code: code.code for code in self.codes.select_related('type')}
 
     def __str__(self):
         name = self.name or '(unknown)'
@@ -265,16 +257,20 @@ class Area(models.Model):
             'codes': self.all_codes,
             'all_names': dict(n.as_tuple() for n in all_names),
         }
-        countries = [{'code': c.code, 'name': c.name} for c in self.countries.all()]
+        countries = self.all_m2m_countries
         if countries:
             out['countries'] = countries
         return out
 
     def list_countries(self):
-        countries = [c.name for c in self.countries.all()]
+        countries = [c['name'] for c in self.all_m2m_countries]
         if self.country:
             countries.append(self.country.name)
         return countries
+
+    @cached_property
+    def all_m2m_countries(self):
+        return [{'code': c.code, 'name': c.name} for c in self.countries.all()]
 
     def export(self,
                srid,

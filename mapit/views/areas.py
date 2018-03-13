@@ -25,19 +25,27 @@ from mapit.geometryserialiser import GeometrySerialiser, TransformError
 
 def add_codes(areas):
     """Given an iterable of areas, return an iterator of those areas with codes
-    attached. We don't use prefetch_related because this can use a lot of
-    memory."""
+    and m2m countries attached. We don't use prefetch_related because this can
+    use a lot of memory."""
     codes = Code.objects.select_related('type').filter(area__in=areas)
+    countries = Area.countries.through.objects.select_related('country').filter(area__in=areas)
+
     lookup = {}
+    lookup_countries = {}
     for code in codes.iterator():
         lookup.setdefault(code.area_id, {})[code.type.code] = code.code
+    for m2m in countries.iterator():
+        c = m2m.country
+        lookup_countries.setdefault(m2m.area_id, []).append({'code': c.code, 'name': c.name})
+
     if isinstance(areas, QuerySet):
         if hasattr(countries, 'sorted_areas'):
             areas = countries.sorted_areas(areas)
         areas = areas.iterator()
+
     for area in areas:
-        if area.id in lookup:
-            area.all_codes = lookup[area.id]
+        area.all_codes = lookup.get(area.id, {})
+        area.all_m2m_countries = lookup_countries.get(area.id, [])
         yield area
 
 
