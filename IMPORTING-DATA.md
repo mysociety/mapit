@@ -44,7 +44,7 @@ To update a live mapit server we:
 1.  Checkout the [Mapit](https://github.com/alphagov/mapit) repo to your
     dev VM if you don't have it already.
 2.  Prepare your mapit repo so that you can run the importer scripts:
-    a)  Run `startup.sh` - this will install all dependencies and run
+    a)  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
         the server, once the server is running you can kill it, we just
         wanted the dependencies installed.
     b)  Prepare your database for importing new data by running the
@@ -77,12 +77,11 @@ To update a live mapit server we:
         don't have a single download and you have to fetch each dataset
         we want individually. We're looking for the latest releases from
         the OSNI Open Data Largescale Boundaries of the following:
-
-        i.   Wards 2012
-        ii.  District Electoral Areas 2012
-        iii. Local Government Districts 2012
-        iv.  Parliamentary Constituencies 2008
-        v.   NI Outline
+        i.   [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
+        ii.  [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
+        iii. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
+        iv.  [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
+        v.   [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
         If the boundaries are redrawn the name of the dataset may change to
         reflect the year of the legislation (e.g. there are Wards 1993 and
         Wards 2012 datasets at the moment, future legislation may introduce a
@@ -103,10 +102,16 @@ To update a live mapit server we:
     lookup can fail (finding parents) or give incorrect
     results (postcodes).
 
-    A tool like [qgis](http://www.qgis.org/en/site/) can be used to
-    investigate the SRID of a shapefile. Most likely SRIDs are 29902
-    (the NI projection), 29900 (the UK projection), 4326 (the web
-    mercator projection used by google earth among others).
+    Use [`ogrinfo`](http://www.gdal.org/ogrinfo.html) to get the SRID of
+    a shapefile:
+    ```
+    $ ogrinfo OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008.shp OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008 -so
+    ```
+
+    Look up the `GEOGCS` field on [this coordinate systems page](http://downloads.esri.com/support/documentation/ims_/Support_files/elements/pcs.htm)
+    to find the SRID. Most likely SRIDs are 29902 (the NI  projection),
+    29900 (the UK projection), 4326 (the web mercator projection used
+    by google earth among others).
 
 6.  Run the `import-uk-onspd` script to import the data:
 
@@ -138,6 +143,10 @@ To update a live mapit server we:
     to fix the import scripts, or create new ones, consider talking with
     mysociety developers to see if they're aware and if you can push
     those changes back upstream.
+
+    If the script fails, it's likely you'll need to drop and recreate
+    the database and run the scripts again from scratch. Idempotency is
+    patchy.
 
 7.  Check for missing codes.
 
