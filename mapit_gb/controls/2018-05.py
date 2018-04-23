@@ -53,6 +53,8 @@ def check(name, type, country, geometry, ons_code, commit, **args):
         area.generation_low = new_generation
         if commit:
             area.save()
+            # Delete the old ONS code because that only applies to the old boundary
+            area.codes.filter(type=CodeType.objects.get(code='ons')).delete()
             # Update the GSS code because it's what the main script will then use, oddly.
             area.codes.update_or_create(type=CodeType.objects.get(code='gss'), defaults={'code': ons_code})
 
