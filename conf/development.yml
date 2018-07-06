@@ -1,0 +1,62 @@
+# general.yml-example:
+# Example values for the "general.yml" config file.
+#
+# Copy this file to one called "general.yml" in the same directory. Or have
+# multiple config files and use a symlink to change between them.
+
+# Connection details for database
+MAPIT_DB_NAME: 'mapit'
+MAPIT_DB_USER: 'mapit'
+MAPIT_DB_PASS: 'mapit'
+MAPIT_DB_HOST: 'localhost'
+MAPIT_DB_PORT: null
+
+# Country is currently one of GB, NO, or KE. Optional; country specific things won't happen if not set.
+COUNTRY: 'GB'
+
+# An EPSG code for what the areas are stored as, e.g. 27700 is OSGB, 4326 for WGS84.
+# Optional, defaults to 4326.
+AREA_SRID: 27700
+
+# A secret key for this particular Django installation.
+# Set this to a random string -- the longer, the better.
+DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
+
+# Mapped to Django's DEBUG and TEMPLATE_DEBUG settings. Optional, defaults to True.
+DEBUG: True
+
+# A GA code
+GOOGLE_ANALYTICS: ""
+
+# A list of IP addresses or User Agents that should be excluded from rate limiting. Optional.
+RATE_LIMIT:
+  - '127.0.0.1'
+
+# Email address that errors should be sent to. Optional. Only used if DEBUG=False
+BUGS_EMAIL: 'example@example.org'
+
+# Overrides the default subject prefix of '[Django] '
+# EMAIL_SUBJECT_PREFIX: '[MapIt Dev] '
+
+#########################################################################
+
+# You can ignore all of the settings below this point in the file
+# unless you want to use the scripts for setting up MapIt Global.
+
+# The scripts for setting up global MapIt rely on a Overpass API
+# server.  For bulk imports (e.g. setting up a instance of Global
+# MapIt) you should set up your own Overpass server locally, but for
+# generating a few KML files from OSM, it's easier to just use a
+# remote server.
+LOCAL_OVERPASS: False
+
+# If you want to use a local overpass server (i.e. LOCAL_OVERPASS is
+# True) then you should specify here the path to the database
+# directory.
+OVERPASS_DB_DIRECTORY: '/home/overpass/db/'
+
+# If you're using a remote overpass server (i.e. LOCAL_OVERPASS is
+# False) you should set its URL here. Please be aware that these
+# scripts can put a lot of load on the remote server, so set up your
+# own Overpass server for bulk imports.
+OVERPASS_SERVER: 'http://overpass-api.de/api/interpreter'

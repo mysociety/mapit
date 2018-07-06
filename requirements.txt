@@ -1,0 +1,20 @@
+Django==1.8.18
+PyYAML==3.11
+Shapely==1.5.9
+argparse==1.2.1
+gunicorn==19.3.0
+numpy==1.9.2
+psycopg2==2.6.1
+uk-postcode-utils==1.0
+
+# Keep pygdal at the same minor version as the system gdal packages:
+#   - gdal-bin
+#   - libgdal-dev
+#   - libgdal1h
+pygdal==1.10.1.0
+
+python-memcached==1.54
+six==1.9.0
+wsgiref==0.1.2
+
+raven==6.1

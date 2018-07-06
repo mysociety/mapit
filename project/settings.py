@@ -12,8 +12,16 @@ PARENT_DIR = os.path.dirname(BASE_DIR)
 # of the repo, containing a general.yml file of options. Use that file if
 # present. Obviously you can just edit any part of this file, it is a normal
 # Django settings.py file.
+ENVIRONMENT = os.environ.get('GOVUK_ENV', 'production')
+if ENVIRONMENT == 'development':
+    conffile = 'development.yml'
+elif ENVIRONMENT == 'ci':
+    conffile = 'ci.yml'
+else:
+    conffile = 'general.yml'
+
 try:
-    with open(os.path.join(BASE_DIR, 'conf', 'general.yml'), 'r') as fp:
+    with open(os.path.join(BASE_DIR, 'conf', conffile), 'r') as fp:
         config = yaml.load(fp)
 except:
     config = {}
@@ -70,19 +78,27 @@ if config.get('BUGS_EMAIL'):
 if config.get('EMAIL_SUBJECT_PREFIX'):
     EMAIL_SUBJECT_PREFIX = config['EMAIL_SUBJECT_PREFIX']
 
+if ENVIRONMENT == 'production':
+    MAPIT_DB_PASS = os.environ['MAPIT_DB_PASS']
+else:
+    MAPIT_DB_PASS = config.get('MAPIT_DB_PASS', 'mapit')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
         'USER': config.get('MAPIT_DB_USER', 'mapit'),
-        'PASSWORD': config.get('MAPIT_DB_PASS', ''),
+        'PASSWORD': MAPIT_DB_PASS,
         'HOST': config.get('MAPIT_DB_HOST', ''),
         'PORT': config.get('MAPIT_DB_PORT', ''),
     }
 }
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
+if ENVIRONMENT == 'production':
+    SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+else:
+    SECRET_KEY = config.get('DJANGO_SECRET_KEY', '')
 
 ALLOWED_HOSTS = ['*']
 
@@ -207,7 +223,13 @@ INSTALLED_APPS = [
     'django.contrib.gis',
     'django.contrib.staticfiles',
     'mapit',
+    'raven.contrib.django.raven_compat',
 ]
+
+RAVEN_CONFIG = {
+    'dsn': os.getenv('SENTRY_DSN'),
+    'environment': os.getenv('SENTRY_CURRENT_ENV'),
+}
 
 LOGGING = {
     'version': 1,
