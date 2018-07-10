@@ -1,4 +1,4 @@
-Django==1.11.2
+Django==1.11.14
 PyYAML==3.11
 Shapely==1.5.9
 argparse==1.2.1
@@ -11,7 +11,7 @@ uk-postcode-utils==1.0
 #   - gdal-bin
 #   - libgdal-dev
 #   - libgdal1h
-pygdal==1.10.1.0
+pygdal==1.11.5.3
 
 python-memcached==1.54
 six==1.9.0
