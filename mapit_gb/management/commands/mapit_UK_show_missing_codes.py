@@ -1,23 +1,26 @@
 from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation
-from optparse import make_option
+import argparse
 
 
 class Command(BaseCommand):
     help = "Prints results of queries to check we aren't missing SNAC and GSS codes"
-    option_list = BaseCommand.option_list + (
-        make_option(
-            "--code_types", dest="code_types",
+
+    def add_arguments(self, parser):
+        parser.add_argument("--code_types",
+            dest="code_types",
             help="The list of code types to search for",
-            default="ons,gss,govuk_slug"),
-        make_option(
-            "--area_types", dest="area_types",
+            default="ons,gss,govuk_slug"
+        )
+
+        parser.add_argument("--area_types",
+            dest="area_types",
             help="The list of area types to search for",
             # These types are from
             # http://github.com/alphagov/imminence/blob/26f6c9e5969a9e09bd24d6e2e4ebfe55dba1d997/config/routes.rb#L13
             # except for COI which is used in Frontend:
             # https://github.com/alphagov/frontend/blob/aed183cf3ed6a1e77cf3ec11f7dd6c238a7557cf/lib/location_identifier.rb#L4
-            default="EUR,CTY,DIS,LBO,LGD,MTD,UTA,COI"),
+            default="EUR,CTY,DIS,LBO,LGD,MTD,UTA,COI",
         )
 
     def handle(self, *args, **options):
