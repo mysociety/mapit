@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation
 from optparse import make_option
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Prints results of queries to check we aren't missing SNAC and GSS codes"
-    option_list = NoArgsCommand.option_list + (
+    option_list = BaseCommand.option_list + (
         make_option(
             "--code_types", dest="code_types",
             help="The list of code types to search for",
@@ -20,7 +20,7 @@ class Command(NoArgsCommand):
             default="EUR,CTY,DIS,LBO,LGD,MTD,UTA,COI"),
         )
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         current_generation = Generation.objects.current()
         current_areas = Area.objects.filter(
             generation_low__lte=current_generation,

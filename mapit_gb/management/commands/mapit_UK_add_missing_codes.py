@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Adds missing gss codes from imports"
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         for missing in self.missing_codes():
             print "Looking at adding {missing_code} ({missing_code_type}) to {missing_name} ({missing_type})".format(
                 missing_code=missing.code, missing_code_type=missing.code_type().code,
