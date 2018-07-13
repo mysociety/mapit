@@ -2,8 +2,8 @@
 set -e
 
 # get the data from s3
-sudo -u deploy curl 'https://s3-eu-west-1.amazonaws.com/govuk-custom-formats-mapit-storage-production/source-data/2018-03/mapit-Feb-2018.sql.gz' -o mapit.sql.gz
-if ! echo "c5523c7925120011c006fef8205bd9d0e8fce97e mapit.sql.gz" | sha1sum -c -; then
+sudo -u deploy curl 'https://s3-eu-west-1.amazonaws.com/govuk-custom-formats-mapit-storage-production/source-data/2018-07/mapit-20180713160154.sql.gz' -o mapit.sql.gz
+if ! echo "4838278eb5f8900b2a14f2a836eb8ae1bb979a40 mapit.sql.gz" | sha1sum -c -; then
   echo "SHA1 does not match downloaded file!"
   exit 1
 fi
