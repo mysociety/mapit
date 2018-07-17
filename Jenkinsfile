@@ -16,7 +16,7 @@ node {
     stage('Installing Packages') {
       sh("rm -rf ./venv")
       sh("virtualenv --no-site-packages ./venv")
-      sh("./venv/bin/python ./venv/bin/pip -q install --upgrade pip wheel")
+      sh("./venv/bin/python ./venv/bin/pip -q install --upgrade pip wheel setuptools")
       sh("./venv/bin/python ./venv/bin/pip -q install -r requirements.txt")
     }
 
