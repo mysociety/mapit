@@ -3,14 +3,14 @@
 import csv
 import os.path
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, NameType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Imports local authority names from openregister'
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         name_type = NameType.objects.get(code='M')
 
         iso_to_gss = {}
