@@ -1,11 +1,11 @@
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = "Adds missing gss codes from imports"
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         for missing in self.missing_codes():
             print "Looking at adding {missing_code} ({missing_code_type}) to {missing_name} ({missing_type})".format(
                 missing_code=missing.code, missing_code_type=missing.code_type().code,
@@ -24,20 +24,28 @@ class Command(NoArgsCommand):
             # From Register of Geographic Codes (Jul 2015) UK available via
             # https://geoportal.statistics.gov.uk/geoportal/catalog/main/home.page
             MissingGssCode(code='N07000001', area_type='EUR', area_name='Northern Ireland'),
+
             # Following 4 from:
             # https://github.gds/gds/puppet/commit/66ff9b9506ef93d6274ded22c263148288cb1400
             MissingOnsCode(code='26UG', area_type='DIS', area_name='St Albans Borough Council'),
             MissingOnsCode(code='26UL', area_type='DIS', area_name='Welwyn Hatfield Borough Council'),
             MissingOnsCode(code='00QL', area_type='UTA', area_name='East Dunbartonshire Council'),
             MissingOnsCode(code='00QS', area_type='UTA', area_name='Glasgow City Council'),
+
             # Next 1 (and above 2) from:
             # https://github.com/alphagov/mapit-scripts/blob/master/README.md#notes
             MissingOnsCode(code='00EM', area_type='UTA', area_name='Northumberland Council'),
+
             # Following 3 used:
             # http://govuklocal.dafyddvaughan.co.uk/authorities/ to find the missing code
             MissingOnsCode(code='26UD', area_type='DIS', area_name='East Hertfordshire District Council'),
             MissingOnsCode(code='26UH', area_type='DIS', area_name='Stevenage Borough Council'),
             MissingOnsCode(code='00CH', area_type='MTD', area_name='Gateshead Borough Council'),
+
+            # From https://www.ons.gov.uk/ons/guide-method/geography/products/area-classifications/ns-area-classifications/index/corresponding-authorities/local-authorities/corresponding-las.xls
+            MissingOnsCode(code='00QR', area_type='UTA', area_name='Fife Council'),
+            MissingOnsCode(code='00RB', area_type='UTA', area_name='Perth and Kinross Council'),
+
             # Adding GSS Code as an Ons code to try to support NI areas
             MissingOnsCode(code='N09000001', area_type='LGD', area_name='Antrim and Newtownabbey Borough Council'),
             MissingOnsCode(code='N09000002', area_type='LGD',

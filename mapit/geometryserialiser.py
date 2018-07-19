@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.contrib.gis.gdal import OGRException, SRSException
+from django.contrib.gis.gdal import GDALException, SRSException
 from django.contrib.gis.db.models import Collect
 from django.utils.html import escape
 
@@ -67,7 +67,7 @@ class GeometrySerialiser(object):
         if self.srid != settings.MAPIT_AREA_SRID:
             try:
                 polygons.transform(self.srid)
-            except (SRSException, OGRException) as e:
+            except (SRSException, GDALException) as e:
                 raise TransformError("Error with transform: %s" % e)
         return polygons
 
@@ -103,12 +103,12 @@ class GeometrySerialiser(object):
         if kml_type == "full":
             output = self.kml_header % (line_colour, fill_colour)
             for area in processed_areas:
-                output += self.kml_placemark % (escape(area[1].name), area[0].kml)
+                output += self.kml_placemark % (escape(area[1].name), area[0].ogr.kml)
             output += self.kml_footer
             return (output, content_type)
         elif kml_type == "polygon":
             if len(processed_areas) == 1:
-                return (processed_areas[0][0].kml, content_type)
+                return (processed_areas[0][0].ogr.kml, content_type)
             else:
                 raise Exception("kml_type: '%s' not supported for multiple areas"
                                 % (kml_type,))
@@ -120,7 +120,7 @@ class GeometrySerialiser(object):
         content_type = 'application/json'
         processed_areas = self.__process_polygons()
         if len(processed_areas) == 1 and self.single:
-            return (processed_areas[0][0].json, content_type)
+            return (processed_areas[0][0].ogr.json, content_type)
         else:
             output = {
                 'type': 'FeatureCollection',
@@ -135,7 +135,7 @@ class GeometrySerialiser(object):
         return {
             'type': 'Feature',
             'properties': {'name': area.name},
-            'geometry': json.loads(polygons.json),
+            'geometry': json.loads(polygons.ogr.json),
         }
 
     # output self.areas as wkt

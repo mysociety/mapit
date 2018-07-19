@@ -6,14 +6,30 @@ from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.conf import settings
 
+CONFIG = settings.MAPIT_RATE_LIMIT or {}
+if isinstance(CONFIG, list):
+    CONFIG = {
+        'ips': CONFIG,
+        'user_agents': CONFIG,
+    }
+_sentinel = object()
 
-class ratelimit(object):
+
+def ratelimit(_f=_sentinel, **kwargs):
+    if _f is _sentinel:
+        return RateLimiter(**kwargs)
+    return RateLimiter()(_f)
+
+
+class RateLimiter(object):
     "Instances of this class can be used as decorators"
     # This class is designed to be sub-classed
-    minutes = 2  # The time period
-    requests = 20  # Number of allowed requests in that time period
+    minutes = CONFIG.get('minutes', 3)  # The time period
+    requests = CONFIG.get('requests', 100)  # Number of allowed requests in that time period
     # IP addresses or user agents that aren't rate limited
-    excluded = settings.MAPIT_RATE_LIMIT
+    excluded_ips = CONFIG.get('ips', [])
+    excluded_uas = CONFIG.get('user_agents', [])
+    excluded_fns = CONFIG.get('functions', [])
 
     prefix = 'rl-'  # Prefix for memcache key
 
@@ -22,6 +38,9 @@ class ratelimit(object):
             setattr(self, key, value)
 
     def __call__(self, fn):
+        if fn.__name__ in self.excluded_fns:
+            return fn
+
         def wrapper(request, *args, **kwargs):
             return self.view_wrapper(request, fn, *args, **kwargs)
         functools.update_wrapper(wrapper, fn)
@@ -31,9 +50,9 @@ class ratelimit(object):
         if not self.should_ratelimit(request):
             return fn(request, *args, **kwargs)
 
-        if request.META.get('REMOTE_ADDR', '') in self.excluded or \
+        if request.META.get('REMOTE_ADDR', '') in self.excluded_ips or \
                 ('/' in request.META.get('HTTP_USER_AGENT', '') and
-                    request.META.get('HTTP_USER_AGENT', '') in self.excluded):
+                    request.META.get('HTTP_USER_AGENT', '') in self.excluded_uas):
             return fn(request, *args, **kwargs)
 
         # If we're using the DummyCache backend then no data will
@@ -101,7 +120,7 @@ class ratelimit(object):
         return (self.minutes + 1) * 60
 
 
-class ratelimit_post(ratelimit):
+class ratelimit_post(RateLimiter):
     "Rate limit POSTs - can be used to protect a login form"
     key_field = None  # If provided, this POST var will affect the rate limit
 

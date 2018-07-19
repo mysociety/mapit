@@ -12,7 +12,7 @@ from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
 from django.utils import six
 
-from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType
+from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType, Code
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
@@ -36,7 +36,7 @@ class Command(LabelCommand):
         __import__(options['control'])
         control = sys.modules[options['control']]
 
-        code_version = CodeType.objects.get(code=control.code_version())
+        code_version = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='O')
         code_type_os = CodeType.objects.get(code='unit_id')
 
@@ -92,28 +92,12 @@ class Command(LabelCommand):
                 poly.append(feat.geom)
                 continue
 
-            if code_version.code == 'gss' and ons_code:
+            if ons_code:
                 country = ons_code[0]  # Hooray!
             elif area_code in ('CED', 'CTY', 'DIW', 'DIS', 'MTW', 'MTD', 'LBW', 'LBO', 'LAC', 'GLA'):
                 country = 'E'
-            elif code_version.code == 'gss':
+            else:
                 raise Exception(area_code)
-            elif (area_code == 'EUR' and 'Scotland' in name) or area_code in ('SPC', 'SPE') or (
-                    ons_code and ons_code[0:3] in ('00Q', '00R')):
-                country = 'S'
-            elif (area_code == 'EUR' and 'Wales' in name) or area_code in ('WAC', 'WAE') or (
-                    ons_code and ons_code[0:3] in ('00N', '00P')):
-                country = 'W'
-            elif area_code in ('EUR', 'UTA', 'UTE', 'UTW', 'CPC'):
-                country = 'E'
-            else:  # WMC
-                # Make sure WMC are loaded after all wards...
-                area_within = Area.objects.filter(
-                    type__code__in=('UTW', 'UTE', 'MTW', 'COP', 'LBW', 'DIW'),
-                    polygons__polygon__contains=feat.geom.geos.point_on_surface)[0]
-                country = area_within.country.code
-            # Can't do the above ons_code checks with new GSS codes, will have to do more PinP checks
-            # Do parents in separate P-in-P code after this is done.
 
             try:
                 check = control.check(name, area_code, country, feat.geom, ons_code=ons_code, commit=options['commit'])
@@ -121,7 +105,10 @@ class Command(LabelCommand):
                     raise Area.DoesNotExist
                 if isinstance(check, Area):
                     m = check
-                    ons_code = m.codes.get(type=code_version).code
+                    try:
+                        ons_code = m.codes.get(type=code_version).code
+                    except Code.DoesNotExist:
+                        ons_code = None
                 elif ons_code:
                     m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:

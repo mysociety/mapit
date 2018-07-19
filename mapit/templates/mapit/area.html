@@ -11,9 +11,7 @@
         <ul>
             <li>{%trans "Type" %}: <a href="{% url "mapit_index" %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
             <li>{%trans "Exists in generations" %}: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
-            {% if country != 'Global' %}
-            <li>{% trans "Country" %}: {{ area.country }}</li>
-            {% endif %}
+            <li>{% trans "Country" %}: {{ area.list_countries|join:", "|default:"-" }}</li>
             {% if area.parent_area %}
             {% with area.parent_area.id|slugify as area_id %}
             <li>{% blocktrans with name=area.parent_area.name url=index_url|add:"area/"|add:area_id|add:".html" %}A child of <a href="{{ url }}">{{ name }}</a>.{% endblocktrans %}</li>
@@ -36,31 +34,10 @@
     </header>
 
 {% if area.polygons.count %}
-<div id="map"><div id="leaflet"></div></div>
-<script>
-    var map = new L.Map("leaflet");
-    map.attributionControl.setPrefix('');
-    var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '{% trans 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' %}',
-        maxZoom: 18
-    });
-    map.addLayer(osm);
-
-    reqwest({
-        url: "{% url "mapit_index" %}area/{{ area.id }}.geojson?simplify_tolerance=0.0001",
-        type: 'json',
-        success: function(data) {
-            var area = new L.GeoJSON(data);
-            area.on('dblclick', function(e){
-                var z = map.getZoom() + (e.originalEvent.shiftKey ? -1 : 1);
-                map.setZoomAround(e.containerPoint, z);
-            });
-            map.addLayer(area);
-            map.fitBounds(area.getBounds());
-        }
-    });
-
-</script>
+{% include "mapit/map/init.html" %}
+{% with area.id|slugify as area_id %}
+{% include "mapit/map/json.html" with geojson_url="area/"|add:area_id %}
+{% endwith %}
 {% endif %}
 
     <section class="details">

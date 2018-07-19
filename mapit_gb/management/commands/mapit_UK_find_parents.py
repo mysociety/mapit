@@ -23,7 +23,7 @@ class Command(FindParentsCommand):
         # A Unitary Authority ward (UTE)'s parent is a Unitary Authority:
         'UTE': 'UTA',
         # A Unitary Authority ward (UTW)'s parent is a Unitary Authority:
-        'UTW': 'UTA',
+        'UTW': ('UTA', 'COI'),
         # A Scottish Parliament constituency's parent is a Scottish Parliament region:
         'SPC': 'SPE',
         # A Welsh Assembly constituency's parent is a Welsh Assembly region:

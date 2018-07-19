@@ -3,14 +3,14 @@
 import json
 import os.path
 
-from django.core.management.base import NoArgsCommand
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 
 
-class Command(NoArgsCommand):
+class Command(BaseCommand):
     help = 'Assigns slugs from authorities.json to local authorities'
 
-    def handle_noargs(self, **options):
+    def handle(self, *args, **options):
         code_type, _ = CodeType.objects.get_or_create(
             code='govuk_slug',
             defaults={'description': 'Slug for use by GOV.UK'}

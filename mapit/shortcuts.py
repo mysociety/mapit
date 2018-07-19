@@ -1,4 +1,5 @@
 import itertools
+import re
 
 from django import http
 from django.db import connection
@@ -23,14 +24,17 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
 
 
 def output_html(request, title, areas, **kwargs):
-    kwargs['json_url'] = request.get_full_path().replace('.html', '')
+    kwargs['json_url'] = re.sub('(\.map)?\.html', '', request.get_full_path())
     kwargs['title'] = title
     tpl = loader.render_to_string('mapit/data.html', kwargs, request=request)
     wraps = tpl.split('!!!DATA!!!')
 
     indent_areas = kwargs.get('indent_areas', False)
+    show_map = kwargs.get('show_map', False)
     item_tpl = loader.get_template('mapit/areas_item.html')
-    areas = map(lambda area: item_tpl.render({'area': area, 'indent_areas': indent_areas}), areas)
+    areas = map(lambda area: item_tpl.render({
+        'area': area, 'indent_areas': indent_areas, 'show_map': show_map,
+    }), areas)
     areas = defaultiter(areas, '<li>' + _('No matching areas found.') + '</li>')
     content = itertools.chain(wraps[0:1], areas, wraps[1:])
 

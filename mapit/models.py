@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
 from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.functional import cached_property
 
 from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
@@ -125,9 +126,10 @@ class Type(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-class AreaManager(models.GeoManager):
+class AreaManager(models.Manager):
     def get_queryset(self):
-        return super(AreaManager, self).get_queryset().select_related('type', 'country')
+        return super(AreaManager, self).get_queryset().select_related(
+            'type', 'country', 'parent_area').prefetch_related('countries')
 
     def by_location(self, location, generation=None):
         if generation is None:
@@ -223,7 +225,8 @@ class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
     type = models.ForeignKey(Type, related_name='areas', on_delete=models.CASCADE)
-    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True, on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name='areas_direct', null=True, blank=True, on_delete=models.CASCADE)
+    countries = models.ManyToManyField(Country, related_name='areas_m2m', blank=True)
     generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True, on_delete=models.CASCADE)
     generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True, on_delete=models.CASCADE)
 
@@ -232,18 +235,9 @@ class Area(models.Model):
     class Meta:
         ordering = ('name', 'type')
 
-    @property
+    @cached_property
     def all_codes(self):
-        if not hasattr(self, '_all_codes'):
-            code_list = self.codes.select_related('type')
-            self._all_codes = {}
-            for code in code_list:
-                self._all_codes[code.type.code] = code.code
-        return self._all_codes
-
-    @all_codes.setter
-    def all_codes(self, value):
-        self._all_codes = value
+        return {code.type.code: code.code for code in self.codes.select_related('type')}
 
     def __str__(self):
         name = self.name or '(unknown)'
@@ -251,7 +245,7 @@ class Area(models.Model):
 
     def as_dict(self, all_names=None):
         all_names = all_names or []
-        return {
+        out = {
             'id': self.id,
             'name': self.name,
             'parent_area': self.parent_area_id,
@@ -264,6 +258,20 @@ class Area(models.Model):
             'codes': self.all_codes,
             'all_names': dict(n.as_tuple() for n in all_names),
         }
+        countries = self.all_m2m_countries
+        if countries:
+            out['countries'] = countries
+        return out
+
+    def list_countries(self):
+        countries = [c['name'] for c in self.all_m2m_countries]
+        if self.country:
+            countries.append(self.country.name)
+        return countries
+
+    @cached_property
+    def all_m2m_countries(self):
+        return [{'code': c.code, 'name': c.name} for c in self.countries.all()]
 
     def export(self,
                srid,
@@ -313,7 +321,6 @@ class Area(models.Model):
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
-    objects = models.GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
@@ -397,7 +404,7 @@ class Code(models.Model):
 
 # Postcodes
 
-class PostcodeQuerySet(models.query.GeoQuerySet):
+class PostcodeQuerySet(models.QuerySet):
     # ST_CoveredBy on its own does not appear to use the index.
     # Plus this way we can keep the polygons in the database
     # without pulling out in a giant WKB string

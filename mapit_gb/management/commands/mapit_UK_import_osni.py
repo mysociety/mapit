@@ -104,7 +104,7 @@ class Command(BaseCommand):
             self.process_file(options['eur_file'], 'EUR', options['eur_srid'], control, options)
 
     def process_file(self, filename, area_code, srid, control, options):
-        code_version = CodeType.objects.get(code=control.code_version())
+        code_version = CodeType.objects.get(code='gss')
         name_type = NameType.objects.get(code='N')
         code_type_osni = CodeType.objects.get(code='osni_oid')
         if not hasattr(self, area_code):

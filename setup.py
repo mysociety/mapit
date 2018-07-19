@@ -38,7 +38,7 @@ def read_file(filename):
 
 setup(
     name='django-mapit',
-    version='1.6',
+    version='2.0',
     description=(
         'A web service for mapping postcodes and points to current or past '
         'administrative area information and polygons.'),
@@ -51,7 +51,7 @@ setup(
     scripts=['bin/mapit_make_css'],
     include_package_data=True,
     install_requires=[
-        'Django >= 1.8.5',
+        'Django >= 1.11.2',
         'libsass',
         'psycopg2',
         'PyYAML',

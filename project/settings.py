@@ -34,9 +34,9 @@ MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 # Optional; country specific things won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')
 
-# A list of IP addresses or User Agents that should be excluded from rate
-# limiting. Optional.
-MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', [])
+# A dictionary of IP addresses, User Agents, or functions that should be
+# excluded from rate limiting. Optional.
+MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', {})
 
 # A GA code for analytics
 GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
@@ -183,13 +183,12 @@ STATICFILES_FINDERS = (
 # similar ETag code in CommonMiddleware.
 USE_ETAGS = False
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.http.ConditionalGetMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'mapit.middleware.JSONPMiddleware',
@@ -203,11 +202,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': (
-        # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-        # Always use forward slashes, even on Windows.
-        # Don't forget to use absolute paths, not relative paths.
-    ),
+    'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': (
             'django.template.context_processors.request',
@@ -215,13 +210,6 @@ TEMPLATES = [{
             'django.contrib.messages.context_processors.messages',
             'mapit.context_processors.country',
             'mapit.context_processors.analytics',
-        ),
-        # List of callables that know how to import templates from various sources.
-        'loaders': (
-            ('django.template.loaders.cached.Loader', (
-                'django.template.loaders.filesystem.Loader',
-                'django.template.loaders.app_directories.Loader',
-            )),
         ),
     },
 }]

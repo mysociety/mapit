@@ -1,8 +1,8 @@
 {% load i18n %}
-<li>
+<li class="js-map-hover" id="area/{{ area.id }}">
     <h3><a href="{% url "mapit_index" %}area/{{ area.id }}.html">{{ area.name }}</a></h3>
     <p>ID {{ area.id }}, {{ area.type.description }}
-        <small>({{ area.type.code }})</small>, {{ area.country }}</p>
+        <small>({{ area.type.code }})</small>, {{ area.list_countries|join:", "|default:"-" }}</p>
     {% if area.parent_area %}
     {% url "mapit_index" as index_url %}
     {% with area.parent_area.id|slugify as area_id %}
@@ -10,3 +10,8 @@
     {% endwith %}
     {% endif %}
 </li>
+{% if show_map %}
+    {% with area.id|slugify as area_id and area.name as area_name %}
+    {% include "mapit/map/json.html" with geojson_url="area/"|add:area_id geojson_text=area_name|add:" ("|add:area_id|add:")" %}
+    {% endwith %}
+{% endif %}

@@ -114,8 +114,21 @@ class AreaViewsTest(TestCase):
         self.assertEqual(response.status_code, 400)
         content = json.loads(response.content.decode('utf-8'))
         self.assertEqual(content, {
-            'code': 400, 'error': 'GetProj4StringSPI: Cannot find SRID (84) in spatial_ref_sys\n'
+            'code': 400, 'error': 'Point outside the area geometry'
         })
+
+    def test_nearest(self):
+        url = '/nearest/4326/4,52.json'
+        response = self.client.get(url)
+        content = get_content(response)
+        self.assertEqual(content, {'postcode': {
+            'coordsyst': 'G',
+            'distance': 519051.0,
+            'easting': 295977,
+            'northing': 178963,
+            'postcode': 'PO14 1NT',
+            'wgs84_lat': 51.5, 'wgs84_lon': -3.5
+        }})
 
     def test_areas_polygon_valid(self):
         id1 = self.small_area_1.id
@@ -133,6 +146,11 @@ class AreaViewsTest(TestCase):
         response_area = self.client.get(url_area)
         self.assertEqual(response_area.status_code, 200)
         content_area = json.loads(response_area.content.decode('utf-8'))
+
+        url_area = '/area/%d.kml' % id
+        response_area = self.client.get(url_area)
+        self.assertEqual(response_area.status_code, 200)
+        self.assertContains(response_area, '<kml')
 
         url_areas = '/areas/%d.geojson' % id
         response_areas = self.client.get(url_areas)

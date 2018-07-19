@@ -5,14 +5,15 @@ from django.db.utils import DatabaseError
 from django.utils.translation import ugettext as _
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models import Collect
+from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import resolve, reverse
+from django.urls import resolve, reverse
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
-from mapit.models import Area, Generation, Geometry, Code, Name
+from mapit.models import Area, Generation, Code, Name
 from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
@@ -24,24 +25,35 @@ from mapit.geometryserialiser import GeometrySerialiser, TransformError
 
 def add_codes(areas):
     """Given an iterable of areas, return an iterator of those areas with codes
-    attached. We don't use prefetch_related because this can use a lot of
-    memory."""
+    and m2m countries attached. We don't use prefetch_related because this can
+    use a lot of memory."""
     codes = Code.objects.select_related('type').filter(area__in=areas)
+    countries = Area.countries.through.objects.select_related('country').filter(area__in=areas)
+
     lookup = {}
+    lookup_countries = {}
     for code in codes.iterator():
         lookup.setdefault(code.area_id, {})[code.type.code] = code.code
+    for m2m in countries.iterator():
+        c = m2m.country
+        lookup_countries.setdefault(m2m.area_id, []).append({'code': c.code, 'name': c.name})
+
     if isinstance(areas, QuerySet):
         if hasattr(countries, 'sorted_areas'):
             areas = countries.sorted_areas(areas)
         areas = areas.iterator()
+
     for area in areas:
-        if area.id in lookup:
-            area.all_codes = lookup[area.id]
+        area.all_codes = lookup.get(area.id, {})
+        area.all_m2m_countries = lookup_countries.get(area.id, [])
         yield area
 
 
 def output_areas(request, title, format, areas, **kwargs):
     areas = add_codes(areas)
+    if format == 'map.html':
+        format = 'html'
+        kwargs['show_map'] = True
     if format == 'html':
         return output_html(request, title, areas, **kwargs)
     return output_json(iterdict((area.id, area.as_dict()) for area in areas))
@@ -64,6 +76,7 @@ def query_args(request, format, type=None):
 
     if type is None:
         type = request.GET.get('type', '')
+    country_code = request.GET.get('country', '')
 
     args = {}
     if min_generation > -1:
@@ -71,12 +84,22 @@ def query_args(request, format, type=None):
             'generation_low__lte': generation,
             'generation_high__gte': min_generation,
         }
-    if ',' in type:
-        args['type__code__in'] = type.split(',')
-    elif type:
-        args['type__code'] = type
 
-    return args
+    query = Q(**args)
+
+    for attr, value in [
+            (['type'], type),
+            (['country', 'countries'], country_code),
+    ]:
+        q = Q()
+        for a in attr:
+            if ',' in value:
+                q |= Q(**{a + '__code__in': value.split(',')})
+            elif value:
+                q |= Q(**{a + '__code': value})
+        query &= q
+
+    return query
 
 
 def query_args_polygon(request, format, srid, area_ids):
@@ -104,7 +127,7 @@ def generations(request, format='json'):
     return output_json(dict((g.id, g.as_dict()) for g in generations))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area(request, area_id, format='json'):
     if hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
@@ -148,7 +171,7 @@ def area(request, area_id, format='json'):
     return output_json(area.as_dict(names))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_polygon(request, srid='', area_id='', format='kml'):
     if not srid and hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
@@ -169,11 +192,11 @@ def area_polygon(request, srid='', area_id='', format='kml'):
     return output_polygon(content_type, output)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_children(request, area_id, format='json'):
-    args = query_args(request, format)
+    q = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
-    children = area.children.filter(**args)
+    children = area.children.filter(q).distinct()
     return output_areas(request, _('Children of %s') % area.name, format, children)
 
 
@@ -203,59 +226,59 @@ def area_intersect(query_type, title, request, area_id, format):
     return output_areas(request, title, format, areas, norobots=True)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_touches(request, area_id, format='json'):
     return area_intersect('touches', _('Areas touching %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_overlaps(request, area_id, format='json'):
     return area_intersect('overlaps', _('Areas overlapping %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_covers(request, area_id, format='json'):
     return area_intersect('coveredby', _('Areas covered by %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_coverlaps(request, area_id, format='json'):
     return area_intersect(['overlaps', 'coveredby'], _('Areas covered by or overlapping %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_covered(request, area_id, format='json'):
     return area_intersect('covers', _('Areas that cover %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_intersects(request, area_id, format='json'):
     return area_intersect('intersects', _('Areas that intersect %s'), request, area_id, format)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas(request, area_ids, format='json'):
     area_ids = area_ids.split(',')
     areas = Area.objects.filter(id__in=area_ids)
     return output_areas(request, _('Areas ID lookup'), format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_type(request, type, format='json'):
-    args = query_args(request, format, type)
-    areas = Area.objects.filter(**args)
+    q = query_args(request, format, type)
+    areas = Area.objects.filter(q).distinct()
     return output_areas(request, _('Areas in %s') % type, format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_name(request, name, format='json'):
-    args = query_args(request, format)
-    args['name__istartswith'] = name
-    areas = Area.objects.filter(**args)
+    q = query_args(request, format)
+    q &= Q(name__istartswith=name)
+    areas = Area.objects.filter(q).distinct()
     return output_areas(request, _('Areas starting with %s') % name, format, areas)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_polygon(request, area_ids, srid='', format='kml'):
     area_ids = area_ids.split(',')
     args = query_args_polygon(request, format, srid, area_ids)
@@ -276,7 +299,7 @@ def areas_polygon(request, area_ids, srid='', format='kml'):
     return output_polygon(content_type, output)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_geometry(request, area_id):
     area = _area_geometry(area_id)
     if isinstance(area, HttpResponse):
@@ -313,7 +336,7 @@ def _area_geometry(area_id):
     return out
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_geometry(request, area_ids):
     area_ids = area_ids.split(',')
     out = {}
@@ -325,13 +348,12 @@ def areas_geometry(request, area_ids):
     return output_json(out)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def area_from_code(request, code_type, code_value, format='json'):
-    args = query_args(request, format)
-    args['codes__type__code'] = code_type
-    args['codes__code'] = code_value
+    q = query_args(request, format)
+    q &= Q(codes__type__code=code_type, codes__code=code_value)
     try:
-        area = Area.objects.get(**args)
+        area = Area.objects.get(q)
     except Area.DoesNotExist:
         message = _('No areas were found that matched code {0} = {1}.').format(code_type, code_value)
         raise ViewException(format, message, 404)
@@ -344,7 +366,7 @@ def area_from_code(request, code_type, code_value, format='json'):
     return HttpResponseRedirect(reverse('area', kwargs=area_kwargs))
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point(request, srid, x, y, bb=False, format='json'):
     location = Point(float(x), float(y), srid=int(srid))
 
@@ -357,30 +379,13 @@ def areas_by_point(request, srid, x, y, bb=False, format='json'):
 
     method = 'box' if bb and bb != 'polygon' else 'polygon'
 
-    args = query_args(request, format)
-    type = request.GET.get('type', '')
+    q = query_args(request, format)
 
-    if type and method == 'polygon':
-        args = dict(("area__%s" % k, v) for k, v in args.items())
-        # So this is odd. It doesn't matter if you specify types, PostGIS will
-        # do the contains test on all the geometries matching the bounding-box
-        # index, even if it could be much quicker to filter some out first
-        # (ie. the EUR ones).
-        args['polygon__bbcontains'] = location
-        shapes = Geometry.objects.filter(**args).defer('polygon')
-        areas = []
-        for shape in shapes:
-            try:
-                areas.append(Area.objects.get(polygons__id=shape.id, polygons__polygon__contains=location))
-            except:
-                pass
+    if method == 'box':
+        q &= Q(polygons__polygon__bbcontains=location)
     else:
-        if method == 'box':
-            args['polygons__polygon__bbcontains'] = location
-        else:
-            geoms = list(Geometry.objects.filter(polygon__contains=location).defer('polygon'))
-            args['polygons__in'] = geoms
-        areas = Area.objects.filter(**args)
+        q &= Q(polygons__polygon__contains=location)
+    areas = Area.objects.filter(q).distinct()
 
     return output_areas(
         request, _('Areas covering the point ({0},{1})').format(x, y),
@@ -394,12 +399,12 @@ def _areas_by_point(x, y, srid, **kwargs):
     return HttpResponseRedirect(redirect_path)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point_latlon(request, **kwargs):
     return _areas_by_point('lon', 'lat', 4326, **kwargs)
 
 
-@ratelimit(minutes=3, requests=100)
+@ratelimit
 def areas_by_point_osgb(request, **kwargs):
     return _areas_by_point('e', 'n', 27700, **kwargs)
 
@@ -421,6 +426,7 @@ def point_form_submitted(request):
 # ---
 
 
+@csrf_exempt
 def deal_with_POST(request, call='areas'):
     url = request.POST.get('URL', '')
     if not url:

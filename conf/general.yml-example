@@ -30,7 +30,14 @@ GOOGLE_ANALYTICS: ""
 
 # A list of IP addresses or User Agents that should be excluded from rate limiting. Optional.
 RATE_LIMIT:
-  - '127.0.0.1'
+  minutes: 2
+  requests: 20
+  ips:
+    - '127.0.0.1'
+  user_agents:
+    - 'MapIt/1.0'
+  functions:
+    - 'partial_postcode'
 
 # Email address that errors should be sent to. Optional.
 BUGS_EMAIL: 'example@example.org'

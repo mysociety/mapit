@@ -5,12 +5,52 @@
 
 {% block content %}
 
+{% if show_map %}
+    <header class="area_info">
+{% endif %}
+
 <h2>{{ title|safe }}</h2>
 
 <p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
 
+{% if show_map %}
+    </header>
+
+    {% include "mapit/map/init.html" %}
+
+    <section class="details">
+{% endif %}
+
 <ol class="area_list">
     !!!DATA!!!
 </ol>
+
+{% if show_map %}
+    </section>
+
+    <script>
+(function() {
+    function hover_start(e) {
+        var id = this.id;
+        mapit.areas.eachLayer(function(area) {
+            if (area.mapit_id == id) {
+                area.setStyle({ color: '#f00' });
+            }
+        });
+    }
+    function hover_end(e) {
+        mapit.areas.eachLayer(function(area) {
+            area.setStyle({ color: '#38f' });
+        });
+    }
+    var items = document.querySelectorAll('.js-map-hover');
+    for (var i=0; i<items.length; i++) {
+        var item = items[i];
+        item.onmouseenter = hover_start;
+        item.onmouseleave = hover_end;
+    }
+})();
+    </script>
+{% endif %}
 
 {% endblock %}
