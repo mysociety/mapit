@@ -281,6 +281,9 @@ you want to test and run the following:
     $ while read line; do curl -sI $line | grep HTTP/1.1 ; done <mapit-302s | sort | uniq -c
         419 HTTP/1.1 302 OK
 
+    # Check that the 200s are still returning areas:
+    $ while read line; do curl $line | python -c "import sys, json; data = json.load(sys.stdin); print '${line} found' if len(data['areas']) > 0 else '${line} missing'"; done <mapit-200s
+
 This process has been automated somewhat via the following fabric
 script:
 
