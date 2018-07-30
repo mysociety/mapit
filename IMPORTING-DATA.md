@@ -44,10 +44,10 @@ To update a live mapit server we:
 1.  Checkout the [Mapit](https://github.com/alphagov/mapit) repo to your
     dev VM if you don't have it already.
 2.  Prepare your mapit repo so that you can run the importer scripts:
-    a)  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
+    1.  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
         the server, once the server is running you can kill it, we just
         wanted the dependencies installed.
-    b)  Prepare your database for importing new data by running the
+    2.  Prepare your database for importing new data by running the
         following to create an empty database and migrate it to the
         empty mapit schema:
 
@@ -61,27 +61,27 @@ To update a live mapit server we:
 
 4.  Find the latest ONS Postcode Database, Boundary Line, and
     OSNI datasets.
-    a)  MySociety may have mirrored the latest datasets on their cache
+    1.  MySociety may have mirrored the latest datasets on their cache
         server: <http://parlvid.mysociety.org/os/> so check there first.
-    b)  ONSPD releases can be found via the Office for National
+    2.  ONSPD releases can be found via the Office for National
         Statistics (ONS) at
         <http://geoportal.statistics.gov.uk/datasets?q=ONS+Postcode+Directory+(ONSPD)&sort_by=name&sort_order=asc>
         or via
         <http://geoportal.statistics.gov.uk/> and selecting the latest ONSPD
         from the Postcodes product drop down.
-    c)  Boundary Line releases can be found via the Ordnance Survey (OS)
+    3.  Boundary Line releases can be found via the Ordnance Survey (OS)
         at
         <https://www.ordnancesurvey.co.uk/business-and-government/products/boundary-line.html>
-    d)  OSNI releases can be found via their Spatial NI site at
+    4.  OSNI releases can be found via their Spatial NI site at
         <http://osni.spatial-ni.opendata.arcgis.com/>. Note that they
         don't have a single download and you have to fetch each dataset
         we want individually. We're looking for the latest releases from
         the OSNI Open Data Largescale Boundaries of the following:
-        i.   [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
-        ii.  [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
-        iii. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
-        iv.  [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
-        v.   [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
+        1. [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
+        2. [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
+        3. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
+        4. [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
+        5. [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
         If the boundaries are redrawn the name of the dataset may change to
         reflect the year of the legislation (e.g. there are Wards 1993 and
         Wards 2012 datasets at the moment, future legislation may introduce a
@@ -181,8 +181,11 @@ To update a live mapit server we:
 
         $ curl http://mapit.dev.gov.uk/postcode/ME206QZ
 
-    You should expect a `200` response with useful looking JSON in
-    the body.
+    You should expect a `200` response with data present in the `areas`
+    field of the response.
+
+    Ensure you test postcodes from all parts of the UK, since Northern 
+    Ireland data has been loaded separately.
 9.  Make PRs for any changes you had to make. You will have changed the
     `import-uk-onspd` script in `mapit-scripts` to refer to new
     datasets. If anything failed you may have had to change other things
@@ -194,7 +197,7 @@ Export the database you just built on your Dev VM:
 
     $ sudo -u postgres pg_dump mapit | gzip > mapit.sql.gz
 
-It should be \~250Mb in size. You'll want to give it a name that refers
+It should be \~500Mb in size. You'll want to give it a name that refers
 to what data it contains. Perhaps `mapit-<%b%Y>.sql.gz` (using
 `strftime` parlance) for a standard release, or
 `mapit-<%b%Y>-<a-description-of-change>.sql.gz` if you've had to change
@@ -327,11 +330,3 @@ in case they change. An example of doing this is [frontend PR 948]
 residing in Frontend,[it has been moved it to MapIt since]
 (https://github.com/alphagov/mapit/pull/20)).
 
-The Business Support API uses GSS codes to match business support schemes to
-local authorities so that we provide relevant ones for a location. This data
-comes from Publisher. When we update MapIt, Publisher reads straight away from
-the new MapIt data, so new business support schemes will automatically get new
-codes. There are existing business support schemes though tagged to old GSS
-codes, so for any that have changed, you will need to create a migration to
-migrate the old GSS codes to new GSS codes for each affected council. An example
-of doing this is [publisher PR 475](https://github.com/alphagov/publisher/pull/475).

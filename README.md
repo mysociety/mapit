@@ -424,4 +424,4 @@ If we need to change the code itself, we should communicate with mysociety to tr
 
 ## Licence
 
-[GNU Affero GPL](LICENCE.txt)
+[GNU Affero GPL](LICENSE.txt)
