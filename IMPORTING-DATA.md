@@ -327,11 +327,3 @@ in case they change. An example of doing this is [frontend PR 948]
 residing in Frontend,[it has been moved it to MapIt since]
 (https://github.com/alphagov/mapit/pull/20)).
 
-The Business Support API uses GSS codes to match business support schemes to
-local authorities so that we provide relevant ones for a location. This data
-comes from Publisher. When we update MapIt, Publisher reads straight away from
-the new MapIt data, so new business support schemes will automatically get new
-codes. There are existing business support schemes though tagged to old GSS
-codes, so for any that have changed, you will need to create a migration to
-migrate the old GSS codes to new GSS codes for each affected council. An example
-of doing this is [publisher PR 475](https://github.com/alphagov/publisher/pull/475).
