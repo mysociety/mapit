@@ -294,6 +294,19 @@ run it on rather than replaying traffic from production. Useful when
 upgrading production environments, perhaps less so for upgrading other
 environments.
 
+For a more comprehensive test, you can use the `test-samples.sh`
+script, which needs to be run before and after a database upgrade:
+
+    $ your laptop> ssh mapit-1.production
+    $ mapit-1> /var/apps/mapit/test-samples.sh sample
+
+Perform the database import in the usual way, and then run the script
+in "check" mode, to download the postcode data again and diff the
+results:
+
+    $ your laptop> ssh mapit-1.production
+    $ mapit-1> /var/apps/mapit/test-samples.sh check
+
 Things you might have to fix
 ----------------------------
 
