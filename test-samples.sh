@@ -29,11 +29,23 @@ function main {
   fi
 
   if [[ "$1" == "check" ]] || [[ "$1" == "verify" ]]; then
+    if ! command jsondiff &>/dev/null; then
+      echo "Installing jsondiff to temporary directory"
+      venv=$(mktemp -d)
+      virtualenv "$venv"
+      source "$venv/bin/activate"
+      pip install jsondiff
+    fi
+
     echo "Checking current state against sample outputs"
 
     for postcode in $(grep -E '^\w' $postcodes_file); do
       check_postcode "$postcode" "$samples_dir" "$postcodes_output_dir"
     done
+
+    if [[ ! -z "$venv" ]]; then
+      rm -r "$venv"
+    fi
   fi
 }
 

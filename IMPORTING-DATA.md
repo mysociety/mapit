@@ -305,9 +305,6 @@ in "check" mode, to download the postcode data again and diff the
 results:
 
     $ your laptop> ssh mapit-1.production
-    $ mapit-1> virtualenv venv
-    $ mapit-1> source venv/bin/activate
-    $ mapit-1> pip install jsondiff
     $ mapit-1> /var/apps/mapit/test-samples.sh check
 
 Things you might have to fix
