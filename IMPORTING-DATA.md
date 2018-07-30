@@ -181,8 +181,11 @@ To update a live mapit server we:
 
         $ curl http://mapit.dev.gov.uk/postcode/ME206QZ
 
-    You should expect a `200` response with useful looking JSON in
-    the body.
+    You should expect a `200` response with data present in the `areas`
+    field of the response.
+
+    Ensure you test postcodes from all parts of the UK, since Northern 
+    Ireland data has been loaded separately.
 9.  Make PRs for any changes you had to make. You will have changed the
     `import-uk-onspd` script in `mapit-scripts` to refer to new
     datasets. If anything failed you may have had to change other things
@@ -194,7 +197,7 @@ Export the database you just built on your Dev VM:
 
     $ sudo -u postgres pg_dump mapit | gzip > mapit.sql.gz
 
-It should be \~250Mb in size. You'll want to give it a name that refers
+It should be \~500Mb in size. You'll want to give it a name that refers
 to what data it contains. Perhaps `mapit-<%b%Y>.sql.gz` (using
 `strftime` parlance) for a standard release, or
 `mapit-<%b%Y>-<a-description-of-change>.sql.gz` if you've had to change
