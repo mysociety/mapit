@@ -44,10 +44,10 @@ To update a live mapit server we:
 1.  Checkout the [Mapit](https://github.com/alphagov/mapit) repo to your
     dev VM if you don't have it already.
 2.  Prepare your mapit repo so that you can run the importer scripts:
-    a)  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
+    1.  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
         the server, once the server is running you can kill it, we just
         wanted the dependencies installed.
-    b)  Prepare your database for importing new data by running the
+    2.  Prepare your database for importing new data by running the
         following to create an empty database and migrate it to the
         empty mapit schema:
 
@@ -61,27 +61,27 @@ To update a live mapit server we:
 
 4.  Find the latest ONS Postcode Database, Boundary Line, and
     OSNI datasets.
-    a)  MySociety may have mirrored the latest datasets on their cache
+    1.  MySociety may have mirrored the latest datasets on their cache
         server: <http://parlvid.mysociety.org/os/> so check there first.
-    b)  ONSPD releases can be found via the Office for National
+    2.  ONSPD releases can be found via the Office for National
         Statistics (ONS) at
         <http://geoportal.statistics.gov.uk/datasets?q=ONS+Postcode+Directory+(ONSPD)&sort_by=name&sort_order=asc>
         or via
         <http://geoportal.statistics.gov.uk/> and selecting the latest ONSPD
         from the Postcodes product drop down.
-    c)  Boundary Line releases can be found via the Ordnance Survey (OS)
+    3.  Boundary Line releases can be found via the Ordnance Survey (OS)
         at
         <https://www.ordnancesurvey.co.uk/business-and-government/products/boundary-line.html>
-    d)  OSNI releases can be found via their Spatial NI site at
+    4.  OSNI releases can be found via their Spatial NI site at
         <http://osni.spatial-ni.opendata.arcgis.com/>. Note that they
         don't have a single download and you have to fetch each dataset
         we want individually. We're looking for the latest releases from
         the OSNI Open Data Largescale Boundaries of the following:
-        i.   [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
-        ii.  [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
-        iii. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
-        iv.  [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
-        v.   [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
+        1. [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
+        2. [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
+        3. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
+        4. [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
+        5. [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
         If the boundaries are redrawn the name of the dataset may change to
         reflect the year of the legislation (e.g. there are Wards 1993 and
         Wards 2012 datasets at the moment, future legislation may introduce a
