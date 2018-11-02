@@ -18,7 +18,7 @@ class KML(ContentHandler):
 
     @staticmethod
     def normalize_whitespace(s):
-        return re.sub('(?us)\s+', ' ', s).strip()
+        return re.sub(r'(?us)\s+', ' ', s).strip()
 
     def endElement(self, name):
         if name == 'name':
@@ -84,7 +84,7 @@ def fix_with_exterior_union_polygonize(geos_polygon):
 
 
 def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
-    """Try to make a valid version of an invalid GEOS polygon
+    r"""Try to make a valid version of an invalid GEOS polygon
 
     The test cases and techniques used here are from the helpful
     presentation here: http://s3.opengeo.org/postgis-power.pdf
@@ -208,7 +208,7 @@ def fix_invalid_geos_polygon(geos_polygon, methods=('buffer', 'exterior')):
 
 
 def fix_invalid_geos_multipolygon(geos_multipolygon):
-    """Try to fix an invalid GEOS MultiPolygon
+    r"""Try to fix an invalid GEOS MultiPolygon
 
     Two overlapping valid polyons should be unioned to one shape:
 

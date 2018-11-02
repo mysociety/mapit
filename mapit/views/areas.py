@@ -114,7 +114,7 @@ def query_args_polygon(request, format, srid, area_ids):
         raise ViewException(format, _('Badly specified tolerance'), 400)
 
     for area_id in area_ids:
-        if not re.match('\d+$', area_id):
+        if not re.match(r'\d+$', area_id):
             raise ViewException(format, _('Bad area ID specified'), 400)
 
     return args
@@ -134,7 +134,7 @@ def area(request, area_id, format='json'):
         if resp:
             return resp
 
-    if not re.match('\d+$', area_id):
+    if not re.match(r'\d+$', area_id):
         raise ViewException(format, _('Bad area ID specified'), 400)
 
     area = get_object_or_404(Area, format=format, id=area_id)
@@ -414,7 +414,7 @@ def point_form_submitted(request):
     latlon = request.POST.get('pc', '')
     if not request.method == 'POST' or not latlon:
         return redirect('mapit_index')
-    m = re.match('\s*(%s)\s*,\s*(%s)' % (re_number, re_number), latlon)
+    m = re.match(r'\s*(%s)\s*,\s*(%s)' % (re_number, re_number), latlon)
     if not m:
         return redirect('mapit_index')
     lat, lon = m.groups()

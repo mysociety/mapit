@@ -53,8 +53,8 @@ class Command(LabelCommand):
             if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
 
-            name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
-            name = re.sub('\s+', ' ', name)
+            name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
+            name = re.sub(r'\s+', ' ', name)
 
             ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
             unit_id = str(feat['UNIT_ID'].value)

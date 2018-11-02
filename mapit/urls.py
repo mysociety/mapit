@@ -7,8 +7,8 @@ from mapit.views import areas, postcodes
 
 handler500 = 'mapit.shortcuts.json_500'
 
-format_end = '(?:\.(?P<format>html|json))?'
-map_format_end = '(?:\.(?P<format>map\.html|html|json))?'
+format_end = r'(?:\.(?P<format>html|json))?'
+map_format_end = r'(?:\.(?P<format>map\.html|html|json))?'
 
 urlpatterns = [
     url(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
