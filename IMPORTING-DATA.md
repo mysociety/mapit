@@ -156,9 +156,9 @@ To update a live mapit server we:
     moment at least) much of GOV.UK relies on snac codes to link
     things up.
 
-    To find out how many objects are missing a code run the following:
+    The `import-uk-onspd` script's last action is to run a script to show missing codes. It's the line that reads
 
-        $ govuk_setenv mapit .venv/bin/python ./manage.py mapit_UK_show_missing_codes
+        $MANAGE mapit_UK_show_missing_codes
 
     This iterates over all area types we care about and lists those that
     are missing a GSS code (hopefully none) and how many are missing an
@@ -173,6 +173,7 @@ To update a live mapit server we:
 
     Hopefully by the time the next releases happen GOV.UK will not rely
     on ONS/snac codes and this will cease being an issue.
+    
 8.  Test some postcodes.
 
     If you've had users complaining that their postcode isn't
