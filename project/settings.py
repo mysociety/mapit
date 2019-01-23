@@ -75,9 +75,9 @@ DATABASES = {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
         'USER': config.get('MAPIT_DB_USER', 'mapit'),
-        'PASSWORD': config.get('MAPIT_DB_PASS', ''),
-        'HOST': config.get('MAPIT_DB_HOST', ''),
-        'PORT': config.get('MAPIT_DB_PORT', ''),
+        'PASSWORD': config.get('MAPIT_DB_PASS', 'mapit'),
+        'HOST': config.get('MAPIT_DB_HOST', 'db'),
+        'PORT': config.get('MAPIT_DB_PORT', '5432'),
     }
 }
 

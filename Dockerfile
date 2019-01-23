@@ -27,6 +27,11 @@ ENV APP_SRVHOME=/src
 # Directory in container for project source files
 ENV APP_SRVPROJ=/src/mapit
 
+# Create application subdirectories
+WORKDIR $APP_SRVHOME
+RUN mkdir media static logs
+VOLUME ["$APP_SRVHOME/media/", "$APP_SRVHOME/logs/"]
+
 # Add application source code to SRCDIR
 ADD $APP_SRC $APP_SRVPROJ
 WORKDIR $APP_SRVPROJ
