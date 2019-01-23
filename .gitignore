@@ -19,6 +19,7 @@
 
 # This is the name that the install notes suggest be used for the virtualenv
 .venv
+env/
 
 .DS_Store
 .vagrant
