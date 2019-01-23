@@ -23,7 +23,7 @@ services:
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings
       - DATABASE_URL=postgresql://mapit:mapit@db:5432/mapit
-      - DJANGO_SECRET_KEY=somethingsecret
+      - DJANGO_SECRET_KEY=guutyfghvbkllkjhg
       - PGHOST=db
       - PGDATABASE=mapit
       - PGUSER=mapit
