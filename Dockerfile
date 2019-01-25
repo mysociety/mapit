@@ -44,4 +44,4 @@ EXPOSE 8000
 
 COPY ./docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD [ "--name", "mapit", "--reload", "mapit.wsgi:application" ]
+CMD [ "--name", "mapit", "--reload", "project.wsgi:application" ]

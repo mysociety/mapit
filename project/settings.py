@@ -20,22 +20,22 @@ except:
 
 # An EPSG code for what the areas are stored as, e.g. 27700 is OSGB, 4326 for
 # WGS84. Optional, defaults to 4326.
-MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
+MAPIT_AREA_SRID = int(config.get('AREA_SRID', os.environ.get('AREA_SRID', 4326)))
 
 # Country is currently one of GB, NO, IT, KE, SA, or ZA.
 # Optional; country specific things won't happen if not set.
-MAPIT_COUNTRY = config.get('COUNTRY', '')
+MAPIT_COUNTRY = config.get('COUNTRY', os.environ.get('COUNTRY', ''))
 
 # A dictionary of IP addresses, User Agents, or functions that should be
 # excluded from rate limiting. Optional.
-MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', {})
+MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', os.environ.get('RATE_LIMIT', {}))
 
 # A GA code for analytics
-GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
+GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', os.environ.get('GOOGLE_ANALYTICS', ''))
 
 # Django settings for mapit project.
 
-DEBUG = config.get('DEBUG', True)
+DEBUG = config.get('DEBUG', os.environ.get('DEBUG',True))
 
 # (Note that even if DEBUG is true, output_json still sets a
 # Cache-Control header with max-age of 28 days.)
@@ -59,30 +59,38 @@ else:
     except ImportError:
         pass
     CACHE_MIDDLEWARE_SECONDS = 86400
-    CACHE_MIDDLEWARE_KEY_PREFIX = config.get('MAPIT_DB_NAME')
+    CACHE_MIDDLEWARE_KEY_PREFIX = config.get('MAPIT_DB_NAME', os.environ.get('MAPIT_DB_NAME'))
 
 if config.get('BUGS_EMAIL'):
     SERVER_EMAIL = config['BUGS_EMAIL']
     ADMINS = (
-        ('mySociety bugs', config['BUGS_EMAIL']),
+        ('mySociety bugs', SERVER_EMAIL),
+    )
+if  os.environ.get('BUGS_EMAIL'):
+    SERVER_EMAIL = os.environ['BUGS_EMAIL']
+    ADMINS = (
+        ('mySociety bugs', SERVER_EMAIL),
     )
 
 if config.get('EMAIL_SUBJECT_PREFIX'):
     EMAIL_SUBJECT_PREFIX = config['EMAIL_SUBJECT_PREFIX']
 
+if os.environ.get('EMAIL_SUBJECT_PREFIX'):
+    EMAIL_SUBJECT_PREFIX = os.environ['EMAIL_SUBJECT_PREFIX']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
-        'USER': config.get('MAPIT_DB_USER', 'mapit'),
-        'PASSWORD': config.get('MAPIT_DB_PASS', 'mapit'),
-        'HOST': config.get('MAPIT_DB_HOST', 'db'),
-        'PORT': config.get('MAPIT_DB_PORT', '5432'),
+        'NAME': config.get('MAPIT_DB_NAME', os.environ.get('MAPIT_DB_NAME')),
+        'USER': config.get('MAPIT_DB_USER', os.environ.get('MAPIT_DB_USER')),
+        'PASSWORD': config.get('MAPIT_DB_PASS', os.environ.get('MAPIT_DB_PASS')),
+        'HOST': config.get('MAPIT_DB_HOST', os.environ.get('MAPIT_DB_HOST')),
+        'PORT': config.get('MAPIT_DB_PORT', os.environ.get('MAPIT_DB_PORT')),
     }
 }
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = config.get('DJANGO_SECRET_KEY', 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4')
+SECRET_KEY = config.get('DJANGO_SECRET_KEY', os.environ.get('DJANGO_SECRET_KEY'))
 
 ALLOWED_HOSTS = ['*']
 

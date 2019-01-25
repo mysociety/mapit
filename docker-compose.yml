@@ -19,14 +19,21 @@ services:
     depends_on:
       - db
     volumes:
-      - ./:/src/mapit_africa
+      - ./:/src/mapit
     environment:
       - DJANGO_SETTINGS_MODULE=project.settings
       - DATABASE_URL=postgresql://mapit:mapit@db:5432/mapit
-      - DJANGO_SECRET_KEY=guutyfghvbkllkjhg
-      - PGHOST=db
-      - PGDATABASE=mapit
-      - PGUSER=mapit
-      - PGPASSWORD=mapit
+      - DJANGO_SECRET_KEY=somethingsecret
+      - MAPIT_DB_HOST=db
+      - MAPIT_DB_NAME=mapit
+      - MAPIT_DB_USER=mapit
+      - MAPIT_DB_PASS=mapit
+      - AREA_SRID=
+      - COUNTRY=
+      - RATE_LIMIT=
+      - GOOGLE_ANALYTICS=
+      - DEBUG=
+      - BUGS_EMAIL=
+      - EMAIL_SUBJECT_PREFIX=
       - PYTHONDONTWRITEBYTECODE="True"
       # - DJANGO_DEBUG=False  # For testing deploys
