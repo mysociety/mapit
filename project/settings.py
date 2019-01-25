@@ -35,7 +35,7 @@ GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', os.environ.get('GOOGLE_ANALYTI
 
 # Django settings for mapit project.
 
-DEBUG = config.get('DEBUG', os.environ.get('DEBUG',True))
+DEBUG = config.get('DEBUG', os.environ.get('DEBUG', True))
 
 # (Note that even if DEBUG is true, output_json still sets a
 # Cache-Control header with max-age of 28 days.)
@@ -66,7 +66,7 @@ if config.get('BUGS_EMAIL'):
     ADMINS = (
         ('mySociety bugs', SERVER_EMAIL),
     )
-if  os.environ.get('BUGS_EMAIL'):
+if os.environ.get('BUGS_EMAIL'):
     SERVER_EMAIL = os.environ['BUGS_EMAIL']
     ADMINS = (
         ('mySociety bugs', SERVER_EMAIL),
