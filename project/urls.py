@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
 from django.conf.urls.static import static
 from django.contrib import admin
-import settings
+import project.settings as settings
 
 handler500 = 'mapit.shortcuts.json_500'
 
