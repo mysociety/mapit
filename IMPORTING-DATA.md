@@ -44,7 +44,7 @@ To update a live mapit server we:
 1.  Checkout the [Mapit](https://github.com/alphagov/mapit) repo to your
     dev VM if you don't have it already.
 2.  Prepare your mapit repo so that you can run the importer scripts:
-    1.  Run `govuk_setenv mapit startup.sh` - this will install all dependencies and run
+    1.  Run `govuk_setenv mapit ./startup.sh` - this will install all dependencies and run
         the server, once the server is running you can kill it, we just
         wanted the dependencies installed.
     2.  Prepare your database for importing new data by running the
