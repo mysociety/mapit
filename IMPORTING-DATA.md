@@ -46,15 +46,14 @@ To update a live mapit server we:
     development VM if you don't have it already. They should be in the
     `/var/govuk` directory.
 
-2.  Prepare your mapit repo so that you can run the importer scripts:
+2.  Prepare your Mapit installation so that you can run the importer scripts:
     1. Run `govuk_setenv mapit ./startup.sh` - this will install all
        dependencies and run the server, once the server is running you can kill
        it, we just wanted the dependencies installed.
     2. Run `govuk_setenv mapit ./reset-db.sh` - this will drop any existing
        database, create a new empty one and migrate it to the empty schema.
 
-3.  Find the latest ONS Postcode Database, Boundary Line, and
-    OSNI datasets.
+3.  Find the latest ONS Postcode Database, Boundary Line, and OSNI datasets.
     1.  MySociety may have mirrored the latest datasets on their cache
         server: <http://parlvid.mysociety.org/os/> so check there first.
     2.  ONSPD releases can be found via the Office for National
@@ -71,43 +70,48 @@ To update a live mapit server we:
         don't have a single download and you have to fetch each dataset
         we want individually. We're looking for the latest releases from
         the OSNI Open Data Largescale Boundaries of the following:
-        1. [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
-        2. [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
-        3. [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
-        4. [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
-        5. [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
+        - [Wards 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/55cd419b2d2144de9565c9b8f73a226d_0)
+        - [District Electoral Areas 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/981a83027c0e4790891baadcfaa359a3_4)
+        - [Local Government Districts 2012](http://osni-spatial-ni.opendata.arcgis.com/datasets/a55726475f1b460c927d1816ffde6c72_2)
+        - [Parliamentary Constituencies 2008](http://osni-spatial-ni.opendata.arcgis.com/datasets/563dc2ec3d9943428e3fe68966d40deb_3)
+        - [NI Outline](http://osni-spatial-ni.opendata.arcgis.com/datasets/d9dfdaf77847401e81efc9471dcd09e1_0)
         If the boundaries are redrawn the name of the dataset may change to
         reflect the year of the legislation (e.g. there are Wards 1993 and
         Wards 2012 datasets at the moment, future legislation may introduce a
         Wards 2020 dataset).
 
-4.  Update the `import-uk-onspd` script in `mapit-scripts` to refer to
-    the urls and filenames of the new releases instead of the old ones.
+        **Note:** the package of OSNI data that is mirrored on mysociety's
+        cache is currently a `.tar.gz` that contains all the all 5 shapefile
+        downloads and a `metadata.json` file describing the source, release
+        date, SRID and type. You should check that any new package has the
+        same structure and if not, update `import-uk-onspd` accordingly. If
+        you have to download your own copies of the OSNI data you should
+        check the shapefiles to find out the SRID because they may change
+        from the defaults and it is important to import the shapefiles with
+        the correct SRID or parts of the import process that rely on point
+        lookup can fail (finding parents) or give incorrect
+        results (postcodes).
 
-    Note that the package of OSNI data that is mirrored on mysociety's
-    cache is currently a `.tar.gz` that contains all the all 5 shapefile
-    downloads and a `metadata.json` file describing the source, release
-    date, SRID and type. You should check that any new package has the
-    same structure and if not, update `import-uk-onspd` accordingly. If
-    you have to download your own copies of the OSNI data you should
-    check the shapefiles to find out the SRID because they may change
-    from the defaults and it is important to import the shapefiles with
-    the correct SRID or parts of the import process that rely on point
-    lookup can fail (finding parents) or give incorrect
-    results (postcodes).
+        Use [`ogrinfo`](http://www.gdal.org/ogrinfo.html) to get the SRID of
+        a shapefile:
+        ```
+        $ ogrinfo OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008.shp OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008 -so
+        ```
 
-    Use [`ogrinfo`](http://www.gdal.org/ogrinfo.html) to get the SRID of
-    a shapefile:
-    ```
-    $ ogrinfo OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008.shp OSNI_Open_Data_Largescale_Boundaries__Parliamentary_Constituencies_2008 -so
-    ```
+        Look up the `GEOGCS` field on [this coordinate systems page](http://downloads.esri.com/support/documentation/ims_/Support_files/elements/pcs.htm)
+        to find the SRID. Most likely SRIDs are 29902 (the NI  projection),
+        29900 (the UK projection), 4326 (the web mercator projection used
+        by google earth among others).
 
-    Look up the `GEOGCS` field on [this coordinate systems page](http://downloads.esri.com/support/documentation/ims_/Support_files/elements/pcs.htm)
-    to find the SRID. Most likely SRIDs are 29902 (the NI  projection),
-    29900 (the UK projection), 4326 (the web mercator projection used
-    by google earth among others).
+4.  Upload the latest ONS Postcode Database, Boundary Line, and OSNI datasets
+    to the `govuk-custom-formats-mapit-storage-production` S3 bucket. The path
+    should be of the format `source-data/<year-month>/<filename>`.
 
-5.  Run the `import-uk-onspd` script to import the data:
+5.  Update the `import-uk-onspd` and `check-onsi-downloads` scripts in
+    `mapit-scripts` to refer to the URLs of the new releases uploaded to S3 in
+    the last step.
+
+6.  Run the `import-uk-onspd` script to import the data:
 
         $ ./import-uk-onspd
 
@@ -139,10 +143,10 @@ To update a live mapit server we:
     those changes back upstream.
 
     If the script fails, it's likely you'll need to drop and recreate
-    the database and run the scripts again from scratch. Idempotency is
-    patchy.
+    the database using the `reset-db.sh` script and run `import-uk-onspd`
+    again.
 
-6.  Check for missing codes.
+7.  Check for missing codes.
 
     The ONS used to identify areas with snac codes (called ons
     in mapit). They stopped doing this in 2011 and started using GSS
