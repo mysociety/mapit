@@ -166,7 +166,7 @@ To update a live mapit server we:
 
     There is a script in mapit:
     `mapit_gb/management/commands/mapit_UK_add_missing_codes.py` that
-    you can upate to add the codes once you work out if anything can
+    you can update to add the codes once you work out if anything can
     be done.
 
     Hopefully by the time the next releases happen GOV.UK will not rely
@@ -185,10 +185,11 @@ To update a live mapit server we:
 
     Ensure you test postcodes from all parts of the UK, since Northern
     Ireland data has been loaded separately.
+
 8.  Make PRs for any changes you had to make. You will have changed the
-    `import-uk-onspd` script in `mapit-scripts` to refer to new
-    datasets. If anything failed you may have had to change other things
-    in mapit too.
+    `import-uk-onspd` and `check-osni-downloads` script in `mapit-scripts` to
+    refer to new datasets. If anything failed you may have had to change other
+    things in mapit too.
 
 ### Export new database to S3
 
@@ -309,8 +310,7 @@ results:
     $ your laptop> ssh mapit-1.production
     $ mapit-1> /var/apps/mapit/test-samples.sh check
 
-Things you might have to fix
-----------------------------
+## Things you might have to fix
 
 The Office for National Statistics maintains a series of codes that represent a
 wide range of geographical areas of the UK. MapIt includes these and they are
