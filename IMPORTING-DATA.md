@@ -107,6 +107,12 @@ To update a live mapit server we:
     to the `govuk-custom-formats-mapit-storage-production` S3 bucket. The path
     should be of the format `source-data/<year-month>/<filename>`.
 
+    **Note:** the uploaded `<filename>` must match the naming convention
+    of the dataset files. This may not be case when initially downloaded.
+    For example, the ONSPD download for November 2018 is `2018-11`.
+    Files within `2018-11/data` are named `ONSPD_NOV_2018_UK.xxx`.
+    Before uploading in S3, rename folder `2018-11` to `ONSPD_NOV_2018_UK`.
+
 5.  Update the `import-uk-onspd` and `check-onsi-downloads` scripts in
     `mapit-scripts` to refer to the URLs of the new releases uploaded to S3 in
     the last step.
