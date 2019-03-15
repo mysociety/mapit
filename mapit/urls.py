@@ -9,6 +9,7 @@ handler500 = 'mapit.shortcuts.json_500'
 
 format_end = r'(?:\.(?P<format>html|json))?'
 map_format_end = r'(?:\.(?P<format>map\.html|html|json))?'
+data_format_end = r'\.(?P<format>kml|geojson)'
 
 urlpatterns = [
     url(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
@@ -25,6 +26,7 @@ urlpatterns = [
     url(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area, name='area'),
     url(r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, postcodes.example_postcode_for_area),
     url(r'^area/(?P<area_id>[0-9]+)/children%s$' % map_format_end, areas.area_children),
+    url(r'^area/(?P<area_id>[0-9]+)/children%s$' % data_format_end, areas.area_children),
     url(r'^area/(?P<area_id>[0-9]+)/geometry$', areas.area_geometry),
     url(r'^area/(?P<area_id>[0-9]+)/touches%s$' % map_format_end, areas.area_touches),
     url(r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % map_format_end, areas.area_overlaps),
@@ -47,10 +49,11 @@ urlpatterns = [
     url(r'^nearest/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)%s$' % (number, number, format_end), postcodes.nearest),
 
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % map_format_end, areas.areas),
-    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
-    url(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)\.(?P<format>kml|geojson)$', areas.areas_polygon),
+    url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % data_format_end, areas.areas_polygon),
+    url(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % data_format_end, areas.areas_polygon),
     url(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', areas.areas_geometry),
     url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % map_format_end, areas.areas_by_type),
+    url(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % data_format_end, areas.areas_by_type),
     url(r'^areas/(?P<name>.+?)%s$' % map_format_end, areas.areas_by_name),
     url(r'^areas$', areas.deal_with_POST, {'call': 'areas'}),
     url(r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, areas.area_from_code),

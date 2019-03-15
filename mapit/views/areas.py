@@ -102,7 +102,7 @@ def query_args(request, format, type=None):
     return query
 
 
-def query_args_polygon(request, format, srid, area_ids):
+def query_args_polygon(request, format, srid):
     args = {}
     if not srid:
         srid = 4326 if format in ('kml', 'json', 'geojson') else settings.MAPIT_AREA_SRID
@@ -113,11 +113,13 @@ def query_args_polygon(request, format, srid, area_ids):
     except ValueError:
         raise ViewException(format, _('Badly specified tolerance'), 400)
 
+    return args
+
+
+def check_area_ids(format, area_ids):
     for area_id in area_ids:
         if not re.match(r'\d+$', area_id):
             raise ViewException(format, _('Bad area ID specified'), 400)
-
-    return args
 
 
 def generations(request, format='json'):
@@ -178,7 +180,8 @@ def area_polygon(request, srid='', area_id='', format='kml'):
         if resp:
             return resp
 
-    args = query_args_polygon(request, format, srid, [area_id])
+    args = query_args_polygon(request, format, srid)
+    check_area_ids(format, [area_id])
 
     area = get_object_or_404(Area, id=area_id)
 
@@ -197,6 +200,8 @@ def area_children(request, area_id, format='json'):
     q = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
     children = area.children.filter(q).distinct()
+    if format in ('kml', 'geojson'):
+        return _areas_polygon(request, format, children)
     return output_areas(request, _('Children of %s') % area.name, format, children)
 
 
@@ -267,6 +272,8 @@ def areas(request, area_ids, format='json'):
 def areas_by_type(request, type, format='json'):
     q = query_args(request, format, type)
     areas = Area.objects.filter(q).distinct()
+    if format in ('kml', 'geojson'):
+        return _areas_polygon(request, format, areas)
     return output_areas(request, _('Areas in %s') % type, format, areas)
 
 
@@ -281,13 +288,19 @@ def areas_by_name(request, name, format='json'):
 @ratelimit
 def areas_polygon(request, area_ids, srid='', format='kml'):
     area_ids = area_ids.split(',')
-    args = query_args_polygon(request, format, srid, area_ids)
+    check_area_ids(format, area_ids)
 
     areas = list(Area.objects.filter(id__in=area_ids))
     if not areas:
         return output_json({'error': _('No areas found')}, code=404)
 
-    serialiser = GeometrySerialiser(areas, args['srid'], args['simplify_tolerance'])
+    return _areas_polygon(request, format, areas, srid)
+
+
+def _areas_polygon(request, format, areas, srid=None):
+    args = query_args_polygon(request, format, srid)
+    serialiser = GeometrySerialiser(list(areas), args['srid'], args['simplify_tolerance'])
+
     try:
         if format == 'kml':
             output, content_type = serialiser.kml('full')
