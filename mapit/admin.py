@@ -1,4 +1,5 @@
 from django.contrib.gis import admin
+from django.utils.html import format_html
 from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, CodeType, Country
 
 
@@ -21,8 +22,7 @@ class AreaAdmin(admin.OSMGeoAdmin):
     ]
 
     def geometries_link(self, obj):
-        return '<a href="../geometry/?area=%d">Shapes</a>' % obj.id
-    geometries_link.allow_tags = True
+        return format_html('<a href="../geometry/?area=%d">Shapes</a>' % obj.id)
 
 
 class GeometryAdmin(admin.OSMGeoAdmin):
