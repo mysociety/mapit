@@ -189,4 +189,13 @@ class Command(LabelCommand):
         if name == 'Coaley & Uley Ward' and area_code == 'DIW' and unit_id == '41867':
             return {'unit-id': None}
 
+        # May 2019 has a duplicate unit ID
+        if name == 'Northwich Leftwich Ward' and area_code == 'UTW' and unit_id == '174040':
+            return {'unit-id': None}
+        if name == 'Stour Valley Ward' and area_code == 'DIW' and unit_id == '174221':
+            return {'unit-id': None}
+        if name in ('Kirby-le-Soken & Hamford Ward', 'Thorpe, Beaumont & Great Holland Ward') and \
+                area_code == 'DIW' and unit_id == '174247':
+            return {'unit-id': None}
+
         return {}
