@@ -237,7 +237,7 @@ class Command(LabelCommand):
                         "Could not decode name using encoding '%s' - is it in another encoding? "
                         "Specify one with --encoding" % encoding)
 
-            name = re.sub('\s+', ' ', name)
+            name = re.sub(r'\s+', ' ', name)
             if not name:
                 if options['ignore_blank']:
                     continue

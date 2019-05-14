@@ -38,8 +38,8 @@ class Migration(migrations.Migration):
             name='CodeType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(help_text=b"A unique code, eg 'ons' or 'unit_id'", unique=True, max_length=10)),
-                ('description', models.CharField(help_text=b"The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'", max_length=200, blank=True)),
+                ('code', models.CharField(help_text="A unique code, eg 'ons' or 'unit_id'", unique=True, max_length=10)),
+                ('description', models.CharField(help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'", max_length=200, blank=True)),
             ],
             options={
             },
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('description', models.CharField(help_text=b"Describe this generation, eg '2010 electoral boundaries'", max_length=255)),
+                ('description', models.CharField(help_text="Describe this generation, eg '2010 electoral boundaries'", max_length=255)),
             ],
             options={
             },
@@ -96,8 +96,8 @@ class Migration(migrations.Migration):
             name='NameType',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(help_text=b"A unique code to identify this type of name: eg 'english' or 'iso'", unique=True, max_length=10)),
-                ('description', models.CharField(help_text=b"The name of this type of name, eg 'English' or 'ISO Standard'", max_length=200, blank=True)),
+                ('code', models.CharField(help_text="A unique code to identify this type of name: eg 'english' or 'iso'", unique=True, max_length=10)),
+                ('description', models.CharField(help_text="The name of this type of name, eg 'English' or 'ISO Standard'", max_length=200, blank=True)),
             ],
             options={
             },
@@ -120,8 +120,8 @@ class Migration(migrations.Migration):
             name='Type',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('code', models.CharField(help_text=b"A unique code, eg 'CTR', 'CON', etc", unique=True, max_length=500)),
-                ('description', models.CharField(help_text=b"The name of the type of area, eg 'Country', 'Constituency', etc", max_length=200, blank=True)),
+                ('code', models.CharField(help_text="A unique code, eg 'CTR', 'CON', etc", unique=True, max_length=500)),
+                ('description', models.CharField(help_text="The name of the type of area, eg 'Country', 'Constituency', etc", max_length=200, blank=True)),
             ],
             options={
             },

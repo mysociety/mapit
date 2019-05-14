@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import re
 import itertools
 
@@ -468,5 +470,5 @@ class Postcode(models.Model):
         cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), %d))" % (
             self.location[0], self.location[1], srid))
         row = cursor.fetchone()
-        m = re.match('POINT\((.*?) (.*)\)', row[0])
+        m = re.match(r'POINT\((.*?) (.*)\)', row[0])
         return list(map(str2int, m.groups()))

@@ -139,6 +139,27 @@ class AreaViewsTest(TestCase):
         content = json.loads(response.content.decode('utf-8'))
         self.assertEqual(len(content), 2)
 
+    def test_areas_children(self):
+        id = self.small_area_1.id
+        url = '/area/%d/children' % id
+        content = get_content(self.client.get(url))
+        self.assertEqual(len(content), 0)
+
+        id = self.small_area_2.id
+        url = '/area/%d/children.geojson' % id
+        content = get_content(self.client.get(url))
+        self.assertIn('error', content)
+
+    def test_areas_by_type(self):
+        url = '/areas/SML'
+        content = get_content(self.client.get(url))
+        self.assertIn(str(self.small_area_1.id), content)
+        self.assertIn(str(self.small_area_2.id), content)
+
+        url = '/areas/SML.geojson'
+        content = get_content(self.client.get(url))
+        self.assertEqual(len(content), 2)
+
     def test_areas_polygon_one_id(self):
         id = self.small_area_1.id
 

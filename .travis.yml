@@ -1,6 +1,8 @@
 notifications:
   email: false
 
+dist: xenial
+
 language: python
 python: 3.5
 
@@ -10,7 +12,7 @@ addons:
   postgresql: "9.6"
   apt:
     packages:
-      - postgresql-9.6-postgis-2.3
+      - postgresql-9.6-postgis-2.4
 
 matrix:
   include:
@@ -23,7 +25,8 @@ env:
   matrix:
     - TOXENV=flake8
     - TOXENV=py35-1.11
-    - TOXENV=py35-2.0
+    - TOXENV=py35-2.1
+    - TOXENV=py35-2.2
 
 install:
   - pip install tox codecov

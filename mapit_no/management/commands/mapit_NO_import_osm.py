@@ -48,7 +48,7 @@ class Command(LabelCommand):
             name = feat['Name'].value
             if not isinstance(name, six.text_type):
                 name = name.decode('utf-8')
-            name = re.sub('\s+', ' ', name)
+            name = re.sub(r'\s+', ' ', name)
             print("  %s" % smart_str(name))
 
             code = int(kml_data.data[name]['ref'])

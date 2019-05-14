@@ -115,9 +115,9 @@ def postcode(request, postcode, format=None):
 
 @ratelimit
 def partial_postcode(request, postcode, format='json'):
-    postcode = re.sub('\s+', '', postcode.upper())
+    postcode = re.sub(r'\s+', '', postcode.upper())
     if is_valid_postcode(postcode):
-        postcode = re.sub('\d[A-Z]{2}$', '', postcode)
+        postcode = re.sub(r'\d[A-Z]{2}$', '', postcode)
     if not is_valid_partial_postcode(postcode):
         raise ViewException(format, "Partial postcode '%s' is not valid." % postcode, 400)
 
