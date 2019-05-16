@@ -59,6 +59,11 @@ class Command(BaseCommand):
             MissingOnsCode(code='N09000009', area_type='LGD', area_name='Mid Ulster District Council'),
             MissingOnsCode(code='N09000010', area_type='LGD', area_name='Newry, Mourne and Down District Council'),
             MissingOnsCode(code='N09000011', area_type='LGD', area_name='Ards and North Down Borough Council'),
+
+            # https://geoportal.statistics.gov.uk/datasets/local-authority-district-to-county-april-2019-lookup-in-england
+            MissingOnsCode(code='E07000244', area_type='DIS', area_name='East Suffolk District Council'),
+            MissingOnsCode(code='E07000246', area_type='DIS', area_name='Somerset West and Taunton District Council'),
+            MissingOnsCode(code='E07000245', area_type='DIS', area_name='West Suffolk District Council'),
         ]
 
 

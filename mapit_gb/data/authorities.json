@@ -1252,5 +1252,14 @@
   },
   "ards-and-north-down": {
     "gss": "N09000011"
+  },
+  "east-suffolk": {
+    "gss": "E07000244"
+  },
+  "somerset-west-taunton": {
+    "gss": "E07000246"
+  },
+  "west-suffolk": {
+    "gss": "E07000245"
   }
 }
