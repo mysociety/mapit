@@ -51,8 +51,8 @@ class RateLimiter(object):
             return fn(request, *args, **kwargs)
 
         if request.META.get('REMOTE_ADDR', '') in self.excluded_ips or \
-                ('/' in request.META.get('HTTP_USER_AGENT', '') and
-                    request.META.get('HTTP_USER_AGENT', '') in self.excluded_uas):
+                ('/' in request.META.get('HTTP_USER_AGENT', '')
+                    and request.META.get('HTTP_USER_AGENT', '') in self.excluded_uas):
             return fn(request, *args, **kwargs)
 
         # If we're using the DummyCache backend then no data will

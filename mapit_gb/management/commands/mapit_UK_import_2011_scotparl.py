@@ -120,8 +120,8 @@ class Command(LabelCommand):
             if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
             print("  %s" % name)
-            name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
-            name = re.sub('\s+', ' ', name)
+            name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
+            name = re.sub(r'\s+', ' ', name)
 
             if "P Const" in name:
                 area_code = 'SPC'

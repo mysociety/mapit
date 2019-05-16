@@ -51,8 +51,8 @@ class Command(LabelCommand):
             name = feat['NAME'].value
             if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
-            name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
-            name = re.sub('\s+', ' ', name)
+            name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
+            name = re.sub(r'\s+', ' ', name)
             ons_code = feat['CODE'].value
             area_code = feat['AREA_CODE'].value
             country = ons_code[0]

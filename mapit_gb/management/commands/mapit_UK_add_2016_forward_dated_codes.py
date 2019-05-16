@@ -22,7 +22,7 @@ class Command(BaseCommand):
             gss = row[0]
             name = row[1]
             si_title = row[3]
-            place = re.match('The (.*?) \(', si_title).group(1)
+            place = re.match(r'The (.*?) \(', si_title).group(1)
 
             print('*', name, gss, place, end='')
 

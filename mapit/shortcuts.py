@@ -24,7 +24,7 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
 
 
 def output_html(request, title, areas, **kwargs):
-    kwargs['json_url'] = re.sub('(\.map)?\.html', '', request.get_full_path())
+    kwargs['json_url'] = re.sub(r'(\.map)?\.html', '', request.get_full_path())
     kwargs['title'] = title
     tpl = loader.render_to_string('mapit/data.html', kwargs, request=request)
     wraps = tpl.split('!!!DATA!!!')

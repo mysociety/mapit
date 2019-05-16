@@ -10,11 +10,11 @@ from mapit.shortcuts import get_object_or_404
 def area_code_lookup(request, area_code, format):
     from mapit.models import Area, CodeType
     area_code_type = None
-    if re.match('\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_code):
+    if re.match(r'\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_code):
         area_code_type = CodeType.objects.get(code='ons')
-    elif re.match('[EW]0[12]\d{6}$', area_code):  # LSOA/MSOA have ONS code type
+    elif re.match(r'[EW]0[12]\d{6}$', area_code):  # LSOA/MSOA have ONS code type
         area_code_type = CodeType.objects.get(code='ons')
-    elif re.match('[ENSW]\d{8}$', area_code):
+    elif re.match(r'[ENSW]\d{8}$', area_code):
         area_code_type = CodeType.objects.get(code='gss')
     if not area_code_type:
         return None
@@ -115,7 +115,7 @@ def restrict_geo_html(area):
 
 
 def make_friendly_name(name_obj, name):
-    n = re.sub('\s+', ' ', name.name.strip())
+    n = re.sub(r'\s+', ' ', name.name.strip())
     n = n.replace('St. ', 'St ')
     if name.type.code == 'M':
         return n
@@ -132,9 +132,9 @@ def make_friendly_name(name_obj, name):
     n = re.sub(' London Boro$', ' Borough', n)  # LBO
     if name_obj.area.country and name_obj.area.country.name == 'Wales':
         n = re.sub('^.*? - ', '', n)  # UTA
-    n = re.sub('(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n)  # UTA
-    n = re.sub(' District \(B\)$', ' Borough', n)  # DIS
-    n = re.sub(' \(B\)$', ' Borough', n)  # DIS
+    n = re.sub(r'(?:The )?City of (.*?) (District )?\(B\)$', r'\1 City', n)  # UTA
+    n = re.sub(r' District \(B\)$', ' Borough', n)  # DIS
+    n = re.sub(r' \(B\)$', ' Borough', n)  # DIS
     if name_obj.area.type.code in ('CTY', 'DIS', 'LBO', 'UTA', 'MTD'):
         n += ' Council'
     n = re.sub(' (ED|CP)$', '', n)  # CPC, CED, UTE
