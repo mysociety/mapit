@@ -64,6 +64,9 @@ class Command(BaseCommand):
             MissingOnsCode(code='E07000244', area_type='DIS', area_name='East Suffolk District Council'),
             MissingOnsCode(code='E07000246', area_type='DIS', area_name='Somerset West and Taunton District Council'),
             MissingOnsCode(code='E07000245', area_type='DIS', area_name='West Suffolk District Council'),
+            MissingOnsCode(code='E06000058', area_type='UTA', area_name='Bournemouth, Christchurch and Poole Council'),
+            MissingOnsCode(code='E06000059', area_type='UTA', area_name='Dorset Council'),
+            MissingOnsCode(code='S12000050', area_type='UTA', area_name='North Lanarkshire Council'),
         ]
 
 
