@@ -1252,5 +1252,23 @@
   },
   "ards-and-north-down": {
     "gss": "N09000011"
+  },
+  "east-suffolk": {
+    "gss": "E07000244"
+  },
+  "somerset-west-taunton": {
+    "gss": "E07000246"
+  },
+  "west-suffolk": {
+    "gss": "E07000245"
+  },
+  "bournemouth-christchurch-poole": {
+    "gss": "E06000058"
+  },
+  "dorset": {
+    "gss": "E06000059"
+  },
+  "north-lanarkshire": {
+    "gss": "S12000050"
   }
 }
