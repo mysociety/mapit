@@ -99,13 +99,12 @@ development server. Do add an admin user when prompted:
 # Set up a virtual environment and install requirements
 virtualenv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .
 
 # generate the css from the sass
 bin/mapit_make_css
 
 # Setup django install
-./manage.py syncdb
 ./manage.py migrate mapit
 ./manage.py collectstatic
 
