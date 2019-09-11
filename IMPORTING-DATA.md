@@ -154,11 +154,11 @@ To update a live mapit server we:
 
 7.  Check for missing codes.
 
-    The ONS used to identify areas with snac codes (called ons
+    The ONS used to identify areas with SNAC codes (called ONS
     in mapit). They stopped doing this in 2011 and started using GSS
-    codes instead. New areas will not receive snac codes, and (for the
-    moment at least) much of GOV.UK relies on snac codes to link
-    things up.
+    codes instead. New areas will not receive SNAC codes, and (for the
+    moment at least) much of GOV.UK relies on SNAC codes to link
+    things up, for example [Frontend's AuthorityLookup](https://github.com/alphagov/frontend/blob/master/lib/authority_lookup.rb).
 
     The `import-uk-onspd` script's last action is to run a script to show missing codes. It's the line that reads
 
@@ -166,7 +166,7 @@ To update a live mapit server we:
 
     This iterates over all area types we care about and lists those that
     are missing a GSS code (hopefully none) and how many are missing an
-    ONS/snac code. If it lists any areas that are missing codes and you
+    ONS/SNAC code. If it lists any areas that are missing codes and you
     don't expect them (run the script on production or integration if
     you're not sure) you'll need to investigate.
 
@@ -175,8 +175,12 @@ To update a live mapit server we:
     you can update to add the codes once you work out if anything can
     be done.
 
+    Once these have been updated, the API will return the new GSS code, albeit mislabelled as an ONS code.   
+
     Hopefully by the time the next releases happen GOV.UK will not rely
-    on ONS/snac codes and this will cease being an issue.
+    on ONS/SNAC codes and this will cease being an issue.
+
+    **Note** [Licensify](https://github.com/alphagov/licensify) also depends on knowledge of SNAC codes to build it's own API paths. It will be necessary to update this [file](https://github.com/alphagov/licensify/blob/master/common/app/uk/gov/gds/licensing/model/SnacCodes.scala) with the new GSS codes and corresponding area.
 
 7.  Test some postcodes.
 
