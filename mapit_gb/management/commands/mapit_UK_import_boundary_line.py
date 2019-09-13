@@ -64,6 +64,8 @@ class Command(LabelCommand):
                 ons_code = patch['ons-code']
             elif 'unit-id' in patch:
                 unit_id = patch['unit-id']
+            elif 'name' in patch:
+                name = patch['name']
 
             if area_code == 'NCP':
                 continue  # Ignore Non Parished Areas
@@ -197,5 +199,9 @@ class Command(LabelCommand):
         if name in ('Kirby-le-Soken & Hamford Ward', 'Thorpe, Beaumont & Great Holland Ward') and \
                 area_code == 'DIW' and unit_id == '174247':
             return {'unit-id': None}
+
+        # May (August update) 2019 name correction
+        if name == 'Highland and Islands PER' and ons_code == 'S17000011':
+            return {'name':'Highlands and Islands PER'}
 
         return {}
