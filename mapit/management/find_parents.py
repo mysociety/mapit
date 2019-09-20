@@ -41,7 +41,7 @@ class FindParentsCommand(BaseCommand):
                         args['type__code'] = self.parentmap[area.type.code]
                     else:
                         args['type__code__in'] = self.parentmap[area.type.code]
-                    parent = Area.objects.get(**args)
+                    parent = Area.objects.filter(**args).first()
                     break
                 except Area.DoesNotExist:
                     continue
