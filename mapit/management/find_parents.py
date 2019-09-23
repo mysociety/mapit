@@ -41,12 +41,16 @@ class FindParentsCommand(BaseCommand):
                         args['type__code'] = self.parentmap[area.type.code]
                     else:
                         args['type__code__in'] = self.parentmap[area.type.code]
-                    parent = Area.objects.get(**args)
+                    parent = Area.objects.filter(**args).first()
                     break
                 except Area.DoesNotExist:
                     continue
             if not parent:
-                raise Exception("Area %s does not have a parent?" % (self.pp_area(area)))
+                # Fix for May 2019 August update
+                if self.pp_area(area) == 'WARREN [11574] (LGW)' and options['commit']:
+                    parent = Area.objects.get(name='Bangor East and Donaghadee') # id=11758 (LGE)
+                else:
+                    raise Exception("Area %s does not have a parent?" % (self.pp_area(area)))
             if area.parent_area != parent:
                 self.stdout.write("Parent for %s was %s, is now %s" % (
                     self.pp_area(area), self.pp_area(area.parent_area), self.pp_area(parent)))
