@@ -198,4 +198,8 @@ class Command(LabelCommand):
                 area_code == 'DIW' and unit_id == '174247':
             return {'unit-id': None}
 
+        # October 2019 gets Shetland Islands code wrong
+        if area_code == 'WMC' and ons_code == 'S1400005':
+            return {'ons-code': 'S14000051'}
+
         return {}
