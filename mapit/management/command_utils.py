@@ -332,7 +332,7 @@ def fix_invalid_geos_multipolygon(geos_multipolygon):
                         raise Exception("Unknown fixed geometry type: " + fixed.geom_type)
         for_union = MultiPolygon(valid_polygons)
     if len(for_union) > 0:
-        result = for_union.cascaded_union
+        result = for_union.unary_union
         # If they have been unioned into a single Polygon, still return
         # a MultiPolygon, for consistency of return types:
         if result.geom_type == 'Polygon':
