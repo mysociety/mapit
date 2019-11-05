@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': config.get('MAPIT_DB_NAME', 'mapit'),
         'USER': config.get('MAPIT_DB_USER', 'mapit'),
         'PASSWORD': MAPIT_DB_PASS,
-        'HOST': config.get('MAPIT_DB_HOST', ''),
+        'HOST': os.environ.get('MAPIT_DB_HOST', config.get('MAPIT_DB_HOST', '')),
         'PORT': config.get('MAPIT_DB_PORT', ''),
     }
 }
