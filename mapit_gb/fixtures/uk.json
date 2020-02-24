@@ -62,6 +62,8 @@
     { "pk": 46, "model": "mapit.type", "fields": { "code": "SHB", "description": "Scottish Health Board" } },
     { "pk": 47, "model": "mapit.type", "fields": { "code": "NIHT", "description": "NI Health Trust" } },
 
+    { "pk": 48, "model": "mapit.type", "fields": { "code": "TTW", "description": "Travel to Work Areas" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
     { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
