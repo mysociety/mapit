@@ -35,18 +35,22 @@ To update a live mapit server we:
 
 ### Generate a new database
 
-1.  Checkout the [mapit](https://github.com/alphagov/mapit) and
-    [mapit-scripts](https://github.com/alphagov/mapit-scripts) repos to your
-    development VM if you don't have it already. They should be in the
-    `/var/govuk` directory.
+1.  Checkout the [mapit](https://github.com/alphagov/mapit),
+    [mapit-scripts](https://github.com/alphagov/mapit-scripts) and
+    [govuk-docker](https://github.com/alphagov/govuk-docker) repos
 
-2.  Prepare your Mapit installation so that you can run the importer scripts:
-    1. Run `govuk_setenv mapit ./startup.sh` - this will install all
-       dependencies and run the server, once the server is running you can kill
-       it, we just wanted the dependencies installed.
-    2. Run `govuk_setenv mapit ./reset-db.sh` - this will drop any existing
-       database, create a new empty one and migrate it to the empty schema. See
-       the [Troubleshooting](#troubleshooting) section if you have issues.
+2.  Prepare your Mapit installation in Docker by:
+    1.  Running `make mapit` in the `govuk-docker` repo - this will build the image
+        and install all the dependencies.
+    2.  Reset the database by running `govuk-docker run mapit-app ./reset-db.sh`
+        in the `mapit` repo (you can skip this step if you haven't run Mapit locally
+        before) - this will drop any existing database, create a new empty one
+        and migrate it to the empty schema. See the [Troubleshooting](#troubleshooting)
+        section if you have issues.
+    3.  Start your Docker container by running `govuk-docker run mapit-app`, and
+        check you are able to access `mapit.dev.gov.uk` - it is expected that the
+        frontend looks somewhat "broken", but we only need to worry about the
+        database for importing data.
 
 3.  Find the latest ONS Postcode Database, Boundary Line, and OSNI datasets.
     1.  MySociety may have mirrored the latest datasets on their cache
@@ -111,14 +115,12 @@ To update a live mapit server we:
     `mapit-scripts` to refer to the URLs of the new releases uploaded to S3 in
     the last step.
 
-6.  Run the `import-uk-onspd` script to import the data:
+6.  In your Docker container run the `import-uk-onspd` script to import the data:
 
         $ ./import-uk-onspd
 
-    You can run this from the `mapit-scripts` folder, it will find your
-    mapit installation (assuming it's in the expected dev VM places -
-    you can tell it where your mapit installation is if it's not in the
-    standard place).
+    You can run this from the `mapit-scripts` folder as it is configured to find
+    your mapit installation
 
     This is a long process, it's importing 1000s of boundary objects and
     \~2.5 million postcodes, and can take up to 5 hours.
@@ -205,9 +207,9 @@ To update a live mapit server we:
 
 ### Export new database to S3
 
-Export the database you just built on your Dev VM:
+Export the database you just built in your container:
 
-    $ sudo -u postgres pg_dump mapit | gzip > mapit.sql.gz
+    $ govuk-docker run mapit-app psql -U postgres pg_dump mapit | gzip > mapit.sql.gz
 
 It should be \~500Mb in size. You'll want to give it a name that refers
 to what data it contains. Perhaps `mapit-<%b%Y>.sql.gz` (using
