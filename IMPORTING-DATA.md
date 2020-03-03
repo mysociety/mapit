@@ -47,7 +47,7 @@ To update a live mapit server we:
         before) - this will drop any existing database, create a new empty one
         and migrate it to the empty schema. See the [Troubleshooting](#troubleshooting)
         section if you have issues.
-    3.  Start your Docker container by running `govuk-docker run mapit-app`, and
+    3.  Start your Docker container by running `govuk-docker up mapit-app`, and
         check you are able to access `mapit.dev.gov.uk` - it is expected that the
         frontend looks somewhat "broken", but we only need to worry about the
         database for importing data.
