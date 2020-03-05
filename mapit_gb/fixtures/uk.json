@@ -54,6 +54,14 @@
 
     { "pk": 41, "model": "mapit.type", "fields": { "code": "CPW", "description": "Civil parish/community ward" } },
 
+    { "pk": 42, "model": "mapit.type", "fields": { "code": "NIW", "description": "Northern Ireland Ward" } },
+    { "pk": 43, "model": "mapit.type", "fields": { "code": "16W", "description": "Forward-dated ward boundaries" } },
+
+    { "pk": 44, "model": "mapit.type", "fields": { "code": "CCG", "description": "Clinical Commissioning Group" } },
+    { "pk": 45, "model": "mapit.type", "fields": { "code": "WLHB", "description": "Welsh Local Health Board" } },
+    { "pk": 46, "model": "mapit.type", "fields": { "code": "SHB", "description": "Scottish Health Board" } },
+    { "pk": 47, "model": "mapit.type", "fields": { "code": "NIHT", "description": "NI Health Trust" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
     { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
