@@ -41,7 +41,7 @@ class Command(LabelCommand):
             '--country_code',
             action="store",
             dest='country_code',
-            help='Which country should be used',
+            help='Which country should be used (or "first-letter" for special UK GSS support)',
         )
         parser.add_argument(
             '--area_type_code',
@@ -172,13 +172,14 @@ class Command(LabelCommand):
             if options['commit']:
                 name_type.save()
 
-        try:
-            country = Country.objects.get(code=country_code)
-        except:
-            country_name = input('Please give the name for country code %s: ' % country_code)
-            country = Country(code=country_code, name=country_name)
-            if options['commit']:
-                country.save()
+        if country_code != 'first-letter':
+            try:
+                country = Country.objects.get(code=country_code)
+            except:
+                country_name = input('Please give the name for country code %s: ' % country_code)
+                country = Country(code=country_code, name=country_name)
+                if options['commit']:
+                    country.save()
 
         if code_type_code:
             try:
@@ -256,6 +257,13 @@ class Command(LabelCommand):
                         "It will be one of these: %s. Specify which with --code_field" % (code_field, choices))
 
             self.stdout.write("  looking at '%s'%s" % (name, (' (%s)' % code) if code else ''))
+
+            if country_code == 'first-letter' and code:
+                try:
+                    country = Country.objects.get(code=code[0])
+                except Country.DoesNotExist:
+                    self.stdout.write("    No country found from first-letter")
+                    country = None
 
             g = None
             if hasattr(feat, 'geom'):
