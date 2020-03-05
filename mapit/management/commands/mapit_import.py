@@ -12,8 +12,8 @@ from django.core.management.base import LabelCommand, CommandError
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.db.models import Collect
 from django.conf import settings
-from django.utils import six
-from django.utils.six.moves import input
+import six
+from six.moves import input
 
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry

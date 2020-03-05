@@ -1,7 +1,7 @@
 import itertools
 import re
 
-from django.utils import six
+import six
 
 from .view_error import ViewException, ViewExceptionMiddleware  # noqa
 

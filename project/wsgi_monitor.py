@@ -7,7 +7,7 @@ import sys
 import signal
 import threading
 import atexit
-from django.utils.six.moves import queue
+from six.moves import queue
 
 _interval = 1.0
 _times = {}

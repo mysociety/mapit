@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 import re
 import itertools
 
+from six import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
 from django.db.models.query import RawQuerySet
-from django.utils.encoding import python_2_unicode_compatible, smart_text
+from django.utils.encoding import smart_text
 from django.utils.functional import cached_property
 
 from mapit import countries

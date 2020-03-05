@@ -1,7 +1,15 @@
 # coding=utf-8
 
+import django
 from django.db.models import Q
 from django.test import TestCase
+
+if django.get_version() < '2.0':
+    # Monkeypatch Q() so it sorts the arguments provided,
+    # so our tests can compare for equality
+    def q__init__(self, *args, **kwargs):
+        super(Q, self).__init__(children=list(args) + list(sorted(kwargs.items())))
+    Q.__init__ = q__init__
 
 from mapit.models import Generation
 from mapit.views.areas import query_args

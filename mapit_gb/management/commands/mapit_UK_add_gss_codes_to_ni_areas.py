@@ -7,7 +7,7 @@ import os.path
 
 from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, Country, CodeType
-from django.utils import six
+import six
 
 
 class Command(BaseCommand):

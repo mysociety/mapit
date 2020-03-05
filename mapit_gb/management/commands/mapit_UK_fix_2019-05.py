@@ -7,7 +7,7 @@ from __future__ import print_function
 import re
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
-from django.utils import six
+import six
 
 from mapit.models import Area, Code, CodeType, Type, Country, Generation, NameType
 from mapit.management.command_utils import save_polygons

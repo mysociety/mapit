@@ -2,7 +2,7 @@ import unittest
 from django.conf import settings
 from django.test import TestCase
 from django.contrib.gis.geos import Polygon, Point
-from django.utils.six.moves import urllib
+from six.moves import urllib
 
 from mapit import utils, models
 

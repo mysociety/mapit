@@ -114,7 +114,7 @@ def postcode(request, postcode, format=None):
 
 
 @ratelimit
-def partial_postcode(request, postcode, format='json'):
+def partial_postcode(request, postcode, format=''):
     postcode = re.sub(r'\s+', '', postcode.upper())
     if is_valid_postcode(postcode):
         postcode = re.sub(r'\d[A-Z]{2}$', '', postcode)
@@ -139,7 +139,7 @@ def partial_postcode(request, postcode, format='json'):
 
 
 @ratelimit
-def example_postcode_for_area(request, area_id, format='json'):
+def example_postcode_for_area(request, area_id, format=''):
     area = get_object_or_404(Area, format=format, id=area_id)
     try:
         pc = Postcode.objects.filter(areas=area).order_by()[0]
@@ -171,7 +171,7 @@ def form_submitted(request):
 
 
 @ratelimit
-def nearest(request, srid, x, y, format='json'):
+def nearest(request, srid, x, y, format=''):
     location = Point(float(x), float(y), srid=int(srid))
     set_timeout(format)
 

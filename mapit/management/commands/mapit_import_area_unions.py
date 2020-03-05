@@ -10,7 +10,7 @@ import csv
 from django.core.management.base import LabelCommand
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.db.models import Union
-from django.utils.six import Iterator
+from six import Iterator
 
 from mapit.models import Area, Generation, Geometry, Country, Type
 from mapit.management.command_utils import save_polygons

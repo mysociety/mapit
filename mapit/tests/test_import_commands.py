@@ -1,9 +1,9 @@
 import os
 
+from six import StringIO
 from django.test import TestCase
 from django.core.management import call_command
 from django.conf import settings
-from django.utils.six import StringIO
 from django.contrib.gis.gdal.prototypes import ds
 
 from ..models import Type, NameType, Area, Generation, Country

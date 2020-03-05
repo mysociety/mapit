@@ -8,11 +8,11 @@
 import re
 import xml.sax
 
+import six
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
-from django.utils import six
 from django.utils.encoding import smart_str
 
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType

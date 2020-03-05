@@ -122,7 +122,7 @@ def check_area_ids(format, area_ids):
             raise ViewException(format, _('Bad area ID specified'), 400)
 
 
-def generations(request, format='json'):
+def generations(request, format=''):
     generations = Generation.objects.all()
     if format == 'html':
         return render(request, 'mapit/generations.html', {'generations': generations})
@@ -130,7 +130,7 @@ def generations(request, format='json'):
 
 
 @ratelimit
-def area(request, area_id, format='json'):
+def area(request, area_id, format=''):
     if hasattr(countries, 'area_code_lookup'):
         resp = countries.area_code_lookup(request, area_id, format)
         if resp:
@@ -196,7 +196,7 @@ def area_polygon(request, srid='', area_id='', format='kml'):
 
 
 @ratelimit
-def area_children(request, area_id, format='json'):
+def area_children(request, area_id, format=''):
     q = query_args(request, format)
     area = get_object_or_404(Area, format=format, id=area_id)
     children = area.children.filter(q).distinct()
@@ -232,44 +232,44 @@ def area_intersect(query_type, title, request, area_id, format):
 
 
 @ratelimit
-def area_touches(request, area_id, format='json'):
+def area_touches(request, area_id, format=''):
     return area_intersect('touches', _('Areas touching %s'), request, area_id, format)
 
 
 @ratelimit
-def area_overlaps(request, area_id, format='json'):
+def area_overlaps(request, area_id, format=''):
     return area_intersect('overlaps', _('Areas overlapping %s'), request, area_id, format)
 
 
 @ratelimit
-def area_covers(request, area_id, format='json'):
+def area_covers(request, area_id, format=''):
     return area_intersect('coveredby', _('Areas covered by %s'), request, area_id, format)
 
 
 @ratelimit
-def area_coverlaps(request, area_id, format='json'):
+def area_coverlaps(request, area_id, format=''):
     return area_intersect(['overlaps', 'coveredby'], _('Areas covered by or overlapping %s'), request, area_id, format)
 
 
 @ratelimit
-def area_covered(request, area_id, format='json'):
+def area_covered(request, area_id, format=''):
     return area_intersect('covers', _('Areas that cover %s'), request, area_id, format)
 
 
 @ratelimit
-def area_intersects(request, area_id, format='json'):
+def area_intersects(request, area_id, format=''):
     return area_intersect('intersects', _('Areas that intersect %s'), request, area_id, format)
 
 
 @ratelimit
-def areas(request, area_ids, format='json'):
+def areas(request, area_ids, format=''):
     area_ids = area_ids.split(',')
     areas = Area.objects.filter(id__in=area_ids)
     return output_areas(request, _('Areas ID lookup'), format, areas)
 
 
 @ratelimit
-def areas_by_type(request, type, format='json'):
+def areas_by_type(request, type, format=''):
     q = query_args(request, format, type)
     areas = Area.objects.filter(q).distinct()
     if format in ('kml', 'geojson'):
@@ -278,7 +278,7 @@ def areas_by_type(request, type, format='json'):
 
 
 @ratelimit
-def areas_by_name(request, name, format='json'):
+def areas_by_name(request, name, format=''):
     q = query_args(request, format)
     q &= Q(name__istartswith=name)
     areas = Area.objects.filter(q).distinct()
@@ -362,7 +362,7 @@ def areas_geometry(request, area_ids):
 
 
 @ratelimit
-def area_from_code(request, code_type, code_value, format='json'):
+def area_from_code(request, code_type, code_value, format=''):
     q = query_args(request, format)
     q &= Q(codes__type__code=code_type, codes__code=code_value)
     try:
@@ -380,7 +380,7 @@ def area_from_code(request, code_type, code_value, format='json'):
 
 
 @ratelimit
-def areas_by_point(request, srid, x, y, bb=False, format='json'):
+def areas_by_point(request, srid, x, y, bb=False, format=''):
     location = Point(float(x), float(y), srid=int(srid))
 
     use_exceptions()

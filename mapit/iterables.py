@@ -10,7 +10,7 @@ def defaultiter(it, default):
 
 
 # If you wanted iterdict() to be more generic, it'd be something like:
-# from django.utils import six
+# import six
 # import itertools
 # if not args:
 #     self.ITERABLE = iter()

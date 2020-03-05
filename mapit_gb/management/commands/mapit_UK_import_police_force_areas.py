@@ -17,7 +17,7 @@ import sys
 
 from django.core.management import call_command
 from django.core.management.base import LabelCommand
-from django.utils.six.moves import urllib
+from six.moves import urllib
 
 from mapit.models import Type, NameType, Country, CodeType
 

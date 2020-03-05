@@ -10,7 +10,7 @@ from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
-from django.utils import six
+import six
 
 from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType, Code
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry

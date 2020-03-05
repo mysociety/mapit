@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.management import call_command, CommandError
-from django.utils.six import StringIO, assertRaisesRegex
+from six import StringIO, assertRaisesRegex
 
 from ..models import Area, Country, Generation, Type
 

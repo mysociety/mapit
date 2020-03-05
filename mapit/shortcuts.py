@@ -1,12 +1,12 @@
 import itertools
 import re
 
+from six.moves import map
 from django import http
 from django.db import connection
 from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.template import loader
-from django.utils.six.moves import map
 from django.utils.translation import ugettext as _
 
 from mapit.iterables import defaultiter
