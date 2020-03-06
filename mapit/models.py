@@ -172,11 +172,12 @@ class AreaManager(models.Manager):
 
         query = '''
 WITH
-    target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
+    target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry, mapit_geometry_areas WHERE mapit_geometry.id=geometry_id AND area_id=%%s ),
     geometry AS (
-        SELECT mapit_geometry.*
-          FROM mapit_geometry, mapit_area, target
-         WHERE mapit_geometry.area_id = mapit_area.id
+        SELECT DISTINCT mapit_geometry.*
+          FROM mapit_geometry, mapit_geometry_areas, mapit_area, target
+         WHERE area_id = mapit_area.id
+               AND geometry_id = mapit_geometry.id
                AND mapit_geometry.polygon && target.polygon
                AND mapit_area.id != %%s
                AND mapit_area.generation_low_id <= %%s
@@ -184,8 +185,8 @@ WITH
                %s
     )
 SELECT DISTINCT mapit_area.*
-  FROM mapit_area, geometry, target
- WHERE geometry.area_id = mapit_area.id AND (%s)
+  FROM mapit_area, mapit_geometry_areas, geometry, target
+ WHERE geometry.id = geometry_id and area_id = mapit_area.id AND (%s)
 ''' % (query_area_type, query_geo)
         return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
@@ -321,14 +322,15 @@ class Area(models.Model):
 
 @python_2_unicode_compatible
 class Geometry(models.Model):
-    area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
+    areas = models.ManyToManyField(Area, related_name='polygons')
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
 
     class Meta:
         verbose_name_plural = 'geometries'
 
     def __str__(self):
-        return '%s, polygon %d' % (smart_text(self.area), self.id)
+        areas = ', '.join(map(smart_text, self.areas.all()))
+        return u'#%d (%s)' % (self.id, areas)
 
 
 @python_2_unicode_compatible
