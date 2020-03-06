@@ -12,7 +12,7 @@ def area_code_lookup(request, area_code, format):
     area_code_type = None
     if re.match(r'\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_code):
         area_code_type = CodeType.objects.get(code='ons')
-    elif re.match(r'[EW]0[12]\d{6}$', area_code):  # LSOA/MSOA have ONS code type
+    elif re.match(r'[ESW]0[12]\d{6}$', area_code):  # LSOA/MSOA have ONS code type
         area_code_type = CodeType.objects.get(code='ons')
     elif re.match(r'[ENSW]\d{8}$', area_code):
         area_code_type = CodeType.objects.get(code='gss')
