@@ -51,8 +51,8 @@ class iterlist(list):
     memory. This class can be passed to iterencode() and will work the same as
     a list, but won't require the list to exist first."""
 
-    def __init__(self, l):
-        self.ITERABLE = l
+    def __init__(self, lst):
+        self.ITERABLE = lst
         # Create a list so that "if X" passes.
         super(iterlist, self).__init__("Hack")
 
