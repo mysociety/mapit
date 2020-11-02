@@ -1,0 +1,74 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test MapIt
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:10-2.5
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      PGHOST: localhost
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      CFLAGS: "-O0"
+
+    strategy:
+      matrix:
+        python-version: [3.5]
+        thing-to-test: [flake8, 1.11, 2.2]
+        include:
+          - python-version: 2.7
+            thing-to-test: 1.11
+          - python-version: 2.7
+            thing-to-test: flake8
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        set -xe
+        python -VV
+        python -m site
+        pip install tox tox-gh-actions codecov
+
+    - name: Install GDAL
+      run: sudo apt-get install gdal-bin
+
+    - name: Set up config
+      run: |
+        createdb mapit
+        psql -d mapit -c 'create extension postgis;'
+        echo 'MAPIT_DB_HOST: localhost' > conf/general.yml
+        echo 'MAPIT_DB_NAME: mapit' >> conf/general.yml
+        echo 'MAPIT_DB_USER: postgres' >> conf/general.yml
+        echo 'MAPIT_DB_PASS: postgres' >> conf/general.yml
+        echo 'DJANGO_SECRET_KEY: secret' >> conf/general.yml
+        echo 'COUNTRY: GB' >> conf/general.yml
+
+    - name: Run tests
+      run: tox
+      env:
+        THING_TO_TEST: ${{ matrix.thing-to-test }}
+
+    - name: Upload code coverage
+      run: codecov
