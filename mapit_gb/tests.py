@@ -1,7 +1,9 @@
 import unittest
 from django.conf import settings
 from django.test import TestCase
+from django.core.management import call_command
 from django.contrib.gis.geos import Polygon, Point
+from six import StringIO, assertRaisesRegex
 from six.moves import urllib
 
 from mapit import utils, models
@@ -169,3 +171,65 @@ class GBViewsTest(TestCase):
 
         response = self.client.get('/area/E05000025.geojson')
         self.assertRedirects(response, '/area/%d.geojson' % self.area.id)
+
+
+class FindParentsCommandTests(TestCase):
+    """Tests for commands that find parent areas"""
+
+    def test_no_generations(self):
+        with assertRaisesRegex(self, Exception, r'No new generation'):
+            call_command(
+                'mapit_UK_find_parents',
+                commit=True,
+                stderr=StringIO(),
+                stdout=StringIO()
+            )
+
+    def test_should_find_correct_parent(self):
+        generation = models.Generation.objects.create(active=False, description="Test generation")
+        parent_type = models.Type.objects.create(code="UTA", description="A parent test area")
+        child_type = models.Type.objects.create(code="UTW", description="A child test area")
+        parent_area_1 = models.Area.objects.create(
+            name="Parent Area 1", type=parent_type, generation_low=generation, generation_high=generation)
+        parent_area_2 = models.Area.objects.create(
+            name="Parent Area 2", type=parent_type, generation_low=generation, generation_high=generation)
+        child_area_1 = models.Area.objects.create(
+            name="Child Area 1", type=child_type, generation_low=generation, generation_high=generation)
+        child_area_2 = models.Area.objects.create(
+            name="Child Area 2", type=child_type, generation_low=generation, generation_high=generation)
+
+        polygon = Polygon(((-5, 50), (-5, 55), (1, 55), (1, 50), (-5, 50)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        models.Geometry.objects.create(area=parent_area_1, polygon=polygon)
+
+        polygon = Polygon(((1, 50), (1, 55), (5, 55), (5, 50), (1, 50)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        models.Geometry.objects.create(area=parent_area_2, polygon=polygon)
+
+        polygon = Polygon(((-4, 51), (-4, 52), (-3, 52), (-3, 51), (-4, 51)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        models.Geometry.objects.create(area=child_area_1, polygon=polygon)
+
+        polygon = Polygon(((2, 53), (2, 54), (3, 54), (3, 53), (2, 53)), srid=4326)
+        polygon.transform(settings.MAPIT_AREA_SRID)
+        models.Geometry.objects.create(area=child_area_2, polygon=polygon)
+
+        stdout = StringIO()
+        call_command(
+            'mapit_UK_find_parents',
+            commit=True,
+            stderr=StringIO(),
+            stdout=stdout,
+        )
+
+        child_area_1 = models.Area.objects.get(pk=child_area_1.id)
+        child_area_2 = models.Area.objects.get(pk=child_area_2.id)
+
+        expected = 'Parent for Child Area 1 [%d] (UTW) was None, is now Parent Area 1 [%d] (UTA)\n' % (
+            child_area_1.id, parent_area_1.id)
+        expected += 'Parent for Child Area 2 [%d] (UTW) was None, is now Parent Area 2 [%d] (UTA)\n' % (
+            child_area_2.id, parent_area_2.id)
+        self.assertEqual(stdout.getvalue(), expected)
+
+        self.assertEqual(child_area_1.parent_area, parent_area_1)
+        self.assertEqual(child_area_2.parent_area, parent_area_2)

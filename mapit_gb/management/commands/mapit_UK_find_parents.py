@@ -9,9 +9,11 @@ from mapit.management.find_parents import FindParentsCommand
 class Command(FindParentsCommand):
     parentmap = {
         # A District council ward's parent is a District council:
-        'DIW': 'DIS',
+        # Or a unitary in Buckinghamshire's case (2020)
+        'DIW': ('DIS', 'UTA'),
         # A County council ward's parent is a County council:
-        'CED': 'CTY',
+        # Or a unitary in Buckinghamshire's case (2020)
+        'CED': ('CTY', 'UTA'),
         # A London borough ward's parent is a London borough:
         'LBW': 'LBO',
         # A London Assembly constituency's parent is the Greater London Authority:

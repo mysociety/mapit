@@ -37,10 +37,11 @@ class FindParentsCommand(BaseCommand):
                         'generation_low__lte': new_generation,
                         'generation_high__gte': new_generation,
                     }
-                    if isinstance(self.parentmap[area.type.code], str):
-                        args['type__code'] = self.parentmap[area.type.code]
+                    parent_type = self.parentmap[area.type.code]
+                    if isinstance(parent_type, str):
+                        args['type__code'] = parent_type
                     else:
-                        args['type__code__in'] = self.parentmap[area.type.code]
+                        args['type__code__in'] = parent_type
                     parent = Area.objects.get(**args)
                     break
                 except Area.DoesNotExist:
