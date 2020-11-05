@@ -1,3 +1,21 @@
+Version 3.0, 2020-11-05
+    * New features:
+        * Add support for Django 3.0 and 3.1. #368
+        * Add polygon output for /children and areas_by_type. #324
+    * Improvements:
+        * Switch to OGR kml/geojson generation. #317
+        * Manually prefetch any matching many-many countries. #319
+    * Bugfixes:
+        * Manually set map icon imagePath so it is shown. #314
+        * Remove bytestrings from old migrations. #328
+        * Replace use of allow_tags, removed in Django 2. #337
+        * Use unary_union instead of cascaded_union. #340
+    * Development improvements:
+        * Move to GitHub actions. #366
+        * Add first-letter support to import script. #352
+    * MapIt UK specific:
+        * Various scripts for boundary changes and new data in 2018-2020.
+
 Version 2.0, 2017-12-18
     * Breaking changes
         * Add support for Django 2.0, drop support for older than 1.11.
