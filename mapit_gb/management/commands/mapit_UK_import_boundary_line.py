@@ -49,7 +49,7 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
-            name = feat['NAME'].value
+            name = feat['NAME'].value or ''
             if not isinstance(name, six.text_type):
                 name = name.decode('iso-8859-1')
 
