@@ -66,10 +66,10 @@ def output_json(out, code=200):
         content = map(lambda x: x, content)
 
         response = http.StreamingHttpResponse(content_type='application/json', status=code)
-        response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
         attr = 'streaming_content' if getattr(response, 'streaming', None) else 'content'
         setattr(response, attr, content)
 
+    response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
     response['Access-Control-Allow-Origin'] = '*'
 
     return response
