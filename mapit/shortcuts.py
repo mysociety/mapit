@@ -54,20 +54,18 @@ def output_json(out, code=200):
 
     if type(out) is dict:
         response = http.JsonResponse(
-            out, status=code, encoder=GEOS_JSONEncoder, json_dumps_params=json_dumps_params
-        )
+            out,
+            status=code,
+            encoder=GEOS_JSONEncoder,
+            json_dumps_params=json_dumps_params)
     else:
         encoder = GEOS_JSONEncoder(**json_dumps_params)
         content = encoder.iterencode(out)
 
-        # We don't want a generator function (iterencode) to be passed to an
-        # HttpResponse, as it won't cache due to its close() function adding it to
-        # an instance attribute.
-        content = map(lambda x: x, content)
-
-        response = http.StreamingHttpResponse(content_type='application/json', status=code)
-        attr = 'streaming_content' if getattr(response, 'streaming', None) else 'content'
-        setattr(response, attr, content)
+        response = http.StreamingHttpResponse(
+            streaming_content=content,
+            content_type='application/json',
+            status=code)
 
     response['Cache-Control'] = 'max-age=2419200'  # 4 weeks
     response['Access-Control-Allow-Origin'] = '*'
