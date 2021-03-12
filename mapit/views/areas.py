@@ -394,8 +394,18 @@ def areas_by_point(request, srid, x, y, bb=False, format=''):
 
     q = query_args(request, format)
 
+    max_within = getattr(settings, 'MAPIT_WITHIN_MAXIMUM', 0)
+    try:
+        within = float(request.GET.get('within', 0))
+        if within < 0 or within > max_within:
+            raise ValueError
+    except ValueError:
+        raise ViewException(format, _('Bad "within" parameter specified'), 400)
+
     if method == 'box':
         q &= Q(polygons__polygon__bbcontains=location)
+    elif within:
+        q &= Q(polygons__polygon__dwithin=(location, within))
     else:
         q &= Q(polygons__polygon__contains=location)
     areas = Area.objects.filter(q).distinct()

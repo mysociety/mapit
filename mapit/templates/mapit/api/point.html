@@ -63,6 +63,13 @@
                                 <i>country</i>, to restrict results to areas with particular country codes (multiple country codes separated by commas).
                             {% endblocktrans %}
                         </li>
+                      {% if within_maximum %}
+                        <li>
+                            {% blocktrans trimmed %}
+                                <i>within</i>, to show results within the specified distance (up to {{ within_maximum }} {{ area_srid_units }}) of the point, not just the point itself (not /box).
+                            {% endblocktrans %}
+                        </li>
+                      {% endif %}
                     </ul>
                 </dd>
 

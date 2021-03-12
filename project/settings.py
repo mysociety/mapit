@@ -22,6 +22,12 @@ except:
 # WGS84. Optional, defaults to 4326.
 MAPIT_AREA_SRID = int(config.get('AREA_SRID', 4326))
 
+# Set this to the maximum distance (in AREA_SRID units) allowed for the within
+# parameter to the point call. Optional, defaults to 0 (off).
+MAPIT_WITHIN_MAXIMUM = float(config.get('WITHIN_MAXIMUM', 0))
+if MAPIT_WITHIN_MAXIMUM.is_integer():
+    MAPIT_WITHIN_MAXIMUM = int(MAPIT_WITHIN_MAXIMUM)
+
 # Country is currently one of GB, NO, IT, KE, SA, or ZA.
 # Optional; country specific things won't happen if not set.
 MAPIT_COUNTRY = config.get('COUNTRY', '')

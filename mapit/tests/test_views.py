@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.conf import settings
 from django.contrib.gis.geos import Polygon, Point
 
@@ -79,6 +79,34 @@ class AreaViewsTest(TestCase):
 
         content = get_content(response)
 
+        self.assertEqual(
+            set((int(x) for x in content.keys())),
+            set((x.id for x in (self.big_area, self.small_area_1)))
+            )
+
+    @override_settings(MAPIT_WITHIN_MAXIMUM=1000)
+    def test_areas_by_point_within(self):
+        url = '/point/4326/-4.001,51.json?within=Bad'
+        response = self.client.get(url, HTTP_ACCEPT_ENCODING='gzip')
+        content = get_content(response)
+        self.assertEqual(content, {'code': 400, 'error': 'Bad "within" parameter specified'})
+
+        # (51,-4.001) is about 70m from (51,-4)
+        url = '/point/4326/-4.001,51.json'
+        response = self.client.get(url, HTTP_ACCEPT_ENCODING='gzip')
+        content = get_content(response)
+        self.assertEqual(
+            set((int(x) for x in content.keys())),
+            set([self.big_area.id])
+            )
+
+        # Want this to pass whatever the SRID is set to
+        pt1 = Point(-4.001, 51, srid=4326).transform(settings.MAPIT_AREA_SRID, clone=True)
+        pt2 = Point(-4, 51, srid=4326).transform(settings.MAPIT_AREA_SRID, clone=True)
+        dist = pt1.distance(pt2)
+        url = '/point/4326/-4.001,51.json?within=%f' % (dist * 2)
+        response = self.client.get(url, HTTP_ACCEPT_ENCODING='gzip')
+        content = get_content(response)
         self.assertEqual(
             set((int(x) for x in content.keys())),
             set((x.id for x in (self.big_area, self.small_area_1)))
