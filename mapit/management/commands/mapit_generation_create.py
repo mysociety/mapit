@@ -1,7 +1,7 @@
 # This script is used to create a new inactive generation for
 # inputting new boundaries of some sort.
 
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from mapit.models import Generation
 
 
@@ -15,15 +15,15 @@ class Command(BaseCommand):
     def handle(self, **options):
         new_generation = Generation.objects.new()
         if new_generation:
-            raise Exception("You already have an inactive generation")
+            raise CommandError("You already have an inactive generation")
 
         if not options['desc']:
-            raise Exception("You must specify a generation description")
+            raise CommandError("You must specify a generation description")
 
         g = Generation(description=options['desc'])
-        print("Creating generation...")
+        self.stdout.write("Creating generation...")
         if options['commit']:
             g.save()
-            print("...saved: %s" % g)
+            self.stdout.write("...saved: %s" % g)
         else:
-            print("...not saving, dry run")
+            self.stdout.write("...not saving, dry run")

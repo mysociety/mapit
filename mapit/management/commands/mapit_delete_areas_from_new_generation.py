@@ -1,8 +1,6 @@
 # This script deletes all the areas from the new generation (i.e. the
 # most recent inactive one).
 
-from __future__ import print_function
-
 from django.core.management.base import BaseCommand, CommandError
 from mapit.models import Generation, Area
 
@@ -26,7 +24,7 @@ class Command(BaseCommand):
 
         for area in Area.objects.filter(generation_low__lte=new, generation_high__gte=new):
 
-            print("Considering", area)
+            self.stdout.write("Considering %s" % area)
 
             g_low = area.generation_low
             g_high = area.generation_high
@@ -37,22 +35,22 @@ class Command(BaseCommand):
                 raise Exception("area.generation_high was " + g_high + ", which no longer exists!")
 
             if area.generation_low == new and area.generation_high == new:
-                print("  ... only exists in", new, "so will delete")
+                self.stdout.write("  ... only exists in %s so will delete" % new)
                 if options['commit']:
                     area.delete()
-                    print("  ... deleted.")
+                    self.stdout.write("  ... deleted.")
                 else:
-                    print("  ... not deleting, since --commit wasn't specified")
+                    self.stdout.write("  ... not deleting, since --commit wasn't specified")
             elif area.generation_low.id < new.id and area.generation_high == new:
-                print(
-                    "  ... still exists in an earlier generation, so lowering generation_high to",
+                self.stdout.write(
+                    "  ... still exists in an earlier generation, so lowering generation_high to %s" %
                     previous_generation)
                 area.generation_high = previous_generation
                 if options['commit']:
                     area.save()
-                    print("  ... lowered.")
+                    self.stdout.write("  ... lowered.")
                 else:
-                    print("  ... not lowering, since --commit wasn't specified")
+                    self.stdout.write("  ... not lowering, since --commit wasn't specified")
 
             elif area.generation_high.id > new.id:
                 # This should never happen - it'd mean the

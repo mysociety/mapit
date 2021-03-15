@@ -25,6 +25,6 @@ class Command(BaseCommand):
         generation_to_deactivate.active = False
         if options['commit']:
             generation_to_deactivate.save()
-            print("%s - deactivated" % generation_to_deactivate)
+            self.stdout.write("%s - deactivated" % generation_to_deactivate)
         else:
-            print("%s - not deactivated, dry run" % generation_to_deactivate)
+            self.stdout.write("%s - not deactivated, dry run" % generation_to_deactivate)

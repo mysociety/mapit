@@ -5,7 +5,106 @@ from six import StringIO, assertRaisesRegex
 from ..models import Area, Country, Generation, Type
 
 
-class GenerationCommandTests(TestCase):
+class GenerationCreateCommandTests(TestCase):
+    """Tests for commands that create MapIt generations"""
+
+    def test_already_new(self):
+        Generation.objects.create(active=False, description="One inactive generation")
+        with assertRaisesRegex(self, CommandError, r'already have an inactive'):
+            call_command('mapit_generation_create')
+
+    def test_no_description(self):
+        with assertRaisesRegex(self, CommandError, r'must specify a generation description'):
+            call_command('mapit_generation_create')
+
+    def test_no_commit(self):
+        stdout = StringIO()
+        call_command('mapit_generation_create', desc='An inactive generation', stdout=stdout)
+        self.assertEqual(
+            stdout.getvalue(),
+            'Creating generation...\n...not saving, dry run\n'
+        )
+
+    def test_creation(self):
+        stdout = StringIO()
+        call_command('mapit_generation_create', commit=True, desc='An inactive generation', stdout=stdout)
+        gen = Generation.objects.first().id
+        self.assertEqual(
+            stdout.getvalue(),
+            'Creating generation...\n...saved: Generation %d (inactive)\n' % gen
+        )
+
+
+class GenerationActivateCommandTests(TestCase):
+    """Tests for commands that activate MapIt generations"""
+
+    def test_no_new(self):
+        with assertRaisesRegex(self, CommandError, r'do not have an inactive'):
+            call_command('mapit_generation_activate')
+
+    def test_no_commit(self):
+        g = Generation.objects.create(active=False, description="One inactive generation")
+        stdout = StringIO()
+        call_command('mapit_generation_activate', stderr=StringIO(), stdout=stdout)
+        self.assertEqual(
+            stdout.getvalue(),
+            'Generation %s (active) - not activated, dry run\n' % g.id
+        )
+
+    def test_activation(self):
+        g = Generation.objects.create(active=False, description="One inactive generation")
+        stdout = StringIO()
+        call_command('mapit_generation_activate', commit=True, stderr=StringIO(), stdout=stdout)
+        self.assertEqual(
+            stdout.getvalue(),
+            'Generation %s (active) - activated\n' % g.id
+        )
+
+
+class GenerationDeactivateCommandTests(TestCase):
+    """Tests for commands that deactivate MapIt generations"""
+
+    def test_bad_id(self):
+        with assertRaisesRegex(self, Generation.DoesNotExist, 'does not exist'):
+            call_command('mapit_generation_deactivate', 0)
+
+    def test_inactive(self):
+        g = Generation.objects.create(active=False, description="One inactive generation")
+        with assertRaisesRegex(self, CommandError, r"wasn't active"):
+            call_command('mapit_generation_deactivate', g.id)
+
+    def test_only_active(self):
+        g = Generation.objects.create(active=True, description="One active generation")
+        with assertRaisesRegex(self, CommandError, r'the only active generation'):
+            call_command('mapit_generation_deactivate', g.id)
+
+    def test_no_commit(self):
+        Generation.objects.create(active=True, description="One active generation")
+        g2 = Generation.objects.create(active=True, description="Two active generation")
+        stdout = StringIO()
+        call_command(
+            'mapit_generation_deactivate',
+            g2.id, stderr=StringIO(), stdout=stdout
+        )
+        self.assertEqual(
+            stdout.getvalue(),
+            'Generation %s (inactive) - not deactivated, dry run\n' % g2.id
+        )
+
+    def test_activation(self):
+        g = Generation.objects.create(active=True, description="One active generation")
+        stdout = StringIO()
+        call_command(
+            'mapit_generation_deactivate',
+            g.id, force=True, commit=True, stderr=StringIO(), stdout=stdout
+        )
+        self.assertEqual(
+            stdout.getvalue(),
+            'Generation %s (inactive) - deactivated\n' % g.id
+        )
+
+
+class GenerationRaiseCommandTests(TestCase):
     """Tests for commands that manipulate MapIt generations"""
 
     def test_no_generations(self):
@@ -180,3 +279,35 @@ class GenerationCommandTests(TestCase):
 
         self.assertEqual(area_wmc.generation_high, inactive)
         self.assertEqual(area_uta.generation_high, current)
+
+
+class GenerationDeleteAreasCommandTests(TestCase):
+    """Tests for command that removes areas from a MapIt generations"""
+
+    def test_no_active_generations(self):
+        Generation.objects.create(active=True, description="One active generation")
+        with assertRaisesRegex(self, CommandError, r'no new inactive generation'):
+            call_command('mapit_delete_areas_from_new_generation')
+
+    def test_delete_areas(self):
+        cur = Generation.objects.create(active=True, description="One active generation")
+        new = Generation.objects.create(active=False, description="One inactive generation")
+        area_type = Type.objects.create(code='VIL', description='Villages in Trumptonshire')
+        area_trumpton = Area.objects.create(
+            name='Trumpton', generation_low=cur, generation_high=new, type=area_type)
+        area_chigley = Area.objects.create(
+            name='Chigley', generation_low=new, generation_high=new, type=area_type)
+
+        call_command(
+            'mapit_delete_areas_from_new_generation',
+            commit=True,
+            stderr=StringIO(),
+            stdout=StringIO(),
+        )
+
+        # The old areas will still be cached by the ORM, so refetch
+        area_trumpton = Area.objects.get(pk=area_trumpton.id)
+        self.assertEqual(area_trumpton.generation_low, cur)
+        self.assertEqual(area_trumpton.generation_high, cur)
+        with assertRaisesRegex(self, Area.DoesNotExist, 'does not exist'):
+            area_chigley = Area.objects.get(pk=area_chigley.id)
