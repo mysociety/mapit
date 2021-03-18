@@ -299,6 +299,7 @@ def areas_polygon(request, area_ids, srid='', format='kml'):
 
 def _areas_polygon(request, format, areas, srid=None):
     args = query_args_polygon(request, format, srid)
+    areas = add_codes(areas)
     serialiser = GeometrySerialiser(list(areas), args['srid'], args['simplify_tolerance'])
 
     try:
