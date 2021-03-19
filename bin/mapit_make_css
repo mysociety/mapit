@@ -20,7 +20,7 @@ subprocess.check_call([
     "mkdir", "-p", "%s/static/mapit/css" % directory
 ])
 subprocess.check_call([
-    "sassc", "--sourcemap",
+    "pysassc", "--sourcemap",
     "--style", "compressed",
     "%s/static/mapit/sass/mapit.scss" % directory,
     "%s/static/mapit/css/mapit.css" % directory
