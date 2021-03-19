@@ -63,6 +63,7 @@
     { "pk": 47, "model": "mapit.type", "fields": { "code": "NIHT", "description": "NI Health Trust" } },
 
     { "pk": 48, "model": "mapit.type", "fields": { "code": "TTW", "description": "Travel to Work Areas" } },
+    { "pk": 49, "model": "mapit.type", "fields": { "code": "NIC", "description": "Northern Ireland county" } },
 
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
