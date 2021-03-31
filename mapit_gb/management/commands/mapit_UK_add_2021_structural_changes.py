@@ -15,6 +15,13 @@ class Command(BaseCommand):
         'Wellingborough Borough Council',
     )
     new_utas = (
-        ('North Northamptonshire Council', 'E06000061'),
-        ('West Northamptonshire Council', 'E06000062'),
+        ('North Northamptonshire', 'E06000061',
+         ['Corby Borough Council',
+          'East Northamptonshire District Council',
+          'Kettering Borough Council'
+          'Wellingborough Borough Council']),
+        ('West Northamptonshire', 'E06000062',
+         ['Daventry District Council',
+          'Northampton Borough Council',
+          'South Northamptonshire District Council']),
     )

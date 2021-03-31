@@ -10,5 +10,5 @@ class Command(BaseCommand):
         'Chiltern District Council'
     )
     new_utas = (
-        ('Buckinghamshire Council', 'E06000060'),
+        ('Buckinghamshire Council', 'E06000060', []),
     )

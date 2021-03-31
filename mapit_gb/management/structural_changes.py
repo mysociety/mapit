@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 from django.core.management.base import BaseCommand
+from django.contrib.gis.db.models import Union
 from mapit.models import Area, Generation, Type, Country, NameType, CodeType
 
 
@@ -49,8 +50,11 @@ class Command(BaseCommand):
         self.existing_cty = Area.objects.get(type__code='CTY', name=self.county)
 
     def _create(self, name, typ, area, gss=None):
-        assert(area.polygons.count() == 1)
-        geom = area.polygons.get().polygon
+        if isinstance(area, Area):
+            assert(area.polygons.count() == 1)
+            geom = area.polygons.get().polygon
+        else:
+            geom = self._union(area)
         m = Area(
             name=name, type=Type.objects.get(code=typ), country=self.country,
             generation_low=self.gn, generation_high=self.gn,
@@ -64,9 +68,18 @@ class Command(BaseCommand):
         else:
             print('Would create', name, typ)
 
+    def _union(self, qs):
+        qs = qs.aggregate(Union('polygons__polygon'))
+        area = qs['polygons__polygon__union']
+        return area
+
     def create_new_unitaries(self):
         """New areas are the existing county electoral divisions"""
         for new_uta in self.new_utas:
-            self._create(new_uta[0], 'UTA', self.existing_cty, new_uta[1])
+            if new_uta[2]:
+                area = Area.objects.filter(type__code='DIS', name__in=new_uta[2], generation_high=self.g)
+            else:
+                area = self.existing_cty
+            self._create(new_uta[0], 'UTA', area, new_uta[1])
         for area in self.areas.filter(type__code='CED', parent_area=self.existing_cty):
             self._create(area.name, 'UTW', area)
