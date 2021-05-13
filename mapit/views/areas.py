@@ -2,7 +2,7 @@ import re
 from psycopg2 import InternalError
 from django.db.utils import DatabaseError
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models import Collect
 from django.db.models import Q

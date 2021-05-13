@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import path
 
 from django.shortcuts import render
 
 urlpatterns = [
-    url(r'^changelog$', render, {'template_name': 'mapit/changelog.html'}, 'mapit_changelog'),
+    path('changelog', render, {'template_name': 'mapit/changelog.html'}, 'mapit_changelog'),
 ]

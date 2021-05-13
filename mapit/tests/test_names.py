@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.conf import settings
 from django.contrib.gis.geos import Polygon
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 
 from mapit.models import Type, Area, Generation, Name, NameType
 import mapit_gb.countries
@@ -55,8 +55,8 @@ class NamesTest(TestCase):
         mapit.models.countries = orig_countries
 
     def test_geometry_name_works(self):
-        name = smart_text('Big “Area”')
+        name = smart_str('Big “Area”')
         self.area.name = name
         self.area.save()
         should_be = '%s %s, polygon %d' % (self.area_type.code, name, self.geometry.id)
-        self.assertEqual(smart_text(self.geometry), should_be)
+        self.assertEqual(smart_str(self.geometry), should_be)

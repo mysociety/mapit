@@ -7,7 +7,7 @@ from django.db import connection
 from django.conf import settings
 from django.shortcuts import get_object_or_404 as orig_get_object_or_404
 from django.template import loader
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from mapit.iterables import defaultiter
 

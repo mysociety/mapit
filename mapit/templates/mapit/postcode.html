@@ -9,7 +9,7 @@
     <h2>{{ postcode.postcode }}</h2>
     <ul>
       {% if postcode.coordsyst %}
-        <li>{% ifequal postcode.coordsyst "G" %}OSGB{% else %}IRE65{% endifequal %}
+        <li>{% if postcode.coordsyst == "G" %}OSGB{% else %}IRE65{% endif %}
         E/N: {{ postcode.easting }}, {{ postcode.northing }}
       {% endif %}
       {% if postcode.wgs84_lat or postcode.wgs84_lon %}

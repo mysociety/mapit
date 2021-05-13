@@ -3,7 +3,7 @@ import re
 import itertools
 from django.db.utils import DatabaseError
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.shortcuts import redirect, render
 from django.contrib.gis.geos import Point
 from django.contrib.gis.geos.geometry import GEOSGeometry
