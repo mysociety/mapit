@@ -91,8 +91,8 @@ def augment_postcode(postcode, result):
 # types to make them more likely to return results.
 def restrict_geo_html(area):
     geotype = {}
-    if area.type.code == 'EUR':
-        geotype = {'touches': ['EUR'], 'overlaps': ['UTA'], 'covers': ['UTA'], 'coverlaps': ['UTA']}
+    if area.type.code in ('EUR', 'ER'):
+        geotype = {'touches': [area.type.code], 'overlaps': ['UTA'], 'covers': ['UTA'], 'coverlaps': ['UTA']}
     elif area.type.code in ('CTY', 'UTA'):
         geotype = {
             'touches': ['CTY', 'DIS', 'MTD', 'LBO', 'COI', 'UTA'],
@@ -123,6 +123,7 @@ def make_friendly_name(name_obj, name):
         return n
     # Type must be 'O' here
     n = re.sub(' Euro Region$', '', n)  # EUR
+    n = re.sub(' English Region$', '', n)  # ER
     n = re.sub(' (Burgh|Co|Boro) Const$', '', n)  # WMC
     n = re.sub(' P Const$', '', n)  # SPC
     n = re.sub(' PER$', '', n)  # SPE
