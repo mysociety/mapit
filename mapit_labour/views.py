@@ -6,6 +6,7 @@ from mapit.shortcuts import output_json, get_object_or_404
 from mapit_labour.models import UPRN
 from mapit.models import Generation, Area
 from mapit.views.postcodes import add_codes, enclosing_areas
+from mapit.middleware import ViewException
 
 # Create your views here.
 
@@ -61,7 +62,15 @@ def uprn(request, uprn, format="json"):
 
 
 def addressbase(request):
+    if not request.GET:
+        raise ViewException(
+            "json",
+            "At least one AddressBase Core field should be specified in the query parameters.",
+            400,
+        )
+
     uprns = UPRN.objects.all()
     for code, value in request.GET.items():
         uprns = uprns.filter(codes__type__code__iexact=code, codes__code__iexact=value)
-    return output_json([uprn.as_dict() for uprn in uprns[:10]])
+
+    return output_json([uprn.as_dict()["addressbase_core"] for uprn in uprns[:10]])
