@@ -41,11 +41,11 @@ def output_html(request, title, areas, **kwargs):
     return http.StreamingHttpResponse(content)
 
 
-def output_json(out, code=200):
+def output_json(out, code=200, include_debug_db_queries=True):
     if code != 200:
         out['code'] = code
     indent = None
-    if settings.DEBUG:
+    if settings.DEBUG and include_debug_db_queries:
         if isinstance(out, dict):
             out['debug_db_queries'] = connection.queries
         indent = 4
