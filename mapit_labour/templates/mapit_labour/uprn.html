@@ -1,0 +1,37 @@
+{% extends "mapit/base.html" %}
+{% load i18n %}
+
+{% block title %}{% blocktrans with uprn=uprn.uprn %}Results for “{{ uprn }}”{% endblocktrans %}{% endblock title %}
+
+{% block content %}
+
+<header class="area_info">
+    <h2>UPRN: {{ uprn.uprn }}</h2>
+    <ul>
+      <li>Postcode: <a href="{% url "mapit-postcode" postcode=uprn.postcode format="html" %}">{{ uprn.postcode }}</a>
+      <li>OSGB E/N: {{ uprn.easting }}, {{ uprn.northing }}
+      <li>{% trans "WGS84 lat/lon" %}: <a href="https://tools.wmflabs.org/geohack/geohack.php?params={{ uprn.wgs84_lat|floatformat:-6 }};{{ uprn.wgs84_lon|floatformat:-6 }}">{{ uprn.wgs84_lat|floatformat:-6 }}, {{ uprn.wgs84_lon|floatformat:-6 }}</a>
+      {% url json_view uprn=uprn.uprn as json_url %}
+      <li>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</li>
+    </ul>
+
+    {% block area_info_extra %}{% endblock %}
+</header>
+
+{% if uprn.wgs84_lat or uprn.wgs84_lon %}
+{% include "mapit/map/init.html" %}
+<script>
+    var point = new L.LatLng({{ uprn.wgs84_lat|floatformat:-6 }}, {{ uprn.wgs84_lon|floatformat:-6 }});
+    L.Icon.Default.prototype.options.imagePath = '/static/mapit/leaflet/images/';
+    var marker = new L.Marker(point);
+    map.addLayer(marker);
+    map.setView(point, 14);
+</script>
+{% endif %}
+
+<section class="details">
+<h3>{% trans "Areas" %}</h3>
+{% include "mapit/areas.html" %}
+</section>
+
+{% endblock %}
