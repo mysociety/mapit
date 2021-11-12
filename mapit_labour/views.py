@@ -57,7 +57,7 @@ def uprn(request, uprn, format="json"):
 
     if shortcuts:
         out["shortcuts"] = shortcuts
-    return output_json(out)
+    return output_json(out, include_debug_db_queries=False)
 
 
 def addressbase(request):
