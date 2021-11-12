@@ -21,6 +21,7 @@ from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
 from mapit.views.areas import add_codes
 from mapit import countries
+from mapit_labour.models import UPRN
 
 # Stupid fixed IDs from old MaPit
 WMP_AREA_ID = 900000
@@ -99,10 +100,13 @@ def postcode(request, postcode, format=None):
             extra.extend(enclosing_areas[area.type.code])
     areas = itertools.chain(areas, Area.objects.filter(id__in=extra))
 
+    uprns = list(UPRN.objects.filter(postcode=postcode.get_postcode_display()).values_list("uprn", flat=True).order_by("uprn"))
+
     if format == 'html':
         return render(request, 'mapit/postcode.html', {
             'postcode': postcode.as_dict(),
             'areas': areas,
+            'uprns': uprns,
             'json_view': 'mapit-postcode',
         })
 

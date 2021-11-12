@@ -42,4 +42,15 @@
 {% include "mapit/areas.html" %}
 </section>
 
+{% if uprns %}
+<section class="details">
+<h3>{% trans "UPRNs" %}</h3>
+<ul>
+  {% for uprn in uprns %}
+      <li><a href="{% url "mapit_labour-uprn" uprn=uprn format="html" %}">{{ uprn }}</a></li>
+  {% endfor %}
+</ul>
+</section>
+{% endif %}
+
 {% endblock %}
