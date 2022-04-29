@@ -206,4 +206,7 @@ class Command(LabelCommand):
         if area_code == 'CED' and name == 'Abbey ED' and unit_id == '180320':
             return {'unit-id': '1290'}
 
+        if area_code == 'UTW' and name == 'An Taobh Siar agus Nis Ward' and ons_code == 'S13003134':
+            return {'ons-code': 'S13002608'}
+
         return {}
