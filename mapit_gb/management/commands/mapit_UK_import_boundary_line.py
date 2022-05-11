@@ -68,6 +68,13 @@ class Command(LabelCommand):
             if area_code == 'NCP':
                 continue  # Ignore Non Parished Areas
 
+            # The Senedd area codes were renamed in the May 2022 Boundary-Line.
+            # Maintain the old codes for consistency.
+            if area_code == 'WPC':
+                area_code = 'WAC'
+            if area_code == 'WPE':
+                area_code = 'WAE'
+
             if ons_code in self.ons_code_to_shape:
                 m, poly = self.ons_code_to_shape[ons_code]
                 try:
