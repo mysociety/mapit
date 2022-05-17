@@ -2,13 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  # The most common configuration options are documented and commented below.
-  # For a complete reference, please see the online documentation at
-  # https://docs.vagrantup.com.
-
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://atlas.hashicorp.com/search.
-  config.vm.box = "ubuntu/trusty64"
+  config.vm.box = "ubuntu/focal64"
 
   # Enable NFS access to the disk
   config.vm.synced_folder ".", "/vagrant", disabled: true
@@ -35,8 +29,7 @@ Vagrant.configure(2) do |config|
     chown vagrant:vagrant /vagrant
     cd /vagrant/mapit
 
-    # Install the packages from conf/packages.ubuntu-trusty
-    xargs apt-get install -qq -y < conf/packages.ubuntu-trusty
+    xargs apt-get install -qq -y < conf/packages.generic
 
     # Create a postgresql user
     su postgres -c 'psql -c "CREATE USER vagrant SUPERUSER CREATEDB"'

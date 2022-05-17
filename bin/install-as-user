@@ -68,24 +68,9 @@ fi
 echo -n "Setting up database... "
 if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
 then
-    VERSION_POSTGIS=$(dpkg-query -W -f '${Version}\n' postgresql-*-postgis*|sort -rV|head -1)
-    if [ 2.0 = "$(printf '2.0\n%s\n' "$VERSION_POSTGIS" | sort -V | head -1)" ]
-    then POSTGIS_TWO=Yes
-    else POSTGIS_TWO=No
-    fi
-
-    if [ $POSTGIS_TWO = Yes ]
-    then
-        # If we're running PostGIS 2, we can just use CREATE EXTENSION to make
-        # this a PostGIS database:
-        createdb --owner "$UNIX_USER" "$DB_NAME"
-        COMMAND="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;"
-        psql -c "$COMMAND" "$DB_NAME"
-    else
-        # Otherwise, the template_postgis template should already
-        # have been created.
-        createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
-    fi
+    createdb --owner "$UNIX_USER" "$DB_NAME"
+    COMMAND="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;"
+    psql -c "$COMMAND" "$DB_NAME"
 fi
 
 conf/post_deploy_actions.bash

@@ -1,10 +1,5 @@
 postgresql
 postgis
 memcached
-python-virtualenv
-
-python-psycopg2
-python-shapely
-python-yaml
-python-memcache
-python-gdal
+python3-dev
+libgdal-dev
