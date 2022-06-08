@@ -48,3 +48,5 @@ BUGS_EMAIL: 'example@example.org'
 
 # Text to prepend to the subject of error emails. Overrides Django default. Optional.
 EMAIL_SUBJECT_PREFIX: '[MapIt] '
+
+DEFAULT_AUTO_FIELD: 'django.db.models.AutoField'

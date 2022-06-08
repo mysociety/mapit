@@ -244,3 +244,5 @@ if MAPIT_COUNTRY:
         INSTALLED_APPS.insert(INSTALLED_APPS.index('mapit'), c)
 
 DATE_FORMAT = 'j F Y'
+
+DEFAULT_AUTO_FIELD = config.get('DEFAULT_AUTO_FIELD', 'django.db.models.AutoField')
