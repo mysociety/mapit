@@ -219,7 +219,8 @@ def area_intersect(query_type, title, request, area_id, format):
         # confused with a RawQuerySet
         areas = list(Area.objects.intersect(query_type, area, types, generation))
     except DatabaseError as e:
-        if 'canceling statement due to statement timeout' not in e.args[0]:
+        if 'canceling statement due to statement timeout' not in e.args[0] \
+           and 'canceling statement due to user request' not in e.args[0]:
             raise
         raise ViewException(
             format, _('That query was taking too long to compute - '

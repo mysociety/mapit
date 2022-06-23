@@ -148,7 +148,8 @@ def example_postcode_for_area(request, area_id, format=''):
         try:
             pc = Postcode.objects.filter_by_area(area).order_by()[0]
         except DatabaseError as e:
-            if 'canceling statement due to statement timeout' not in e.args[0]:
+            if 'canceling statement due to statement timeout' not in e.args[0] \
+               and 'canceling statement due to user request' not in e.args[0]:
                 raise
             raise ViewException(format, 'That query was taking too long to compute.', 500)
         except:
@@ -193,7 +194,8 @@ def nearest(request, srid, x, y, format=''):
     except DatabaseError as e:
         if 'Cannot find SRID' in e.args[0]:
             raise ViewException(format, e.args[0], 400)
-        if 'canceling statement due to statement timeout' not in e.args[0]:
+        if 'canceling statement due to statement timeout' not in e.args[0] \
+           and 'canceling statement due to user request' not in e.args[0]:
             raise
         raise ViewException(format, 'That query was taking too long to compute.', 500)
     except:
