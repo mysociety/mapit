@@ -30,9 +30,11 @@ class ViewExceptionMiddleware(object):
                 500: http.HttpResponseServerError,
             }
             response_type = types.get(code, http.HttpResponse)
-            return response_type(render_to_string(
+            response = response_type(render_to_string(
                 'mapit/%s.html' % code,
                 {'error': message},
                 request=request
             ))
+            response._has_been_logged = True
+            return response
         return output_json({'error': message}, code=code)
