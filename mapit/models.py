@@ -171,10 +171,15 @@ class AreaManager(models.Manager):
 
         query_geo = ' OR '.join(['ST_%s(geometry.polygon, target.polygon)' % type for type in query_type])
 
+        version = connection.cursor().connection.server_version
+        materialized = ''
+        if version >= 120000:
+            materialized = 'MATERIALIZED'
+
         query = '''
 WITH
     target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
-    geometry AS (
+    geometry AS %s (
         SELECT mapit_geometry.*
           FROM mapit_geometry, mapit_area, target
          WHERE mapit_geometry.area_id = mapit_area.id
@@ -187,7 +192,7 @@ WITH
 SELECT DISTINCT mapit_area.*
   FROM mapit_area, geometry, target
  WHERE geometry.area_id = mapit_area.id AND (%s)
-''' % (query_area_type, query_geo)
+''' % (materialized, query_area_type, query_geo)
         return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
