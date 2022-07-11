@@ -15,6 +15,14 @@ from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
 
 
+def materialized():
+    version = connection.cursor().connection.server_version
+    materialized = ''
+    if version >= 120000:
+        materialized = 'MATERIALIZED'
+    return materialized
+
+
 class GenerationManager(models.Manager):
     def current(self):
         """Return the most recent active generation.
@@ -171,11 +179,6 @@ class AreaManager(models.Manager):
 
         query_geo = ' OR '.join(['ST_%s(geometry.polygon, target.polygon)' % type for type in query_type])
 
-        version = connection.cursor().connection.server_version
-        materialized = ''
-        if version >= 120000:
-            materialized = 'MATERIALIZED'
-
         query = '''
 WITH
     target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
@@ -192,7 +195,7 @@ WITH
 SELECT DISTINCT mapit_area.*
   FROM mapit_area, geometry, target
  WHERE geometry.area_id = mapit_area.id AND (%s)
-''' % (materialized, query_area_type, query_geo)
+''' % (materialized(), query_area_type, query_geo)
         return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
@@ -413,19 +416,22 @@ class Code(models.Model):
 # Postcodes
 
 class PostcodeQuerySet(models.QuerySet):
-    # ST_CoveredBy on its own does not appear to use the index.
-    # Plus this way we can keep the polygons in the database
-    # without pulling out in a giant WKB string
-    def filter_by_area(self, area):
+    # We need to hand-write this query because otherwise in PostgreSQL 12 the
+    # ST_Transform is applied to each row in turn making it much slower. Even
+    # with a CTE, it tries to inline so we must ensure it is materialized.
+    def filter_by_area(self, area, limit=''):
+        if limit:
+            limit = 'LIMIT %s' % limit
         collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
             where area_id=%s group by area_id), 4326)'''
-        return self.extra(
-            where=[
-                'location && %s' % collect,
-                'ST_CoveredBy(location, %s)' % collect
-            ],
-            params=[area.id, area.id]
-        )
+        query = '''
+WITH target AS %s ( SELECT %s AS polygon )
+SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"::bytea
+  FROM mapit_postcode, target
+ WHERE ST_CoveredBy(location, target.polygon)
+ %s
+''' % (materialized(), collect, limit)
+        return self.raw(query, params=[area.id])
 
 
 def str2int(s):

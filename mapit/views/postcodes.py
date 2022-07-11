@@ -146,7 +146,7 @@ def example_postcode_for_area(request, area_id, format=''):
     except:
         set_timeout(format)
         try:
-            pc = Postcode.objects.filter_by_area(area).order_by()[0]
+            pc = Postcode.objects.filter_by_area(area, limit=1)[0]
         except DatabaseError as e:
             if 'canceling statement due to statement timeout' not in e.args[0] \
                and 'canceling statement due to user request' not in e.args[0]:
