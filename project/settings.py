@@ -1,6 +1,7 @@
 import os
 import yaml
 from .utils import skip_unreadable_post, find_module
+import mapit.djangopatch  # noqa
 
 # Path to here is something like
 # .../<repo>/<project_name>/settings.py
