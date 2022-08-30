@@ -4,7 +4,6 @@ import re
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
-import six
 
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
@@ -117,7 +116,7 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = feat['NAME'].value
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('iso-8859-1')
             print("  %s" % name)
             name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)

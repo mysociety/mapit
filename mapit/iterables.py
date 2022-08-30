@@ -10,16 +10,15 @@ def defaultiter(it, default):
 
 
 # If you wanted iterdict() to be more generic, it'd be something like:
-# import six
 # import itertools
 # if not args:
 #     self.ITERABLE = iter()
 # elif isinstance(args[0], dict):
-#     self.ITERABLE = six.iteritems(args[0])
+#     self.ITERABLE = args[0].items()
 # else:
 #     self.ITERABLE = args[0]
 # if kwargs:
-#     self.ITERABLE = itertools.chain(self.ITERABLE, six.iteritems(kwargs))
+#     self.ITERABLE = itertools.chain(self.ITERABLE, kwargs.items())
 
 
 class iterdict(dict):

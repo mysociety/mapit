@@ -3,7 +3,6 @@ from __future__ import unicode_literals
 import re
 import itertools
 
-from six import python_2_unicode_compatible
 from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
@@ -46,7 +45,6 @@ class GenerationManager(models.Manager):
         return latest[0]
 
 
-@python_2_unicode_compatible
 class Generation(models.Model):
 
     # Generations are used so that, theoretically, old versions of the same
@@ -107,7 +105,6 @@ class Generation(models.Model):
         }
 
 
-@python_2_unicode_compatible
 class Country(models.Model):
     code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
@@ -119,7 +116,6 @@ class Country(models.Model):
         verbose_name_plural = 'countries'
 
 
-@python_2_unicode_compatible
 class Type(models.Model):
 
     # An area type (the Type model) is the type of area. You can see examples
@@ -231,7 +227,6 @@ SELECT DISTINCT mapit_area.*
         return area
 
 
-@python_2_unicode_compatible
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
     parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
@@ -328,7 +323,6 @@ class Area(models.Model):
         return (out, content_type)
 
 
-@python_2_unicode_compatible
 class Geometry(models.Model):
     area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
@@ -340,7 +334,6 @@ class Geometry(models.Model):
         return '%s, polygon %d' % (smart_str(self.area), self.id)
 
 
-@python_2_unicode_compatible
 class NameType(models.Model):
 
     # Name types are for storing different types of names. This could have
@@ -359,7 +352,6 @@ class NameType(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-@python_2_unicode_compatible
 class Name(models.Model):
     area = models.ForeignKey(Area, related_name='names', on_delete=models.CASCADE)
     type = models.ForeignKey(NameType, related_name='names', on_delete=models.CASCADE)
@@ -381,7 +373,6 @@ class Name(models.Model):
         return (self.type.code, [self.type.description, self.name])
 
 
-@python_2_unicode_compatible
 class CodeType(models.Model):
 
     # Code types are so you can store different types of code for an area. In
@@ -399,7 +390,6 @@ class CodeType(models.Model):
         return '%s (%s)' % (self.description, self.code)
 
 
-@python_2_unicode_compatible
 class Code(models.Model):
     area = models.ForeignKey(Area, related_name='codes', on_delete=models.CASCADE)
     type = models.ForeignKey(CodeType, related_name='codes', on_delete=models.CASCADE)
@@ -438,7 +428,6 @@ def str2int(s):
     return int(round(float(s)))
 
 
-@python_2_unicode_compatible
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
     location = models.PointField(null=True)

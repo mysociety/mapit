@@ -1,7 +1,6 @@
 import itertools
 import re
 
-from six.moves import map
 from django import http
 from django.db import connection
 from django.conf import settings

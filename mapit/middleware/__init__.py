@@ -1,8 +1,6 @@
 import itertools
 import re
 
-import six
-
 from .view_error import ViewException, ViewExceptionMiddleware  # noqa
 
 
@@ -36,7 +34,7 @@ class JSONPMiddleware(object):
         callback_header = b'typeof ' + cb + b" === 'function' && " + cb + b'('
         callback_footer = b')'
         content = getattr(response, attr)
-        if not hasattr(content, '__iter__') or isinstance(content, (bytes, six.string_types)):
+        if not hasattr(content, '__iter__') or isinstance(content, (bytes, str)):
             content = [content]
         setattr(response, attr, itertools.chain((callback_header,), content, (callback_footer,)))
         response.status_code = 200  # Must return OK for JSONP to be processed

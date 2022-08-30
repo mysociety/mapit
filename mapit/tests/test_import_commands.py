@@ -1,6 +1,6 @@
 import os
 
-from six import StringIO
+from io import StringIO
 from django.test import TestCase
 from django.core.management import call_command
 from django.conf import settings

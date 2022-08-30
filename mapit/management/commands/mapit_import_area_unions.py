@@ -10,7 +10,6 @@ import csv
 from django.core.management.base import LabelCommand
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.db.models import Union
-from six import Iterator
 
 from mapit.models import Area, Generation, Geometry, Country, Type
 from mapit.management.command_utils import save_polygons
@@ -21,7 +20,7 @@ from mapit.management.command_utils import save_polygons
 
 # Copied from
 # http://www.mfasold.net/blog/2010/02/python-recipe-read-csvtsv-textfiles-and-ignore-comment-lines/
-class CommentedFile(Iterator):
+class CommentedFile(object):
     def __init__(self, f, commentstring="#"):
         self.f = f
         self.commentstring = commentstring

@@ -7,7 +7,6 @@ from __future__ import print_function
 import re
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
-import six
 
 from mapit.models import Area, CodeType, Type, Country, Generation, NameType
 from utils import save_polygons
@@ -26,7 +25,7 @@ class Command(LabelCommand):
         name_type = NameType.objects.get(code='O')
         for feat in DataSource(filename)[0]:
             name = feat['NAME'].value
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('iso-8859-1')
             name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
             name = re.sub(r'\s+', ' ', name)

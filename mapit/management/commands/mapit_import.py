@@ -12,8 +12,6 @@ from django.core.management.base import LabelCommand, CommandError
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.db.models import Collect
 from django.conf import settings
-import six
-from six.moves import input
 
 from mapit.models import Area, Generation, Type, NameType, Country, CodeType
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
@@ -231,7 +229,7 @@ class Command(LabelCommand):
                         "Could not find name using name field '%s' - should it be something else? "
                         "It will be one of these: %s. Specify which with --name_field" % (name_field, choices))
                 try:
-                    if not isinstance(name, six.text_type):
+                    if not isinstance(name, str):
                         name = name.decode(encoding)
                 except:
                     raise CommandError(

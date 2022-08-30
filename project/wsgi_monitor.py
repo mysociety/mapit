@@ -7,7 +7,7 @@ import sys
 import signal
 import threading
 import atexit
-from six.moves import queue
+import queue
 
 _interval = 1.0
 _times = {}

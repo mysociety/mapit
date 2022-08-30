@@ -4,7 +4,6 @@
 
 from django.core.management.base import LabelCommand
 from django.contrib.gis.gdal import DataSource
-import six
 
 from mapit.models import Area, CodeType
 from utils import save_polygons
@@ -22,7 +21,7 @@ class Command(LabelCommand):
         code_version = CodeType.objects.get(code='gss')
         for feat in DataSource(filename)[0]:
             name = feat['NAME'].value
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('iso-8859-1')
             ons_code = feat['CODE'].value
             if ons_code in ('E04008782', 'E05004419'):

@@ -1,10 +1,10 @@
 import unittest
+import urllib
 from django.conf import settings
 from django.test import TestCase
 from django.core.management import call_command
 from django.contrib.gis.geos import Polygon, Point
-from six import StringIO, assertRaisesRegex
-from six.moves import urllib
+from io import StringIO
 
 from mapit import utils, models
 
@@ -177,7 +177,7 @@ class FindParentsCommandTests(TestCase):
     """Tests for commands that find parent areas"""
 
     def test_no_generations(self):
-        with assertRaisesRegex(self, Exception, r'No new generation'):
+        with self.assertRaisesRegex(Exception, r'No new generation'):
             call_command(
                 'mapit_UK_find_parents',
                 commit=True,

@@ -56,7 +56,6 @@ setup(
         'psycopg2',
         'PyYAML',
         'Shapely',
-        'six',
         'uk-postcode-utils',
     ],
     classifiers=[

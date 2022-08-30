@@ -7,7 +7,6 @@ import sys
 import csv
 import os
 
-import six
 from django.core.management.base import BaseCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
@@ -309,6 +308,6 @@ class Command(BaseCommand):
             return ('Northern Ireland', 'N07000001', object_id)
 
     def format_name(self, name):
-        if not isinstance(name, six.text_type):
+        if not isinstance(name, str):
             name = name.decode('iso-8859-1')
         return name

@@ -8,7 +8,6 @@
 import re
 import xml.sax
 
-import six
 from django.core.management.base import LabelCommand
 # Not using LayerMapping as want more control, but what it does is what this does
 # from django.contrib.gis.utils import LayerMapping
@@ -46,7 +45,7 @@ class Command(LabelCommand):
         layer = ds[0]
         for feat in layer:
             name = feat['Name'].value
-            if not isinstance(name, six.text_type):
+            if not isinstance(name, str):
                 name = name.decode('utf-8')
             name = re.sub(r'\s+', ' ', name)
             print("  %s" % smart_str(name))

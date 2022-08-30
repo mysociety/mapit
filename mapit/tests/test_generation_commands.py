@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.management import call_command, CommandError
-from six import StringIO, assertRaisesRegex
+from io import StringIO
 
 from ..models import Area, Country, Generation, Type
 
@@ -10,11 +10,11 @@ class GenerationCreateCommandTests(TestCase):
 
     def test_already_new(self):
         Generation.objects.create(active=False, description="One inactive generation")
-        with assertRaisesRegex(self, CommandError, r'already have an inactive'):
+        with self.assertRaisesRegex(CommandError, r'already have an inactive'):
             call_command('mapit_generation_create')
 
     def test_no_description(self):
-        with assertRaisesRegex(self, CommandError, r'must specify a generation description'):
+        with self.assertRaisesRegex(CommandError, r'must specify a generation description'):
             call_command('mapit_generation_create')
 
     def test_no_commit(self):
@@ -39,7 +39,7 @@ class GenerationActivateCommandTests(TestCase):
     """Tests for commands that activate MapIt generations"""
 
     def test_no_new(self):
-        with assertRaisesRegex(self, CommandError, r'do not have an inactive'):
+        with self.assertRaisesRegex(CommandError, r'do not have an inactive'):
             call_command('mapit_generation_activate')
 
     def test_no_commit(self):
@@ -65,17 +65,17 @@ class GenerationDeactivateCommandTests(TestCase):
     """Tests for commands that deactivate MapIt generations"""
 
     def test_bad_id(self):
-        with assertRaisesRegex(self, Generation.DoesNotExist, 'does not exist'):
+        with self.assertRaisesRegex(Generation.DoesNotExist, 'does not exist'):
             call_command('mapit_generation_deactivate', 0)
 
     def test_inactive(self):
         g = Generation.objects.create(active=False, description="One inactive generation")
-        with assertRaisesRegex(self, CommandError, r"wasn't active"):
+        with self.assertRaisesRegex(CommandError, r"wasn't active"):
             call_command('mapit_generation_deactivate', g.id)
 
     def test_only_active(self):
         g = Generation.objects.create(active=True, description="One active generation")
-        with assertRaisesRegex(self, CommandError, r'the only active generation'):
+        with self.assertRaisesRegex(CommandError, r'the only active generation'):
             call_command('mapit_generation_deactivate', g.id)
 
     def test_no_commit(self):
@@ -108,7 +108,7 @@ class GenerationRaiseCommandTests(TestCase):
     """Tests for commands that manipulate MapIt generations"""
 
     def test_no_generations(self):
-        with assertRaisesRegex(self, CommandError, r'no new inactive'):
+        with self.assertRaisesRegex(CommandError, r'no new inactive'):
             call_command(
                 'mapit_generation_raise_on_current_areas',
                 commit=True,
@@ -121,7 +121,7 @@ class GenerationRaiseCommandTests(TestCase):
             active=False,
             description="One inactive generation",
         )
-        with assertRaisesRegex(self, CommandError, r'no currently active'):
+        with self.assertRaisesRegex(CommandError, r'no currently active'):
             call_command(
                 'mapit_generation_raise_on_current_areas',
                 commit=True,
@@ -286,7 +286,7 @@ class GenerationDeleteAreasCommandTests(TestCase):
 
     def test_no_active_generations(self):
         Generation.objects.create(active=True, description="One active generation")
-        with assertRaisesRegex(self, CommandError, r'no new inactive generation'):
+        with self.assertRaisesRegex(CommandError, r'no new inactive generation'):
             call_command('mapit_delete_areas_from_new_generation')
 
     def test_delete_areas(self):
@@ -309,5 +309,5 @@ class GenerationDeleteAreasCommandTests(TestCase):
         area_trumpton = Area.objects.get(pk=area_trumpton.id)
         self.assertEqual(area_trumpton.generation_low, cur)
         self.assertEqual(area_trumpton.generation_high, cur)
-        with assertRaisesRegex(self, Area.DoesNotExist, 'does not exist'):
+        with self.assertRaisesRegex(Area.DoesNotExist, 'does not exist'):
             area_chigley = Area.objects.get(pk=area_chigley.id)

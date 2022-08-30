@@ -7,7 +7,6 @@ import os.path
 
 from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, Country, CodeType
-import six
 
 
 class Command(BaseCommand):
@@ -140,6 +139,6 @@ class Command(BaseCommand):
         return council_areas
 
     def format_name(self, name):
-        if not isinstance(name, six.text_type):
+        if not isinstance(name, str):
             name = name.decode('utf-8 ')
         return name
