@@ -58,6 +58,8 @@ def output_json(out, code=200):
             status=code,
             encoder=GEOS_JSONEncoder,
             json_dumps_params=json_dumps_params)
+        if code != 200:
+            response._has_been_logged = True
     else:
         encoder = GEOS_JSONEncoder(**json_dumps_params)
         content = encoder.iterencode(out)
