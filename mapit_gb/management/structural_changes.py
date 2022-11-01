@@ -51,7 +51,7 @@ class Command(BaseCommand):
 
     def _create(self, name, typ, area, gss=None):
         if isinstance(area, Area):
-            assert(area.polygons.count() == 1)
+            assert area.polygons.count() == 1
             geom = area.polygons.get().polygon
         else:
             geom = self._union(area)

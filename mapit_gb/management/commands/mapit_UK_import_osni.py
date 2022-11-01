@@ -244,7 +244,7 @@ class Command(BaseCommand):
         # on the geometry object
         def transform_geom(self, geom):
             geom.srid = self.srid
-            if not(self.srid == settings.MAPIT_AREA_SRID):
+            if self.srid != settings.MAPIT_AREA_SRID:
                 geom.transform(settings.MAPIT_AREA_SRID)
             return geom
 
