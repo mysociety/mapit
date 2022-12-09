@@ -34,13 +34,14 @@ class KML(ContentHandler):
             self.name = self.normalize_whitespace(attr['name'])
 
 
-def save_polygons(lookup):
+def save_polygons(lookup, write_to_stdout=True):
     for shape in lookup.values():
         m, poly = shape
         if not poly:
             continue
-        sys.stdout.write(".")
-        sys.stdout.flush()
+        if write_to_stdout:
+            sys.stdout.write(".")
+            sys.stdout.flush()
         # g = OGRGeometry(OGRGeomType('MultiPolygon'))
         m.polygons.all().delete()
         for p in poly:

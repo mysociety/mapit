@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Add areas from file{% endblock %}
+
+{% block content %}
+<h1>Add areas from file</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <table>
+    {{ form.as_table }}
+    </table>
+    <input type="submit" value="Run command">
+</form>
+{% endblock %}

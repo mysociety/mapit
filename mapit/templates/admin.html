@@ -1,0 +1,9 @@
+{% extends "admin/index.html" %}
+
+{% block sidebar %}
+    {{block.super}}
+    <div>
+        <h1>Management Commands</h1>
+        <a href="/admin/add-areas-from-file/">Add areas from a file</a>
+    </div>
+{% endblock %}

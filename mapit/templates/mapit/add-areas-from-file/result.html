@@ -1,0 +1,36 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}Add areas from file{% endblock %}
+
+{% block content %}
+<h1>Add areas from file</h1>
+
+<h2>
+  {% if error_message %}
+    Command failed.
+  {% else %}
+    Command succeeded.
+  {% endif %}
+</h2>
+
+
+{% if error_message %}
+  <p>Error message: {{ error_message }}</p>
+{% endif %}
+
+<h2>Parameters</h2>
+<code style="display:block;white-space:pre-wrap">
+ {{ parameters }}
+</code>
+
+
+<h2>Logs</h2>
+{% if logs %}
+<code style="display:block;white-space:pre-wrap">
+ {{ logs }}
+</code>
+{% else %}
+ <p>No logs</p>
+{% endif %}
+
+{% endblock %}

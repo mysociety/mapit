@@ -1,5 +1,6 @@
 from django.contrib.gis import admin
 from django.utils.html import format_html
+
 from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, CodeType, Country
 
 

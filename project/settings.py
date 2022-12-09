@@ -210,9 +210,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.messages',
     'django.contrib.sessions',
-    'django.contrib.admin',
     'django.contrib.gis',
     'django.contrib.staticfiles',
+    'project.apps.AdminConfig',
     'mapit',
 ]
 
@@ -247,3 +247,7 @@ if MAPIT_COUNTRY:
 DATE_FORMAT = 'j F Y'
 
 DEFAULT_AUTO_FIELD = config.get('DEFAULT_AUTO_FIELD', 'django.db.models.AutoField')
+
+FILE_UPLOAD_HANDLERS = [
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler"
+]
