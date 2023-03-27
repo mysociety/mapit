@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   test:
     name: Test MapIt
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -48,7 +48,8 @@ jobs:
         pip install tox tox-gh-actions codecov
 
     - name: Install GDAL
-      run: sudo apt-get install gdal-bin
+      run: |
+        sudo apt-get install gdal-bin
 
     - name: Set up config
       run: |
