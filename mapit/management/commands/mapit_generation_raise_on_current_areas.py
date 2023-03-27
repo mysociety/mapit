@@ -7,29 +7,35 @@
 # ID of the new inactive generation.
 
 from django.core.management.base import BaseCommand, CommandError
+from django.db.models import Q
 
 from mapit.models import Area, Generation, Type, Country
 
 
-def check_option(option_name, options, model_class):
-    '''Get a model instance from an option specifying its code field'''
-
-    supplied = options[option_name]
-    if not supplied:
-        return None
+def lookup_model_by_code(option_name, model_class, code):
     known = model_class.objects.order_by('code'). \
         values_list('code', flat=True)
     try:
-        return model_class.objects.get(code=supplied)
+        return model_class.objects.get(code=code)
     except model_class.DoesNotExist:
         raise CommandError(
-            'The {option_name} {supplied} is not known - did you mean '
+            'The {option_name} {code} is not known - did you mean '
             'one of: {known}'.format(
-                supplied=supplied,
+                code=code,
                 known=', '.join(known),
                 option_name=option_name
             )
         )
+
+
+def check_option(option_name, options, model_class):
+    '''Get model instances from an option specifying code field values'''
+    supplied = options[option_name]
+    if not supplied:
+        return []
+    if type(supplied) != list:
+        supplied = [supplied]
+    return [lookup_model_by_code(option_name, model_class, code) for code in supplied]
 
 
 class Command(BaseCommand):
@@ -37,12 +43,22 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
-        parser.add_argument('--country', help='Only raise the generation on areas with this country code')
-        parser.add_argument('--type', help='Only raise the generation on areas with this area type code')
+        parser.add_argument('--country', nargs="*", help='Country codes used as specified by --country-mode')
+        parser.add_argument('--type', nargs="*", help='Area type codes used as specified by --type-mode.')
+        parser.add_argument(
+            '--type-mode', choices=['all-but', 'nothing-but'], default="nothing-but",
+            help='Determines how the given types are used to select areas to raise the generation of.'
+        )
+        parser.add_argument(
+            '--country-mode', choices=['all-but', 'nothing-but'], default="nothing-but",
+            help='Determines how the given countries are used to select areas to raise the generation of.'
+        )
 
     def handle(self, **options):
-        area_type = check_option('type', options, Type)
-        country = check_option('country', options, Country)
+        area_types = check_option('type', options, Type)
+        countries = check_option('country', options, Country)
+        include_types = options['type_mode'] == 'nothing-but'
+        include_countries = options['country_mode'] == 'nothing-but'
 
         new_generation = Generation.objects.new()
         if not new_generation:
@@ -52,10 +68,14 @@ class Command(BaseCommand):
             raise CommandError("There is no currently active generation")
 
         qs = Area.objects.filter(generation_high=current_generation)
-        if area_type:
-            qs = qs.filter(type=area_type)
-        if country:
-            qs = qs.filter(country=country)
+
+        if area_types:
+            area_type_filter = Q(type__in=area_types)
+            qs = qs.filter(area_type_filter if include_types else ~area_type_filter)
+
+        if countries:
+            country_filter = Q(country__in=countries)
+            qs = qs.filter(country_filter if include_countries else ~country_filter)
 
         if options['commit']:
             updated = qs.update(generation_high=new_generation)

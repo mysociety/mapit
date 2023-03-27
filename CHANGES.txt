@@ -1,3 +1,7 @@
+Unreleased
+    * Development improvements:
+        * Add support for filtering / excluding areas by multiple types or countries in raise generation script.
+
 Version 3.0, 2020-11-05
     * New features:
         * Add support for Django 3.0 and 3.1. #368

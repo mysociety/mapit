@@ -185,6 +185,7 @@ class GenerationRaiseCommandTests(TestCase):
     def test_country_restriction(self):
         scotland = Country.objects.create(code='S', name='Scotland')
         england = Country.objects.create(code='E', name='England')
+        wales = Country.objects.create(code='W', name='Wales')
 
         area_type = Type.objects.create(
             code='WMC', description='Westminster Constituency'
@@ -213,6 +214,13 @@ class GenerationRaiseCommandTests(TestCase):
             generation_low=current,
             type=area_type
         )
+        sw = Area.objects.create(
+            name='Swansea',
+            country=wales,
+            generation_high=current,
+            generation_low=current,
+            type=area_type
+        )
 
         stdout = StringIO()
 
@@ -226,9 +234,28 @@ class GenerationRaiseCommandTests(TestCase):
 
         ed = Area.objects.get(pk=ed.id)
         ca = Area.objects.get(pk=ca.id)
+        sw = Area.objects.get(pk=sw.id)
 
         self.assertEqual(ed.generation_high, inactive)
         self.assertEqual(ca.generation_high, current)
+        self.assertEqual(sw.generation_high, current)
+
+        call_command(
+            'mapit_generation_raise_on_current_areas',
+            commit=True,
+            country='E',
+            country_mode='all-but',
+            stderr=StringIO(),
+            stdout=stdout,
+        )
+
+        ed = Area.objects.get(pk=ed.id)
+        ca = Area.objects.get(pk=ca.id)
+        sw = Area.objects.get(pk=sw.id)
+
+        self.assertEqual(ed.generation_high, inactive)
+        self.assertEqual(ca.generation_high, current)
+        self.assertEqual(sw.generation_high, inactive)
 
     def test_area_type_restriction(self):
         scotland = Country.objects.create(code='S', name='Scotland')
@@ -238,6 +265,9 @@ class GenerationRaiseCommandTests(TestCase):
         )
         area_type_uta = Type.objects.create(
             code='UTA', description='Unitary Authority'
+        )
+        area_type_yat = Type.objects.create(
+            code='YAT', description='Yet Another Area Type'
         )
 
         current = Generation.objects.create(
@@ -263,6 +293,13 @@ class GenerationRaiseCommandTests(TestCase):
             generation_low=current,
             type=area_type_uta
         )
+        area_yat = Area.objects.create(
+            name='Yet Another Area',
+            country=scotland,
+            generation_high=current,
+            generation_low=current,
+            type=area_type_yat
+        )
 
         stdout = StringIO()
 
@@ -276,9 +313,28 @@ class GenerationRaiseCommandTests(TestCase):
 
         area_wmc = Area.objects.get(pk=area_wmc.id)
         area_uta = Area.objects.get(pk=area_uta.id)
+        area_yat = Area.objects.get(pk=area_yat.id)
 
         self.assertEqual(area_wmc.generation_high, inactive)
         self.assertEqual(area_uta.generation_high, current)
+        self.assertEqual(area_yat.generation_high, current)
+
+        call_command(
+            'mapit_generation_raise_on_current_areas',
+            commit=True,
+            type='UTA',
+            type_mode='all-but',
+            stderr=StringIO(),
+            stdout=stdout,
+        )
+
+        area_wmc = Area.objects.get(pk=area_wmc.id)
+        area_uta = Area.objects.get(pk=area_uta.id)
+        area_yat = Area.objects.get(pk=area_yat.id)
+
+        self.assertEqual(area_wmc.generation_high, inactive)
+        self.assertEqual(area_uta.generation_high, current)
+        self.assertEqual(area_yat.generation_high, inactive)
 
 
 class GenerationDeleteAreasCommandTests(TestCase):
