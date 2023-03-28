@@ -4,16 +4,17 @@ from ..structural_changes import Command as BaseCommand
 
 
 class Command(BaseCommand):
-    county = 'Northamptonshire County Council'
-    districts = (
-        'Corby Borough Council',
-        'Daventry District Council',
-        'East Northamptonshire District Council',
-        'Kettering Borough Council',
-        'Northampton Borough Council',
-        'South Northamptonshire District Council',
-        'Wellingborough Borough Council',
-    )
+    counties = {
+        'Northamptonshire County Council': (
+            'Corby Borough Council',
+            'Daventry District Council',
+            'East Northamptonshire District Council',
+            'Kettering Borough Council',
+            'Northampton Borough Council',
+            'South Northamptonshire District Council',
+            'Wellingborough Borough Council',
+        )
+    }
     new_utas = (
         ('North Northamptonshire', 'E06000061',
          ['Corby Borough Council',
