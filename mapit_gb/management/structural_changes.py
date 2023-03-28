@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 from django.core.management.base import BaseCommand
+from django.contrib.gis.geos import Polygon
 from django.contrib.gis.db.models import Union
 from mapit.models import Area, Generation, Type, Country, NameType, CodeType
 
@@ -36,8 +37,10 @@ class Command(BaseCommand):
     def raise_generation_on_everything_else(self):
         qs = Area.objects.filter(generation_high=self.g)
         print('%d areas in database' % qs.count())
-        qs = self._exclude_councils_and_wards(qs, (self.county,), 'CTY', 'CED')
-        qs = self._exclude_councils_and_wards(qs, self.districts, 'DIS', 'DIW')
+
+        for county, districts in self.counties.items():
+            qs = self._exclude_councils_and_wards(qs, (county,), 'CTY', 'CED')
+            qs = self._exclude_councils_and_wards(qs, districts, 'DIS', 'DIW')
 
         if self.commit:
             print('Raising gen high on %d areas' % qs.count())
@@ -47,10 +50,14 @@ class Command(BaseCommand):
             print('Would raise gen high on %d areas' % qs.count())
 
     def get_existing(self):
-        self.existing_cty = Area.objects.get(type__code='CTY', name=self.county)
+        self.existing = {}
+        for county in self.counties.keys():
+            self.existing[county] = Area.objects.get(type__code='CTY', name=county)
 
     def _create(self, name, typ, area, gss=None):
-        if isinstance(area, Area):
+        if isinstance(area, Polygon):
+            geom = area
+        elif isinstance(area, Area):
             assert area.polygons.count() == 1
             geom = area.polygons.get().polygon
         else:
@@ -77,9 +84,10 @@ class Command(BaseCommand):
         """New areas are the existing county electoral divisions"""
         for new_uta in self.new_utas:
             if new_uta[2]:
-                area = Area.objects.filter(type__code='DIS', name__in=new_uta[2], generation_high=self.g)
+                areas = [Area.objects.filter(type__code='DIS', name__in=new_uta[2], generation_high=self.g)]
             else:
-                area = self.existing_cty
-            self._create(new_uta[0], 'UTA', area, new_uta[1])
-        for area in self.areas.filter(type__code='CED', parent_area=self.existing_cty):
+                areas = self.existing.values()
+            for area in areas:
+                self._create(new_uta[0], 'UTA', area, new_uta[1])
+        for area in self.areas.filter(type__code='CED', parent_area__in=self.existing.values()):
             self._create(area.name, 'UTW', area)
