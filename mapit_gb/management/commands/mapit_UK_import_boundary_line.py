@@ -109,6 +109,8 @@ class Command(LabelCommand):
                 check = control.check(name, area_code, country, feat.geom, ons_code=ons_code, commit=options['commit'])
                 if check is True:
                     raise Area.DoesNotExist
+                if check == 'SKIP':
+                    continue
                 if isinstance(check, Area):
                     m = check
                     try:
