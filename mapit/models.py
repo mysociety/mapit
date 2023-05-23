@@ -412,15 +412,14 @@ class PostcodeQuerySet(models.QuerySet):
     def filter_by_area(self, area, limit=''):
         if limit:
             limit = 'LIMIT %s' % limit
-        collect = '''ST_Transform((select ST_Collect(polygon) from mapit_geometry
-            where area_id=%s group by area_id), 4326)'''
+        polygons = 'SELECT ST_Transform(polygon, 4326) AS polygon from mapit_geometry where area_id=%s'
         query = '''
-WITH target AS %s ( SELECT %s AS polygon )
+WITH target AS %s ( %s )
 SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"::bytea
   FROM mapit_postcode, target
  WHERE ST_CoveredBy(location, target.polygon)
  %s
-''' % (materialized(), collect, limit)
+''' % (materialized(), polygons, limit)
         return self.raw(query, params=[area.id])
 
 
