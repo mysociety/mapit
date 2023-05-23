@@ -393,11 +393,11 @@ def areas_by_point(request, srid, x, y, bb=False, format=''):
         raise ViewException(format, _('Bad "within" parameter specified'), 400)
 
     if method == 'box':
-        q &= Q(polygons__polygon__bbcontains=location)
+        q &= Q(polygons__subdivided__division__bbcontains=location)
     elif within:
-        q &= Q(polygons__polygon__dwithin=(location, within))
+        q &= Q(polygons__subdivided__division__dwithin=(location, within))
     else:
-        q &= Q(polygons__polygon__contains=location)
+        q &= Q(polygons__subdivided__division__contains=location)
     areas = Area.objects.filter(q).distinct()
 
     return output_areas(

@@ -165,7 +165,7 @@ class AreaManager(models.Manager):
         if not location:
             return []
         return Area.objects.filter(
-            polygons__polygon__contains=location,
+            polygons__subdivided__division__contains=location,
             generation_low__lte=generation, generation_high__gte=min_generation
         )
 
@@ -192,25 +192,25 @@ class AreaManager(models.Manager):
         else:
             query_area_type = ''
 
-        query_geo = ' OR '.join(['ST_%s(geometry.polygon, target.polygon)' % type for type in query_type])
+        query_geo = ' OR '.join(['ST_%s(geometry_sd.division, target_sd.division)' % type for type in query_type])
 
         query = '''
-WITH
-    target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
-    geometry AS %s (
-        SELECT mapit_geometry.*
-          FROM mapit_geometry, mapit_area, target
-         WHERE mapit_geometry.area_id = mapit_area.id
-               AND mapit_geometry.polygon && target.polygon
-               AND mapit_area.id != %%s
-               AND mapit_area.generation_low_id <= %%s
-               AND mapit_area.generation_high_id >= %%s
-               %s
-    )
 SELECT DISTINCT mapit_area.*
-  FROM mapit_area, geometry, target
- WHERE geometry.area_id = mapit_area.id AND (%s)
-''' % (materialized(), query_area_type, query_geo)
+FROM
+    mapit_area,
+    mapit_geometry geometry, mapit_geometrysubdivided geometry_sd,
+    mapit_geometry target, mapit_geometrysubdivided target_sd
+WHERE
+    geometry_sd.geometry_id = geometry.id
+    AND target_sd.geometry_id = target.id
+    AND geometry.area_id = mapit_area.id
+    AND target.area_id = %%s
+    AND geometry.area_id != %%s
+    AND mapit_area.generation_low_id <= %%s
+    AND mapit_area.generation_high_id >= %%s
+    %s
+    AND (%s)
+''' % (query_area_type, query_geo)
         return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
@@ -350,7 +350,25 @@ class Geometry(models.Model):
         verbose_name_plural = 'geometries'
 
     def __str__(self):
-        return '%s, polygon %d' % (smart_str(self.area), self.id)
+        return '%s, polygon %s' % (smart_str(self.area), self.id)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        GeometrySubdivided.objects.filter(geometry=self).delete()
+        with connection.cursor() as cursor:
+            cursor.execute('''INSERT INTO mapit_geometrysubdivided (geometry_id, division)
+                SELECT id,ST_Subdivide(polygon) FROM mapit_geometry WHERE id = %s''', [self.id])
+
+
+class GeometrySubdivided(models.Model):
+    geometry = models.ForeignKey(Geometry, related_name='subdivided', on_delete=models.CASCADE)
+    division = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
+
+    class Meta:
+        verbose_name_plural = 'subdivided geometries'
+
+    def __str__(self):
+        return '%s, subdivision %s' % (smart_str(self.geometry), self.id)
 
 
 class NameType(models.Model):
@@ -431,12 +449,15 @@ class PostcodeQuerySet(models.QuerySet):
     def filter_by_area(self, area, limit=''):
         if limit:
             limit = 'LIMIT %s' % limit
-        polygons = 'SELECT ST_Transform(polygon, 4326) AS polygon from mapit_geometry where area_id=%s'
+        polygons = '''SELECT ST_Transform(division, 4326) AS division
+            FROM mapit_geometrysubdivided
+            JOIN mapit_geometry ON geometry_id = mapit_geometry.id
+            WHERE area_id = %s'''
         query = '''
 WITH target AS %s ( %s )
 SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"::bytea
   FROM mapit_postcode, target
- WHERE ST_CoveredBy(location, target.polygon)
+ WHERE ST_CoveredBy(location, target.division)
  %s
 ''' % (materialized(), polygons, limit)
         return self.raw(query, params=[area.id])
