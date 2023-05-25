@@ -1,3 +1,6 @@
+import io
+
+
 def defaultiter(it, default):
     """This wraps an iterable so that if it's empty,
     it will return a default value instead."""
@@ -57,3 +60,28 @@ class iterlist(list):
 
     def __iter__(self):
         return self.ITERABLE
+
+
+# From https://stackoverflow.com/a/20260030
+def iterable_to_stream(iterable, buffer_size=io.DEFAULT_BUFFER_SIZE):
+    """
+    Lets you use an iterable (e.g. a generator) that yields bytestrings as a read-only
+    input stream. For efficiency, the stream is buffered.
+    """
+    class IterStream(io.RawIOBase):
+        def __init__(self):
+            self.leftover = None
+
+        def readable(self):
+            return True
+
+        def readinto(self, b):
+            try:
+                ll = len(b)  # We're supposed to return at most this much
+                chunk = self.leftover or next(iterable)
+                output, self.leftover = chunk[:ll], chunk[ll:]
+                b[:len(output)] = output
+                return len(output)
+            except StopIteration:
+                return 0    # indicate EOF
+    return io.BufferedReader(IterStream(), buffer_size=buffer_size)
