@@ -33,7 +33,7 @@ def check_option(option_name, options, model_class):
     supplied = options[option_name]
     if not supplied:
         return []
-    if type(supplied) != list:
+    if type(supplied) is not list:
         supplied = [supplied]
     return [lookup_model_by_code(option_name, model_class, code) for code in supplied]
 
