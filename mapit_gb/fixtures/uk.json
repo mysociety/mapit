@@ -67,6 +67,9 @@
     { "pk": 50, "model": "mapit.type", "fields": { "code": "ER", "description": "English Region" } },
     { "pk": 51, "model": "mapit.type", "fields": { "code": "NCP", "description": "Non-civil parished area" } },
 
+    { "pk": 52, "model": "mapit.type", "fields": { "code": "ICB", "description": "Integrated Care Board" } },
+    { "pk": 53, "model": "mapit.type", "fields": { "code": "SICBL", "description": "Sub ICB Location" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
     { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },

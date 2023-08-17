@@ -40,4 +40,6 @@ class Command(FindParentsCommand):
         'LGW': 'LGE',
         # A Northern Ireland electoral area's parent is a Northern Ireland Council district
         'LGE': 'LGD',
+        # Integrated Care Boards and their sub-locations
+        'SICBL': 'ICB',
     }
