@@ -60,19 +60,7 @@ def output_areas(request, title, format, areas, **kwargs):
 
 
 def query_args(request, format, type=None):
-    try:
-        generation = int(request.GET.get('generation', 0))
-    except ValueError:
-        raise ViewException(format, _('Bad generation specified'), 400)
-    if not generation:
-        generation = Generation.objects.current().id
-
-    try:
-        min_generation = int(request.GET.get('min_generation', 0))
-    except ValueError:
-        raise ViewException(format, _('Bad min_generation specified'), 400)
-    if not min_generation:
-        min_generation = generation
+    generation, min_generation = Generation.objects.query_args(request, format)
 
     if type is None:
         type = request.GET.get('type', '')

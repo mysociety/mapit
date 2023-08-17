@@ -11,6 +11,10 @@ from mapit.tests.utils import get_content
 
 class AreaViewsTest(TestCase):
     def setUp(self):
+        self.old_generation = Generation.objects.create(
+            active=True,
+            description="Test old generation",
+            )
         self.generation = Generation.objects.create(
             active=True,
             description="Test generation",
@@ -41,7 +45,7 @@ class AreaViewsTest(TestCase):
         self.small_area_1 = Area.objects.create(
             name="Small Area 1",
             type=self.small_type,
-            generation_low=self.generation,
+            generation_low=self.old_generation,
             generation_high=self.generation,
             )
 
@@ -52,10 +56,19 @@ class AreaViewsTest(TestCase):
             generation_high=self.generation,
             )
 
+        self.small_area_3 = Area.objects.create(
+            name="Small Area 3",
+            type=self.small_type,
+            generation_low=self.old_generation,
+            generation_high=self.old_generation,
+            )
+
         polygon = Polygon(((-4, 51), (-4, 52), (-3, 52), (-3, 51), (-4, 51)), srid=4326)
         polygon.transform(settings.MAPIT_AREA_SRID)
         self.small_shape_1 = Geometry.objects.create(
             area=self.small_area_1, polygon=polygon)
+        self.small_shape_3 = Geometry.objects.create(
+            area=self.small_area_3, polygon=polygon)
 
         polygon = Polygon(((-3, 51), (-3, 52), (-2, 52), (-2, 51), (-3, 51)), srid=4326)
         polygon.transform(settings.MAPIT_AREA_SRID)
@@ -122,6 +135,14 @@ class AreaViewsTest(TestCase):
         self.assertRedirects(response, '/postcode/PO141NT.html')
         response = self.client.post('/postcode/', {'pc': 'PO141NT.'}, follow=True)
         self.assertRedirects(response, '/postcode/PO141NT.html')
+
+    def test_postcode_endpoint(self):
+        response = self.client.get('/postcode/PO141NT')
+        content = get_content(response)
+        self.assertNotIn(self.small_area_3.id, content['areas'])
+        response = self.client.get('/postcode/PO141NT?min_generation=1')
+        content = get_content(response)
+        self.assertIn(str(self.small_area_3.id), content['areas'])
 
     def test_json_links(self):
         id = self.big_area.id
