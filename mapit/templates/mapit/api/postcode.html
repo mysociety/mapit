@@ -19,11 +19,15 @@
         </dd>
 
         <dt>{% trans "Optional query parameters" %}:</dt>
-        <dd>
+        <dd><ul><li>
             {% blocktrans trimmed %}
-                <p><i>generation</i>, to return results from a previous generation.</p>
+                <i>generation</i>, to return results from a previous generation.
             {% endblocktrans %}
-        </dd>
+            </li><li>
+            {% blocktrans trimmed %}
+                <i>min_generation</i>, to return results since that generation.
+            {% endblocktrans %}
+        </li></ul></dd>
 
         {% include "mapit/api/postcode-example.html" %}
     </dl>

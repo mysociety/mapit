@@ -9,9 +9,11 @@ from django.db import connection
 from django.db.models.query import RawQuerySet
 from django.utils.encoding import smart_str
 from django.utils.functional import cached_property
+from django.utils.translation import gettext as _
 
 from mapit import countries
 from mapit.geometryserialiser import GeometrySerialiser
+from mapit.middleware import ViewException
 
 
 def materialized():
@@ -43,6 +45,23 @@ class GenerationManager(models.Manager):
         if not latest or latest[0].active:
             return None
         return latest[0]
+
+    def query_args(self, request, format):
+        try:
+            generation = int(request.GET.get('generation', 0))
+        except ValueError:
+            raise ViewException(format, _('Bad generation specified'), 400)
+        if not generation:
+            generation = self.current().id
+
+        try:
+            min_generation = int(request.GET.get('min_generation', 0))
+        except ValueError:
+            raise ViewException(format, _('Bad min_generation specified'), 400)
+        if not min_generation:
+            min_generation = generation
+
+        return generation, min_generation
 
 
 class Generation(models.Model):
@@ -138,23 +157,23 @@ class AreaManager(models.Manager):
         return super(AreaManager, self).get_queryset().select_related(
             'type', 'country', 'parent_area').prefetch_related('countries')
 
-    def by_location(self, location, generation=None):
+    def by_location(self, location, generation=None, min_generation=None):
         if generation is None:
             generation = Generation.objects.current()
+        if min_generation is None:
+            min_generation = Generation.objects.current()
         if not location:
             return []
         return Area.objects.filter(
             polygons__polygon__contains=location,
-            generation_low__lte=generation, generation_high__gte=generation
+            generation_low__lte=generation, generation_high__gte=min_generation
         )
 
-    def by_postcode(self, postcode, generation=None):
-        if not generation:
-            generation = Generation.objects.current()
+    def by_postcode(self, postcode, generation, min_generation):
         return list(itertools.chain(
-            self.by_location(postcode.location, generation),
+            self.by_location(postcode.location, generation, min_generation),
             postcode.areas.filter(
-                generation_low__lte=generation, generation_high__gte=generation
+                generation_low__lte=generation, generation_high__gte=min_generation
             )
         ))
 

@@ -67,12 +67,11 @@ def postcode(request, postcode, format=None):
     if not is_valid_postcode(postcode):
         raise ViewException(format, "Postcode '%s' is not valid." % postcode, 400)
     postcode = get_object_or_404(Postcode, format=format, postcode=postcode)
-    try:
-        generation = int(request.GET['generation'])
-    except:
-        generation = Generation.objects.current()
+
+    generation, min_generation = Generation.objects.query_args(request, format)
+
     if not hasattr(countries, 'is_special_postcode') or not countries.is_special_postcode(postcode.postcode):
-        areas = list(add_codes(Area.objects.by_postcode(postcode, generation)))
+        areas = list(add_codes(Area.objects.by_postcode(postcode, generation, min_generation)))
     else:
         areas = []
 

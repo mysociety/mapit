@@ -130,3 +130,16 @@ class QueryArgsTest(TestCase):
                 generation_low__lte=self.active_generation.id,
             ) & (Q() | Q(country__code__in=['DE', 'FR']) | Q(countries__code__in=['DE', 'FR']))
         )
+
+    def test_generation_manager_query_args(self):
+        gen, min_gen = Generation.objects.query_args(
+            FakeRequest({'generation': self.old_generation.id}),
+            'json')
+        self.assertEqual(gen, self.old_generation.id)
+        self.assertEqual(min_gen, self.old_generation.id)
+
+        gen, min_gen = Generation.objects.query_args(
+            FakeRequest({'min_generation': self.old_generation.id}),
+            'json')
+        self.assertEqual(min_gen, self.old_generation.id)
+        self.assertEqual(gen, self.active_generation.id)
