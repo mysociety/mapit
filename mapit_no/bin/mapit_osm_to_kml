@@ -99,7 +99,7 @@ class OSM2KML(ContentHandler):
 
 # Fetch something from OSM and store it for later
 # XXX The store never expires, have to delete cache manually currently.
-base_url = 'http://www.openstreetmap.org/api/0.6/%s/%s%s'
+base_url = 'https://api.openstreetmap.org/api/0.6/%s/%s%s'
 def fetch_from_cache(type, id, full=''):
     if full: full='-full'
     file = '%s/cache/%s-%s%s' % (data_dir, type, id, full)
