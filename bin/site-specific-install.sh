@@ -23,7 +23,7 @@ misuse() {
 [ -z "$DISTRIBUTION" ] && misuse DISTRIBUTION
 [ -z "$DISTVERSION" ] && misuse DISTVERSION
 
-apt-get install -qq -y gunicorn g++ >/dev/null
+apt-get install -qq -y gunicorn g++ python3-venv >/dev/null
 
 install_nginx
 
