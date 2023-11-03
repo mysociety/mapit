@@ -23,7 +23,7 @@ misuse() {
 [ -z "$DISTRIBUTION" ] && misuse DISTRIBUTION
 [ -z "$DISTVERSION" ] && misuse DISTVERSION
 
-apt-get install -qq -y gunicorn g++ python3-venv >/dev/null
+apt-get install -qq -y g++ python3-venv >/dev/null
 
 install_nginx
 
@@ -54,6 +54,9 @@ if [ $POSTGIS_TWO = Yes ]
 then
     su -l -c "psql -c 'ALTER USER $UNIX_USER WITH NOSUPERUSER'" postgres
 fi
+
+# Install gunicorn within the virtual environment
+su -l -c "source $DIRECTORY/virtualenv-mapit/bin/activate && pip install gunicorn==21.0.1" "$UNIX_USER"
 
 install_sysvinit_script
 
