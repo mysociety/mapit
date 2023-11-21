@@ -5,14 +5,19 @@ title: Install script
 
 # MapIt Install Script
 
-If you have a new installation of Debian squeeze or Ubuntu precise,
+If you have a new installation of Debian (Buster or Bullseye) or Ubuntu Focal,
 you can use an install script to set up a basic installation of
 MapIt on your server.
 
-*Warning: only use this script on a newly installed server - it will
+
+**Please note that the install script does not currently work on Ubuntu Jammy.**
+
+<div class="attention-box">
+<strong>Warning:</strong> only use this script on a newly installed server - it will
 make significant changes to your server's setup, including modifying
 your nginx setup, creating a user account, creating a database,
-installing new packages etc.*
+installing new packages etc.
+</div>
 
 The script to run is called [`install-site.sh`, in our `commonlib` repository](https://raw.github.com/mysociety/commonlib/master/bin/install-site.sh).
 That script's usage is as follows:

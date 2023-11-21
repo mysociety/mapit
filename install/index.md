@@ -12,7 +12,7 @@ up web applications, but there are two other options that may be
 easier:
 
 * [A MapIt AMI for Amazon EC2](ami)
-* [An install script for Debian squeeze or Ubuntu precise servers](install-script)
+* [An install script for Debian or Ubuntu servers](install-script)
 
 If you prefer to set up each required component of MapIt yourself,
 proceed with the instructions below.
