@@ -8,11 +8,7 @@ Installation
 
 There are several options for installing MapIt.  The rest of this page
 describes how to do this manually, for people who are used to setting
-up web applications, but there are two other options that may be
-easier:
-
-* [A MapIt AMI for Amazon EC2](ami)
-* [An install script for Debian or Ubuntu servers](install-script)
+up web applications, but there is also [an install script for Debian or Ubuntu servers](install-script) that may be easier.
 
 If you prefer to set up each required component of MapIt yourself,
 proceed with the instructions below.
