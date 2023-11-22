@@ -35,5 +35,5 @@ If you need to change the shared theme, you will need to do so and then update
 the submodule. Compiling the CSS is like normal:
 
 ```
-sass --style=compressed theme/sass/global.scss assets/css/global.min.css
+sass --style=compressed assets/sass/mapit.scss assets/css/global.min.css
 ```
