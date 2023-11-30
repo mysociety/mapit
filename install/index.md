@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Installation
+title: Installing MapIt
 ---
 
 Installation
@@ -20,6 +20,8 @@ MapIt currently uses Postgres/PostGIS as its database backend &ndash; there's no
 reason  why e.g. SpatiaLite could not be used successfully, but it has never
 been tried.
 
+### 1. Installing GeoDjango/PostGIS
+
 To install GeoDjango and PostGIS, please follow all the standard instructions
 (including creating the template) over on the Django site at
 [docs.djangoproject.com](http://docs.djangoproject.com/en/dev/ref/contrib/gis/install/#ubuntudebian).
@@ -33,82 +35,94 @@ template, log in to it and update the proj4text column of SRID 27700 to include
 +datum=OSGB36, and update SRID 29902 to have +datum=ire65. This may not be
 necessary, depending on your version of PostGIS, but do check. \]
 
-You will also need a couple of other Debian packages, so install them:
+### 2. Installing other required packages
 
-    sudo apt-get install python-yaml memcached python-memcache git-core
+You will also need a couple of other packages, so install them:
 
-You will also need to be using South to manage schema migrations.
+    sudo apt-get install python-gdal
+
 
 Installation as a Django app
 ----------------------------
 
-As mapit is a Django app, if you are making a GeoDjango project you can simply
-use mapit from within your project like any normal Django app:
+As MapIt is a Django app, if you are making a GeoDjango project you can
+use MapIt from within your project like any normal Django app:
 
-* Make sure it is on `sys.path` (a packaged install e.g. with `pip
-  install django-mapit` does this for you);
-* Add `mapit` and `django.contrib.gis` to your `INSTALLED_APPS`;
-* Add the following settings to `settings.py`:
+* Install MapIt as a python package:
 
-  * `MAPIT_AREA_SRID` &ndash; the SRID of your area data (if in doubt, set to
+        pip install django-mapit
+(or use -e git+https://github.com/mysociety/mapit to install from source control)
+* Open your `settings.py` and edit as follows:
+  * Add `mapit` and `django.contrib.gis` to your `INSTALLED_APPS`
+  * Add `MAPIT_AREA_SRID` &ndash; the SRID of your area data (if in doubt, set to
     `4326`)
-  * `MAPIT_COUNTRY` &ndash; used to supply country specific functions (such
+  * Add `MAPIT_COUNTRY` &ndash; used to supply country specific functions (such
     as postcode validation). If you look at the country files in
     `mapit/countries/` you can see how to add specialised
     country-specific functions.
-  * `MAPIT_RATE_LIMIT` &ndash; a list of IP addresses or User Agents excluded
-    from rate limiting
+  * Add `MAPIT_RATE_LIMIT` &ndash; a list of IP addresses or User Agents excluded
+    from default rate limiting
+* Set up the new database tables:
+  * `./manage.py migrate`
+* Add a line to your `urls.py` patterns pointing at `mapit.urls`, for example:
 
-* Set up a path in your main `urls.py` to point at `mapit.urls`.
-* run `./manage.py syncdb` and `./manage.py migrate` to ensure the db
-  is set up
+            (r'^mapit/', include('mapit.urls')),
+
 
 Installation standalone with the example project
 ------------------------------------------------
 
-A standard git clone will get you the repository:
+* A standard git clone will get you the repository:
 
-    git clone git://github.com/mysociety/mapit.git
+        git clone --recurse-submodules git://github.com/mysociety/mapit.git
+        cd mapit
 
-Now in a terminal, navigate to the mapit directory you've just cloned.
+* Set up your configuration variables:
 
-Copy `conf/general.yml-example` to `conf/general.yml` and edit it to point
-to your local postgresql database, and edit the other settings as per the
-documentation given in that file. If you don't know what `SRID` to use,
-delete that line or set it to `4326`. `COUNTRY` is used for e.g. differing
-sorts of postcode (zipcode) validation &ndash; if you look at the country files in
+        cp conf/general.yml-example conf/general.yml
+
+Now edit `conf/general.yml` to point to your local postgresql database, and
+edit the other settings as per the documentation given in that file. If you
+don't know what `AREA_SRID` to use, delete that line or set it to `4326`.
+`COUNTRY` is optional and can be used for e.g. differing sorts of postcode
+(zipcode) validation &ndash; if you look at the country files in
 `mapit/countries/` you can see how to add specialised country-specific
 functions to validate postcodes etc.
 
 If you're going to be importing big datasets, make sure that `DEBUG` is
 `False`; otherwise, you'll run out of memory as it tries to remember all the
-SQL queries made.
+SQL queries made during an import.
 
-Optionally, also turn off `escape_string_warning` in Postgres' config (unless
+* Optionally, also turn off `escape_string_warning` in Postgres' config (unless
 you want your server to run out of disc space logging all the errors, as ours
 did the first time I imported overnight and didn't realise).
 
-At this stage, you should be able to set up the database and run the
-development server. Do add an admin user when prompted:
+* At this stage, you should be able to set up the database and run the
+development server. Firstly, set up a virtual environment and install the
+required packages:
 
-{% highlight bash %}
-# Set up a virtual environment and install requirements
-virtualenv .venv
-source .venv/bin/activate
-pip install -e .
+        virtualenv .venv
+        source .venv/bin/activate
+        pip install -e .
 
-# generate the css from the sass
-bin/mapit_make_css
+* Generate the CSS from the provided SASS:
 
-# Setup django install
-./manage.py migrate mapit
-./manage.py collectstatic
+        bin/mapit_make_css
+        ./manage.py collectstatic
 
-# run dev server
-./manage.py runserver
-{% endhighlight %}
+* Create the database tables:
 
-(Alternatively, set up a live web server however you wish &ndash; see the Deployment
+        ./manage.py migrate mapit
+
+* This can be a good time to add an admin user (though you can do this later):
+
+        ./manage.py createsuperuser
+
+* Run the development server
+
+        ./manage.py runserver
+
+(Alternatively, set up a live web server however you wish - see the Deployment
 Django documentation for details beyond the scope of this document.)
 
 You can then visit <http://localhost:8000/> and hopefully see the default MapIt

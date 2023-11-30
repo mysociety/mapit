@@ -23,14 +23,13 @@ The above are free for non-commercial, low-volume use.
 Technical Overview
 ------------------
 
-The `mapit` directory contains a standard [GeoDjango] app, and the `project`
+The `mapit` directory contains a standard [Django] app, and the `project`
 directory contains an example GeoDjango project using that app. Other top-level
 things are mostly to fit within mySociety's standard deployment, or country
 specific data, one-off scripts and so on.
 
-MapIt has been installed on Debian lenny and squeeze, and on Ubuntu from 10.04
-onwards. If GeoDjango and [PostGIS] run on it, it should theoretically be okay;
-do let us know of any problems.
+MapIt has been installed on Debian and Ubuntu. If GeoDjango and [PostGIS] run
+on it, it should theoretically be okay; do let us know of any problems.
 
 Installation
 ------------
@@ -55,12 +54,10 @@ there:
 * GitHub home: <https://github.com/mysociety/mapit>
 * GitHub issues: <https://github.com/mysociety/mapit/issues>
 
-You can also chat to us on IRC: #mschat on [irc.mysociety.org](http://www.irc.mysociety.org).
-
-[mySociety]: http://www.mysociety.org/
-[MapIt Global]: http://global.mapit.mysociety.org/
-[MapIt UK]: http://mapit.mysociety.org/
-[OpenStreetMap]: http://www.openstreetmap.org/
-[GeoDjango]: http://geodjango.org/
-[PostGIS]: http://postgis.refractions.net/
+[mySociety]: https://www.mysociety.org/
+[MapIt Global]: https://global.mapit.mysociety.org/
+[MapIt UK]: https://mapit.mysociety.org/
+[OpenStreetMap]: https://www.openstreetmap.org/
+[Django]: https://www.djangoproject.com/
+[PostGIS]: https://postgis.refractions.net/
 

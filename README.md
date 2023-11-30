@@ -1,7 +1,7 @@
 code.mapit.mysociety.org
 ========================
 
-The gh-pages branch is [code.mapit.mysociety.org](http://code.mapit.mysociety.org),
+The gh-pages branch is [code.mapit.mysociety.org](https://code.mapit.mysociety.org),
 the Jekyll-based static site running on GitHub Pages that is the documentation
 for setting up / running MapIt.
 

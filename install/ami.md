@@ -1,6 +1,6 @@
 ---
 layout: page
-title: AMI for EC2
+title: MapIt AMI for EC2
 ---
 
 # MapIt AMI for EC2
@@ -15,9 +15,9 @@ Micro instance which will be [free for a
 year](http://aws.amazon.com/free/).
 
 The AMI can be found in the **EU West (Ireland)** region, with the ID
-`ami-fda8a989` and name "Basic MapIt installation 2012-10-02b".
+`ami-2099e353` and name "MapIt installation 2016-09-22".
 You can launch an instance based on that AMI with
-[this link](https://console.aws.amazon.com/ec2/home?region=eu-west-1#launchAmi=ami-fda8a989).
+[this link](https://console.aws.amazon.com/ec2/home?region=eu-west-1#launchAmi=ami-2099e353).
 
 When you create an EC2 instance based on that AMI, make sure that you
 choose Security Groups that allows at least inbound HTTP, HTTPS and
@@ -35,13 +35,14 @@ file to set a couple of parameters.  That configuration file is
     mapit@ip-10-58-191-98:~/mapit$ nano conf/general.yml
 
 You should set `BUGS_EMAIL` to your email address.  You should also
-consider the `SRID` and `COUNTRY` settings, as described in the
+consider the `AREA_SRID` and `COUNTRY` settings, as described in the
 [manual installation instructions](/install/).
 
 Note if you change the SRID at this point, you will need to revert and then
 re-migrate the database as it will already have been set up with the initial
 SRID:
 
+    source ../virtualenv-mapit/bin/activate
     ./manage.py migrate mapit zero
     ./manage.py migrate mapit
 
@@ -56,8 +57,9 @@ the `createsuperuser` Django admin command, similar to the following
 example:
 
     ubuntu@ip-10-64-6-199:~$ sudo su - mapit
-    mapit@ip-10-64-6-199:~$ cd mapit/project/
-    mapit@ip-10-64-6-199:~/mapit/project$ ./manage.py createsuperuser
+    mapit@ip-10-64-6-199:~$ cd /var/www/mapit/mapit
+    mapit@ip-10-64-6-199:~/mapit$ source ../virtualenv-mapit/bin/activate
+    (mapit)mapit@ip-10-64-6-199:~/mapit$ ./manage.py createsuperuser
     Username (Leave blank to use 'mapit'): mapitadmin
     E-mail address: whoever@example.org
     Password:
