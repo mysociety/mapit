@@ -27,6 +27,10 @@ class GBViewsTest(TestCase):
             location=Point(-0.141588, 51.501009)
         )
 
+        self.old_generation = models.Generation.objects.create(
+            active=True,
+            description="Test generation (old)",
+        )
         self.generation = models.Generation.objects.create(
             active=True,
             description="Test generation",
@@ -37,6 +41,12 @@ class GBViewsTest(TestCase):
             description="A test area",
         )
 
+        self.old_area = models.Area.objects.create(
+            name="Area (old)",
+            type=self.type,
+            generation_low=self.old_generation,
+            generation_high=self.old_generation,
+        )
         self.area = models.Area.objects.create(
             name="Area",
             type=self.type,
@@ -63,6 +73,11 @@ class GBViewsTest(TestCase):
         code_type_gss = models.CodeType.objects.create(
             code='gss',
             description='GSS codes from ONS',
+        )
+        models.Code.objects.create(
+            area=self.old_area,
+            type=code_type_gss,
+            code='E05000025',
         )
         models.Code.objects.create(
             area=self.area,

@@ -8,7 +8,7 @@ from mapit.shortcuts import get_object_or_404
 
 
 def area_code_lookup(request, area_code, format):
-    from mapit.models import Area, CodeType
+    from mapit.models import Area, CodeType, Generation
     area_code_type = None
     if re.match(r'\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_code):
         area_code_type = CodeType.objects.get(code='ons')
@@ -25,7 +25,13 @@ def area_code_lookup(request, area_code, format):
     elif re.match('[EW]02', area_code):
         args['type__code'] = 'OMF'
 
-    area = get_object_or_404(Area, **args)
+    try:
+        area = get_object_or_404(Area, **args)
+    except Area.MultipleObjectsReturned:
+        generation = Generation.objects.current()
+        args['generation_low__lte'] = generation
+        args['generation_high__gte'] = generation
+        area = get_object_or_404(Area, **args)
     area_kwargs = {'area_id': area.id}
     if format:
         area_kwargs['format'] = format
