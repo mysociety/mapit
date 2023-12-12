@@ -70,6 +70,8 @@
     { "pk": 52, "model": "mapit.type", "fields": { "code": "ICB", "description": "Integrated Care Board" } },
     { "pk": 53, "model": "mapit.type", "fields": { "code": "SICBL", "description": "Sub ICB Location" } },
 
+    { "pk": 54, "model": "mapit.type", "fields": { "code": "WMCF", "description": "Future UK Parliament constituency" } },
+
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
     { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
