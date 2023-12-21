@@ -8,7 +8,7 @@ from django.contrib.gis.db.models import Collect
 from django.db.models import Q
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import resolve, reverse
+from django.urls import resolve, reverse, NoReverseMatch
 from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
@@ -352,9 +352,10 @@ def areas_geometry(request, area_ids):
 
 
 @ratelimit
-def area_from_code(request, code_type, code_value, format=''):
-    q = query_args(request, format)
+def area_from_code(request, code_type, code_value, format='', area_type=None):
+    q = query_args(request, format, area_type)
     q &= Q(codes__type__code=code_type, codes__code=code_value)
+
     try:
         area = Area.objects.get(q)
     except Area.DoesNotExist:
@@ -363,10 +364,22 @@ def area_from_code(request, code_type, code_value, format=''):
     except Area.MultipleObjectsReturned:
         message = _('There were multiple areas that matched code {0} = {1}.').format(code_type, code_value)
         raise ViewException(format, message, 500)
+
     area_kwargs = {'area_id': area.id}
     if format:
         area_kwargs['format'] = format
-    return HttpResponseRedirect(reverse('area', kwargs=area_kwargs))
+
+    # As well as /code we could be called (via area_code_lookup) by either area or area_polygon
+    try:
+        redirect_path = reverse('area', kwargs=area_kwargs)
+    except NoReverseMatch:
+        redirect_path = reverse('area_polygon', kwargs=area_kwargs)
+
+    # If there was a query string, make sure it's passed on in the
+    # redirect:
+    if request.META['QUERY_STRING']:
+        redirect_path += "?" + request.META['QUERY_STRING']
+    return HttpResponseRedirect(redirect_path)
 
 
 @ratelimit

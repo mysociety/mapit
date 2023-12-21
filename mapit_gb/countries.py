@@ -1,50 +1,28 @@
 import re
 
-from django.urls import reverse, NoReverseMatch
-from django.http import HttpResponseRedirect
 from ukpostcodeutils import validation
-
-from mapit.shortcuts import get_object_or_404
 
 
 def area_code_lookup(request, area_code, format):
-    from mapit.models import Area, CodeType, Generation
+    from mapit.views.areas import area_from_code
+
     area_code_type = None
     if re.match(r'\d\d([A-Z]{2}|[A-Z]{4}|[A-Z]{2}\d\d\d|[A-Z]|[A-Z]\d\d)$', area_code):
-        area_code_type = CodeType.objects.get(code='ons')
+        area_code_type = 'ons'
     elif re.match(r'[ESW]0[12]\d{6}$', area_code):  # LSOA/MSOA have ONS code type
-        area_code_type = CodeType.objects.get(code='ons')
+        area_code_type = 'ons'
     elif re.match(r'[ENSW]\d{8}$', area_code):
-        area_code_type = CodeType.objects.get(code='gss')
+        area_code_type = 'gss'
     if not area_code_type:
         return None
 
-    args = {'format': format, 'codes__type': area_code_type, 'codes__code': area_code}
+    area_type = None
     if re.match('[EW]01', area_code):
-        args['type__code'] = 'OLF'
+        area_type = 'OLF'
     elif re.match('[EW]02', area_code):
-        args['type__code'] = 'OMF'
+        area_type = 'OMF'
 
-    try:
-        area = get_object_or_404(Area, **args)
-    except Area.MultipleObjectsReturned:
-        generation = Generation.objects.current()
-        args['generation_low__lte'] = generation
-        args['generation_high__gte'] = generation
-        area = get_object_or_404(Area, **args)
-    area_kwargs = {'area_id': area.id}
-    if format:
-        area_kwargs['format'] = format
-    # We're called either by area or area_polygon
-    try:
-        redirect_path = reverse('area', kwargs=area_kwargs)
-    except NoReverseMatch:
-        redirect_path = reverse('area_polygon', kwargs=area_kwargs)
-    # If there was a query string, make sure it's passed on in the
-    # redirect:
-    if request.META['QUERY_STRING']:
-        redirect_path += "?" + request.META['QUERY_STRING']
-    return HttpResponseRedirect(redirect_path)
+    return area_from_code(request, area_code_type, area_code, format, area_type)
 
 
 def canonical_postcode(pc):
