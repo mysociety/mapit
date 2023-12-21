@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: [3.9]
-        thing-to-test: [flake8, 3.2, 4.1]
+        thing-to-test: [flake8, 3.2, 4.2]
 
     steps:
     - uses: actions/checkout@v2
