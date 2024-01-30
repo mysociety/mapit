@@ -11,6 +11,12 @@
     <title>{% block fulltitle %}{% block title %}{% endblock %} - MapIt{% endblock %}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:image" content="{{ request.build_absolute_uri }}{% static "mapit/img/mapit-opengraph.png" %}">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
     {% block main_css %}<link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">{% endblock %}
     <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.css" %}" />
     <!--[if lte IE 8]>
