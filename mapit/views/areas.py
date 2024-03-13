@@ -60,20 +60,11 @@ def output_areas(request, title, format, areas, **kwargs):
 
 
 def query_args(request, format, type=None):
-    generation, min_generation = Generation.objects.query_args(request, format)
+    query = Generation.objects.query_args(request, format)
 
     if type is None:
         type = request.GET.get('type', '')
     country_code = request.GET.get('country', '')
-
-    args = {}
-    if min_generation > -1:
-        args = {
-            'generation_low__lte': generation,
-            'generation_high__gte': min_generation,
-        }
-
-    query = Q(**args)
 
     for attr, value in [
             (['type'], type),

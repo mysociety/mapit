@@ -67,6 +67,9 @@
                     {% blocktrans trimmed %}
                         <li><i>min_generation</i>, to return areas since that generation (children only).</li>
                     {% endblocktrans %}
+                    {% blocktrans trimmed %}
+                        <li><i>max_generation</i>, to return results up to that generation, not active after (children only).</li>
+                    {% endblocktrans %}
                 </ul></dd>
                 <dt>{% trans "Returns" %}:</dt>
                 <dd>{% trans "A hash of areas that match the requested lookup." %}

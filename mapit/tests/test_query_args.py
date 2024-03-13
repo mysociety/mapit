@@ -23,6 +23,10 @@ class FakeRequest(object):
 class QueryArgsTest(TestCase):
 
     def setUp(self):
+        self.older_generation = Generation.objects.create(
+            active=False,
+            description="Older test generation",
+        )
         self.old_generation = Generation.objects.create(
             active=False,
             description="Old test generation",
@@ -32,12 +36,9 @@ class QueryArgsTest(TestCase):
             description="Test generation",
         )
 
-    def q_equality(self, act, exp):
-        self.assertEqual(str(act), str(exp))
-
     def test_no_type(self):
         q = query_args(FakeRequest({}), 'json', None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -47,7 +48,7 @@ class QueryArgsTest(TestCase):
 
     def test_one_type_in_query(self):
         q = query_args(FakeRequest({'type': 'WMC'}), 'json', None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -57,7 +58,7 @@ class QueryArgsTest(TestCase):
 
     def test_two_types_in_query(self):
         q = query_args(FakeRequest({'type': 'WMC,EUR'}), 'json', None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -67,7 +68,7 @@ class QueryArgsTest(TestCase):
 
     def test_one_type_in_params(self):
         q = query_args(FakeRequest({}), 'json', 'WMC')
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -77,7 +78,7 @@ class QueryArgsTest(TestCase):
 
     def test_two_types_in_params(self):
         q = query_args(FakeRequest({}), 'json', 'WMC,EUR')
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -90,7 +91,7 @@ class QueryArgsTest(TestCase):
             FakeRequest({'generation': self.old_generation.id}),
             'json',
             None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.old_generation.id,
@@ -103,7 +104,7 @@ class QueryArgsTest(TestCase):
             FakeRequest({'min_generation': self.old_generation.id}),
             'json',
             None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.old_generation.id,
@@ -113,7 +114,7 @@ class QueryArgsTest(TestCase):
 
     def test_one_country_in_query(self):
         q = query_args(FakeRequest({'country': 'DE'}), 'json', None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -123,7 +124,7 @@ class QueryArgsTest(TestCase):
 
     def test_two_countries_in_query(self):
         q = query_args(FakeRequest({'country': 'DE,FR'}), 'json', None)
-        self.q_equality(
+        self.assertEqual(
             q,
             Q(
                 generation_high__gte=self.active_generation.id,
@@ -132,14 +133,49 @@ class QueryArgsTest(TestCase):
         )
 
     def test_generation_manager_query_args(self):
-        gen, min_gen = Generation.objects.query_args(
+        q = Generation.objects.query_args(
             FakeRequest({'generation': self.old_generation.id}),
             'json')
-        self.assertEqual(gen, self.old_generation.id)
-        self.assertEqual(min_gen, self.old_generation.id)
+        self.assertEqual(
+            q,
+            Q(
+                generation_high__gte=self.old_generation.id,
+                generation_low__lte=self.old_generation.id,
+            )
+        )
 
-        gen, min_gen = Generation.objects.query_args(
+        q = Generation.objects.query_args(
             FakeRequest({'min_generation': self.old_generation.id}),
             'json')
-        self.assertEqual(min_gen, self.old_generation.id)
-        self.assertEqual(gen, self.active_generation.id)
+        self.assertEqual(
+            q,
+            Q(
+                generation_high__gte=self.old_generation.id,
+                generation_low__lte=self.active_generation.id,
+            )
+        )
+
+        q = Generation.objects.query_args(
+            FakeRequest({'max_generation': self.old_generation.id}),
+            'json')
+        self.assertEqual(
+            q,
+            Q(
+                generation_high__lte=self.old_generation.id,
+                generation_low__lte=self.active_generation.id,
+            )
+        )
+
+        q = Generation.objects.query_args(
+            FakeRequest({
+                'max_generation': self.old_generation.id, 'min_generation': self.older_generation.id
+            }),
+            'json')
+        self.assertEqual(
+            q,
+            Q(
+                generation_high__gte=self.older_generation.id,
+                generation_high__lte=self.old_generation.id,
+                generation_low__lte=self.active_generation.id,
+            )
+        )

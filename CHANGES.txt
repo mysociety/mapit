@@ -1,4 +1,6 @@
 Unreleased
+    * New features:
+        * Add max_generation parameter to all locations min_generation can be used.
     * Development improvements:
         * Add support for filtering / excluding areas by multiple types or countries in raise generation script.
 
