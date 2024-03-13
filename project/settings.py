@@ -37,6 +37,14 @@ MAPIT_COUNTRY = config.get('COUNTRY', '')
 # excluded from rate limiting. Optional.
 MAPIT_RATE_LIMIT = config.get('RATE_LIMIT', {})
 
+MAPIT_RATE_LIMIT_FILE = config.get('RATE_LIMIT_FILE')
+if MAPIT_RATE_LIMIT_FILE:
+    try:
+        with open(MAPIT_RATE_LIMIT_FILE, 'r') as fp:
+            MAPIT_RATE_LIMIT_FILE = yaml.load(fp, Loader=yaml.SafeLoader)
+    except:
+        MAPIT_RATE_LIMIT_FILE = None
+
 # A GA code for analytics
 GOOGLE_ANALYTICS = config.get('GOOGLE_ANALYTICS', '')
 

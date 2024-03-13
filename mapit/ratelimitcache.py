@@ -14,6 +14,11 @@ if isinstance(CONFIG, list):
     }
 _sentinel = object()
 
+CONFIG_FILE = getattr(settings, 'MAPIT_RATE_LIMIT_FILE', {})
+if isinstance(CONFIG_FILE, dict) and CONFIG_FILE.get('internal_ips'):
+    CONFIG['ips'] += CONFIG_FILE['internal_ips']['ipv4']
+    CONFIG['ips'] += CONFIG_FILE['internal_ips']['ipv6']
+
 
 def ratelimit(_f=_sentinel, **kwargs):
     if _f is _sentinel:
