@@ -6,6 +6,7 @@ import itertools
 from django.contrib.gis.db import models
 from django.conf import settings
 from django.db import connection
+from django.db.models import Q
 from django.db.models.query import RawQuerySet
 from django.utils.encoding import smart_str
 from django.utils.functional import cached_property
@@ -47,21 +48,26 @@ class GenerationManager(models.Manager):
         return latest[0]
 
     def query_args(self, request, format):
-        try:
-            generation = int(request.GET.get('generation', 0))
-        except ValueError:
-            raise ViewException(format, _('Bad generation specified'), 400)
-        if not generation:
-            generation = self.current().id
+        args = {}
+        for q in ('generation', 'min_generation', 'max_generation'):
+            try:
+                args[q] = int(request.GET.get(q, 0))
+            except ValueError:
+                raise ViewException(format, _('Bad value specified for %s parameter') % q, 400)
+        if not args['generation']:
+            args['generation'] = self.current().id
 
-        try:
-            min_generation = int(request.GET.get('min_generation', 0))
-        except ValueError:
-            raise ViewException(format, _('Bad min_generation specified'), 400)
-        if not min_generation:
-            min_generation = generation
+        q = {
+            'generation_low__lte': args['generation']
+        }
+        if args['max_generation']:
+            q['generation_high__lte'] = args['max_generation']
+        if args['min_generation']:
+            q['generation_high__gte'] = args['min_generation']
+        if not args['max_generation'] and not args['min_generation']:
+            q['generation_high__gte'] = args['generation']
 
-        return generation, min_generation
+        return Q(**q)
 
 
 class Generation(models.Model):
@@ -157,28 +163,16 @@ class AreaManager(models.Manager):
         return super(AreaManager, self).get_queryset().select_related(
             'type', 'country', 'parent_area').prefetch_related('countries')
 
-    def by_location(self, location, generation=None, min_generation=None):
-        if generation is None:
-            generation = Generation.objects.current()
-        if min_generation is None:
-            min_generation = Generation.objects.current()
+    def by_location(self, location, query):
         if not location:
             return []
-        return Area.objects.filter(
-            polygons__subdivided__division__contains=location,
-            generation_low__lte=generation, generation_high__gte=min_generation
-        )
+        query &= Q(polygons__subdivided__division__contains=location)
+        return Area.objects.filter(query)
 
-    def by_postcode(self, postcode, generation=None, min_generation=None):
-        if generation is None:
-            generation = Generation.objects.current()
-        if min_generation is None:
-            min_generation = Generation.objects.current()
+    def by_postcode(self, postcode, query):
         return list(itertools.chain(
-            self.by_location(postcode.location, generation, min_generation),
-            postcode.areas.filter(
-                generation_low__lte=generation, generation_high__gte=min_generation
-            )
+            self.by_location(postcode.location, query),
+            postcode.areas.filter(query)
         ))
 
     # In order for this query to be performant, we have to do it ourselves.
