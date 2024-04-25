@@ -51,7 +51,7 @@ setup(
     scripts=['bin/mapit_make_css'],
     include_package_data=True,
     install_requires=[
-        'Django >= 2.2, <5.0',
+        'Django >= 4.2, <6.0',
         'libsass >= 0.13.3',
         'psycopg2',
         'PyYAML',

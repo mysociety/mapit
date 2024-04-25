@@ -12,7 +12,7 @@ class CodeInline(admin.TabularInline):
     model = Code
 
 
-class AreaAdmin(admin.OSMGeoAdmin):
+class AreaAdmin(admin.GISModelAdmin):
     list_filter = ('type', 'country')
     list_display = ('name', 'type', 'country', 'generation_low', 'generation_high', 'parent_area', 'geometries_link')
     search_fields = ('name', 'names__name', 'codes__code')
@@ -26,32 +26,32 @@ class AreaAdmin(admin.OSMGeoAdmin):
         return format_html('<a href="../geometry/?area=%d">Shapes</a>' % obj.id)
 
 
-class GeometryAdmin(admin.OSMGeoAdmin):
+class GeometryAdmin(admin.GISModelAdmin):
     raw_id_fields = ('area',)
 
 
-class GenerationAdmin(admin.OSMGeoAdmin):
+class GenerationAdmin(admin.GISModelAdmin):
     list_display = ('id', 'active', 'created', 'description')
 
 
-class PostcodeAdmin(admin.OSMGeoAdmin):
+class PostcodeAdmin(admin.GISModelAdmin):
     search_fields = ['postcode']
     raw_id_fields = ('areas',)
 
 
-class TypeAdmin(admin.OSMGeoAdmin):
+class TypeAdmin(admin.GISModelAdmin):
     pass
 
 
-class NameTypeAdmin(admin.OSMGeoAdmin):
+class NameTypeAdmin(admin.GISModelAdmin):
     pass
 
 
-class CodeTypeAdmin(admin.OSMGeoAdmin):
+class CodeTypeAdmin(admin.GISModelAdmin):
     pass
 
 
-class CountryAdmin(admin.OSMGeoAdmin):
+class CountryAdmin(admin.GISModelAdmin):
     pass
 
 

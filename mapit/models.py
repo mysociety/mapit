@@ -161,7 +161,7 @@ class Type(models.Model):
 class AreaManager(models.Manager):
     def get_queryset(self):
         return super(AreaManager, self).get_queryset().select_related(
-            'type', 'country', 'parent_area').prefetch_related('countries')
+            'type', 'country', 'parent_area')
 
     def by_location(self, location, query):
         if not location:
