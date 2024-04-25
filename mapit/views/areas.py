@@ -5,7 +5,7 @@ from django.db.utils import DatabaseError
 from django.utils.translation import gettext as _
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models import Collect
-from django.db.models import Q
+from django.db.models import Q, prefetch_related_objects
 from django.db.models.query import QuerySet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import resolve, reverse, NoReverseMatch
@@ -206,6 +206,9 @@ def area_intersect(query_type, title, request, area_id, format):
                       'try restricting to a specific type, if you weren\'t already doing so.'), 500)
     except InternalError:
         raise ViewException(format, _('There was an internal error performing that query.'), 500)
+
+    # Each object will need type which hasn't been fetched by the RawQuerySet
+    prefetch_related_objects(areas, 'type')
 
     title = title % ('<a href="%sarea/%d.html">%s</a>' % (reverse('mapit_index'), area.id, area.name))
     return output_areas(request, title, format, areas, norobots=True)
