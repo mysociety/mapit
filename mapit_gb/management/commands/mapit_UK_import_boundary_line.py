@@ -118,7 +118,7 @@ class Command(LabelCommand):
                     except Code.DoesNotExist:
                         ons_code = None
                 elif ons_code:
-                    m = Area.objects.get(codes__type=code_version, codes__code=ons_code)
+                    m = Area.objects.exclude(type__code='WMCF').get(codes__type=code_version, codes__code=ons_code)
                 elif unit_id:
                     m = Area.objects.get(
                         codes__type=code_type_os, codes__code=unit_id, generation_high=current_generation)
@@ -216,5 +216,8 @@ class Command(LabelCommand):
 
         if area_code == 'UTW' and name == 'An Taobh Siar agus Nis Ward' and ons_code == 'S13003134':
             return {'ons-code': 'S13002608'}
+
+        if area_code == 'DIW' and name == 'Loughton Fairmead Ward' and ons_code == 'E05015731':
+            return {'ons-code': 'E05015730'}
 
         return {}
