@@ -269,7 +269,7 @@ def run(filename, parameters, logger=None):
 
             m = areas[0]
             if logger:
-                logger.debug("    found the area")
+                logger.debug(f"    found the area {m}")
             if parameters.preserve:
                 # Find whether we need to create a new Area:
                 previous_geos_geometry = m.polygons.aggregate(
