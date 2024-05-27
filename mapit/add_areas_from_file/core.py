@@ -243,22 +243,22 @@ def run(filename, parameters, logger=None):
         try:
             if parameters.new:  # Always want a new area
                 raise Area.DoesNotExist
+            filters = {"type": parameters.area_type}
             if code:
-                matching_message = "code %s of code type %s" % (
+                matching_message = "code %s of code type %s, and area type %s" % (
                     code,
                     parameters.code_type,
+                    parameters.area_type,
                 )
-                areas = Area.objects.filter(
-                    codes__code=code, codes__type=parameters.code_type
-                ).order_by("-generation_high")
+                filters["codes__code"] = code
+                filters["codes__type"] = parameters.code_type
             else:
                 matching_message = "name %s of area type %s" % (
                     name,
                     parameters.area_type,
                 )
-                areas = Area.objects.filter(
-                    name=name, type=parameters.area_type
-                ).order_by("-generation_high")
+                filters["name"] = name
+            areas = Area.objects.filter(**filters).order_by("-generation_high")
 
             if len(areas) == 0:
                 if logger:
