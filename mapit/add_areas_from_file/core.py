@@ -78,7 +78,7 @@ class Parameters:
             return (
                 "You can only specify one of 'name field' or 'override name'."
             )
-        elif not self.name_field and not self.override_name:
+        if not self.name_field and not self.override_name:
             return "One of 'name field' or 'override name' must be specified."
 
         if self.code_field and self.override_code:

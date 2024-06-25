@@ -106,14 +106,11 @@ class GeometrySerialiser(object):
                 output += self.kml_placemark % (escape(area[1].name), area[0].ogr.kml)
             output += self.kml_footer
             return (output, content_type)
-        elif kml_type == "polygon":
+        if kml_type == "polygon":
             if len(processed_areas) == 1:
                 return (processed_areas[0][0].ogr.kml, content_type)
-            else:
-                raise Exception("kml_type: '%s' not supported for multiple areas"
-                                % (kml_type,))
-        else:
-            raise Exception("Unknown kml_type: '%s'" % (kml_type,))
+            raise Exception("kml_type: '%s' not supported for multiple areas" % (kml_type,))
+        raise Exception("Unknown kml_type: '%s'" % (kml_type,))
 
     # output self.areas as geojson
     def geojson(self):
@@ -121,15 +118,14 @@ class GeometrySerialiser(object):
         processed_areas = self.__process_polygons()
         if len(processed_areas) == 1 and self.single:
             return (processed_areas[0][0].ogr.json, content_type)
-        else:
-            output = {
-                'type': 'FeatureCollection',
-                'features': [
-                    self.area_as_geojson_feature(area[1], area[0])
-                    for area in processed_areas
-                ]
-            }
-            return (json.dumps(output), content_type)
+        output = {
+            'type': 'FeatureCollection',
+            'features': [
+                self.area_as_geojson_feature(area[1], area[0])
+                for area in processed_areas
+            ]
+        }
+        return (json.dumps(output), content_type)
 
     def area_as_geojson_feature(self, area, polygons):
         return {
@@ -144,5 +140,4 @@ class GeometrySerialiser(object):
         processed_areas = self.__process_polygons()
         if len(processed_areas) == 1:
             return (processed_areas[0][0].wkt, content_type)
-        else:
-            raise Exception("wkt not supported for multiple areas")
+        raise Exception("wkt not supported for multiple areas")
