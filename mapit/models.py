@@ -166,8 +166,8 @@ class AreaManager(models.Manager):
     def by_location(self, location, query):
         if not location:
             return []
-        query &= Q(polygons__subdivided__division__contains=location)
-        return Area.objects.filter(query)
+        query &= Q(polygons__subdivided__division__covers=location)
+        return Area.objects.filter(query).distinct()
 
     def by_postcode(self, postcode, query):
         return list(itertools.chain(

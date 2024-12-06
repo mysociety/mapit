@@ -97,6 +97,20 @@ class AreaViewsTest(TestCase):
             set((x.id for x in (self.big_area, self.small_area_1)))
             )
 
+    def test_subdivided_areas_by_point(self):
+        # Choose a point that is directly on the boundary of a subdivision, and ensure that
+        # looking up the areas for that point returns the correct area.
+        (x, y) = self.big_shape.subdivided.first().division.coords[0][1]
+        url = f'/point/{settings.MAPIT_AREA_SRID}/{x},{y}.json'
+        response = self.client.get(url, HTTP_ACCEPT_ENCODING='gzip')
+
+        content = get_content(response)
+
+        self.assertEqual(
+            int(list(content.keys())[0]),
+            self.big_area.id
+        )
+
     @override_settings(MAPIT_WITHIN_MAXIMUM=1000)
     def test_areas_by_point_within(self):
         url = '/point/4326/-4.001,51.json?within=Bad'
