@@ -11,7 +11,7 @@ from django.core.management.base import LabelCommand
 # from django.contrib.gis.utils import LayerMapping
 from django.contrib.gis.gdal import DataSource
 
-from mapit.models import Area, Name, Generation, Country, Type, CodeType, NameType, Code
+from mapit.models import Area, Generation, Country, Type, CodeType, NameType, Code
 from mapit.management.command_utils import save_polygons, fix_invalid_geos_geometry
 
 
@@ -78,7 +78,7 @@ class Command(LabelCommand):
                 m, poly = self.ons_code_to_shape[ons_code]
                 try:
                     m_name = m.names.get(type=name_type).name
-                except Name.DoesNotExist:
+                except ValueError:
                     m_name = m.name  # If running without commit for dry run, so nothing being stored in db
                 if name != m_name:
                     raise Exception("ONS code %s is used for %s and %s" % (ons_code, name, m_name))
@@ -90,7 +90,7 @@ class Command(LabelCommand):
                 m, poly = self.unit_id_to_shape[unit_id]
                 try:
                     m_name = m.names.get(type=name_type).name
-                except Name.DoesNotExist:
+                except ValueError:
                     m_name = m.name  # If running without commit for dry run, so nothing being stored in db
                 if name != m_name:
                     raise Exception("Unit ID code %s is used for %s and %s" % (unit_id, name, m_name))
