@@ -9,7 +9,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:13-3.2
+        image: postgis/postgis:15-3.5
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -30,7 +30,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10"]
-        thing-to-test: [flake8, 4.2, 5.0]
+        thing-to-test: ["flake8", "4.2", "5.2"]
 
     steps:
     - uses: actions/checkout@v4
@@ -49,6 +49,7 @@ jobs:
 
     - name: Install GDAL
       run: |
+        sudo apt-get update
         sudo apt-get install gdal-bin
 
     - name: Set up config
