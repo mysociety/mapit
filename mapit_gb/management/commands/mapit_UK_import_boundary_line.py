@@ -63,6 +63,8 @@ class Command(LabelCommand):
                 ons_code = patch['ons-code']
             elif 'unit-id' in patch:
                 unit_id = patch['unit-id']
+            elif 'name' in patch:
+                name = patch['name']
 
             if area_code == 'NCP':
                 continue  # Ignore Non Parished Areas
@@ -219,5 +221,9 @@ class Command(LabelCommand):
 
         if area_code == 'DIW' and name == 'Loughton Fairmead Ward' and ons_code == 'E05015731':
             return {'ons-code': 'E05015730'}
+
+        # Tewkesbury is *not* renaming, May 2025 has renamed it
+        if name == 'North Gloucestershire District (B)' and ons_code == 'E07000083':
+            return {'name': 'Tewkesbury District (B)'}
 
         return {}
