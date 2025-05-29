@@ -1,0 +1,10 @@
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
+<dd>
+<ul>
+    <li>{% trans "All areas starting with &ldquo;As&rdquo;" %}: <a href="{% url "mapit_index" %}areas/As.html">/areas/As.html</a>
+    <li>{% trans "All regions" %}: <a href="{% url "mapit_index" %}areas/REG.html">areas/REG.html</a></li>
+    <li>{% trans "All provinces" %}: <a href="{% url "mapit_index" %}areas/PRO.html">areas/PRO.html</a></li>
+    <li>{% trans "Information on areas 5384 and 5815" %}: <a href="{% url "mapit_index" %}areas/5384,5815.html">/areas/5384,5815.html</a>
+</ul>
+</dd>

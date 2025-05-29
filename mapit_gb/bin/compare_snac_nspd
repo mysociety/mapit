@@ -1,0 +1,27 @@
+#!/usr/bin/python
+#
+# Noddy script to compare the ward/parl matching in my SNAC file and ONS's NSPD
+# It appears NSPD contains pre-2010 Parl. results.
+
+import csv, glob
+
+nspd = csv.reader(open('../data/NSPD-2010-05.csv'))
+lookup = {}
+for row in nspd:
+    pc = row[0]
+    if pc[0:2] != 'BT': continue
+    ons_code = ''.join(row[5:8])
+    parl = row[17]
+    if not ons_code or not parl or row[4]:
+        continue
+    if ons_code in lookup and lookup[ons_code] != parl:
+        print("%s maps to both %s and %s (%s)" % (ons_code, lookup[ons_code], parl, pc))
+    lookup[ons_code] = parl
+
+snac = csv.reader(open('../data/snac-2003-ni-cons2ward.csv'))
+for parl_code, parl_name, ward_code, ward_name, district_code, district_name in snac:
+    ward_code = ward_code.replace(' ', '')
+    if ward_code not in lookup:
+        print("Ward code %s in SNAC, not in NSPD" % ward_code)
+    elif lookup[ward_code] != parl_code:
+        print("Parl codes differ for %s, SNAC has %s, NSPD has %s" % (ward_code, parl_code, lookup[ward_code]))

@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-05-10 14:19+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/mapit/api/area-example-related.html:3
+#: templates/mapit/api/area-example.html:3
+msgid "Examples:"
+msgstr ""
+
+#: templates/mapit/api/area-example-related.html:6
+msgid "All kommune with Akershus"
+msgstr ""
+
+#: templates/mapit/api/area-example-related.html:7
+msgid "All areas touching Oslo"
+msgstr ""
+
+#: templates/mapit/api/area-example.html:6
+msgid "Information held on an individual area"
+msgstr ""
+
+#: templates/mapit/api/area-example.html:8
+msgid "A KML file of an area"
+msgstr ""
+
+#: templates/mapit/api/point-example-nearest.html:3
+#: templates/mapit/api/point-example.html:3
+#: templates/mapit/api/postcode-example-partial.html:4
+#: templates/mapit/api/postcode-example.html:4
+msgid "Example:"
+msgstr ""
+
+#: templates/mapit/api/point-example-nearest.html:4
+msgid "Example of postcode nearest to (59,10)"
+msgstr ""
+
+#: templates/mapit/api/point-example.html:4
+msgid "Example of areas containing (59,10)"
+msgstr ""
+
+#: templates/mapit/api/postcode-example.html:6
+msgid "<p>If your postcode was <em>0373</em> you would load"
+msgstr ""
+
+#: templates/mapit/api/postcode-example.html:12
+msgid ""
+"By default the response is in JSON, if you want a human readable page then "
+"append ‘<em>.html</em>’ to the url"
+msgstr ""
+
+#: templates/mapit/index-others.html:2
+msgid ""
+"Versions have appeared in other countries, such as this one in Norway, and "
+"in 2012 we released a <a href=\"http://global.mapit.mysociety.org/\">global "
+"version</a> based on OpenStreetMap data."
+msgstr ""

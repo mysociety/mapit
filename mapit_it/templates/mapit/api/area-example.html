@@ -1,0 +1,11 @@
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
+<dd>
+<ul>
+    <li>{% trans "Information held on an Trezzano sul Naviglio" %}:
+    <a href="{% url "mapit_index" %}area/2426.html">/area/2426.html</a>
+    <li>{% trans "KML file for Trezzano sul Nagiglio" %}:
+    <a href="{% url "mapit_index" %}area/2426.kml">/area/2426.kml</a>
+    ({% trans "on a" %} <a href="http://maps.google.co.uk/maps?q=http://{{ request.META.HTTP_HOST }}/area/118.kml">{% trans "Google Map" %}</a>)
+</ul>
+</dd>

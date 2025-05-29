@@ -1,36 +1,58 @@
 from datetime import datetime, timedelta
-import functools, hashlib
+import functools
+import hashlib
 
 from django.http import HttpResponseForbidden
 from django.core.cache import cache
 from django.conf import settings
 
-class ratelimit(object):
+CONFIG = settings.MAPIT_RATE_LIMIT or {}
+if isinstance(CONFIG, list):
+    CONFIG = {
+        'ips': CONFIG,
+        'user_agents': CONFIG,
+    }
+_sentinel = object()
+
+
+def ratelimit(_f=_sentinel, **kwargs):
+    if _f is _sentinel:
+        return RateLimiter(**kwargs)
+    return RateLimiter()(_f)
+
+
+class RateLimiter(object):
     "Instances of this class can be used as decorators"
     # This class is designed to be sub-classed
-    minutes = 2 # The time period
-    requests = 20 # Number of allowed requests in that time period
+    minutes = CONFIG.get('minutes', 3)  # The time period
+    requests = CONFIG.get('requests', 100)  # Number of allowed requests in that time period
     # IP addresses or user agents that aren't rate limited
-    excluded = settings.MAPIT_RATE_LIMIT
-    
-    prefix = 'rl-' # Prefix for memcache key
-    
+    excluded_ips = CONFIG.get('ips', [])
+    excluded_uas = CONFIG.get('user_agents', [])
+    excluded_fns = CONFIG.get('functions', [])
+
+    prefix = 'rl-'  # Prefix for memcache key
+
     def __init__(self, **options):
         for key, value in options.items():
             setattr(self, key, value)
-    
+
     def __call__(self, fn):
+        if fn.__name__ in self.excluded_fns:
+            return fn
+
         def wrapper(request, *args, **kwargs):
             return self.view_wrapper(request, fn, *args, **kwargs)
         functools.update_wrapper(wrapper, fn)
         return wrapper
-    
+
     def view_wrapper(self, request, fn, *args, **kwargs):
         if not self.should_ratelimit(request):
             return fn(request, *args, **kwargs)
-        
-        if request.META.get('REMOTE_ADDR', '') in self.excluded or \
-            ( '/' in request.META.get('HTTP_USER_AGENT', '') and request.META.get('HTTP_USER_AGENT', '') in self.excluded ):
+
+        if request.META.get('REMOTE_ADDR', '') in self.excluded_ips or \
+                ('/' in request.META.get('HTTP_USER_AGENT', '')
+                    and request.META.get('HTTP_USER_AGENT', '') in self.excluded_uas):
             return fn(request, *args, **kwargs)
 
         # If we're using the DummyCache backend then no data will
@@ -41,32 +63,32 @@ class ratelimit(object):
             return fn(request, *args, **kwargs)
 
         counts = self.get_counters(request).values()
-        
+
         # Increment rate limiting counter
         self.cache_incr(self.current_key(request))
-        
+
         # Have they failed?
         if sum(int(c) for c in counts) >= self.requests:
             return self.disallowed(request)
-        
+
         return fn(request, *args, **kwargs)
-    
+
     def cache_get_many(self, keys):
         return cache.get_many(keys)
-    
+
     def cache_incr(self, key):
         try:
             cache.incr(key)
         except ValueError:
-            cache.add(key, '0', self.expire_after())
+            cache.add(key, 0, self.expire_after())
             cache.incr(key)
-    
+
     def should_ratelimit(self, request):
         return len(settings.MAPIT_RATE_LIMIT)
-    
+
     def get_counters(self, request):
         return self.cache_get_many(self.keys_to_check(request))
-    
+
     def keys_to_check(self, request):
         extra = self.key_extra(request)
         now = datetime.now()
@@ -74,36 +96,37 @@ class ratelimit(object):
             '%s%s-%s' % (
                 self.prefix,
                 extra,
-                (now - timedelta(minutes = minute)).strftime('%Y%m%d%H%M')
+                (now - timedelta(minutes=minute)).strftime('%Y%m%d%H%M')
             ) for minute in range(self.minutes + 1)
         ]
-    
+
     def current_key(self, request):
         return '%s%s-%s' % (
             self.prefix,
             self.key_extra(request),
             datetime.now().strftime('%Y%m%d%H%M')
         )
-    
+
     def key_extra(self, request):
         # By default, their IP address is used
         return request.META.get('REMOTE_ADDR', '')
-    
+
     def disallowed(self, request):
         "Over-ride this method if you want to log incidents"
         return HttpResponseForbidden('Rate limit exceeded')
-    
+
     def expire_after(self):
         "Used for setting the memcached cache expiry"
         return (self.minutes + 1) * 60
 
-class ratelimit_post(ratelimit):
+
+class ratelimit_post(RateLimiter):
     "Rate limit POSTs - can be used to protect a login form"
-    key_field = None # If provided, this POST var will affect the rate limit
-    
+    key_field = None  # If provided, this POST var will affect the rate limit
+
     def should_ratelimit(self, request):
         return request.method == 'POST'
-    
+
     def key_extra(self, request):
         # IP address and key_field (if it is set)
         extra = super(ratelimit_post, self).key_extra(request)
@@ -111,4 +134,3 @@ class ratelimit_post(ratelimit):
             value = hashlib.sha1(request.POST.get(self.key_field, '')).hexdigest()
             extra += '-' + value
         return extra
-

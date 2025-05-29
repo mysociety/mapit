@@ -1,55 +1,46 @@
-# This script is used to fix up the Isles of Scilly, as Boundary-Line only contains
-# the Isles alone. We have to generate the COP parishes within it.
+# This script is used to fix up the Isles of Scilly for historic reasons.
 
-import csv
-import re
-from django.contrib.gis.geos import Point
-from django.core.management.base import LabelCommand
-from mapit.models import Postcode, Area, Generation, Country, Type, CodeType, NameType
+from __future__ import print_function
 
-class Command(LabelCommand):
-    help = 'Sort out the Isles of Scilly'
-    args = '<Code-Point Open TR file>'
+from django.core.management.base import BaseCommand, CommandError
+from mapit.models import Area, Type
 
-    def handle_label(self, file, **options):
-        # The Isles of Scilly have changed their code in B-L, but Code-Point still has the old code currently
+
+class Command(BaseCommand):
+    help = 'Make sure the Isles of Scilly and its parishes are in their own type'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+
+    def handle(self, **options):
+        isles_type = Type.objects.get(code='COI')
+        parish_type = Type.objects.get(code='COP')
+        ward_type = Type.objects.get(code='UTW')
+
+        if not options['commit']:
+            print("DRY RUN")
+
         try:
             council = Area.objects.get(codes__type__code='gss', codes__code='E06000053')
-        except:
-            council = Area.objects.get(codes__type__code='ons', codes__code='00HF')
-        if council.type != Type.objects.get(code='COI'):
-            council.type = Type.objects.get(code='COI')
-            council.save()
-        
-        wards = (
-            ('00HFMA', 'E05008322', 'Bryher'),
-            ('00HFMB', 'E05008323', 'St. Agnes'),
-            ('00HFMC', 'E05008324', "St. Martin's"),
-            ('00HFMD', 'E05008325', "St. Mary's"),
-            ('00HFME', 'E05008326', 'Tresco'),
-        )
-        ward = {}
-        for old_ward_code, new_ward_code, ward_name in wards:
-            area = Area.objects.get_or_create_with_code(
-                country=Country.objects.get(code='E'), type=Type.objects.get(code='COP'), code_type='gss', code=new_ward_code
-            )
-            area.names.get_or_create(type=NameType.objects.get(code='S'), name=ward_name)
-            area.codes.get_or_create(type=CodeType.objects.get(code='ons'), code=old_ward_code)
-            if area.parent_area != council:
-                area.parent_area = council
-                area.save()
-            ward[old_ward_code] = area
-            ward[new_ward_code] = area
+        except Area.DoesNotExist:
+            raise CommandError('Could not find Scilly Isles, please import it first')
+        print('Scilly Isles:', end='')
+        if council.type != isles_type:
+            print("Updating from %s to %s" % (council.type.code, isles_type.code))
+            council.type = isles_type
+            if options['commit']:
+                council.save()
+        else:
+            print('Already %s' % isles_type.code)
 
-        for row in csv.reader(open(file)):
-            if row[1] == '90': continue
-            postcode = row[0].strip().replace(' ', '')
-            if len(row) == 10:
-                ons_code = row[9]
-                if not re.match('^E0500832[2-6]$', ons_code): continue
-            else:
-                ons_code = ''.join(row[15:18])
-                if ons_code[0:4] != '00HF': continue
-            pc = Postcode.objects.get(postcode=postcode)
-            pc.areas.add(ward[ons_code])
-            print ".",
+        wards = council.children.filter(type=ward_type)
+        count_wards = wards.count()
+        print('Parishes:', end='')
+        if count_wards == 5:
+            print("Updating from %s to %s" % (ward_type.code, parish_type.code))
+            if options['commit']:
+                wards.update(type=parish_type)
+        elif count_wards == 0:
+            print('Already %s' % parish_type.code)
+        else:
+            raise CommandError('Scilly Isles should have 0 or 5 ward children')

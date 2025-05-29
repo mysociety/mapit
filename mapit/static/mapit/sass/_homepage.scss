@@ -1,0 +1,86 @@
+.homepage-section {
+    padding: 3em 0;
+}
+
+// Useful when you have two same-coloured sections in a row
+.homepage-section--no-padding-top {
+    padding-top: 0;
+}
+
+.homepage-section--contrasting {
+    background-color: $colour_off_white;
+}
+
+.homepage-section--primary {
+    background-color: $colour_brand;
+    color: #fff;
+
+    .btn {
+        background-color: #fff;
+        color: darken($colour_brand, 5%);
+
+        &:hover,
+        &:focus {
+            background-color: mix(#fff, $colour_brand, 95%);
+        }
+    }
+}
+
+.homepage-intro {
+    .container > :first-child {
+        margin-top: 0;
+    }
+
+    .container > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+.homepage-try__form {
+    text-align: center;
+
+    input[type="text"] {
+        width: 9em !important;
+        max-width: 50%;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.5em;
+    }
+
+    @media (min-width: $mediumish-screen) {
+        label {
+            display: inline;
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+    }
+
+    @media (min-width: $large-screen) {
+        input[type="text"] {
+            margin: 0 1em;
+            width: 13em !important;
+        }
+    }
+}
+
+.homepage-cta {
+    text-align: center;
+
+    p {
+        margin: 0 0 1em 0;
+
+        @media (min-width: $medium-screen) {
+            margin: 0 2em 0 0;
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 55%;
+            text-align: right;
+        }
+
+        @media (min-width: $large-screen) {
+            font-size: 1.2em;
+        }
+    }
+}

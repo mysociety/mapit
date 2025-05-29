@@ -1,35 +1,38 @@
 # This script is used after importing NI output areas to create the higher
 # level boundaries for the existing areas.
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
+from __future__ import print_function
+
+from django.core.management.base import BaseCommand
+from django.contrib.gis.db.models import Union
 from mapit.models import Area, Type, Geometry
 
-class Command(NoArgsCommand):
-    help = 'Puts the boundaries on the LGDs, LGWs and LGEs from the Output Areas'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
 
-    def handle_noargs(self, **options):
+class Command(BaseCommand):
+    help = 'Puts the boundaries on the LGDs, LGWs and LGEs from the Output Areas'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+
+    def handle(self, **options):
         area_type = Type.objects.get(code='OUA')
         done = []
 
         def save_polygons(area, **args):
-            print 'Working on', area.type.code, area.name, '...',
+            print('Working on', area.type.code, area.name, '...', end=' ')
             args['area__type'] = area_type
             geometry = Geometry.objects.filter(**args)
-            p = geometry.unionagg()
+            p = geometry.aggregate(Union('polygon'))['polygon__union']
             if options['commit']:
                 area.polygons.all().delete()
                 if p.geom_type == 'Polygon':
-                    shapes = [ p ]
+                    shapes = [p]
                 else:
                     shapes = p
                 for g in shapes:
                     area.polygons.create(polygon=g)
             done.append(area.id)
-            print 'done'
+            print('done')
 
         for ward in Area.objects.filter(type=Type.objects.get(code='LGW')):
             save_polygons(ward, area__parent_area=ward)
@@ -41,4 +44,3 @@ class Command(NoArgsCommand):
             council = lge.parent_area
             if council.id not in done:
                 save_polygons(council, area__parent_area__parent_area__parent_area=council)
-

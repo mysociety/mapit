@@ -1,10 +1,9 @@
-from django.conf.urls import patterns, include
+from django.urls import include, path
 from django.contrib import admin
-admin.autodiscover()
 
 handler500 = 'mapit.shortcuts.json_500'
 
-urlpatterns = patterns('',
-    (r'^', include('mapit.urls')),
-    (r'^admin/', include(admin.site.urls)),
-)
+urlpatterns = [
+    path('', include('mapit.urls')),
+    path('admin/', admin.site.urls),
+]

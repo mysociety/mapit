@@ -1,7 +1,0 @@
-Django>=1.4
-South
-psycopg2
-PyYAML
-python-memcached
-GDAL
-Shapely

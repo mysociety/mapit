@@ -1,0 +1,24 @@
+#!/usr/bin/python
+#
+# Noddy script to compare the ONS ward codes in OS's Code-Point and ONS's NSPD
+# NSPD contains terminated postcodes, so index that and then look up from C-P.
+
+import csv, glob
+
+nspd = csv.reader(open('../data/NSPD-2010-05.csv'))
+lookup = {}
+for row in nspd:
+    pc = row[0]
+    ons_code = ''.join(row[5:8])
+    lookup[pc] = ons_code
+
+for file in glob.glob('../data/Code-Point-Open-2010-05/*.csv'):
+    cp = csv.reader(open(file))
+    for row in cp:
+        pc = row[0]
+        if row[1] == '60': continue
+        ons_code = ''.join(row[15:18])
+        if pc not in lookup:
+            print("Postcode in Code-Point, not in NSPD") # This hopefully never happens
+        elif lookup[pc] != ons_code:
+            print("ONS codes differ for %s, Code-Point has %s, NSPD has %s" % (pc, ons_code, lookup[pc]))

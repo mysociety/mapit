@@ -1,74 +1,58 @@
-{% load url from future %}
+{% load i18n %}
 <section id="api-by_postcode">
-    <h3><em>lookup by</em> postcode</h3>
+    <h3>
+        {% blocktrans trimmed %}
+        <em>lookup by</em> postcode
+        {% endblocktrans %}
+    </h3>
     <dl>
         <dt>URL:</dt>
-        <dd> /postcode/<em>[postcode]</em> </dd>
+        <dd> /postcode/<em>[{% trans "postcode" %}]</em> </dd>
 
-        <dt>Returns:</dt>
+        <dt>{% trans "Returns" %}:</dt>
         <dd>
-            <p>Information on a particular postcode, including its
-            location in
-            {% if country == 'GB' %}both National Grid and {% endif %}
-            WGS84 latitude/longitude, and the areas it is contained
-            within.</p>
+            {% blocktrans trimmed %}
+                <p>Information on a particular postcode, including its
+                centroid location in WGS84 latitude/longitude, and the areas that
+                is contained within.</p>
+            {% endblocktrans %}
         </dd>
 
-        <dt>Optional query parameters:</dt>
-        <dd>
-            <p><i>generation</i>, to return results from a previous generation.</p>
-        </dd>
+        <dt>{% trans "Optional query parameters" %}:</dt>
+        <dd><ul><li>
+            {% blocktrans trimmed %}
+                <i>generation</i>, to return results from a previous generation.
+            {% endblocktrans %}
+            </li><li>
+            {% blocktrans trimmed %}
+                <i>min_generation</i>, to return results since that generation.
+            {% endblocktrans %}
+            </li><li>
+            {% blocktrans trimmed %}
+                <i>max_generation</i>, to return results up to that generation, not active after.
+            {% endblocktrans %}
+        </li></ul></dd>
 
-        <dt>Example:</dt>
-        <dd>
-{% if country == 'GB' %}
-            <p>If your postcode was <em>SW1A 1AA</em> you would load
-                <a href="{% url "mapit_index" %}postcode/SW1A1AA">/postcode/SW1A1AA</a>
-            </p>
-            <p>
-                By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url
-                <a href="{% url "mapit_index" %}postcode/SW1A1AA.html">/postcode/SW1A1AA.html</a>
-            </p>
-{% endif %}
-{% if country == 'NO' %}
-            <p>If your postcode was <em>0373</em> you would load
-                <a href="{% url "mapit_index" %}postcode/0373">/postcode/0373</a>
-            </p>
-            <p>
-                By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url
-                <a href="{% url "mapit_index" %}postcode/0373.html">/postcode/0373.html</a>
-            </p>
-{% endif %}
-        </dd>
+        {% include "mapit/api/postcode-example.html" %}
     </dl>
 </section>
 
+{% if partial_postcodes_available %}
 <section id="api-by_partial_postcode">
-    <h3><em>lookup by</em> partial postcode</h3>
+    <h3>{% blocktrans trimmed %}<em>lookup by</em> partial postcode{% endblocktrans %}</h3>
 
     <dl>
         <dt>URL:</dt>
-        <dd> /postcode/partial/<em>[partial postcode]</em> </dd>
+        <dd> /postcode/partial/<em>[{% trans "partial postcode" %}]</em> </dd>
 
-        <dt>Returns:</dt>
+        <dt>{% trans "Returns" %}:</dt>
         <dd>
-            <p>Geographical details for the centroid of the partial postcode specified.</p>
+            {% blocktrans trimmed %}
+                <p>Geographical details for the centroid of the partial postcode specified.</p>
+            {% endblocktrans %}
         </dd>
 
-        <dt>Example:</dt>
-        <dd>
-{% if country == 'GB' %}
-            <ul>
-                <li>JSON: <a href="{% url "mapit_index" %}postcode/partial/SW1A">/postcode/partial/SW1A</a>
-                <li>HTML: <a href="{% url "mapit_index" %}postcode/partial/SW1A.html">/postcode/partial/SW1A.html</a>
-            </ul>
-{% endif %}
-{% if country == 'NO' %}
-            <ul>
-                <li>JSON: <a href="{% url "mapit_index" %}postcode/partial/85">/postcode/partial/85</a>
-                <li>HTML: <a href="{% url "mapit_index" %}postcode/partial/85.html">/postcode/partial/85.html</a>
-            </ul>
-{% endif %}
-        </dd>
+        {% include "mapit/api/postcode-example-partial.html" %}
     </dl>
 </section>
+{% endif %}

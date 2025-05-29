@@ -17,7 +17,7 @@ server {
     error_page 503 /down.html;
 
     location /static {
-        root /var/www/mapit/mapit/mapit;
+        alias /var/www/mapit/collected_static;
     }
 
     location / {

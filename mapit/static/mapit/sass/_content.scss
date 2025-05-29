@@ -1,0 +1,115 @@
+.content {
+    @extend .container;
+
+    @include clearfix();
+
+    padding-top: 1em;
+    padding-bottom: 1em;
+
+    @media (min-width: $medium-screen) {
+        padding-top: 2em;
+        padding-bottom: 2em;
+    }
+}
+
+.content--with-sidebar {
+    section + section {
+        margin-top: 2em;
+        padding-top: 2em;
+        border-top: 1px solid $colour_light_grey;
+    }
+
+    @media (min-width: $medium-screen) {
+        header {
+            float: left;
+            width: 20%;
+        }
+
+        section {
+            float: right;
+            width: 70%;
+        }
+    }
+}
+
+.toc {
+    p {
+        margin: 0.25em 0;
+        font-weight: 600;
+        color: $colour_dark_grey;
+    }
+
+    ol, ul {
+        @extend .unstyled-list;
+        margin-top: 0;
+        margin-bottom: 2em;
+    }
+
+    a {
+        display: block;
+        padding: 0.25em 0;
+        border-top: 1px solid $colour_light_grey;
+    }
+}
+
+.content--api-docs {
+    section {
+        h3 {
+            em {
+                display: block;
+                font-style: inherit;
+                font-size: 0.66em;
+                line-height: 1em;
+            }
+        }
+
+        dl {
+            margin: 0;
+        }
+
+        dt {
+            font-weight: 600;
+        }
+
+        dd {
+            margin-bottom: 1.5em;
+
+            p, ul {
+                margin: 0 0 1.5em 0;
+            }
+        }
+    }
+
+    @media (min-width: $large-screen) {
+        section {
+            padding-left: 12em;
+            position: relative;
+
+            h3 {
+                position: absolute;
+                left: 0;
+                width: 10em;
+            }
+        }
+    }
+}
+
+.api-docs-intro {
+    margin-bottom: 2em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid $colour_light_grey;
+
+    p {
+        max-width: 45em;
+        margin-bottom: 0;
+    }
+
+    & > :last-child {
+        margin-bottom: 0;
+    }
+}
+
+hr {
+    border-top-color: $colour_light_grey;
+    margin: 2em 0;
+}

@@ -1,0 +1,8 @@
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
+<dd>
+<ul>
+    <li>{% trans "All kommune with Akershus" %}: <a href="{% url "mapit_index" %}area/02/children.html">/area/02/children.html</a>.
+    <li>{% trans "All areas touching Oslo" %}: <a rel="nofollow" href="{% url "mapit_index" %}area/0301/touches.html">/area/0301/touches.html</a>.
+</ul>
+</dd>

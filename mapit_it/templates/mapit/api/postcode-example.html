@@ -1,0 +1,15 @@
+{% load i18n %}
+<dt>{% trans "Example:" %}</dt>
+<dd>
+    {% blocktrans trimmed %}
+    <p>If your postcode was <em>00185</em> you would load
+    {% endblocktrans %}
+        <a href="{% url "mapit_index" %}postcode/00185">/postcode/00185</a>
+    </p>
+    <p>
+    {% blocktrans trimmed %}
+        By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url.
+    {% endblocktrans %}
+        <a href="{% url "mapit_index" %}postcode/00185.html">/postcode/00185.html</a>
+    </p>
+</dd>

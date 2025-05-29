@@ -1,0 +1,10 @@
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
+<dd>
+<ul>
+    <li>{% trans "All province in Lazio" %}: <a href="{% url "mapit_index" %}area/12/children.html">/area/12/children.html</a>.
+    <li>{% trans "All areas touching Rome" %}: <a rel="nofollow" href="{% url "mapit_index" %}area/5734/touches.html">/area/5734/touches.html</a>.
+    <li>{% trans "All areas overlapping Rome" %}: <a rel="nofollow" href="{% url "mapit_index" %}area/5734/overlaps.html">/area/5734/overlaps.html</a>.
+    <li>{% trans "All areas covering Rome" %}: <a rel="nofollow" href="{% url "mapit_index" %}area/5734/covers.html">/area/5734/covers.html</a>.
+</ul>
+</dd>

@@ -1,19 +1,18 @@
 # This script is to be run as a one-off to fix up some geometries in the May
 # 2014 edition of boundary line that are invalid.
 
-from optparse import make_option
-from django.core.management.base import NoArgsCommand
-from django.contrib.gis.gdal import *
+from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
 from mapit.management.command_utils import fix_invalid_geos_geometry
 
-class Command(NoArgsCommand):
-    help = 'Fix the UK boundary line import for May 2014'
-    option_list = NoArgsCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
 
-    def handle_noargs(self, **options):
+class Command(BaseCommand):
+    help = 'Fix the UK boundary line import for May 2014'
+
+    def add_arguments(self, parser):
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
+
+    def handle(self, **options):
         code_version = CodeType.objects.get(code='gss')
 
         # Get the polygons that we want to fix
@@ -40,9 +39,9 @@ class Command(NoArgsCommand):
             area_polygon = area.polygons.all()[0]
             fixed_polygon = fix_invalid_geos_geometry(area_polygon.polygon)
             if fixed_polygon:
-                print "Fixed polygon {0}".format(area_polygon)
+                print("Fixed polygon {0}".format(area_polygon))
                 area_polygon.polygon = fixed_polygon
                 if options['commit']:
                     area_polygon.save()
             else:
-                print "Could not fix polygon {0}".format(area_polygon)
+                print("Could not fix polygon {0}".format(area_polygon))

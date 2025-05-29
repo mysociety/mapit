@@ -1,46 +1,66 @@
-from django.conf.urls import patterns
+from django.urls import include, re_path
+from django.conf import settings
+from django.shortcuts import render
 
-from mapit.shortcuts import render
+from mapit.utils import re_number as number
+from mapit.views import areas, postcodes
 
 handler500 = 'mapit.shortcuts.json_500'
 
-format_end = '(?:\.(?P<format>html|json))?'
+format_end = r'(?:\.(?P<format>html|json))?'
+map_format_end = r'(?:\.(?P<format>map\.html|html|json))?'
+data_format_end = r'\.(?P<format>kml|geojson)'
 
-urlpatterns = patterns('',
-    (r'^$', render, { 'template_name': 'mapit/index.html' }, 'mapit_index' ),
-    (r'^licensing$', render, { 'template_name': 'mapit/licensing.html' } ),
-    (r'^overview$', render, { 'template_name': 'mapit/overview.html' } ),
+urlpatterns = [
+    re_path(r'^$', render, {'template_name': 'mapit/index.html'}, 'mapit_index'),
+    re_path(r'^licensing$', render, {'template_name': 'mapit/licensing.html'}),
+    re_path(r'^overview$', render, {'template_name': 'mapit/overview.html'}),
 
-    (r'^generations$', 'mapit.views.areas.generations'),
+    re_path(r'^generations%s$' % format_end, areas.generations, {}, 'mapit_generations'),
 
-    (r'^postcode/$', 'mapit.views.postcodes.form_submitted'),
-    (r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, 'mapit.views.postcodes.postcode'),
-    (r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end, 'mapit.views.postcodes.partial_postcode'),
+    re_path(r'^postcode/$', postcodes.form_submitted),
+    re_path(r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, postcodes.postcode, name="mapit-postcode"),
+    re_path(r'^postcode/partial/(?P<postcode>[A-Za-z0-9 ]+)%s$' % format_end,
+            postcodes.partial_postcode, name="mapit-postcode-partial"),
 
-    (r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, 'mapit.views.areas.area'),
-    (r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, 'mapit.views.postcodes.example_postcode_for_area'),
-    (r'^area/(?P<area_id>[0-9]+)/children%s$' % format_end, 'mapit.views.areas.area_children'),
-    (r'^area/(?P<area_id>[0-9]+)/geometry$', 'mapit.views.areas.area_geometry'),
-    (r'^area/(?P<area_id>[0-9]+)/touches%s$' % format_end, 'mapit.views.areas.area_touches'),
-    (r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % format_end, 'mapit.views.areas.area_overlaps'),
-    (r'^area/(?P<area_id>[0-9]+)/covers%s$' % format_end, 'mapit.views.areas.area_covers'),
-    (r'^area/(?P<area_id>[0-9]+)/covered%s$' % format_end, 'mapit.views.areas.area_covered'),
-    (r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % format_end, 'mapit.views.areas.area_coverlaps'),
-    (r'^area/(?P<area_id>[0-9]+)/intersects%s$' % format_end, 'mapit.views.areas.area_intersects'),
-    (r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', 'mapit.views.areas.area_polygon'),
-    (r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|geojson|wkt)$', 'mapit.views.areas.area_polygon'),
+    re_path(r'^area/(?P<area_id>[0-9A-Z]+)%s$' % format_end, areas.area, name='area'),
+    re_path(r'^area/(?P<area_id>[0-9]+)/example_postcode%s$' % format_end, postcodes.example_postcode_for_area),
+    re_path(r'^area/(?P<area_id>[0-9]+)/children%s$' % map_format_end, areas.area_children),
+    re_path(r'^area/(?P<area_id>[0-9]+)/children%s$' % data_format_end, areas.area_children),
+    re_path(r'^area/(?P<area_id>[0-9]+)/geometry$', areas.area_geometry),
+    re_path(r'^area/(?P<area_id>[0-9]+)/touches%s$' % map_format_end, areas.area_touches),
+    re_path(r'^area/(?P<area_id>[0-9]+)/overlaps%s$' % map_format_end, areas.area_overlaps),
+    re_path(r'^area/(?P<area_id>[0-9]+)/covers%s$' % map_format_end, areas.area_covers),
+    re_path(r'^area/(?P<area_id>[0-9]+)/covered%s$' % map_format_end, areas.area_covered),
+    re_path(r'^area/(?P<area_id>[0-9]+)/coverlaps%s$' % map_format_end, areas.area_coverlaps),
+    re_path(r'^area/(?P<area_id>[0-9]+)/intersects%s$' % map_format_end, areas.area_intersects),
+    re_path(r'^area/(?P<area_id>[0-9A-Z]+)\.(?P<format>kml|geojson|wkt)$', areas.area_polygon, name='area_polygon'),
+    re_path(r'^area/(?P<srid>[0-9]+)/(?P<area_id>[0-9]+)\.(?P<format>kml|json|geojson|wkt)$',
+            areas.area_polygon),
 
-    (r'^point/$', 'mapit.views.areas.point_form_submitted'),
-    (r'^point/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point'),
-    (r'^point/latlon/(?P<lat>[0-9.-]+),(?P<lon>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point_latlon'),
-    (r'^point/osgb/(?P<e>[0-9.-]+),(?P<n>[0-9.-]+)(?:/(?P<bb>box))?%s$' % format_end, 'mapit.views.areas.areas_by_point_osgb'),
+    re_path(r'^point/$', areas.point_form_submitted),
+    re_path(r'^point/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
+            areas.areas_by_point, name='areas-by-point'),
+    re_path(r'^point/latlon/(?P<lat>%s),(?P<lon>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
+            areas.areas_by_point_latlon, name='areas-by-point-latlon'),
+    re_path(r'^point/osgb/(?P<e>%s),(?P<n>%s)(?:/(?P<bb>box))?%s$' % (number, number, map_format_end),
+            areas.areas_by_point_osgb, name='areas-by-point-osgb'),
 
-    (r'^nearest/(?P<srid>[0-9]+)/(?P<x>[0-9.-]+),(?P<y>[0-9.-]+)%s$' % format_end, 'mapit.views.postcodes.nearest'),
+    re_path(r'^nearest/(?P<srid>[0-9]+)/(?P<x>%s),(?P<y>%s)%s$' % (number, number, format_end), postcodes.nearest),
 
-    (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)%s$' % format_end, 'mapit.views.areas.areas'),
-    (r'^areas/(?P<area_ids>[0-9,]*[0-9]+)/geometry$', 'mapit.views.areas.areas_geometry'),
-    (r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % format_end, 'mapit.views.areas.areas_by_type'),
-    (r'^areas/(?P<name>.+?)%s$' % format_end, 'mapit.views.areas.areas_by_name'),
-    (r'^areas$', 'mapit.views.areas.deal_with_POST', { 'call': 'areas' }),
-    (r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, 'mapit.views.areas.area_from_code'),
-)
+    re_path(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % map_format_end, areas.areas),
+    re_path(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % data_format_end, areas.areas_polygon),
+    re_path(r'^areas/(?P<srid>[0-9]+)/(?P<area_ids>[0-9]+(?:,[0-9]+)*)%s$' % data_format_end, areas.areas_polygon),
+    re_path(r'^areas/(?P<area_ids>[0-9]+(?:,[0-9]+)*)/geometry$', areas.areas_geometry),
+    re_path(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % map_format_end, areas.areas_by_type),
+    re_path(r'^areas/(?P<type>[A-Z0-9,]*[A-Z0-9]+)%s$' % data_format_end, areas.areas_by_type),
+    re_path(r'^areas/(?P<name>.+?)%s$' % map_format_end, areas.areas_by_name),
+    re_path(r'^areas$', areas.deal_with_POST, {'call': 'areas'}),
+    re_path(r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, areas.area_from_code),
+]
+
+# Include app-specific urls
+if settings.MAPIT_COUNTRY == 'IT':
+    urlpatterns.append(
+        re_path(r'^', include('mapit_it.urls')),
+    )

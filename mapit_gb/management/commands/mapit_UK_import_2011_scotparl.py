@@ -1,9 +1,10 @@
 # This script is used to import the 2011 Scottish Parliament from OS Boundary-Line.
 
 import re
-from optparse import make_option
+
 from django.core.management.base import LabelCommand
-from django.contrib.gis.gdal import *
+from django.contrib.gis.gdal import DataSource
+
 from mapit.models import Area, Generation, Country, Type, CodeType, NameType
 from mapit.management.command_utils import save_polygons
 
@@ -91,20 +92,22 @@ name_to_code = {
     'West of Scotland PER': 'S17000016',
 }
 
+
 class Command(LabelCommand):
     help = 'Import OS Boundary-Line Scottish Parliament 2011 in advance'
-    args = '<Boundary-Line SHP files>'
-    option_list = LabelCommand.option_list + (
-        make_option('--commit', action='store_true', dest='commit', help='Actually update the database'),
-    )
+    label = '<Boundary-Line SHP file>'
+
+    def add_arguments(self, parser):
+        super(Command, self).add_arguments(parser)
+        parser.add_argument('--commit', action='store_true', dest='commit', help='Actually update the database')
 
     ons_code_to_shape = {}
 
-    def handle_label(self,  filename, **options):
-        print filename
+    def handle_label(self, filename, **options):
+        print(filename)
         new_generation = Generation.objects.new()
         if not new_generation:
-            raise Exception, "No new generation to be used for import!"
+            raise Exception("No new generation to be used for import!")
 
         name_type = NameType.objects.get(code='O')
         code_type = CodeType.objects.get(code='gss')
@@ -112,14 +115,19 @@ class Command(LabelCommand):
         ds = DataSource(filename)
         layer = ds[0]
         for feat in layer:
-            name = unicode(feat['NAME'].value, 'iso-8859-1')
-            print " ", name
-            name = re.sub('\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
-            name = re.sub('\s+', ' ', name)
+            name = feat['NAME'].value
+            if not isinstance(name, str):
+                name = name.decode('iso-8859-1')
+            print("  %s" % name)
+            name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
+            name = re.sub(r'\s+', ' ', name)
 
-            if "P Const" in name: area_code = 'SPC'
-            elif "PER" in name: area_code = 'SPE'
-            else: raise Exception, "Unknown type of area %s" % name
+            if "P Const" in name:
+                area_code = 'SPC'
+            elif "PER" in name:
+                area_code = 'SPE'
+            else:
+                raise Exception("Unknown type of area %s" % name)
 
             ons_code = name_to_code[name]
 
@@ -128,9 +136,9 @@ class Command(LabelCommand):
                 if options['commit']:
                     m_name = m.names.get(type=name_type).name
                     if name != m_name:
-                        raise Exception, "ONS code %s is used for %s and %s" % (ons_code, name, m_name)
+                        raise Exception("ONS code %s is used for %s and %s" % (ons_code, name, m_name))
                 # Otherwise, combine the two shapes for one area
-                print "    Adding subsequent shape to ONS code %s" % ons_code
+                print("    Adding subsequent shape to ONS code %s" % ons_code)
                 poly.append(feat.geom)
                 continue
 
@@ -138,24 +146,23 @@ class Command(LabelCommand):
                 m = Area.objects.get(codes__type=code_type, codes__code=ons_code)
             except Area.DoesNotExist:
                 m = Area(
-                    type = Type.objects.get(code=area_code),
-                    country = Country.objects.get(name='Scotland'),
-                    generation_low = new_generation,
-                    generation_high = new_generation,
+                    type=Type.objects.get(code=area_code),
+                    country=Country.objects.get(name='Scotland'),
+                    generation_low=new_generation,
+                    generation_high=new_generation,
                 )
 
             if options['commit']:
                 m.save()
 
-            poly = [ feat.geom ]
+            poly = [feat.geom]
 
             if options['commit']:
-                m.names.update_or_create({ 'type': name_type }, { 'name': name })
+                m.names.update_or_create(type=name_type, defaults={'name': name})
             if ons_code:
                 self.ons_code_to_shape[ons_code] = (m, poly)
                 if options['commit']:
-                    m.codes.update_or_create({ 'type': code_type }, { 'code': ons_code })
+                    m.codes.update_or_create(type=code_type, defaults={'code': ons_code})
 
         if options['commit']:
             save_polygons(self.ons_code_to_shape)
-

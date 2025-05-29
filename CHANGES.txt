@@ -1,28 +1,223 @@
-v1.0.3 2014-02-05
-* Bugfix: Limit area lookups by unit_id to the current generation
-* Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
-* Bugfix: Avoid problems with old versions of pip and setuptools
+Unreleased
+    * New features:
+        * Add max_generation parameter to all locations min_generation can be used.
+    * Development improvements:
+        * Add support for filtering / excluding areas by multiple types or countries in raise generation script.
 
+Version 3.0, 2020-11-05
+    * New features:
+        * Add support for Django 3.0 and 3.1. #368
+        * Add polygon output for /children and areas_by_type. #324
+    * Improvements:
+        * Switch to OGR kml/geojson generation. #317
+        * Manually prefetch any matching many-many countries. #319
+    * Bugfixes:
+        * Manually set map icon imagePath so it is shown. #314
+        * Remove bytestrings from old migrations. #328
+        * Replace use of allow_tags, removed in Django 2. #337
+        * Use unary_union instead of cascaded_union. #340
+    * Development improvements:
+        * Move to GitHub actions. #366
+        * Add first-letter support to import script. #352
+    * MapIt UK specific:
+        * Various scripts for boundary changes and new data in 2018-2020.
+
+Version 2.0, 2017-12-18
+    * Breaking changes
+        * Add support for Django 2.0, drop support for older than 1.11.
+    * New features
+        * Add .map.html endpoint to show map of areas. #307
+        * Add support for a 'country' filter in query parameters. #55
+        * Improve performance of /nearest using <->. #305
+    * Bugfixes:
+        * Use 6 decimal places on postcode HTML page. #299
+        * Remove workaround for inefficient query planning. #302
+    * Development improvements:
+        * Support more Debian/Ubuntu versions. #301
+        * More tests, improved running with changed settings/order.
+        * MapIt international-specific code is now in its own repo.
+    * MapIt UK specific:
+        * 2017 Boundary-Line imports; new Scilly Isles data,
+          remove references to old ONS codes. #304
+        * Use database for co-ordinate transformation. #299
+
+Version 1.6, 2017-04-07
+    * Implement new front end design. #280
+    * Add block for extra content in area/postcode info. #284
+    * Factor out MapIt global code to its own repository. #291
+    * Exclude front-page submit views from any CSRF.
+    * Switch maps to HTTPS tiles.
+    * Bugfixes:
+        * Fix front page postcode redirect for Django 1.10+. #285
+        * Add some missing files from packaged django-mapit. #289
+        * Improve and sync number regex in URL/point form. #288
+    * [UK] Ignore non-postcode characters in form submit.
+
+Version 1.5.4, 2017-02-01
+    * Switch LabelCommand subclasses from using 'args' to 'label',
+      and stop BaseCommands fom using 'args'. #278
+
+Version 1.5.3, 2017-01-31
+    * Switch LabelCommands from using 'args' to 'label'. #278
+    * Increase the max_length of CodeType.code & NameType.code
+    * MapIt UK specific:
+        * Script to import English local authority IDs. #275
+        * Remove some UK specific templates.
+
+Version 1.5.2, 2016-11-16
+    * Replace uses of old Django aggregate functions. #271
+    * Fix display of Geometry object in admin. #272
+
+Version 1.5.1, 2016-10-14
+    * Fix a couple of command line argument issues. #265
+    * Rename VagrantFile to Vagrantfile. #265
+    * Update add_ons_to_gss command to support Python 2. #244
+    * [UK] Improved postcode validation. #243
+
+Thanks to David Basalla, Steven Day, Matthew Somerville, and Roman Zimmermann
+for their work on this release.
+
+Version 1.5, 2016-09-22
+    * Add support for Django 1.9 and 1.10, drop older than 1.8. #209 #248
+    * Add support for Debian jessie/Ubuntu xenial. #254 #255
+    * Add documentation for the /code API endpoint. #242
+    * Add new footer. #238
+    * Area import
+        * Allow name_field to specify multiple options.
+        * Add option to skip entries with blank names.
+    * Postcode import
+        * Add detecting location availability per postcode.
+        * Allow updating locationless postcodes.
+    * Bugfixes:
+        * Only try and set GDAL exceptions on first use. #211 #231
+        * Fix redirects when MapIt is mounted on a subpath. #228 #236
+        * No need for a syncdb call, now covered by migrate. #221
+        * Fix and improve JSONP middleware handling. #212
+        * Disable project gzip middleware. #215
+        * Tweak install script for if sudo is not installed.
+        * Fix usage of imp module in newer Python versions.
+    * Development:
+        * Add VagrantFile and instructions for development. #237
+        * Allow overriding of email subject prefix. #229
+        * Add postgresql to SysV init script. #234
+        * Switch api-docs ID to sidebar class for other use. #246
+        * Add a couple of index page template hooks.
+        * Don't show deprecation warnings by default.
+        * Move to using libsass.
+    * MapIt Global specific:
+        * Fix issue parsing KML in python2 prior to 2.7.4. #206
+        * Add a missing '{% load i18n %}' which broke front page
+    * MapIt UK specific:
+        * ONSPD import and improvements. #214 #216
+        * October 2015 Boundary-Line. #210 #232
+        * May 2016 Boundary-Line. #240
+        * Script to add ONS codes to forward release.
+        * OSNI boundary data import.
+        * Open CSV files with the correct encoding. #225
+
+Thanks to Steven Day, Simon Hughesdon, Isabell Long, Mark Longair, Sym Roe,
+Matthew Somerville, Murray Steele, and Zarino Zappia for their work on this
+release.
+
+v1.4, 2015-09-18
+    * Mark all strings for translation. #185
+    * Italian translation and base templates. #185
+    * Swedish translation and postcode code. #184
+    * Support GeoJSON/KML for multiple areas. #136
+    * Improved testing using tox.
+    * Better handling of bad float numbers in URL. #202
+    * New command to raise generation_high on current areas. #204
+    * Bugfixes:
+        * Include missing meta viewport tag for mobile display.
+        * Fix Python 3 issue with streamed JSON responses.
+        * Make sure the CSS has been compiled when packaging distribution. #179
+        * Avoid Unicode problems in find parents commands. #185
+        * Fix link to geohack tool. #195
+        * Remove unneeded three-character check from import script. #203
+    * MapIt UK specific:
+        * Boundary-Line May 2015. #190
+
+Thanks to chris48s, Guglielmo Celata, Greg Kempe, Jon Kristensen, Mark
+Longair, Chris Mytton, and Matthew Somerville for their work on this release.
+
+v1.3.1, 2015-03-23
+    * Make sure all country-specific templates use the compatibility template
+      tag for "url".
+    * Provide template blocks for extra CSS and JS in the base template.
+    * Package country-specific templates so that they can be reused.
+    * Allow double-clicking to zoom within a geometry map
+    * Upgrade the bundled leaflet to version 0.7.3.
+    * Remove the links to view geometries on Google maps that no longer work.
+
+v1.3, 2015-02-12
+    * Ubuntu Trusty Tahr support. #156
+    * Django 1.8 support, subject to it not being finished yet. #165
+    * Stream JSON output, and HTML lists of areas, to use much less memory on
+      very large responses. #164
+    * Italy country app, thanks Guglielmo Celata. #147 #153
+    * South Africa country app, thanks Mark Longair. #155
+    * Add setting for whether this installation uses postcodes.
+    * Add HTML version of /generations endpoint.
+    * Bugfixes:
+        * Fix nginx example config for static file serving. #162
+        * Catch invalid SRID exceptions, and return 400. #157
+        * Cache 0, not '0', to avoid a LocMem incr error.
+        * Move country specific examples to country app templates.
+        * Improve handling of bad /areas/ URLs, such as </areas/,123>.
+
+v1.2.1, 2014-12-16
+    * Fix bug when importing non-ASCII named geometry data.
+
+Thanks to Guglielmo Celata for finding and reporting this issue.
+
+v1.2, 2014-12-05
+    * Add Django 1.7 and Python 3 support.
+    * Improve robustness of JSONP and bad generation parameters.
+    * Add min_generation parameter to /children and /point endpoints.
+    * Remove requirement for GDAL or memcached.
+    * Factor out further country specific data.
+    * MapIt UK specific:
+        * New Santa postcode.
+        * Changelog.
+        * October 2014 Boundary-Line support.
+
+v1.1, 2014-09-19
+    * Allow import of shapefiles with empty features.
+    * Allow editing of main area name in admin
+    * Improved admin search
+    * Include query parameters in postcode JSON links
+    * Factor out country specific management commands
+    * MapIt Global specific:
+        Various fixes to import process, including preventing infinite loop,
+        better geometry comparison, better language fetching
+    * MapIt UK specific:
+        * Add a --commit option to mapit_UK_find_parents
+        * October 2013 patches and May 2014 support
+
+v1.0.3, 2014-02-05
+    * Bugfix: Limit area lookups by unit_id to the current generation
+    * Bugfix: Django 1.5+ dealing with DataSource names. (Continued)
+    * Bugfix: Avoid problems with old versions of pip and setuptools
 
 v1.0.2, 2013-12-09
-* Now requires Django 1.4 or higher.
-* Allow $ and . in callback function names.
-* Increased maximum lengths for codes and names.
-* Bugfix: Include required messages framework for admin.
-* Bugfix: Django 1.5+ dealing with DataSource names.
-* Bugfix: Running CSS script when not installed via PyPi.
-* Bugfix: Include required <Document> in KML output.
+    * Now requires Django 1.4 or higher.
+    * Allow $ and . in callback function names.
+    * Increased maximum lengths for codes and names.
+    * Bugfix: Include required messages framework for admin.
+    * Bugfix: Django 1.5+ dealing with DataSource names.
+    * Bugfix: Running CSS script when not installed via PyPi.
+    * Bugfix: Include required <Document> in KML output.
 
 v1.0.1, 2013-09-16
-* Fix script installation.
-* Link postcode to GeoHack page.
+    * Fix script installation.
+    * Link postcode to GeoHack page.
 
 v1.0.0, 2013-08-27
-* Initial proper PyPI release.
+    * Initial proper PyPI release.
 
 v1.0.0pr2, 2011-12-08
-* Add South and factored out hard-coded name and code types into separate
-  database tables.
+    * Add South and factored out hard-coded name and code types into separate
+      database tables.
 
 v1.0.0pr1, 2011-12-07
-* Initial packaged version.
+    * Initial packaged version.

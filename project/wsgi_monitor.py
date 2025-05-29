@@ -1,27 +1,30 @@
 # From http://code.google.com/p/modwsgi/wiki/ReloadingSourceCode
 
+from __future__ import print_function
+
 import os
 import sys
-import time
 import signal
 import threading
 import atexit
-import Queue
+import queue
 
 _interval = 1.0
 _times = {}
 _files = []
 
 _running = False
-_queue = Queue.Queue()
+_queue = queue.Queue()
 _lock = threading.Lock()
+
 
 def _restart(path):
     _queue.put(True)
     prefix = 'monitor (pid=%d):' % os.getpid()
-    print >> sys.stderr, '%s Change detected to \'%s\'.' % (prefix, path)
-    print >> sys.stderr, '%s Triggering process restart.' % prefix
+    print('%s Change detected to \'%s\'.' % (prefix, path), file=sys.stderr)
+    print('%s Triggering process restart.' % prefix, file=sys.stderr)
     os.kill(os.getpid(), signal.SIGINT)
+
 
 def _modified(path):
     try:
@@ -55,8 +58,9 @@ def _modified(path):
 
     return False
 
+
 def _monitor():
-    while 1:
+    while True:
         # Check modification times on all files in sys.modules.
 
         for module in sys.modules.values():
@@ -84,8 +88,10 @@ def _monitor():
         except:
             pass
 
+
 _thread = threading.Thread(target=_monitor)
 _thread.setDaemon(True)
+
 
 def _exiting():
     try:
@@ -94,11 +100,14 @@ def _exiting():
         pass
     _thread.join()
 
+
 atexit.register(_exiting)
 
+
 def track(path):
-    if not path in _files:
+    if path not in _files:
         _files.append(path)
+
 
 def start(interval=1.0):
     global _interval
@@ -109,7 +118,7 @@ def start(interval=1.0):
     _lock.acquire()
     if not _running:
         prefix = 'monitor (pid=%d):' % os.getpid()
-        print >> sys.stderr, '%s Starting change monitor.' % prefix
+        print('%s Starting change monitor.' % prefix, file=sys.stderr)
         _running = True
         _thread.start()
     _lock.release()

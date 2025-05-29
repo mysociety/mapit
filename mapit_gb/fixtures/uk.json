@@ -1,0 +1,86 @@
+[
+    { "pk": 1, "model": "mapit.country", "fields": { "code": "E", "name": "England" } },
+    { "pk": 2, "model": "mapit.country", "fields": { "code": "N", "name": "Northern Ireland" } },
+    { "pk": 3, "model": "mapit.country", "fields": { "code": "S", "name": "Scotland" } },
+    { "pk": 4, "model": "mapit.country", "fields": { "code": "W", "name": "Wales" } },
+
+    { "pk": 1, "model": "mapit.type", "fields": { "code": "EUP", "description": "European Parliament" } },
+    { "pk": 2, "model": "mapit.type", "fields": { "code": "EUR", "description": "European region" } },
+    { "pk": 3, "model": "mapit.type", "fields": { "code": "HOL", "description": "House of Lords" } },
+    { "pk": 4, "model": "mapit.type", "fields": { "code": "HOC", "description": "House of Lords constituency" } },
+    { "pk": 5, "model": "mapit.type", "fields": { "code": "WMP", "description": "UK Parliament" } },
+    { "pk": 6, "model": "mapit.type", "fields": { "code": "WMC", "description": "UK Parliament constituency" } },
+
+    { "pk": 7, "model": "mapit.type", "fields": { "code": "CPC", "description": "Civil parish/community" } },
+    { "pk": 8, "model": "mapit.type", "fields": { "code": "UTA", "description": "Unitary Authority" } },
+    { "pk": 9, "model": "mapit.type", "fields": { "code": "UTE", "description": "Unitary Authority electoral division (UTE)" } },
+    { "pk": 10, "model": "mapit.type", "fields": { "code": "UTW", "description": "Unitary Authority ward (UTW)" } },
+
+    { "pk": 11, "model": "mapit.type", "fields": { "code": "NIA", "description": "Northern Ireland Assembly" } },
+    { "pk": 12, "model": "mapit.type", "fields": { "code": "NIE", "description": "Northern Ireland Assembly constituency" } },
+    { "pk": 13, "model": "mapit.type", "fields": { "code": "LGD", "description": "Northern Irish Council" } },
+    { "pk": 14, "model": "mapit.type", "fields": { "code": "LGE", "description": "Northern Irish Council electoral area" } },
+    { "pk": 15, "model": "mapit.type", "fields": { "code": "LGW", "description": "Northern Irish Council ward" } },
+
+    { "pk": 16, "model": "mapit.type", "fields": { "code": "SPA", "description": "Scottish Parliament" } },
+    { "pk": 17, "model": "mapit.type", "fields": { "code": "SPE", "description": "Scottish Parliament region" } },
+    { "pk": 18, "model": "mapit.type", "fields": { "code": "SPC", "description": "Scottish Parliament constituency" } },
+
+    { "pk": 19, "model": "mapit.type", "fields": { "code": "WAS", "description": "Welsh Assembly" } },
+    { "pk": 20, "model": "mapit.type", "fields": { "code": "WAE", "description": "Welsh Assembly region" } },
+    { "pk": 21, "model": "mapit.type", "fields": { "code": "WAC", "description": "Welsh Assembly constituency" } },
+
+    { "pk": 22, "model": "mapit.type", "fields": { "code": "GLA", "description": "Greater London Authority" } },
+    { "pk": 23, "model": "mapit.type", "fields": { "code": "LAC", "description": "London Assembly constituency" } },
+    { "pk": 24, "model": "mapit.type", "fields": { "code": "LAE", "description": "London Assembly area (shared)" } },
+    { "pk": 25, "model": "mapit.type", "fields": { "code": "LAS", "description": "London Assembly area" } },
+    { "pk": 26, "model": "mapit.type", "fields": { "code": "LBO", "description": "London borough" } },
+    { "pk": 27, "model": "mapit.type", "fields": { "code": "LBW", "description": "London borough ward" } },
+
+    { "pk": 28, "model": "mapit.type", "fields": { "code": "COI", "description": "Scilly Isles" } },
+    { "pk": 29, "model": "mapit.type", "fields": { "code": "COP", "description": "Scilly Isles 'ward'" } },
+    { "pk": 30, "model": "mapit.type", "fields": { "code": "MTD", "description": "Metropolitan district" } },
+    { "pk": 31, "model": "mapit.type", "fields": { "code": "MTW", "description": "Metropolitan district ward" } },
+    { "pk": 32, "model": "mapit.type", "fields": { "code": "CTY", "description": "County council" } },
+    { "pk": 33, "model": "mapit.type", "fields": { "code": "CED", "description": "County council electoral division" } },
+    { "pk": 34, "model": "mapit.type", "fields": { "code": "DIS", "description": "District council" } },
+    { "pk": 35, "model": "mapit.type", "fields": { "code": "DIW", "description": "District council ward" } },
+
+    { "pk": 36, "model": "mapit.type", "fields": { "code": "OLF", "description": "Lower Layer Super Output Area (Full)" } },
+    { "pk": 37, "model": "mapit.type", "fields": { "code": "OLG", "description": "Lower Layer Super Output Area (Generalised)" } },
+    { "pk": 38, "model": "mapit.type", "fields": { "code": "OMF", "description": "Middle Layer Super Output Area (Full)" } },
+    { "pk": 39, "model": "mapit.type", "fields": { "code": "OMG", "description": "Middle Layer Super Output Area (Generalised)" } },
+    { "pk": 40, "model": "mapit.type", "fields": { "code": "OUA", "description": "Output Area" } },
+
+    { "pk": 41, "model": "mapit.type", "fields": { "code": "CPW", "description": "Civil parish/community ward" } },
+
+    { "pk": 42, "model": "mapit.type", "fields": { "code": "NIW", "description": "Northern Ireland Ward" } },
+    { "pk": 43, "model": "mapit.type", "fields": { "code": "16W", "description": "Forward-dated ward boundaries" } },
+
+    { "pk": 44, "model": "mapit.type", "fields": { "code": "CCG", "description": "Clinical Commissioning Group" } },
+    { "pk": 45, "model": "mapit.type", "fields": { "code": "WLHB", "description": "Welsh Local Health Board" } },
+    { "pk": 46, "model": "mapit.type", "fields": { "code": "SHB", "description": "Scottish Health Board" } },
+    { "pk": 47, "model": "mapit.type", "fields": { "code": "NIHT", "description": "NI Health Trust" } },
+
+    { "pk": 48, "model": "mapit.type", "fields": { "code": "TTW", "description": "Travel to Work Areas" } },
+    { "pk": 49, "model": "mapit.type", "fields": { "code": "NIC", "description": "Northern Ireland county" } },
+    { "pk": 50, "model": "mapit.type", "fields": { "code": "ER", "description": "English Region" } },
+    { "pk": 51, "model": "mapit.type", "fields": { "code": "NCP", "description": "Non-civil parished area" } },
+
+    { "pk": 52, "model": "mapit.type", "fields": { "code": "ICB", "description": "Integrated Care Board" } },
+    { "pk": 53, "model": "mapit.type", "fields": { "code": "SICBL", "description": "Sub ICB Location" } },
+
+    { "pk": 54, "model": "mapit.type", "fields": { "code": "WMCF", "description": "Future UK Parliament constituency" } },
+
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
+    { "pk": 3, "model": "mapit.codetype", "fields": { "code": "unit_id", "description": "Boundary-Line (OS Admin Area ID)" } },
+    { "pk": 4, "model": "mapit.codetype", "fields": { "code": "osni_oid", "description": "OSNI Object ID" } },
+
+    { "pk": 1, "model": "mapit.nametype", "fields": { "code": "O", "description": "Ordnance Survey" } },
+    { "pk": 2, "model": "mapit.nametype", "fields": { "code": "S", "description": "ONS (SNAC/GSS)" } },
+    { "pk": 3, "model": "mapit.nametype", "fields": { "code": "M", "description": "Override name" } },
+    { "pk": 4, "model": "mapit.nametype", "fields": { "code": "N", "description": "OSNI" } }
+
+]
+

@@ -1,0 +1,13 @@
+[
+    { "pk": 1, "model": "mapit.country", "fields": { "code": "Z", "name": "South Africa" } },
+    { "pk": 1, "model": "mapit.type", "fields": { "code": "WRD", "description": "Wards" } },
+    { "pk": 2, "model": "mapit.type", "fields": { "code": "LMN", "description": "Local Municipality" } },
+    { "pk": 3, "model": "mapit.type", "fields": { "code": "MMN", "description": "Metropolitan Municipality" } },
+    { "pk": 4, "model": "mapit.type", "fields": { "code": "DMN", "description": "District Municipality" } },
+    { "pk": 5, "model": "mapit.type", "fields": { "code": "PRV", "description": "Province" } },
+    { "pk": 1, "model": "mapit.codetype", "fields": { "code": "w", "description": "Ward ID" } },
+    { "pk": 2, "model": "mapit.codetype", "fields": { "code": "l", "description": "Local Municipality ID" } },
+    { "pk": 3, "model": "mapit.codetype", "fields": { "code": "d", "description": "District Code" } },
+    { "pk": 4, "model": "mapit.codetype", "fields": { "code": "p", "description": "Province Code" } },
+    { "pk": 1, "model": "mapit.nametype", "fields": { "code": "S", "description": "Name from Shapefile" } }
+]

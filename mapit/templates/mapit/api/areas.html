@@ -1,80 +1,42 @@
-{% load url from future %}
+{% load i18n %}
     <section id="api-multiple_areas">
-        <h3><em>lookup</em> multiple areas</h3>
+        <h3>{% blocktrans trimmed %}
+            <em>lookup</em> multiple areas
+        {% endblocktrans %}</h3>
         <dl>
             <dt>URL:</dt>
             <dd><ul>
-                <li>/areas/<i>[area IDs]</i>
-                <li>/areas/<i>[area IDs]</i>/geometry
-                <li>/areas/<i>[type(s)]</i>
-                <li>/areas/<i>[name prefix]</i>
+                <li>/areas/<i>[{% trans "area IDs" %}]</i>
+                <li>/areas/<i>[{% trans "area IDs" %}]</i>/geometry
+                <li>/areas/<i>[{% trans "area IDs" %}]</i>.<i>[kml|geojson]</i>
+                <li>/areas/<i>[{% trans "type(s)" %}]</i>
+                <li>/areas/<i>[{% trans "name prefix" %}]</i>
             </ul></dd>
-            <dt>Parameters:</dt>
-            <dd>Separate multiple parameters with commas.
+            <dt>{% trans "Parameters" %}:</dt>
+            <dd>{% blocktrans trimmed %}
+            Separate multiple parameters with commas.
             Name prefix means it will return any area that starts with the string given.
-            The current area types are:
-{% if country == 'GB' %}
-         <small>CTY (county council), CED (county ward), COI (Isles of Scilly), COP (Isles of Scilly parish),
-             CPC (civil parish/community), CPW (civil parish/community ward),
-             DIS (district council), DIW (district ward), EUR (Euro region),
-             GLA (London Assembly), LAC (London Assembly constituency), LBO (London borough),
-             LBW (London ward), LGD (NI council), LGE (NI electoral area), LGW (NI ward),
-             MTD (Metropolitan district), MTW (Metropolitan ward), NIE (NI Assembly constituency),
-             OLF (Lower Layer Super Output Area, Full), OLG (Lower Layer Super Output Area, Generalised),
-             OMF (Middle Layer Super Output Area, Full), OMG (Middle Layer Super Output Area, Generalised),
-             SPC (Scottish Parliament constituency), SPE (Scottish Parliament region),
-             UTA (Unitary authority), UTE (Unitary authority electoral division),
-             UTW (Unitary authority ward), WAC (Welsh Assembly constituency),
-             WAE (Welsh Assembly region), WMC (UK Parliamentary constituency)</small>.
-{% endif %}
-{% if country == 'NO' %}
-<small><a href="{% url "mapit_index" %}areas/NKO.html">NKO</a> (kommune),
-<a href="{% url "mapit_index" %}areas/NFY.html">NFY</a> (fylke),
-<a href="{% url "mapit_index" %}areas/NRA.html">NRA</a> (vegvesen),
-<a href="{% url "mapit_index" %}areas/NPT.html">NPT</a> (kollektivtransportselskap),
-<a href="{% url "mapit_index" %}areas/NPG.html">NPG</a> (kraftregionselskap),
-<a href="{% url "mapit_index" %}areas/NRR.html">NRR</a> (jernbaneverk),
-<a href="{% url "mapit_index" %}areas/NSA.html">NSA</a> (kystverk)</small>.
-{% endif %}
-{% if country == 'Global' %}
-    <small>O01 to O12</small>.
-{% endif %}
+            {% endblocktrans %}
+            {% include "mapit/api/areas-types.html" %}
             </dd>
-            <dt>Optional query parameters:</dt>
+            <dt>{% trans "Optional query parameters" %}:</dt>
             <dd><ul>
-                <li><i>generation</i>, to return areas in that generation (type and name lookups only).</li>
-                <li><i>min_generation</i>, to return areas since that generation (type and name lookups only).</li>
-                <li><i>type</i>, to restrict results to a type or types (multiple separated by commas; name lookup only).</li>
+                <li><i>generation</i>, {% trans "to return areas in that generation (type and name lookups only)" %}.</li>
+                <li><i>min_generation</i>, {% trans "to return areas since that generation (type and name lookups only)" %}.</li>
+                <li><i>max_generation</i>, {% trans "to return results up to that generation, not active after (ditto)." %}.</li>
+                <li><i>type</i>, {% trans "to restrict results to a type or types (multiple separated by commas; name lookup only)" %}.</li>
+                <li><i>country</i>, {% trans "to restrict results to areas with particular country codes (multiple separated by commas; type and name lookups only)" %}.</li>
             </ul></dd>
 
-            <dt>Returns:</dt>
+            <dt>{% trans "Returns" %}:</dt>
             <dd>
-            <p>Information on multiple areas that match the parameters provided, as a dictionary indexed by area ID.
-            The geometry argument lets you fetch multiple single area geometry results at once.
+            <p>
+                {% blocktrans trimmed %}
+                    Information on multiple areas that match the parameters provided, as a dictionary indexed by area ID.
+                    The geometry argument lets you fetch multiple single area geometry results at once.
+                {% endblocktrans %}
             </p>
             </dd>
-            <dt>Examples:</dt>
-            <dd>
-{% if country == 'GB' %}
-<ul>
-    <li>All areas starting &ldquo;Bourn&rdquo;: <a href="{% url "mapit_index" %}areas/Bourn.html">/areas/Bourn.html</a>
-    <li>Information on areas 2636 and 2637: <a href="{% url "mapit_index" %}areas/2636,2637.html">/areas/2636,2637.html</a>
-    <li>All county council (CTY) areas: <a href="{% url "mapit_index" %}areas/CTY.html">/areas/CTY.html</a>
-</ul>
-{% endif %}
-{% if country == 'NO' %}
-<ul>
-    <li>All areas starting &ldquo;As&rdquo;: <a href="{% url "mapit_index" %}areas/As.html">/areas/As.html</a>
-    <li>Information on areas 814 and 815: <a href="{% url "mapit_index" %}areas/814,815.html">/areas/814,815.html</a>
-</ul>
-{% endif %}
-{% if country == 'Global' %}
-            <ul>
-                <li>All areas starting &ldquo;Ven&rdquo;: <a href="{% url "mapit_index" %}areas/Ven.html">/areas/Ven.html</a>
-                <li>Information on areas 29746 and 25495: <a href="{% url "mapit_index" %}areas/29746,25495.html">/areas/29746,25495.html</a>
-                <li>All level 2 (O02) areas: <a href="{% url "mapit_index" %}areas/O02.html">/areas/O02.html</a>
-            </ul>
-{% endif %}
-            </dd>
+            {% include "mapit/api/areas-examples.html" %}
         </dl>
     </section>

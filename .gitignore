@@ -1,14 +1,18 @@
 *.pyc
+.idea
 /conf/general.yml
 /conf/general.yml.deployed
 /conf/httpd.conf
 /conf/httpd.conf.deployed
-/web/down.html
+/mapit/static/down.html
 /data/cache
 /MANIFEST
+/build
 /dist
+/django_mapit.egg-info
 *~
 /.coverage
+/.tox
 
 .sass-cache
 /mapit/static/mapit/css
@@ -17,3 +21,4 @@
 .venv
 
 .DS_Store
+.vagrant

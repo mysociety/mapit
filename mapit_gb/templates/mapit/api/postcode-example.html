@@ -1,0 +1,17 @@
+<dt>Shortcuts:</dt>
+<dd>
+    <p>
+        As well as the <kbd>areas</kbd> hash of all areas, the results include a <kbd>shortcuts</kbd> key that provides a quick lookup of council, ward, and WMC IDs. If the area is two-tier, the council and ward values will be objects with keys of <kbd>county</kbd> and <kbd>district</kbd>.
+    </p>
+</dd>
+
+<dt>Example:</dt>
+<dd>
+    <p>If your postcode was <em>SW1A 1AA</em> you would load
+        <a href="{% url "mapit_index" %}postcode/SW1A1AA">/postcode/SW1A1AA</a>
+    </p>
+    <p>
+        By default the response is in JSON, if you want a human readable page then append ‘<em>.html</em>’ to the url
+        <a href="{% url "mapit_index" %}postcode/SW1A1AA.html">/postcode/SW1A1AA.html</a>
+    </p>
+</dd>

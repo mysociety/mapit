@@ -1,0 +1,62 @@
+{% load i18n %}
+
+<div class="mysoc-footer" role="contentinfo">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-sm-7">
+                <h2 class="mysoc-footer__site-name">MapIt: {% include "mapit/country.html" %}</h2>
+                <div class="mysoc-footer__site-description">
+                    <p>{% include "mapit/description.html" %}</p>
+                    <p>MapIt-it è un progetto no-profit di <a href="http://www.openpolis.it/">Openpolis</a>.</p>
+                </div>
+                <div class="mapit-copyright">
+                  {% include "mapit/copyright.html" %}
+                </div>
+            </div>
+
+            <div class="col-sm-2">
+            </div>
+
+            <div class="col-sm-3">
+                <div class="mysoc-footer__donate">
+                    <p>Your donations keep this site and others like it running</p>
+                    <a href="https://www.mysociety.org/donate?utm_source=mapit.mysociety.org&amp;utm_content=footer+donate+now&amp;utm_medium=link&amp;utm_campaign=mysoc_footer" class="mysoc-footer__donate__button">Donate now</a>
+                </div>
+            </div>
+
+        </div>
+        <hr class="mysoc-footer__divider" role="presentation">
+        <div class="row">
+
+            <div class="col-sm-5">
+                <div class="mysoc-footer__orgs">
+                    <p class="mysoc-footer__org">
+                        È un progetto di
+                        <a href="http://www.openpolis.it" class="mysoc-footer__org__logo mysoc-footer__org__logo--openpolis">Openpolis</a>
+                    </p>
+                    <p class="mysoc-footer__org">
+                        {% trans "Built by" %}
+                        <a href="https://www.mysociety.org?utm_source=mapit.mysociety.org&amp;utm_content=footer+logo&amp;utm_medium=link&amp;utm_campaign=mysoc_footer" class="mysoc-footer__org__logo mysoc-footer__org__logo--mysociety">mySociety</a>
+
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-sm-4">
+                <div class="mysoc-footer__legal">
+                    <p><a href="https://www.mysociety.org?utm_source=mapit.mysociety.org&amp;utm_content=footer+full+legal+details&amp;utm_medium=link&amp;utm_campaign=mysoc_footer">mySociety</a> is a registered charity in England and Wales (1076346) and a limited company (03277032).  We provide commercial services through our wholly owned subsidiary <a href="https://www.societyworks.org?utm_source=mapit.mysociety.org&amp;utm_content=footer+full+legal+details&amp;utm_medium=link&amp;utm_campaign=mysoc_footer">SocietyWorks Ltd</a> (05798215).</p>
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <ul class="mysoc-footer__badges">
+                    <li role="presentation"><a href="https://github.com/mysociety/mapit" class="mysoc-footer__badge mysoc-footer__badge--github">Github</a></li>
+                    <li role="presentation"><a href="https://twitter.com/mysociety" class="mysoc-footer__badge mysoc-footer__badge--twitter">Twitter</a></li>
+                    <li role="presentation"><a href="https://www.facebook.com/mysociety" class="mysoc-footer__badge mysoc-footer__badge--facebook">Facebook</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>

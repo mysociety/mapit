@@ -1,0 +1,186 @@
+#!/usr/bin/python
+# vim: set fileencoding=utf-8
+#
+# This script downloads OSM XML from openstreetmap and converts it into KML
+# One KML file is generated per fylke, each containing all the kommune
+# Additionally, one more KML file is generated containing the fylke.
+
+from __future__ import print_function
+
+import xml.sax, urllib, os
+from xml.sax.handler import ContentHandler
+
+from django.utils.encoding import smart_str
+
+dir = os.path.dirname(os.path.abspath(__file__))
+data_dir = os.path.join(dir, '..', 'data')
+
+# Make sure cache directory exists
+try:
+    os.mkdir('%s/cache' % data_dir)
+except:
+    pass
+
+# Read in file matching names to IDs. Distinguish per fylke
+# as some names are used more than once.
+ids = open('%s/norway/ids.csv' % data_dir, 'rb').readlines()
+refs = {}
+for row in ids:
+    id, name = row.decode('utf-8').strip().split(',')
+    if len(id) == 4:
+        fylke = int(id[0:2])
+    else:
+        fylke = 0
+    refs.setdefault(name, {})[fylke] = id
+
+# An XML.SAX parser that simple slurps in the XML data and stores it in dictionaries.
+class OSM2KML(ContentHandler):
+    def __init__(self, *args, **kwargs):
+        self.node = {}
+        self.way = {}
+        self.relation = {}
+        self.current = None
+
+    def startElement(self, name, attr):
+        if name == 'node':
+            self.node[attr["id"]] = (attr["lon"], attr["lat"])
+        elif name == 'tag':
+            if isinstance(self.current, dict): # Relation
+                self.current['tags'][attr['k']] = attr['v']
+        elif name == 'way':
+            self.current = []
+            self.way[attr["id"]] = self.current
+        elif name == 'relation':
+            self.current = { 'relations': [], 'ways': [], 'nodes': [], 'tags': {} }
+            self.relation[attr['id']] = self.current
+        elif name == 'nd':
+            self.current.append(attr['ref'])
+        elif name == 'member':
+            self.current['%ss' % attr['type']].append(attr['ref'])
+
+    def way_wkt(self, way_id, reverse=False):
+        way = self.way[way_id]
+        nodes = [ '%s,%s,0' % self.node[node] for node in way ]
+        if reverse: nodes.reverse()
+        return ' '.join(nodes)
+
+    def make_wkt(self, relation_id):
+        """Given a relation ID that's already parsed, create a WKT of its polygon."""
+        first = True
+        wkt = ""
+        ways = self.relation[relation_id]['ways']
+        i = 0
+        max = len(ways) * len(ways)
+        while ways and i < max:
+            way_id = ways.pop(0)
+            way = self.way[way_id]
+            i += 1
+            if first:
+                first = False
+                start = way[0]
+                end = way[-1]
+                wkt = self.way_wkt(way_id)
+            elif start == way[0]:
+                start = way[-1]
+                wkt = self.way_wkt(way_id, reverse=True) + ' ' + wkt
+            elif start == way[-1]:
+                start = way[0]
+                wkt = self.way_wkt(way_id) + ' ' + wkt
+            elif end == way[0]:
+                end = way[-1]
+                wkt += ' ' + self.way_wkt(way_id)
+            elif end == way[-1]:
+                end = way[0]
+                wkt += ' ' + self.way_wkt(way_id, reverse=True)
+            else:
+                ways.append(way_id)
+        if wkt: wkt += " %s,%s,0" % self.node[start]
+        return wkt
+
+# Fetch something from OSM and store it for later
+# XXX The store never expires, have to delete cache manually currently.
+base_url = 'https://api.openstreetmap.org/api/0.6/%s/%s%s'
+def fetch_from_cache(type, id, full=''):
+    if full: full='-full'
+    file = '%s/cache/%s-%s%s' % (data_dir, type, id, full)
+    if not os.path.exists(file):
+        if full: full = '/full'
+        f = urllib.urlopen(base_url % (type, id, full))
+        r = f.read()
+        f.close()
+        f = open(file, 'w')
+        f.write(r)
+        f.close()
+    return open(file)
+
+# Lovely magic numbers
+relation_ids = {
+    0: 412437, # Fylke
+    1: 406090, # 1  Østfold
+    2: 406138, # 2  Akershus
+    # 3 Oslo
+    4: 412548, # 4  Hedmark
+    5: 412433, # 5  Oppland
+    6: 412365, # 6  Buskerud
+    7: 406620, # 7  Vestfold
+    8: 407361, # 8  Telemark
+    9: 406039, # 9  Aust-Agder
+    10: 405988, # 10 Vest-Agder
+    11: 405846, # 11 Rogaland
+    12: 407360, # 12 Hordaland
+    14: 409088, # 14 Sogn og Fjordane
+    15: 406869, # 15 Møre og Romsdal
+    16: 407312, # 16 Sør-Trøndelag
+    17: 407311, # 17 Nord-Trøndelag
+    18: 408224, # 18 Nordland
+    19: 407773, # 19 Troms
+    20: 406661, # 20 Finnmark
+}
+
+# Okay, let's get going
+for fylke_id, relation_id in relation_ids.items():
+    print("Fetching relation %d..." % relation_id)
+    P = OSM2KML()
+    xml.sax.parse( fetch_from_cache('relation', relation_id), P )
+
+    out = open('%s/cache/%02d.kml' % (data_dir, fylke_id), 'w')
+    out.write('''<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+  <Folder>
+    <name>Norway OSM boundaries</name>
+''')
+
+    for id in P.relation[str(relation_id)]['relations']:
+        xml.sax.parse( fetch_from_cache('relation', id, True), P )
+        rel = P.relation[id]
+
+        name = rel['tags'].get('name', '')
+        if not name: name = rel['tags'].get('name:no')
+        if not name: continue
+
+        ref = rel['tags'].get('ref')
+        if not ref: ref = refs[name][fylke_id]
+        print(" ", id, smart_str(name), ref)
+
+        extended = { 'ref': ref, 'osm': id }
+        for k in ('name:no', 'name:smi', 'name:fi'):
+            if rel['tags'].get(k): extended[k] = rel['tags'].get(k)
+        if rel['tags'].get('name:samisk'): extended['name:smi'] = rel['tags'].get('name:samisk')
+        extended = '\n        '.join([ '<Data name="%s"><value>%s</value></Data>' % (k,v) for k, v in extended.items() ])
+
+        out.write(smart_str('''    <Placemark>
+      <name>%s</name>
+      <ExtendedData>
+        %s
+      </ExtendedData>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>''' % (name, extended) ) )
+        out.write( P.make_wkt(id) )
+        out.write('''</coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+''')
+
+    out.write('''
+  </Folder>
+</kml>''')
+    out.close()
+

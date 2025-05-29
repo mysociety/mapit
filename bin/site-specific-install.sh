@@ -23,7 +23,7 @@ misuse() {
 [ -z "$DISTRIBUTION" ] && misuse DISTRIBUTION
 [ -z "$DISTVERSION" ] && misuse DISTVERSION
 
-apt-get install -qq -y python-flup gunicorn >/dev/null
+apt-get install -qq -y g++ python3-venv >/dev/null
 
 install_nginx
 
@@ -31,11 +31,32 @@ install_website_packages
 
 install_postgis
 
-add_postgresql_user
+VERSION_POSTGIS=$(dpkg-query -W -f '${Version}\n' postgresql-*-postgis*|sort -rV|head -1)
+if [ 2.0 = "$(printf '2.0\n%s\n' "$VERSION_POSTGIS" | sort -V | head -1)" ]
+then POSTGIS_TWO=Yes
+else POSTGIS_TWO=No
+fi
+
+if [ $POSTGIS_TWO = Yes ]
+then
+    # With PostGIS 2, the database user will need to be a superuser so that it
+    # can create the PostGIS extension; we'll drop that privilege afterwards:
+    add_postgresql_user --superuser
+else
+    add_postgresql_user
+fi
 
 make_log_directory
 
 su -l -c "$REPOSITORY/bin/install-as-user '$UNIX_USER' '$HOST' '$DIRECTORY'" "$UNIX_USER"
+
+if [ $POSTGIS_TWO = Yes ]
+then
+    su -l -c "psql -c 'ALTER USER $UNIX_USER WITH NOSUPERUSER'" postgres
+fi
+
+# Install gunicorn within the virtual environment
+su -l -c "source $DIRECTORY/virtualenv-mapit/bin/activate && pip install gunicorn==21.0.1" "$UNIX_USER"
 
 install_sysvinit_script
 

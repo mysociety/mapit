@@ -1,0 +1,5 @@
+postgresql
+postgis
+memcached
+python3-dev
+libgdal-dev

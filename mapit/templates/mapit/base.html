@@ -1,82 +1,47 @@
-{% load url from future %}
-{% load static from staticfiles %}
+{% load static %}
+{% load i18n %}
+
 <!DOCTYPE HTML>
 <html lang="en-gb">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="imagetoolbar" content="false">
-    <meta name="description" content="MapIt: a web service that maps postcodes and geographical points to administrative areas.">
+    <meta name="description" content="{% block description %}{% trans "MapIt: a web service that maps postcodes and geographical points to administrative areas." %}{% endblock %}">
 
     <title>{% block fulltitle %}{% block title %}{% endblock %} - MapIt{% endblock %}</title>
 
-    <link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block main_css %}<link href="{% static "mapit/css/mapit.css" %}" rel="stylesheet">{% endblock %}
     <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.css" %}" />
     <!--[if lte IE 8]>
-        <link rel="stylesheet" href="{% static "mapit/leaflet/leaflet.ie.css" %}" />
         <script src="{% static "mapit/js/html5shiv.min.js" %}"></script>
         <script src="{% static "mapit/js/respond.min.js" %}"></script>
     <![endif]-->
     <script src="{% static "mapit/js/reqwest.min.js" %}"></script>
     <script src="{% static "mapit/leaflet/leaflet.js" %}"></script>
 
+    {% block extra_css %}{% endblock %}
+
 {% if norobots %}
     <meta name="robots" content="noindex, follow">
 {% endif %}
 
-{% if GOOGLE_ANALYTICS %}
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '{{ GOOGLE_ANALYTICS }}']);
-  _gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-{% endif %}
+    {% include "mapit/analytics.html" %}
 
 </head>
-<body id="mapit-mysociety-org" class="">
+<body>
 
-    <!-- mySociety top strip -->
-    <div id="mysociety-org-bar">
+    {% include "mapit/header.html" %}
 
-        <a class="mysociety-home-link" href="http://www.mysociety.org/">
-            <img src="{% static "mapit/img/page-top-mysociety.png" %}" alt="MapIt is a charitable project from mySociety" width="362" height="32">
-        </a>
-
-        <a class="mysociety-donate-link" href="http://www.mysociety.org/donate/">
-            <img src="{% static "mapit/img/page-top-donate.png" %}" alt="Keep us online, Donate Now" width="160" height="32">
-        </a>
-
-    </div>
-
-    {% if request.path != '/' %}
-    <header class="header">
-        <a class="docs_link" href="{% url "mapit_index" %}"><img src="{% static "mapit/img/home-icon.png" %}" alt="" width="16" height="14" /> Home &amp; Documentation</a>
-        <h1><a href="{% url "mapit_index" %}">Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em></a></h1>
-    </header>
-
-    <article class="content">
-    {% endif %}
-    {% block content %}
-    {% endblock %}
-    {% if request.path != '/' %}
-    </article>
-    {% endif %}
-
-    <footer class="footer" role="contentinfo">
-        <h1>Map<em>It</em><em class="mapit-type">: {% include "mapit/country.html" %}</em>
-            <a href="http://www.djangoproject.com/"><img align="middle" src="{% static "mapit/img/pony.png" %}" border="0" alt="Django powered"></a>
-        </h1>
-
-        <div class="database-credits">
-            {% include "mapit/copyright.html" %}
+    {% block content_outer %}
+        <div class="content {% block article-class %}{% endblock %}">
+            {% block content %}{% endblock %}
         </div>
+    {% endblock %}
 
-    </footer>
+    {% include "mapit/footer.html" %}
+
+    {% block extra_js %}{% endblock %}
 
 </body>
 </html>
-

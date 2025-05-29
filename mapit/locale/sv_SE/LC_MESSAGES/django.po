@@ -1,0 +1,1072 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# Jon Kristensen <info@jonkri.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: MapIt\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-09-22 18:11+0100\n"
+"PO-Revision-Date: 2015-05-18 19:52+0000\n"
+"Last-Translator: Jon Kristensen <info@jonkri.com>\n"
+"Language-Team: Swedish (Sweden) (http://www.transifex.com/projects/p/mapit/"
+"language/sv_SE/)\n"
+"Language: sv_SE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: shortcuts.py:34 templates/mapit/areas.html:6
+msgid "No matching areas found."
+msgstr "Inga matchande områden hittades."
+
+#: templates/404.html:4 templates/mapit/404.html:4
+msgid "404 Not Found"
+msgstr "404 Not Found"
+
+#: templates/404.html:8 templates/mapit/404.html:8
+msgid "Sorry, that could not be found."
+msgstr "Det kunde inte hittas."
+
+#: templates/mapit/400.html:4
+msgid "400 Bad Request"
+msgstr "400 Bad Request"
+
+#: templates/mapit/400.html:8
+msgid "Sorry, you made a bad request: "
+msgstr "Din förfrågan var ogiltlig:"
+
+#: templates/mapit/500.html:4
+msgid "500 Internal Server Error"
+msgstr "500 Internal Server Error"
+
+#: templates/mapit/500.html:8
+msgid "Sorry, something's gone wrong."
+msgstr "Något gick fel."
+
+#: templates/mapit/api/area.html:3
+msgid "<em>lookup by</em> area"
+msgstr "<em>slå upp efter</em> område"
+
+#: templates/mapit/api/area.html:7
+msgid "URL"
+msgstr "URL"
+
+#: templates/mapit/api/area.html:10
+msgid "area ID or ONS code"
+msgstr "områdes-ID eller ONS-kod"
+
+#: templates/mapit/api/area.html:12 templates/mapit/api/area.html.py:18
+#: templates/mapit/api/area.html:20 templates/mapit/api/area.html.py:21
+#: templates/mapit/api/area.html:22 templates/mapit/api/area.html.py:49
+#: templates/mapit/api/area.html:50 templates/mapit/api/area.html.py:52
+#: templates/mapit/api/area.html:53 templates/mapit/api/area.html.py:54
+#: templates/mapit/api/area.html:55 templates/mapit/api/area.html.py:56
+msgid "area ID"
+msgstr "områdes-ID"
+
+#: templates/mapit/api/area.html:15
+msgid "OSM relation ID"
+msgstr "OSM-relation-ID"
+
+#: templates/mapit/api/area.html:16
+msgid "OSM way ID"
+msgstr "OSM-way-ID"
+
+#: templates/mapit/api/area.html:21
+msgid "kml or geojson or wkt"
+msgstr "kml eller geojson eller wkt"
+
+#: templates/mapit/api/area.html:22
+msgid "SRID"
+msgstr "SRID"
+
+#: templates/mapit/api/area.html:22
+msgid "kml or json or wkt"
+msgstr "kml eller json eller wkt"
+
+#: templates/mapit/api/area.html:24 templates/mapit/api/area.html.py:59
+#: templates/mapit/api/areas.html:21 templates/mapit/api/postcode.html:21
+msgid "Optional query parameters"
+msgstr "Valfria parametrar till förfrågan"
+
+#: templates/mapit/api/area.html:25
+msgid "a floating point parameter to simplify the polygons returned"
+msgstr "en flyttalsparameter för att förenkla de returnerade polygonerna"
+
+#: templates/mapit/api/area.html:26 templates/mapit/api/area.html.py:71
+#: templates/mapit/api/areas.html:28 templates/mapit/api/code.html:20
+#: templates/mapit/api/generations.html:9 templates/mapit/api/point.html:64
+#: templates/mapit/api/point.html.py:86 templates/mapit/api/postcode.html:12
+#: templates/mapit/api/postcode.html:40
+msgid "Returns"
+msgstr "Returnerar"
+
+#: templates/mapit/api/area.html:28
+msgid ""
+"Information on a particular area, including name, type, parent, and any "
+"associated codes (see <a href=\"#general\">below for details</a>). The code "
+"lookups redirect to the area URI."
+msgstr ""
+"Information om en särskild area, innehållandes namn, typ, förälder, och "
+"eventuella associerade koder (se <a href=\"#general\">nedan för detaljer</"
+"a>). Koduppslagningar omdirigerar till områdets URI."
+
+#: templates/mapit/api/area.html:33
+msgid "example_postcode returns a random postcode within the area specified."
+msgstr ""
+"example_postcode returnerar ett slumpmässigt postnummer inom det "
+"specificerade området"
+
+#: templates/mapit/api/area.html:35
+msgid "geometry returns centroid, extent and area of the area."
+msgstr "geometry returnerar centroiden, omfattningen och området för området."
+
+#: templates/mapit/api/area.html:45
+msgid "<em>lookup</em> related areas"
+msgstr "<em>slå upp</em> relaterade areor"
+
+#: templates/mapit/api/area.html:61
+msgid ""
+"<li><i>type</i>, to restrict results to a particular type or types.</li>"
+msgstr ""
+"<li><i>type</i>, för att begränsa resultatet till en särskild typ eller till "
+"särskilda typer.</li>"
+
+#: templates/mapit/api/area.html:64
+msgid ""
+"<li><i>generation</i>, to return results from a previous generation "
+"(children only).</li>"
+msgstr ""
+"<li><i>generation</i>, för att returnera resultat från en tidigare "
+"generation (endast barn).</li>"
+
+#: templates/mapit/api/area.html:67
+msgid ""
+"<li><i>min_generation</i>, to return areas since that generation (children "
+"only).</li>"
+msgstr ""
+"<li><i>min_generation</i>, för att returnera areor sedan generationen "
+"(endast barn).</li>"
+
+#: templates/mapit/api/area.html:72
+msgid "A hash of areas that match the requested lookup."
+msgstr "En hash av areor som matchar den efterfrågade uppslagningen."
+
+#: templates/mapit/api/areas.html:3
+msgid "<em>lookup</em> multiple areas"
+msgstr "<em>slå upp</em> flera areor"
+
+#: templates/mapit/api/areas.html:9 templates/mapit/api/areas.html.py:10
+msgid "area IDs"
+msgstr "områdes-ID:t"
+
+#: templates/mapit/api/areas.html:11
+msgid "type(s)"
+msgstr "typ(er)"
+
+#: templates/mapit/api/areas.html:12
+msgid "name prefix"
+msgstr "namnprefix"
+
+#: templates/mapit/api/areas.html:14 templates/mapit/api/code.html:11
+#: templates/mapit/api/point.html:12 templates/mapit/api/point.html.py:84
+msgid "Parameters"
+msgstr "Parametrar"
+
+#: templates/mapit/api/areas.html:15
+msgid ""
+"Separate multiple parameters with commas. Name prefix means it will return "
+"any area that starts with the string given."
+msgstr ""
+"Separera flera parametrar med kommatecken. Namnprefix betyder att den endast "
+"kommer att returnera areor som börjar med den angivna strängen."
+
+#: templates/mapit/api/areas.html:23
+msgid "to return areas in that generation (type and name lookups only)"
+msgstr ""
+"för att returnera areor i den generationen (endast typ- och "
+"namnuppslagningar)"
+
+#: templates/mapit/api/areas.html:24
+msgid "to return areas since that generation (type and name lookups only)"
+msgstr ""
+"för att returnera areor sedan den generationen (endast typ- och "
+"namnuppslagningar)"
+
+#: templates/mapit/api/areas.html:25
+msgid ""
+"to restrict results to a type or types (multiple separated by commas; name "
+"lookup only)"
+msgstr ""
+"för att begränsa resultatet till en typ eller typer (flera avgränsas med "
+"kommatecken; endast namnuppslagning)"
+
+#: templates/mapit/api/areas.html:31
+msgid ""
+"Information on multiple areas that match the parameters provided, as a "
+"dictionary indexed by area ID. The geometry argument lets you fetch multiple "
+"single area geometry results at once."
+msgstr ""
+"Information om flera areor som matchar de angivna parametrarna, som en "
+"katalog indexerad med områdes-ID. Geometriargumentet låter dig hämta flera "
+"enskilda områdesgeometriresultat samtidigt."
+
+#: templates/mapit/api/code.html:3
+#, fuzzy
+#| msgid "<em>lookup by</em> postcode"
+msgid "<em>lookup by</em> code"
+msgstr "<em>slå upp efter</em> postnummer"
+
+#: templates/mapit/api/code.html:9
+msgid "code type"
+msgstr ""
+
+#: templates/mapit/api/code.html:9
+#, fuzzy
+#| msgid "postcode"
+msgid "code"
+msgstr "postnummer"
+
+#: templates/mapit/api/code.html:12
+msgid ""
+"<i>code type</i> and a <i>code</i> should uniquely identify an area. (MapIt "
+"uses code types and codes to associate external identifiers with areas.)"
+msgstr ""
+
+#: templates/mapit/api/code.html:23
+msgid ""
+"This returns an HTTP 302 Found redirect to the corresponding /area/<i>[area "
+"ID]</i> page.  Any format extension (<tt>.html</tt> or <tt>.json</tt>) will "
+"be preserved in the URL that's redirected to."
+msgstr ""
+
+#: templates/mapit/api/generations.html:4 templates/mapit/generations.html:4
+#: templates/mapit/generations.html.py:8 templates/mapit/index.html:55
+msgid "Generations"
+msgstr "Generationer"
+
+#: templates/mapit/api/generations.html:10
+msgid "A list of all generations in this installation of MapIt."
+msgstr "En lista av alla generationer i den här MapIt-installationen."
+
+#: templates/mapit/api/generations.html:19
+msgid "Example"
+msgstr "Exempel"
+
+#: templates/mapit/api/generations.html:20
+msgid "List of generations"
+msgstr "Generationslista"
+
+#: templates/mapit/api/intro.html:3
+msgid ""
+"<p>The documentation below is for developers who want to use MapIt as a web "
+"service, describing its REST API. If that&rsquo;s all Greek to you, please "
+"see <a href=\"/overview\">our page for non-developers</a>.</p>"
+msgstr ""
+"<p>Dokumentationen nedan är för utvecklare som vill använda MapIt som en "
+"webbtjänst och beskriver dess REST-API. Om detta är som grekiska för dig, se "
+"<a href=\"/overview\">vår sida för icke-utvecklare</a>.</p>"
+
+#: templates/mapit/api/point.html:3
+msgid "<em>lookup by</em> point"
+msgstr "<em>slå upp efter</em> punkt"
+
+#: templates/mapit/api/point.html:14
+msgid ""
+"<p><i>SRID</i> is a unique number referring to a particular co-ordinate "
+"system;"
+msgstr ""
+"<p><i>SRID</i> är ett unikt nummer som refererar till ett särskilt "
+"koordinatsystem;"
+
+#: templates/mapit/api/point.html:19
+msgid ""
+"the ones you probably are interested in are 27700 for British National Grid, "
+"4326 for WGS84 lon/lat, and 29902 for the Irish National Grid."
+msgstr ""
+"de du förmodligen är intresserad av är 27700 för British National Grid, 4326 "
+"för WGS84 lon/lat, och 29902 för Irish National Grid."
+
+#: templates/mapit/api/point.html:25
+msgid ""
+"the ones you probably are interested in are 32632 o UTM zone 32N, for Italy "
+"or 4326 for WGS84 lon/lat."
+msgstr ""
+"de du förmodligen är intresserad av är 32632 o UTM zone 32N, för Italien "
+"eller 4326 för WGS84 lon/lat."
+
+#: templates/mapit/api/point.html:30
+msgid ""
+"the one you probably are interested in is 4326 for WGS84 normal lon/lat."
+msgstr "de du förmodligen är intresserade av är 4326 för WGS84 normal lon/lat."
+
+#: templates/mapit/api/point.html:36
+msgid ""
+"<p><i>x</i> and <i>y</i> are the co-ordinates of the point in the co-"
+"ordinate system; note that <i>x,y</i> means <i>longitude,latitude</i>.</p>"
+msgstr ""
+"<p><i>x</i> och <i>y</i> är koordinaterna för punkten i koordinatsystemet; "
+"notera att <i>x,y</i> betyder <i>longitud,latitud</i>.</p>"
+
+#: templates/mapit/api/point.html:41
+msgid "<dt>Optional query parameters:</dt>"
+msgstr "<dt>Valfria parametrar till förfrågan:</dt>"
+
+#: templates/mapit/api/point.html:47
+msgid ""
+"<i>type</i>, to restrict results to a particular area type or types "
+"(multiple types separated by commas);"
+msgstr ""
+"<i>type</i>, för att begränsa resultatet till en särskild typ eller till "
+"särskilda typer (flera typer avgränsas med kommatecken);"
+
+#: templates/mapit/api/point.html:52
+msgid "<i>generation</i>, to return results for a previous generation."
+msgstr ""
+"<i>generation</i>, för att returnera resultat för en tidigare generation."
+
+#: templates/mapit/api/point.html:57
+msgid "<i>min_generation</i>, to return results since that generation."
+msgstr ""
+"<i>min_generation</i>, för att returnera resultat sedan den generationen."
+
+#: templates/mapit/api/point.html:66
+msgid ""
+"<p>A hash of the areas that the point is contained within. If the /box "
+"version is used, only the area bounding boxes are considered.</p>"
+msgstr ""
+"<p>En hash med areor som innehåller punkten. Om /box-versionen används så "
+"tas endast \"bounding boxes\" hänsyn till.</p>"
+
+#: templates/mapit/api/point.html:78
+msgid "<em>lookup</em>nearest postcode"
+msgstr "<em>slå upp</em>närmaste postnummer"
+
+#: templates/mapit/api/point.html:85
+msgid "Same as for"
+msgstr "Samma som för"
+
+#: templates/mapit/api/point.html:85
+msgid "by point"
+msgstr "efter punkt"
+
+#: templates/mapit/api/point.html:87
+msgid "The postcode closest to the particular point."
+msgstr "Postnumret närmast den särskilda punkten."
+
+#: templates/mapit/api/postcode.html:4
+msgid "<em>lookup by</em> postcode"
+msgstr "<em>slå upp efter</em> postnummer"
+
+#: templates/mapit/api/postcode.html:10
+msgid "postcode"
+msgstr "postnummer"
+
+#: templates/mapit/api/postcode.html:14
+msgid ""
+"<p>Information on a particular postcode, including its location in WGS84 "
+"latitude/longitude, and the areas it is contained within.</p>"
+msgstr ""
+"<p>Information om ett särskild postnummer, inklusive dess plats i WGS84 "
+"latitude/longitude, och de areor som innehåller punkten.</p>"
+
+#: templates/mapit/api/postcode.html:23
+msgid "<p><i>generation</i>, to return results from a previous generation.</p>"
+msgstr ""
+"<p><i>generation</i>, för att returnera resultat från en tidigare generation."
+"</p>"
+
+#: templates/mapit/api/postcode.html:34
+msgid "<em>lookup by</em> partial postcode"
+msgstr "<em>slå upp efter</em> partiellt postnummer"
+
+#: templates/mapit/api/postcode.html:38
+msgid "partial postcode"
+msgstr "partiellt postnummer"
+
+#: templates/mapit/api/postcode.html:42
+msgid ""
+"<p>Geographical details for the centroid of the partial postcode specified.</"
+"p>"
+msgstr ""
+"<p>Geografiska detaljer kring centroiden från det angivna partiella "
+"postnumret</p>"
+
+#: templates/mapit/area.html:12
+msgid "Type"
+msgstr "Typ"
+
+#: templates/mapit/area.html:13
+msgid "Exists in generations"
+msgstr "Finns i generationer"
+
+#: templates/mapit/area.html:15
+msgid "Country"
+msgstr "Land"
+
+#: templates/mapit/area.html:19 templates/mapit/areas_item.html:9
+#, python-format
+msgid "A child of <a href=\"%(url)s\">%(name)s</a>."
+msgstr "Ett barn till <a href=\"%(url)s\">%(name)s</a>."
+
+#: templates/mapit/area.html:24
+msgid "Example postcode"
+msgstr "Exempelpostnummer"
+
+#: templates/mapit/area.html:28
+msgid "Children"
+msgstr "Barn"
+
+#: templates/mapit/area.html:32 templates/mapit/data.html:10
+#: templates/mapit/generations.html:11 templates/mapit/postcode.html:25
+#, python-format
+msgid "Get <a href=\"%(json_url)s\">this data as JSON</a>"
+msgstr "Hämta <a href=\"%(json_url)s\">denna data som JSON</a>"
+
+#: templates/mapit/area.html:42 templates/mapit/postcode.html:34
+msgid ""
+"Map © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+"contributors"
+msgstr ""
+"Map © <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> "
+"bidragsgivare"
+
+#: templates/mapit/area.html:68 templates/mapit/area.html.py:70
+msgid "Geometry"
+msgstr "Geometri"
+
+#: templates/mapit/area.html:79 templates/mapit/postcode.html:47
+msgid "Areas"
+msgstr "Areor"
+
+#: templates/mapit/area.html:81
+msgid "Touching this area"
+msgstr "Angränsar detta område"
+
+#: templates/mapit/area.html:82
+msgid "Overlapping this area"
+msgstr "Överlappar detta område"
+
+#: templates/mapit/area.html:83
+msgid "Covering this area"
+msgstr "Täcker detta område"
+
+#: templates/mapit/area.html:84
+msgid "Covered by this area"
+msgstr "Täcks av detta område"
+
+#: templates/mapit/area.html:85
+msgid "Covered by or overlapping this area"
+msgstr "Täcks av eller överlappar detta område"
+
+#: templates/mapit/area.html:86
+msgid "Intersects this area"
+msgstr "Beskär detta område"
+
+#: templates/mapit/area.html:91
+msgid "Codes"
+msgstr "Koder"
+
+#: templates/mapit/area.html:102
+msgid "No codes found"
+msgstr "Inga koder hittades"
+
+#: templates/mapit/area.html:107
+msgid "Alternative Names"
+msgstr "Alternativa Namn"
+
+#: templates/mapit/area.html:112
+msgid "No alternative names found"
+msgstr "Inga alternativa namn hittades"
+
+#: templates/mapit/base.html:9
+msgid ""
+"MapIt: a web service that maps postcodes and geographical points to "
+"administrative areas."
+msgstr ""
+"MapIt: en webbtjänst som mappar postnummer och geografiska punkter till "
+"administrativa områden."
+
+#: templates/mapit/base.html:51
+msgid "MapIt is a charitable project from mySociety"
+msgstr "MapIt är ett välgörenhetsprojekt från mySociety"
+
+#: templates/mapit/base.html:56
+msgid "Keep us online, Donate Now"
+msgstr "Hjälp oss förbli online, Donera Nu"
+
+#: templates/mapit/base.html:63
+msgid "Home &amp; Documentation"
+msgstr "Hem &amp; Dokumentation"
+
+#: templates/mapit/copyright.html:2
+msgid ""
+"<p>You should replace the text here with copyright statements describing the "
+"copyright and licenses of the data loaded into this instance of MapIt and "
+"the terms under which those data may be used. For an example of such "
+"statements, see <tt>mapit/templates/gb/mapit/copyright.html</tt>."
+msgstr ""
+"<p>Du borde ersätta texten här med upphovsrättsutlåtanden som beskriver "
+"upphovsrätten och licenserna kring den data som laddas in i den här MapIt-"
+"instansen, samt termerna under vilka denna data får användas. För ett "
+"exempel av ett sådant utlåtande (på engelska), se <tt>mapit/templates/gb/"
+"mapit/copyright.html</tt>."
+
+#: templates/mapit/country.html:2
+msgid "New Install"
+msgstr "Ny Installation"
+
+#: templates/mapit/example-postcode.html:4
+msgid "Example postcode in"
+msgstr "Exempelposkod i"
+
+#: templates/mapit/example-postcode.html:10
+#, python-format
+msgid ""
+"An example postcode for <a href=\"%(area_url)s\">%(area_name)s</a> is "
+"<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
+msgstr ""
+"Ett exempelpostnummer för <a href=\"%(area_url)s\">%(area_name)s</a> är "
+"<strong>%(postcode)s</strong> (<a href=\"%(json_url)s\">JSON</a>)."
+
+#: templates/mapit/generations.html:17
+msgid "Active"
+msgstr "Aktiv"
+
+#: templates/mapit/generations.html:17
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: templates/mapit/index-cross-sell.html:4
+msgid "Also available: MapIt Global"
+msgstr "Också tillgänglig: MapIt Global"
+
+#: templates/mapit/index-others.html:2
+msgid ""
+"Versions have appeared in other countries, such as <a href=\"http://mapit."
+"nuug.no/\">Norway</a>, and in 2012 we released a <a href=\"http://global."
+"mapit.mysociety.org/\">global version</a> based on OpenStreetMap data."
+msgstr ""
+"Versioner har dykt upp i andra länder, som <a href=\"http://mapit.nuug.no/"
+"\">Norge</a>, och under 2012 släppte vi en <a href=\"http://global.mapit."
+"mysociety.org/\">global version</a> baserad på OpenStreetMap-data."
+
+#: templates/mapit/index-usage.html:4
+msgid "Usage &amp; Licence"
+msgstr "Användning &amp; Licens"
+
+#: templates/mapit/index-usage.html:6
+msgid ""
+"<p>To maintain quality of service for our own websites, as well as our API "
+"users, this service is rate limited to an average of 1 call per second in a "
+"rolling 3 minute period.</p>"
+msgstr ""
+"<p>För att upprätthålla kvalitén kring våra tjänster för våra egna "
+"webbplatser och våra API-användare så är den här tjänsten begränsad till i "
+"genomsnitt ett anrop per sekund under en treminutersperiod.</p>"
+
+#: templates/mapit/index-usage.html:12 templates/mapit/licensing.html:10
+msgid ""
+"<p>If you use this service, we ask that you attribute MapIt at the point of "
+"use on sites or apps. Attribution should use the text &ldquo;Powered by "
+"MapIt&rdquo;, with a link back to this page.</p>"
+msgstr ""
+"<p>Om du använder denna tjänst så vill vi be dig att ge erkännande till "
+"MapIt vid användningspunkten på webbplatser eller appar. Erkännande skall "
+"använda texten &ldquo;Powered by MapIt&rdquo;, med en länk till den här "
+"sidan.</p>"
+
+#: templates/mapit/index.html:6
+msgid "MapIt : map postcodes and geographical points to administrative areas"
+msgstr ""
+"MapIt: mappa postnummer och geografiska punkter till administrativa områden"
+
+#: templates/mapit/index.html:23
+msgid "Try it out, enter a postcode"
+msgstr "Skriv in ett postnummer"
+
+#: templates/mapit/index.html:24
+msgid "Try it out, enter a lat,lon"
+msgstr "Skriv in lat,lon"
+
+#: templates/mapit/index.html:26
+msgid "latitude"
+msgstr "latitud"
+
+#: templates/mapit/index.html:26
+msgid "longitude"
+msgstr "longitud"
+
+#: templates/mapit/index.html:27
+msgid "Look up"
+msgstr "Slå upp"
+
+#: templates/mapit/index.html:35
+msgid "MapIt API"
+msgstr "MapIt-API"
+
+#: templates/mapit/index.html:39
+msgid "Lookups"
+msgstr "Uppslagningar"
+
+#: templates/mapit/index.html:42
+msgid "Postcode"
+msgstr "Postnummer"
+
+#: templates/mapit/index.html:44
+msgid "Partial postcode"
+msgstr "Partiellt postnummer"
+
+#: templates/mapit/index.html:47
+msgid "Point"
+msgstr "Punkt"
+
+#: templates/mapit/index.html:49
+msgid "Nearest postcode"
+msgstr "Närmaste postnummer"
+
+#: templates/mapit/index.html:51
+msgid "Area"
+msgstr "Område"
+
+#: templates/mapit/index.html:52
+msgid "Related areas"
+msgstr "Relaterade områden"
+
+#: templates/mapit/index.html:53
+msgid "Multiple areas"
+msgstr "Flera områden"
+
+#: templates/mapit/index.html:54
+#, fuzzy
+#| msgid "Codes"
+msgid "Code"
+msgstr "Koder"
+
+#: templates/mapit/index.html:58
+msgid "Information"
+msgstr "Information"
+
+#: templates/mapit/index.html:60 templates/mapit/index.html.py:86
+msgid "General information"
+msgstr "Allmän information"
+
+#: templates/mapit/index.html:61 templates/mapit/index.html.py:114
+msgid "About MapIt"
+msgstr "Om MapIt"
+
+#: templates/mapit/index.html:62
+msgid "Usage &amp; licence"
+msgstr "Användning &amp; licens"
+
+#: templates/mapit/index.html:63
+msgid "Source code"
+msgstr "Källkod"
+
+#: templates/mapit/index.html:65
+msgid "Changelog"
+msgstr "Ändringslogg"
+
+#: templates/mapit/index.html:88
+msgid "Format"
+msgstr "Format"
+
+#: templates/mapit/index.html:91
+msgid ""
+"<p>All calls return JSON, you can generally get an HTML representation by "
+"sticking .html on the end.</p>"
+msgstr ""
+"<p>Samtliga anrop returnerar JSON, du kan generellt hämta en HTML-"
+"representation genom att lägga till .html på slutet.</p>"
+
+#: templates/mapit/index.html:96
+msgid ""
+"<p>Whenever an area is returned from MapIt, it is as a dictionary with the "
+"following keys: id, name, country, type, parent_area, generation_low, "
+"generation_high, codes.</p>"
+msgstr ""
+"<p>När ett område returneras från MapIt är det en katalog med följande "
+"nycklar: id, name, country, type, parent_area, generation_low, "
+"generation_high, codes.</p>"
+
+#: templates/mapit/index.html:102
+msgid "Historical areas"
+msgstr "Historiska områden"
+
+#: templates/mapit/index.html:104
+msgid ""
+"By default, calls will return active areas; for some calls you may specify a "
+"previous generation to look up instead."
+msgstr ""
+"Som standard returnerar anrop aktiva områden; för vissa anrop kan du ange en "
+"tidigare generation att slå upp istället."
+
+#: templates/mapit/index.html:116
+msgid ""
+"<p>MapIt was written back in 2003 as a postcode lookup to power the original "
+"<a href=\"http://www.mysociety.org/\">mySociety</a> sites such as <a href="
+"\"http://www.writetothem.com/\">WriteToThem</a>. Over time it gained "
+"features such as point lookup (for <a href=\"http://www.fixmystreet.com/"
+"\">FixMyStreet</a>), and when Ordnance Survey data became freely available "
+"in 2010, it was rewritten and made public for the whole UK."
+msgstr ""
+"<p>MapIt skrevs 2003 som en postnummeruppslagning för att driva orginella <a "
+"href=\"http://www.mysociety.org/\">mySociety</a>-webbplatser som <a href="
+"\"http://www.writetothem.com/\">WriteToThem</a>. Över tiden förbättrades "
+"MapIt med funktioner som punktuppslagning (för <a href=\"http://www."
+"fixmystreet.com/\">FixMyStreet</a>), och när Ordnance Survey-data blev fritt "
+"tillgänglig i 2010 skrevs den om och gjordes offentlig för hela "
+"Storbritannien."
+
+#: templates/mapit/intro.html:3
+msgid ""
+"<p>MapIt is a service that maps postcodes and geographical points to "
+"administrative areas. It&rsquo;s useful for anyone who has the co-ordinates "
+"of a particular point, and needs to find out what regions it lies within. "
+"It&rsquo;s also great for looking up the shapes of all those boundaries.</p>"
+msgstr ""
+"<p>MapIt är en tjänst som mappar postnummer och geografiska punkter till "
+"administrativa områden. Tjänsten är användbar för den som har koordinater "
+"för en punkt och vill veta i vilka områden denna punkt ligger i. Den är "
+"också bra för att slå upp områdens geografiska gränsformer.</p>"
+
+#: templates/mapit/intro.html:10
+msgid ""
+"<p>MapIt is a service that maps geographical points to administrative areas. "
+"It&rsquo;s useful for anyone who has the co-ordinates of a particular point, "
+"and needs to find out what regions it lies within. It&rsquo;s also great for "
+"looking up the shapes of all those boundaries.</p>"
+msgstr ""
+"<p>MapIt är en tjänst som mappar postnummer och geografiska punkter till "
+"geografiska områden. Tjänsten är användbar för den som har koordinater för "
+"en punkt och vill veta i vilka områden denna punkt ligger i. Den är också "
+"bra för att slå upp områdens geografiska gränsformer.</p>"
+
+#: templates/mapit/intro.html:18
+msgid ""
+"<p>You can <a href=\"https://github.com/mysociety/mapit\">download the "
+"source on Github</a>.</p>"
+msgstr ""
+"<p>Du kan <a href=\"https://github.com/mysociety/mapit\">ladda ner källkoden "
+"på Github</a>.</p>"
+
+#: templates/mapit/licensing.html:4 templates/mapit/licensing.html.py:8
+msgid "Usage and licensing"
+msgstr "Användning och licensering"
+
+#: templates/mapit/overview.html:4 templates/mapit/overview.html.py:8
+msgid "MapIt for non-developers"
+msgstr "MapIt för icke-utvecklare"
+
+#: templates/mapit/overview.html:10
+msgid ""
+"<p>MapIt is a system that sends data about administrations and other "
+"location-related data in response to requests from a website or service. "
+"This is useful if you are building services that require these data, for "
+"example, to identify which ward a postcode is in, what the nearest postcode "
+"is to a point on a map, or what the boundaries of an administrative area are "
+"&ndash; and many, many others.</p> <p>In technical terms MapIt is classed as "
+"an API which stands for Application Programming Interface. It allows an "
+"external service to query data held in a database and return results. This "
+"removes the need to build such a database yourself &ndash; you can simply "
+"use MapIt in your application or site."
+msgstr ""
+"<p>MapIt är ett system som skickar data om förvaltningar och andra "
+"områdesbaserade data i respons till anrop från en webbplats eller tjänst. "
+"Detta är användbart om du bygger tjänster som behöver dessa data, exempelvis "
+"för att identifiera vilken förvaltning ett postnummer ligger i, vilket som "
+"är det närmaste postnumret till en punkt på en karta, eller vilka gränser "
+"ett administrativt område har &ndash; och många, många fler.</p> <p>I "
+"tekniska termer är MapIt klassat som en API, vilket står för Application "
+"Programming Interface. Det låter externa tjänster ställa frågor kring data i "
+"en databas och returnerar ett resultat. Detta tar bort behovet av att bygga "
+"en sådan databas själv &ndash; du kan helt enkelt använda MapIt i din "
+"applikation eller webbplats."
+
+#: templates/mapit/overview.html:24
+msgid "Example applications"
+msgstr "Exempelapplikationer"
+
+#: templates/mapit/overview.html:26
+msgid ""
+"MapIt can be used for all sorts of websites and applications. For example"
+msgstr ""
+"MapIt kan användas för alla möjliga sortes webbplatser och applikationer. "
+"Till exempel"
+
+#: templates/mapit/overview.html:30
+msgid ""
+"<li><a href=\"http://www.fixmystreet.com/\">FixMyStreet</a> is "
+"mySociety&rsquo;s street problem reporting service, which uses MapIt to find "
+"the right area on the map when the user enters their postcode, and to assign "
+"problem reports to the correct local authority when the user drops a pin on "
+"the map to show the problem’s location. It also relies on MapIt to <a href="
+"\"http://www.fixmystreet.com/reports/Bromley\">plot local authority "
+"boundaries</a>.</li> <li><a href=\"http://www.landlayer.com/\">Land Layer</"
+"a> is a web-based resource aimed at the strategic land professional and "
+"others who need access via a single map-based tool to their business "
+"information. Land Layer was launched in 2012, and combines a series of "
+"functions and business information that benefits users by reducing the time "
+"to enter or retrieve data either at their desk or in the field. Users can "
+"quickly record information to a ‘Pin’ on a digital map, which has layers of "
+"public, private and inter-company data. Users can also 'flag' on the map "
+"projects where they have been involved, adding a spatially targeted "
+"dimension to marketing. Land Layer uses the Mapit API to display local "
+"authority boundaries and to provide information on the political control of "
+"that authority.</li> <li><a href=\"http://pepysrd.com/\">PepysRd.com</a> is "
+"an innovative marketing site for the novel Capital by John Lanchester, "
+"released by Faber in spring 2012. Storythings developed a 10 day experience "
+"that used live data from the web and new texts from John Lanchester to tell "
+"the story of the next 10 years. A core part of this experience was a series "
+"of data illustrations by James Bridle, using live data to reflect on the "
+"role of markets and infrastructure in our lives. Storythings used MapIt for "
+"a number of these illustrations, using its fantastic location data to "
+"provide unique and realtime story elements for the project.</li> <li><a href="
+"\"https://www.gov.uk/\">GOV.UK</a> &ndash; the UK Government’s digital "
+"portal &ndash; uses an installation of MapIt to enable visitors to its "
+"website find the right information on local public services based on their "
+"postcode.</li>"
+msgstr ""
+"<li><a href=\"http://www.fixmystreet.com/\">FixMyStreet</a> är mySociety:s "
+"gatuproblemsrapporteringstjänst. FixMyStreet använder MapIt för att hitta "
+"rätt område på kartan när användaren skriver in sitt postnummer, samt för "
+"att tilldela problemrapporter till rätt lokala förvaltning när en användare "
+"sätter en nål på kartan för att visa problemets plats. FixMyStreet använder "
+"också MapIt för att <a href=\"http://www.fixmystreet.com/reports/Bromley"
+"\">rita förvaltningsgränser</a>.</li> <li><a href=\"http://www.landlayer.com/"
+"\">Land Layer</a> är en webbaserad resurs riktad till "
+"landstrategiproffesionella och andra som behöver tillgång till deras "
+"affärsinformation via ett kartbaserat verktyg. Land Layer lanserades i 2012 "
+"och kombinerar en serie funktioner med affärsinformation som gynnar "
+"användare genom att minska tiden som det tar att skriva in och ta emot data, "
+"antingen vid deras skrivbord eller utomhus. Användare kan snabbt dokumentera "
+"information till en \"nål\" på en digital karta, som har lager med "
+"offentlig, privat och koncernintern data. Användare kan också \"flagga\" "
+"projekt de har varit involverad på kartan, vilket skapar en spatiell riktad "
+"dimension till marknadsföring. Land Layer använder Mapit-API:n för att visa "
+"lokala förvaltningsgränser och för att tillhandahålla information om den "
+"politiska kontrollen över ett område.</li> <li><a href=\"http://pepysrd.com/"
+"\">PepysRd.com</a> är en innovativ marknadsföringswebbplats för John "
+"Lanchesters roman Capital, utgiven av Faber under våren 2012. Storythings "
+"utvecklade en tiodagarsupplevelse som använde live data från webben och nya "
+"texter från John Lanchester för att berätta en historia om de nästkommande "
+"tio åren. En viktig del av denna upplevelse var en serie av "
+"dataillustrationer av James Bridle, som använde live data för att reflektera "
+"över marknaders och infrastrukturers roller i våra liv. Storythings använde "
+"MapIt för ett antal av dessa illustrationer genom att använda dess "
+"fantastiska platsdata för att erbjuda en unik och realtids-berättelseelement "
+"för projektet.</li> <li><a href=\"https://www.gov.uk/\">GOV.UK</a> &ndash; "
+"Storbritanniens regerings digitala portal &ndash; använder en installation "
+"av MapIt för att möjliggöra besökare på deras webbplats att hitta rätt "
+"information om lokala offentliga tjänster baserat på deras postnummer.</li>"
+
+#: templates/mapit/overview.html:68
+msgid "Possible uses"
+msgstr "Möjliga användningar"
+
+#: templates/mapit/overview.html:70
+msgid "MapIt can be used for the following"
+msgstr "MapIt kan användas till följande"
+
+#: templates/mapit/overview.html:74
+msgid ""
+"<li>For a postcode: find the National Grid and latitude and longitude co-"
+"ordinates for a postcode, and which administrative areas it belongs to, such "
+"as ward, the local authority area, super output areas, the parliamentary "
+"constituency, and the European region.</li> <li>Partial postcode such as "
+"SW1A: find the national grid and latitude/longitude co-ordinates for the "
+"centre of that partial postcode.</li> <li>Point: find out which "
+"administrative areas a point (expressed as a latitude/longitude) is "
+"contained in.</li> <li>Nearest postcode: find the nearest postcode to a "
+"point on the map.</li> <li>By area: find data on an administrative area, "
+"such as its boundaries, or an example postcode in this area. You can also "
+"get “digital boundaries” to map the area, in e.g. WKT, GeoJSON or KML "
+"formats, for use with maps and/or geographic information systems.</li> "
+"<li>Related areas: look up which administrative areas are contained within "
+"an area (e.g. all wards of a council), which areas it borders with, covers "
+"and/or overlaps with.</li> <li>Multiple areas: get information about several "
+"areas at once, by type of area (e.g. city council) or area name.</li> "
+"<li>Generations: shows a list of updates to MapIt information, with a unique "
+"number for each update (or “generation”). This helps with instances where "
+"you want to query historical data, for example.</li>"
+msgstr ""
+"<li>För ett postnummer: hitta National Grid- och latitud- och longitud-"
+"koordinaterna för ett postnummer, samt vilka administrativa områden den hör "
+"till, som stadsdel, lokalt förvaltningsområde, SOA (Super Output Areas), den "
+"parlamentariska valkretsen, och den europeiska regionen.</li> <li>Partiella "
+"postnummer som SW1A: hitta den nationella nätet och latitud-/longitud-"
+"koordinater för mitten av det partiella postnumret.</li> <li>Punkt: hitta "
+"vilka administrativa områden en punkt (uttryckt som latitud/longitud) ligger "
+"i.</li> <li>Närmaste postnummer: hitta det närmaste postnumret till en punkt "
+"på kartan.</li> <li>Efter område: hitta data om ett administrativt område, "
+"som dess gränser, eller ett exempelpostnummer i detta område. Du kan också "
+"hitta \"digitala områden\" för att mappa området, in t.ex. WKT-, GeoJSON- "
+"eller KML-format, för användning med kartor och/eller geografiska "
+"informationssystem.</li> <li>Relaterade områden: slå upp administrativa "
+"områden som ligger i ett område (t.ex. alla stadsdelar i en kommun), vilka "
+"områden det angränsar till, täcker och/eller överlappar med.</li> <li>Flera "
+"områden: hämta information om flera områden på en gång, efter områdestyp (t."
+"ex. kommun) eller områdesnamn.</li> <li>Generationer: visar en lista med "
+"uppdateringar gällande MapIt-informationen, med ett unikt nummer för varje "
+"uppdatering (eller \"generation\"). Detta hjälper exempelvis vid tillfällen "
+"då du vill ställa frågor kring historisk data.</li>"
+
+#: templates/mapit/overview.html:106
+msgid "Rate limiting"
+msgstr "Användningsbegränsning"
+
+#: templates/mapit/overview.html:108
+msgid ""
+"<p>The service has an automatic counter that tracks the number of requests "
+"sent to it by a user, and limits requests if they reach a certain volume. "
+"This is set at an average of 1 call per second in a rolling 3 minute period. "
+"The reason to do this is to make sure the service does not get overwhelmed "
+"by huge requests volumes which could risk it going down for all users.</p> "
+"<p>Where the limit is exceeded, the service will stop sending data until the "
+"average goes back within the set limit.</p>"
+msgstr ""
+"<p>Tjänsten har en automatisk räknare som håller koll på antalet anrop som "
+"skickas av en given användare och begränsar antalet anrop om de överskrider "
+"en viss volym. Detta är satt till ett genomsnitt av ett anrop per sekund i "
+"en rullande treminutersperiod. Anledningen till att detta görs är för att "
+"försäkra oss om att tjänsten inte blir överväldigad av stora anropsvolymer "
+"som skulle kunna innebära en risk att tjänsten går offline för alla dess "
+"användare.</p> <p>När gränsen är överskriden kommer tjänten att sluta sända "
+"data tills genomsnittet går tillbaka till att vara under den tillåtna "
+"gränsen.</p>"
+
+#: templates/mapit/postcode.html:4
+#, python-format
+msgid "Results for “%(postcode)s”"
+msgstr "Resultat för “%(postcode)s”"
+
+#: templates/mapit/postcode.html:16
+msgid "WGS84 lat/lon"
+msgstr "WGS84 lat/lon"
+
+#: templates/mapit/postcode.html:18
+msgid ""
+"No location information. Note this <em>is</em> a valid postcode (otherwise "
+"you would have got a 404), just one for which we don&rsquo;t know the "
+"location."
+msgstr ""
+"Ingen platsinformation. Notera att detta <em>är</em> ett giltligt postnummer "
+"(annars skulle du ha fått en 404), men ett postnummer för vilket vi inte vet "
+"dess plats."
+
+#: views/areas.py:51
+msgid "Bad generation specified"
+msgstr "Ogiltligt angiven min_tolerance"
+
+#: views/areas.py:58
+msgid "Bad min_generation specified"
+msgstr "Ogiltligt angiven min_tolerance"
+
+#: views/areas.py:88
+msgid "Badly specified tolerance"
+msgstr "Ogiltligt angiven tolerans"
+
+#: views/areas.py:92 views/areas.py:112
+msgid "Bad area ID specified"
+msgstr "Ogiltligt angivet områdes-ID"
+
+#: views/areas.py:162 views/areas.py:180 views/areas.py:288
+msgid "No polygons found"
+msgstr "Inga polygoner hittades"
+
+#: views/areas.py:174
+#, python-format
+msgid "Children of %s"
+msgstr "Barn till %s"
+
+#: views/areas.py:194
+msgid ""
+"That query was taking too long to compute - try restricting to a specific "
+"type, if you weren't already doing so."
+msgstr ""
+"Det anropet tog för lång tid att beräkna - försök att begränsa sökningen "
+"till en specifik typ om du inte redan gjorde det."
+
+#: views/areas.py:197
+msgid "There was an internal error performing that query."
+msgstr "Ett internt fel uppstod då det anropet försökte utföras."
+
+#: views/areas.py:205
+#, python-format
+msgid "Areas touching %s"
+msgstr "Områden som berör %s"
+
+#: views/areas.py:210
+#, python-format
+msgid "Areas overlapping %s"
+msgstr "Områden som överlappar %s"
+
+#: views/areas.py:215
+#, python-format
+msgid "Areas covered by %s"
+msgstr "Områden som täcks av %s"
+
+#: views/areas.py:220
+#, python-format
+msgid "Areas covered by or overlapping %s"
+msgstr "Områden som täcks av eller överlappar %s"
+
+#: views/areas.py:225
+#, python-format
+msgid "Areas that cover %s"
+msgstr "Områden som täcker %s"
+
+#: views/areas.py:230
+#, python-format
+msgid "Areas that intersect %s"
+msgstr "Områden som genomskär %s"
+
+#: views/areas.py:237
+msgid "Areas ID lookup"
+msgstr "Uppslagning av områdes-ID"
+
+#: views/areas.py:244
+#, python-format
+msgid "Areas in %s"
+msgstr "Områden i %s"
+
+#: views/areas.py:252
+#, python-format
+msgid "Areas starting with %s"
+msgstr "Områden som börjar med %s"
+
+#: views/areas.py:262
+#, fuzzy
+#| msgid "No codes found"
+msgid "No areas found"
+msgstr "Inga koder hittades"
+
+#: views/areas.py:333
+#, python-brace-format
+msgid "No areas were found that matched code {0} = {1}."
+msgstr "Inga områden hittades som matchade kod {0} = {1}."
+
+#: views/areas.py:336
+#, python-brace-format
+msgid "There were multiple areas that matched code {0} = {1}."
+msgstr "Flera områden hittades som matchade kod {0} = {1}."
+
+#: views/areas.py:353
+msgid "Point outside the area geometry"
+msgstr "Punkt utanför områdets geometri"
+
+#: views/areas.py:383
+#, python-brace-format
+msgid "Areas covering the point ({0},{1})"
+msgstr "Områden som täcker punkten ({0},{1})"
+
+#: views/areas.py:428
+msgid "No content specified"
+msgstr "Inget innehåll angivet"
+
+#~ msgid "Django powered"
+#~ msgstr "Django powered"

@@ -18,11 +18,15 @@ COUNTRY: 'GB'
 # Optional, defaults to 4326.
 AREA_SRID: 27700
 
+# Set this to the maximum distance (in AREA_SRID units) allowed for the within
+# parameter to the point call. Optional, defaults to 0 (off).
+WITHIN_MAXIMUM: 0
+
 # A secret key for this particular Django installation.
 # Set this to a random string -- the longer, the better.
 DJANGO_SECRET_KEY: 'gu^&xc)hoibh3x&s+9009jbn4d$!nq0lz+syx-^x8%z24!kfs4'
 
-# Mapped to Django's DEBUG and TEMPLATE_DEBUG settings. Optional, defaults to True.
+# Mapped to Django's DEBUG setting. Optional, defaults to True.
 DEBUG: True
 
 # A GA code
@@ -30,30 +34,19 @@ GOOGLE_ANALYTICS: ""
 
 # A list of IP addresses or User Agents that should be excluded from rate limiting. Optional.
 RATE_LIMIT:
-  - '127.0.0.1'
+  minutes: 2
+  requests: 20
+  ips:
+    - '127.0.0.1'
+  user_agents:
+    - 'MapIt/1.0'
+  functions:
+    - 'partial_postcode'
 
 # Email address that errors should be sent to. Optional.
 BUGS_EMAIL: 'example@example.org'
 
-#########################################################################
+# Text to prepend to the subject of error emails. Overrides Django default. Optional.
+EMAIL_SUBJECT_PREFIX: '[MapIt] '
 
-# You can ignore all of the settings below this point in the file
-# unless you want to use the scripts for setting up MapIt Global.
-
-# The scripts for setting up global MapIt rely on a Overpass API
-# server.  For bulk imports (e.g. setting up a instance of Global
-# MapIt) you should set up your own Overpass server locally, but for
-# generating a few KML files from OSM, it's easier to just use a
-# remote server.
-LOCAL_OVERPASS: False
-
-# If you want to use a local overpass server (i.e. LOCAL_OVERPASS is
-# True) then you should specify here the path to the database
-# directory.
-OVERPASS_DB_DIRECTORY: '/home/overpass/db/'
-
-# If you're using a remote overpass server (i.e. LOCAL_OVERPASS is
-# False) you should set its URL here. Please be aware that these
-# scripts can put a lot of load on the remote server, so set up your
-# own Overpass server for bulk imports.
-OVERPASS_SERVER: 'http://overpass-api.de/api/interpreter'
+DEFAULT_AUTO_FIELD: 'django.db.models.AutoField'

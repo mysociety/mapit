@@ -1,0 +1,23 @@
+{% extends "mapit/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Generations' %}{% endblock title %}
+
+{% block content %}
+
+<h2>{% trans 'Generations' %}</h2>
+
+{% url "mapit_generations" as json_url %}
+<p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
+
+<ol class="area_list">
+{% for gen in generations %}
+    <li>
+    <h3>#{{ gen.id }} &ndash; {{ gen.description }}</h3>
+    {{ gen.created|date }}, {% if gen.active %}{% trans 'Active' %}{% else %}<strong>{% trans 'Inactive' %}</strong>{% endif %}
+    </li>
+{% endfor %}
+</ol>
+
+
+{% endblock %}

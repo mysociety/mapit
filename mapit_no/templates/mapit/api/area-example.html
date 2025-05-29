@@ -1,0 +1,10 @@
+{% load i18n %}
+<dt>{% trans "Examples:" %}</dt>
+<dd>
+<ul>
+    <li>{% trans "Information held on an individual area" %}:
+    <a href="{% url "mapit_index" %}area/1811.html">/area/1811.html</a>
+    <li>{% trans "A KML file of an area" %}:
+    <a href="{% url "mapit_index" %}area/118.kml">/area/118.kml</a>
+</ul>
+</dd>

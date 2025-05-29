@@ -1,15 +1,29 @@
+from __future__ import unicode_literals
+
 import re
 import itertools
 
 from django.contrib.gis.db import models
-from django.contrib.gis.gdal import SRSException, OGRException
 from django.conf import settings
 from django.db import connection
-from django.utils.html import escape
+from django.db.models import Q
+from django.db.models.query import RawQuerySet
+from django.utils.encoding import smart_str
+from django.utils.functional import cached_property
+from django.utils.translation import gettext as _
 
-from mapit.managers import Manager, GeoManager
 from mapit import countries
-from mapit.djangopatch import NoValidateRawQuerySet
+from mapit.geometryserialiser import GeometrySerialiser
+from mapit.middleware import ViewException
+
+
+def materialized():
+    version = connection.cursor().connection.server_version
+    materialized = ''
+    if version >= 120000:
+        materialized = 'MATERIALIZED'
+    return materialized
+
 
 class GenerationManager(models.Manager):
     def current(self):
@@ -17,8 +31,9 @@ class GenerationManager(models.Manager):
 
         If there are no active generations, return 0."""
 
-        latest_on = self.get_query_set().filter(active=True).order_by('-id')
-        if latest_on: return latest_on[0]
+        latest_on = self.get_queryset().filter(active=True).order_by('-id')
+        if latest_on:
+            return latest_on[0]
         return 0
 
     def new(self):
@@ -27,10 +42,11 @@ class GenerationManager(models.Manager):
         If there are no generations, or the most recent one is active,
         return None."""
 
-        latest = self.get_query_set().order_by('-id')
+        latest = self.get_queryset().order_by('-id')
         if not latest or latest[0].active:
             return None
         return latest[0]
+
 
 class Generation(models.Model):
 
@@ -71,11 +87,15 @@ class Generation(models.Model):
 
     active = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
-    description = models.CharField(max_length=255, help_text="Describe this generation, eg '2010 electoral boundaries'")
+    description = models.CharField(
+        max_length=255, help_text="Describe this generation, eg '2010 electoral boundaries'")
 
     objects = GenerationManager()
 
-    def __unicode__(self):
+    class Meta:
+        ordering = ('id',)
+
+    def __str__(self):
         id = self.id or '?'
         return "Generation %s (%sactive)" % (id, "" if self.active else "in")
 
@@ -87,15 +107,17 @@ class Generation(models.Model):
             'description': self.description,
         }
 
+
 class Country(models.Model):
     code = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length=100, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name_plural='countries'
+        verbose_name_plural = 'countries'
+
 
 class Type(models.Model):
 
@@ -107,75 +129,74 @@ class Type(models.Model):
     # source data we used from Ordnance Survey.
 
     code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'CTR', 'CON', etc")
-    description = models.CharField(max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
+    description = models.CharField(
+        max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
-class AreaManager(models.GeoManager):
-    def get_query_set(self):
-        return super(AreaManager, self).get_query_set().select_related('type', 'country')
 
-    def by_location(self, location, generation=None):
-        if generation is None: generation = Generation.objects.current()
-        if not location: return []
-        return Area.objects.filter(
-            polygons__polygon__contains=location,
-            generation_low__lte=generation, generation_high__gte=generation
-        )
+class AreaManager(models.Manager):
+    def get_queryset(self):
+        return super(AreaManager, self).get_queryset().select_related(
+            'type', 'country', 'parent_area')
 
-    def by_postcode(self, postcode, generation=None):
-        if not generation: generation = Generation.objects.current()
+    def by_location(self, location, query):
+        if not location:
+            return []
+        query &= Q(polygons__subdivided__division__covers=location)
+        return Area.objects.filter(query).distinct()
+
+    def by_postcode(self, postcode, query):
         return list(itertools.chain(
-            self.by_location(postcode.location, generation),
-            postcode.areas.filter(
-                generation_low__lte=generation, generation_high__gte=generation
-            )
+            self.by_location(postcode.location, query),
+            postcode.areas.filter(query)
         ))
 
     # In order for this query to be performant, we have to do it ourselves.
     # We force the non-geographical part of the query to be done first, because
     # if a type is specified, that greatly speeds it up.
     def intersect(self, query_type, area, types, generation):
-        if not isinstance(query_type, list): query_type = [ query_type ]
+        if not isinstance(query_type, list):
+            query_type = [query_type]
 
-        params = [ area.id, area.id, generation.id, generation.id ]
+        params = [area.id, area.id, generation.id, generation.id]
 
         if types:
-            params.append( tuple(types) )
+            params.append(tuple(types))
             query_area_type = ' AND mapit_area.type_id IN (SELECT id FROM mapit_type WHERE code IN %s) '
         else:
             query_area_type = ''
 
-        query_geo = ' OR '.join([ 'ST_%s(geometry.polygon, target.polygon)' % type for type in query_type ])
+        query_geo = ' OR '.join(['ST_%s(geometry_sd.division, target_sd.division)' % type for type in query_type])
 
         query = '''
-WITH
-    target AS ( SELECT ST_collect(polygon) polygon FROM mapit_geometry WHERE area_id=%%s ),
-    geometry AS (
-        SELECT mapit_geometry.*
-          FROM mapit_geometry, mapit_area, target
-         WHERE mapit_geometry.area_id = mapit_area.id
-               AND mapit_geometry.polygon && target.polygon
-               AND mapit_area.id != %%s
-               AND mapit_area.generation_low_id <= %%s
-               AND mapit_area.generation_high_id >= %%s
-               %s
-    )
 SELECT DISTINCT mapit_area.*
-  FROM mapit_area, geometry, target
- WHERE geometry.area_id = mapit_area.id AND (%s)
+FROM
+    mapit_area,
+    mapit_geometry geometry, mapit_geometrysubdivided geometry_sd,
+    mapit_geometry target, mapit_geometrysubdivided target_sd
+WHERE
+    geometry_sd.geometry_id = geometry.id
+    AND target_sd.geometry_id = target.id
+    AND geometry.area_id = mapit_area.id
+    AND target.area_id = %%s
+    AND geometry.area_id != %%s
+    AND mapit_area.generation_low_id <= %%s
+    AND mapit_area.generation_high_id >= %%s
+    %s
+    AND (%s)
 ''' % (query_area_type, query_geo)
-        # Monkeypatched self.raw() here to prevent needless SQL validation (removed from Django 1.3)
-        return NoValidateRawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
+        return RawQuerySet(raw_query=query, model=self.model, params=params, using=self._db)
 
     def get_or_create_with_name(self, country=None, type=None, name_type='', name=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
-        area, created = Area.objects.get_or_create(country=country, type=type,
+        area, created = Area.objects.get_or_create(
+            country=country, type=type,
             generation_low__lte=current_generation, generation_high__gte=current_generation,
             names__type__code=name_type, names__name=name,
-            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+            defaults={'generation_low': new_generation, 'generation_high': new_generation}
         )
         if created:
             area.names.get_or_create(type=NameType.objects.get(code=name_type), name=name)
@@ -187,10 +208,11 @@ SELECT DISTINCT mapit_area.*
     def get_or_create_with_code(self, country=None, type=None, code_type='', code=''):
         current_generation = Generation.objects.current()
         new_generation = Generation.objects.new()
-        area, created = Area.objects.get_or_create(country=country, type=type,
+        area, created = Area.objects.get_or_create(
+            country=country, type=type,
             generation_low__lte=current_generation, generation_high__gte=current_generation,
             codes__type__code=code_type, codes__code=code,
-            defaults = { 'generation_low': new_generation, 'generation_high': new_generation }
+            defaults={'generation_low': new_generation, 'generation_high': new_generation}
         )
         if created:
             area.codes.get_or_create(type=CodeType.objects.get(code=code_type), code=code)
@@ -199,38 +221,32 @@ SELECT DISTINCT mapit_area.*
             area.save()
         return area
 
-class TransformError(Exception):
-    pass
 
 class Area(models.Model):
     name = models.CharField(max_length=2000, blank=True)
-    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True)
-    type = models.ForeignKey(Type, related_name='areas')
-    country = models.ForeignKey(Country, related_name='areas', null=True, blank=True)
-    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True)
-    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True)
+    parent_area = models.ForeignKey('self', related_name='children', null=True, blank=True, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, related_name='areas', on_delete=models.CASCADE)
+    country = models.ForeignKey(Country, related_name='areas_direct', null=True, blank=True, on_delete=models.CASCADE)
+    countries = models.ManyToManyField(Country, related_name='areas_m2m', blank=True)
+    generation_low = models.ForeignKey(Generation, related_name='new_areas', null=True, on_delete=models.CASCADE)
+    generation_high = models.ForeignKey(Generation, related_name='final_areas', null=True, on_delete=models.CASCADE)
 
     objects = AreaManager()
 
     class Meta:
         ordering = ('name', 'type')
 
-    @property
+    @cached_property
     def all_codes(self):
-        if not getattr(self, 'code_list', None):
-            self.code_list = self.codes.select_related('type')
-        codes = {}
-        for code in self.code_list:
-            codes[code.type.code] = code.code
-        return codes
+        return {code.type.code: code.code for code in self.codes.select_related('type')}
 
-    def __unicode__(self):
+    def __str__(self):
         name = self.name or '(unknown)'
         return '%s %s' % (self.type.code, name)
 
     def as_dict(self, all_names=None):
         all_names = all_names or []
-        return {
+        out = {
             'id': self.id,
             'name': self.name,
             'parent_area': self.parent_area_id,
@@ -243,20 +259,20 @@ class Area(models.Model):
             'codes': self.all_codes,
             'all_names': dict(n.as_tuple() for n in all_names),
         }
+        countries = self.all_m2m_countries
+        if countries:
+            out['countries'] = countries
+        return out
 
-    def css_indent_class(self):
-        """Get a CSS class for use on <li> representations of this area
+    def list_countries(self):
+        countries = [c['name'] for c in self.all_m2m_countries]
+        if self.country:
+            countries.append(self.country.name)
+        return countries
 
-        Currently this is only used to indicate the indentation level
-        that should be used on the code types O02, O03, O04 ... O011,
-        which are only used by global MapIt.
-        """
-        m = re.search(r'^O([01][0-9])$', self.type.code)
-        if m:
-            level = int(m.group(1), 10)
-            return "area_level_%d" % (level,)
-        else:
-            return ""
+    @cached_property
+    def all_m2m_countries(self):
+        return [{'code': c.code, 'name': c.name} for c in self.countries.all()]
 
     def export(self,
                srid,
@@ -289,70 +305,47 @@ class Area(models.Model):
         something else goes wrong with the spatial transform, then a
         TransformError exception is raised.
         """
-        all_areas = self.polygons.all()
-        if len(all_areas) > 1:
-            all_areas = all_areas.collect()
-        elif len(all_areas) == 1:
-            all_areas = all_areas[0].polygon
-        else:
+        all_polygons = self.polygons.all()
+        if len(all_polygons) == 0:
             return (None, None)
-
-        if srid != settings.MAPIT_AREA_SRID:
-            try:
-                all_areas.transform(srid)
-            except (SRSException, OGRException) as e:
-                raise TransformError, "Error with transform: %s" % e
-
-        num_points_before_simplification = all_areas.num_points
-        if simplify_tolerance:
-            all_areas = all_areas.simplify(simplify_tolerance)
-            if all_areas.num_points == 0 and num_points_before_simplification > 0:
-                raise TransformError, "Simplifying %s with tolerance %f left no boundary at all" % (self, simplify_tolerance)
-
-        if export_format=='kml':
-            if kml_type == "polygon":
-                out = all_areas.kml
-            elif kml_type == "full":
-                out = '''<?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-    <Document>
-        <Style id="ourPolygonStyle">
-            <LineStyle>
-                <color>%s</color>
-                <width>2</width>
-            </LineStyle>
-            <PolyStyle>
-                <color>%s</color>
-            </PolyStyle>
-        </Style>
-        <Placemark>
-            <styleUrl>#ourPolygonStyle</styleUrl>
-            <name>%s</name>
-            %s
-        </Placemark>
-    </Document>
-</kml>''' % (line_colour, fill_colour, escape(self.name), all_areas.kml)
-            else:
-                raise Exception, "Unknown kml_type: '%s'" % (kml_type,)
-            content_type = 'application/vnd.google-earth.kml+xml'
+        serialiser = GeometrySerialiser(self, srid, simplify_tolerance)
+        if export_format == 'kml':
+            out, content_type = serialiser.kml(kml_type, line_colour, fill_colour)
         elif export_format in ('json', 'geojson'):
-            out = all_areas.json
-            content_type = 'application/json'
-        elif export_format=='wkt':
-            out = all_areas.wkt
-            content_type = 'text/plain'
+            out, content_type = serialiser.geojson()
+        elif export_format == 'wkt':
+            out, content_type = serialiser.wkt()
         return (out, content_type)
 
+
 class Geometry(models.Model):
-    area = models.ForeignKey(Area, related_name='polygons')
+    area = models.ForeignKey(Area, related_name='polygons', on_delete=models.CASCADE)
     polygon = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
-    objects = GeoManager()
 
     class Meta:
         verbose_name_plural = 'geometries'
 
-    def __unicode__(self):
-        return u'%s, polygon %d' % (self.area, self.id)
+    def __str__(self):
+        return '%s, polygon %s' % (smart_str(self.area), self.id)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        GeometrySubdivided.objects.filter(geometry=self).delete()
+        with connection.cursor() as cursor:
+            cursor.execute('''INSERT INTO mapit_geometrysubdivided (geometry_id, division)
+                SELECT id,ST_Subdivide(polygon) FROM mapit_geometry WHERE id = %s''', [self.id])
+
+
+class GeometrySubdivided(models.Model):
+    geometry = models.ForeignKey(Geometry, related_name='subdivided', on_delete=models.CASCADE)
+    division = models.PolygonField(srid=settings.MAPIT_AREA_SRID)
+
+    class Meta:
+        verbose_name_plural = 'subdivided geometries'
+
+    def __str__(self):
+        return '%s, subdivision %s' % (smart_str(self.geometry), self.id)
+
 
 class NameType(models.Model):
 
@@ -362,23 +355,26 @@ class NameType(models.Model):
     # itself; in global MaPit, the different language names are stored here
     # and displayed in the alternative names section.
 
-    code = models.CharField(max_length=10, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
-    description = models.CharField(max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
-    objects = Manager()
+    code = models.CharField(
+        max_length=500, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
+    description = models.CharField(
+        max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
+    objects = models.Manager()
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
+
 class Name(models.Model):
-    area = models.ForeignKey(Area, related_name='names')
-    type = models.ForeignKey(NameType, related_name='names')
+    area = models.ForeignKey(Area, related_name='names', on_delete=models.CASCADE)
+    type = models.ForeignKey(NameType, related_name='names', on_delete=models.CASCADE)
     name = models.CharField(max_length=2000)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s) [%s]' % (self.name, self.type.code, self.area.id)
 
     def save(self, *args, **kwargs):
@@ -387,8 +383,8 @@ class Name(models.Model):
             countries.name_save_hook(self)
 
     def as_tuple(self):
-        return (self.type.code, [self.type.description,
-                                 self.name])
+        return (self.type.code, [self.type.description, self.name])
+
 
 class CodeType(models.Model):
 
@@ -398,31 +394,54 @@ class CodeType(models.Model):
     # This could be extended to a more generic data store of information on an
     # object, perhaps.
 
-    code = models.CharField(max_length=10, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
-    description = models.CharField(max_length=200, blank=True, help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
+    code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'ons' or 'unit_id'")
+    description = models.CharField(
+        max_length=200, blank=True,
+        help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s)' % (self.description, self.code)
 
+
 class Code(models.Model):
-    area = models.ForeignKey(Area, related_name='codes')
-    type = models.ForeignKey(CodeType, related_name='codes')
+    area = models.ForeignKey(Area, related_name='codes', on_delete=models.CASCADE)
+    type = models.ForeignKey(CodeType, related_name='codes', on_delete=models.CASCADE)
     code = models.CharField(max_length=500)
-    objects = Manager()
+    objects = models.Manager()
 
     class Meta:
         unique_together = ('area', 'type')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s (%s) [%s]' % (self.code, self.type.code, self.area.id)
+
 
 # Postcodes
 
-class PostcodeManager(GeoManager):
-    def get_query_set(self):
-        return self.model.QuerySet(self.model)
-    def __getattr__(self, attr, *args):
-        return getattr(self.get_query_set(), attr, *args)
+class PostcodeQuerySet(models.QuerySet):
+    # We need to hand-write this query because otherwise in PostgreSQL 12 the
+    # ST_Transform is applied to each row in turn making it much slower. Even
+    # with a CTE, it tries to inline so we must ensure it is materialized.
+    def filter_by_area(self, area, limit=''):
+        if limit:
+            limit = 'LIMIT %s' % limit
+        polygons = '''SELECT ST_Transform(division, 4326) AS division
+            FROM mapit_geometrysubdivided
+            JOIN mapit_geometry ON geometry_id = mapit_geometry.id
+            WHERE area_id = %s'''
+        query = '''
+WITH target AS %s ( %s )
+SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"::bytea
+  FROM mapit_postcode, target
+ WHERE ST_CoveredBy(location, target.division)
+ %s
+''' % (materialized(), polygons, limit)
+        return self.raw(query, params=[area.id])
+
+
+def str2int(s):
+    return int(round(float(s)))
+
 
 class Postcode(models.Model):
     postcode = models.CharField(max_length=7, db_index=True, unique=True)
@@ -430,26 +449,12 @@ class Postcode(models.Model):
     # Will hopefully use PostGIS point-in-polygon tests, but if we don't have the polygons...
     areas = models.ManyToManyField(Area, related_name='postcodes', blank=True)
 
-    objects = PostcodeManager()
+    objects = PostcodeQuerySet.as_manager()
 
     class Meta:
         ordering = ('postcode',)
 
-    class QuerySet(models.query.GeoQuerySet):
-        # ST_CoveredBy on its own does not appear to use the index.
-        # Plus this way we can keep the polygons in the database
-        # without pulling out in a giant WKB string
-        def filter_by_area(self, area):
-            collect = 'ST_Transform((select ST_Collect(polygon) from mapit_geometry where area_id=%s group by area_id), 4326)'
-            return self.extra(
-                where = [
-                    'location && %s' % collect,
-                    'ST_CoveredBy(location, %s)' % collect
-                ],
-                params = [ area.id, area.id ]
-            )
-
-    def __unicode__(self):
+    def __str__(self):
         return self.get_postcode_display()
 
     # Prettify postcode for display, if we know how to
@@ -473,11 +478,11 @@ class Postcode(models.Model):
             countries.augment_postcode(self, result)
         return result
 
-    # Doing this via self.location.transform(29902) gives incorrect results.
-    # The database has the right proj4 text, the proj file does not. I think.
-    def as_irish_grid(self):
+    # Doing this via self.location.transform(27700/29902) can give incorrect results
+    # with some versions of GDAL. Via the database produces a correct result.
+    def as_uk_grid(self):
         cursor = connection.cursor()
-        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), 29902))" % (self.location[0], self.location[1]))
+        srid = 29902 if self.postcode[0:2] == 'BT' else 27700
+        cursor.execute("SELECT ST_AsText(ST_Transform(ST_GeomFromText('POINT(%f %f)', 4326), %d))" % (
+            self.location[0], self.location[1], srid))
         row = cursor.fetchone()
-        m = re.match('POINT\((.*?) (.*)\)', row[0])
-        return map(float, m.groups())

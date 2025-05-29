@@ -68,7 +68,9 @@ fi
 echo -n "Setting up database... "
 if ! psql -l | egrep "^ *$DB_NAME *\|" > /dev/null
 then
-    createdb -T template_postgis --owner "$UNIX_USER" "$DB_NAME"
+    createdb --owner "$UNIX_USER" "$DB_NAME"
+    COMMAND="CREATE EXTENSION postgis; CREATE EXTENSION postgis_topology;"
+    psql -c "$COMMAND" "$DB_NAME"
 fi
 
 conf/post_deploy_actions.bash
