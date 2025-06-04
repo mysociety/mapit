@@ -71,6 +71,7 @@
     { "pk": 53, "model": "mapit.type", "fields": { "code": "SICBL", "description": "Sub ICB Location" } },
 
     { "pk": 54, "model": "mapit.type", "fields": { "code": "WMCF", "description": "Future UK Parliament constituency" } },
+    { "pk": 55, "model": "mapit.type", "fields": { "code": "NIEF", "description": "Future Northern Ireland Assembly constituency" } },
 
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
