@@ -1,5 +1,5 @@
 # This script is to be run as a one-off after the 2024 UK General Election
-# to update the Northern Ireland Assembly boundaries to match the UK
+# to create new Northern Ireland Assembly future boundaries to match the UK
 # constituencies, as per section 33 of the Northern Ireland Act 1998.
 
 from django.core.management.base import BaseCommand
@@ -21,7 +21,7 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         areas = Area.objects.filter(type__code='WMC', country__code='N', generation_high=Generation.objects.current())
-        nie_type = Type.objects.get(code='NIE')
+        nie_type = Type.objects.get(code='NIEF')
         generation = Generation.objects.new()
         for area in areas:
             polygons = list(area.polygons.all())
