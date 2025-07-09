@@ -9,8 +9,11 @@
     <header class="area_info">
         <h2>{{ area.name }} <em class="area_id">ID {{ area.id }}</em></h2>
         <ul>
-            <li>{%trans "Type" %}: <a href="{% url "mapit_index" %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
-            <li>{%trans "Exists in generations" %}: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}</li>
+            <li>{% trans "Type" %}: <a href="{% url "mapit_index" %}areas/{{ area.type.code }}.html">{{ area.type.description }}</a> <small>({{ area.type.code }})</small></li>
+            <li>{% if area.generation_high_id < active_generation.id %}
+                    <em>{% trans "Historic boundary" %}.</em>
+                {% endif %}
+                {% trans "Exists in generations" %}: {{ area.generation_low.id }}&ndash;{{ area.generation_high.id }}.</li>
             <li>{% trans "Country" %}: {{ area.list_countries|join:", "|default:"-" }}</li>
             {% if area.parent_area %}
             {% with area.parent_area.id|slugify as area_id %}

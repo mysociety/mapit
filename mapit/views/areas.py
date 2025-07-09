@@ -142,8 +142,11 @@ def area(request, area_id, format=''):
     if hasattr(countries, 'restrict_geo_html'):
         geotype = countries.restrict_geo_html(area)
 
+    active_generation = Generation.objects.current()
+
     if format == 'html':
         return render(request, 'mapit/area.html', {
+            'active_generation': active_generation,
             'area': area,
             'codes': codes,
             'alternative_names': alternative_names,
