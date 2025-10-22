@@ -74,6 +74,7 @@
     { "pk": 55, "model": "mapit.type", "fields": { "code": "NIEF", "description": "Future Northern Ireland Assembly constituency" } },
     { "pk": 56, "model": "mapit.type", "fields": { "code": "SPCF", "description": "Future Scottish Parliament constituency" } },
     { "pk": 57, "model": "mapit.type", "fields": { "code": "SPEF", "description": "Future Scottish Parliament region" } },
+    { "pk": 58, "model": "mapit.type", "fields": { "code": "WACF", "description": "Future Senedd constituency" } },
 
     { "pk": 1, "model": "mapit.codetype", "fields": { "code": "ons", "description": "SNAC" } },
     { "pk": 2, "model": "mapit.codetype", "fields": { "code": "gss", "description": "GSS (SNAC replacement)" } },
