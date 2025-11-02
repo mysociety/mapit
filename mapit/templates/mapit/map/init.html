@@ -4,7 +4,7 @@
     var map = new L.Map("leaflet");
     map.attributionControl.setPrefix('');
     var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '{% trans 'Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' %}',
+        attribution: '{% spaceless %}{% include "mapit/map/attribution.html" %}{% endspaceless %}',
         maxZoom: 18
     });
     map.addLayer(osm);
