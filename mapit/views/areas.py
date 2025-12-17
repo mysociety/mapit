@@ -13,7 +13,7 @@ from django.conf import settings
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 
-from mapit.models import Area, Generation, Code, Name
+from mapit.models import Area, Generation, Code, CodeType, Name, NameType, Type
 from mapit.shortcuts import output_json, output_html, output_polygon, get_object_or_404, set_timeout
 from mapit.middleware import ViewException
 from mapit.ratelimitcache import ratelimit
@@ -106,6 +106,15 @@ def generations(request, format=''):
     if format == 'html':
         return render(request, 'mapit/generations.html', {'generations': generations})
     return output_json(dict((g.id, g.as_dict()) for g in generations))
+
+
+def types(request, format=''):
+    types = {}
+    for key, model in (('area', Type), ('code', CodeType), ('name', NameType)):
+        types[key] = dict((t.code, t.description) for t in model.objects.all())
+    if format == 'html':
+        return render(request, 'mapit/types.html', {'types': types})
+    return output_json(types)
 
 
 @ratelimit

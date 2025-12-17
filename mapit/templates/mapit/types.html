@@ -1,0 +1,37 @@
+{% extends "mapit/base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Types' %}{% endblock title %}
+
+{% block content %}
+
+<h2>{% trans 'Types' %}</h2>
+
+{% url "mapit_types" as json_url %}
+<p>{% blocktrans %}Get <a href="{{ json_url }}">this data as JSON</a>{% endblocktrans %}</p>
+
+<h3>{% trans 'Area' %}</h3>
+
+<ul class="area_list">
+{% for code, description in types.area.items %}
+    <li>{{ code }} &ndash; {{ description }}</li>
+{% endfor %}
+</ul>
+
+<h3>{% trans 'Code' %}</h3>
+
+<ul class="area_list">
+{% for code, description in types.code.items %}
+    <li>{{ code }} &ndash; {{ description }}</li>
+{% endfor %}
+</ul>
+
+<h3>{% trans 'Name' %}</h3>
+
+<ul class="area_list">
+{% for code, description in types.name.items %}
+    <li>{{ code }} &ndash; {{ description }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

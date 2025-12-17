@@ -1,0 +1,17 @@
+{% load i18n %}
+
+<section id="api-types">
+    <h3>{% trans "Types" %}</h3>
+    <dl>
+        <dt>URL:</dt>
+        <dd>/types</dd>
+
+        <dt>{% trans "Returns" %}:</dt>
+        <dd>{% trans "A list of all area types in this installation of MapIt." %}</dd>
+
+        <dt>{% trans "Example" %}</dt>
+        <dd><a href="{% url "mapit_types" "html" %}">{% trans "List of types" %}</a></dd>
+
+    </dl>
+</section>
+

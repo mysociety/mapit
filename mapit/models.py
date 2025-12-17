@@ -141,7 +141,16 @@ class Country(models.Model):
         verbose_name_plural = 'countries'
 
 
-class Type(models.Model):
+class TypeModel(models.Model):
+    class Meta:
+        abstract = True
+        ordering = ('code',)
+
+    def __str__(self):
+        return '%s (%s)' % (self.description, self.code)
+
+
+class Type(TypeModel):
 
     # An area type (the Type model) is the type of area. You can see examples
     # for a few countries in the mapit/fixtures directory. In the UK we have
@@ -153,9 +162,6 @@ class Type(models.Model):
     code = models.CharField(max_length=500, unique=True, help_text="A unique code, eg 'CTR', 'CON', etc")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of the type of area, eg 'Country', 'Constituency', etc")
-
-    def __str__(self):
-        return '%s (%s)' % (self.description, self.code)
 
 
 class AreaManager(models.Manager):
@@ -369,7 +375,7 @@ class GeometrySubdivided(models.Model):
         return '%s, subdivision %s' % (smart_str(self.geometry), self.id)
 
 
-class NameType(models.Model):
+class NameType(TypeModel):
 
     # Name types are for storing different types of names. This could have
     # different uses - in the UK it is used to store names from different
@@ -381,10 +387,6 @@ class NameType(models.Model):
         max_length=500, unique=True, help_text="A unique code to identify this type of name: eg 'english' or 'iso'")
     description = models.CharField(
         max_length=200, blank=True, help_text="The name of this type of name, eg 'English' or 'ISO Standard'")
-    objects = models.Manager()
-
-    def __str__(self):
-        return '%s (%s)' % (self.description, self.code)
 
 
 class Name(models.Model):
@@ -408,7 +410,7 @@ class Name(models.Model):
         return (self.type.code, [self.type.description, self.name])
 
 
-class CodeType(models.Model):
+class CodeType(TypeModel):
 
     # Code types are so you can store different types of code for an area. In
     # the UK we have "ons" for old style Office of National Statistics codes,
@@ -420,9 +422,6 @@ class CodeType(models.Model):
     description = models.CharField(
         max_length=200, blank=True,
         help_text="The name of the code, eg 'Office of National Statitics' or 'Ordnance Survey ID'")
-
-    def __str__(self):
-        return '%s (%s)' % (self.description, self.code)
 
 
 class Code(models.Model):

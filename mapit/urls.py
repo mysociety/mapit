@@ -17,6 +17,7 @@ urlpatterns = [
     re_path(r'^overview$', render, {'template_name': 'mapit/overview.html'}),
 
     re_path(r'^generations%s$' % format_end, areas.generations, {}, 'mapit_generations'),
+    re_path(r'^types%s$' % format_end, areas.types, {}, 'mapit_types'),
 
     re_path(r'^postcode/$', postcodes.form_submitted),
     re_path(r'^postcode/(?P<postcode>[A-Za-z0-9 +]+)%s$' % format_end, postcodes.postcode, name="mapit-postcode"),

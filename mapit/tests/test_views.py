@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 from django.conf import settings
 from django.contrib.gis.geos import Polygon, Point
 
-from mapit.models import Type, Area, Geometry, Generation, Postcode
+from mapit.models import CodeType, NameType, Type, Area, Geometry, Generation, Postcode
 from mapit.tests.utils import get_content
 
 
@@ -269,3 +269,39 @@ class AreaViewsTest(TestCase):
         url = '/areas/%d.geojson?simplify_tolerance=a' % id
         response = self.client.get(url)
         self.assertEqual(response.status_code, 400)
+
+
+class SimpleViewsTest(TestCase):
+    def setUp(self):
+        Generation.objects.create(active=True, description="Old generation",)
+        Generation.objects.create(active=True, description="Current generation",)
+        Type.objects.create(code="BIG", description="A large test area",)
+        Type.objects.create(code="SML", description="A small test area",)
+        CodeType.objects.create(code="WMC", description="Constituency",)
+        CodeType.objects.create(code="CTY", description="County council",)
+        NameType.objects.create(code="G", description="Government",)
+        NameType.objects.create(code="C", description="Community",)
+
+    def test_generations_endpoint(self):
+        response = self.client.get('/generations')
+        content = get_content(response)
+        content = list(content.items())
+        self.assertEqual(len(content), 2)
+        self.assertEqual(content[0][1]['active'], True)
+        self.assertEqual(content[0][1]['description'], 'Old generation')
+        self.assertEqual(content[1][1]['active'], True)
+        self.assertEqual(content[1][1]['description'], 'Current generation')
+        response = self.client.get('/generations.html')
+        self.assertContains(response, 'Old generation')
+        self.assertContains(response, 'Current generation')
+
+    def test_types_endpoint(self):
+        response = self.client.get('/types')
+        content = get_content(response)
+        self.assertEqual(content['area'], {'BIG': 'A large test area', 'SML': 'A small test area'})
+        self.assertEqual(content['code'], {'CTY': 'County council', 'WMC': 'Constituency'})
+        self.assertEqual(content['name'], {'C': 'Community', 'G': 'Government'})
+        response = self.client.get('/types.html')
+        self.assertContains(response, 'A large test area')
+        self.assertContains(response, 'County council')
+        self.assertContains(response, 'Community')
