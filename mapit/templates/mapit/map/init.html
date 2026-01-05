@@ -3,7 +3,7 @@
 <script>
     var map = new L.Map("leaflet");
     map.attributionControl.setPrefix('');
-    var osm = new L.TileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osm = new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '{% spaceless %}{% include "mapit/map/attribution.html" %}{% endspaceless %}',
         maxZoom: 18
     });
