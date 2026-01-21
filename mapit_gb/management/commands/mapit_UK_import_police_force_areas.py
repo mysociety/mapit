@@ -115,7 +115,7 @@ class Command(LabelCommand):
                 names_data_filename)
             url = "http://data.police.uk/api/forces"
             forces = urllib.request.urlopen(url)
-            with open(names_data_filename, 'w') as f:
+            with open(names_data_filename, 'wb') as f:
                 f.write(forces.read())
             print("...successfully fetched and saved the force names data.")
 
