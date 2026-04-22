@@ -56,7 +56,7 @@ def save_polygons(lookup, write_to_stdout=True):
                 if g.point_count < 4:
                     continue
                 # Make sure it is two-dimensional
-                g.coord_dim = 2
+                g.set_3d(False)
                 m.polygons.create(polygon=g.wkb)
         # m.polygon = g.wkt
         # m.save()
