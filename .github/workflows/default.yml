@@ -6,6 +6,7 @@ jobs:
   test:
     name: Test MapIt
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
     services:
       postgres:
@@ -29,14 +30,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.13"]
+        experimental: [ false ]
         thing-to-test: ["flake8", "4.2", "5.2"]
+        include:
+          - thing-to-test: "6"
+            python-version: "3.13"
+            experimental: true
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - name: Set up python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
 
