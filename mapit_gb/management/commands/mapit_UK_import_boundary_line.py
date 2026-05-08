@@ -52,7 +52,7 @@ class Command(LabelCommand):
             if not isinstance(name, str):
                 name = name.decode('iso-8859-1')
 
-            name = re.sub(r'\s*\(DET( NO \d+|)\)\s*(?i)', '', name)
+            name = re.sub(r'(?i)\s*\(DET( NO \d+|)\)\s*', '', name)
             name = re.sub(r'\s+', ' ', name)
 
             ons_code = feat['CODE'].value if feat['CODE'].value not in ('999999', '999999999') else None
