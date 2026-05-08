@@ -26,8 +26,6 @@ class Command(FindParentsCommand):
         'UTW': ('UTA', 'COI'),
         # A Scottish Parliament constituency's parent is a Scottish Parliament region:
         'SPC': 'SPE',
-        # A Welsh Assembly constituency's parent is a Welsh Assembly region:
-        'WAC': 'WAE',
         # A Civil Parish's parent is one of:
         #   District council
         #   Unitary Authority
