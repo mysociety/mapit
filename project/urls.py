@@ -1,6 +1,7 @@
 from django.urls import include, path
 from django.contrib import admin
 
+handler404 = 'mapit.shortcuts.json_404'
 handler500 = 'mapit.shortcuts.json_500'
 
 urlpatterns = [
