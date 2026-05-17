@@ -4,7 +4,7 @@
 import csv
 from django.core.management.base import BaseCommand
 from mapit.models import Area, Generation, CodeType
-from psycopg2 import IntegrityError
+from django.db import IntegrityError
 
 
 class Command(BaseCommand):

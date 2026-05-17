@@ -7,7 +7,7 @@ import os.path
 import sys
 from django.core.management.base import BaseCommand
 from mapit.models import Area, CodeType
-from psycopg2 import IntegrityError
+from django.db import IntegrityError
 
 python_version = sys.version_info[0]
 
