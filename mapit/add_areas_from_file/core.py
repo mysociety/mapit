@@ -182,8 +182,15 @@ def run(filename, parameters, logger=None):
                 try:
                     name = feat[nf].value
                     break
-                except:
+                except IndexError:
+                    # No field by that name on this feature, try the next one.
                     pass
+                except UnicodeDecodeError:
+                    raise Error(
+                        "Could not decode name using encoding '%s' - is it in"
+                        " another encoding?"
+                        % parameters.encoding
+                    )
             if name is None and not parameters.ignore_blank:
                 choices = ", ".join(layer.fields)
                 raise Error(
