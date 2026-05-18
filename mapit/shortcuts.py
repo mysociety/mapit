@@ -101,7 +101,7 @@ def json_500(request):
     return output_json({'error': "Sorry, something's gone wrong."}, code=500)
 
 
-def json_404(request, exception=None):
+def json_404(request, *args, **kwargs):
     return output_json({'error': "Not found."}, code=404)
 
 
