@@ -17,7 +17,7 @@ class GEOS_JSONEncoder(DjangoJSONEncoder):
     def default(self, o):
         try:
             return o.json  # Will therefore support all the GEOS objects
-        except:
+        except AttributeError:
             pass
         return super(GEOS_JSONEncoder, self).default(o)
 
