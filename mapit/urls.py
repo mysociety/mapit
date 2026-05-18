@@ -2,6 +2,7 @@ from django.urls import include, re_path
 from django.conf import settings
 from django.shortcuts import render
 
+from mapit.shortcuts import json_404
 from mapit.utils import re_number as number
 from mapit.views import areas, postcodes
 
@@ -58,6 +59,12 @@ urlpatterns = [
     re_path(r'^areas/(?P<name>.+?)%s$' % map_format_end, areas.areas_by_name),
     re_path(r'^areas$', areas.deal_with_POST, {'call': 'areas'}),
     re_path(r'^code/(?P<code_type>[^/]+)/(?P<code_value>[^/]+?)%s$' % format_end, areas.area_from_code),
+
+    # Catch API-shaped URLs that didn't match any of the specific patterns
+    # above and return a JSON 404 instead of Django's HTML one. Non-API URLs
+    # still fall through to the project-level 404 page.
+    re_path(r'^(?:postcode|area|areas|point|nearest|code)(?:/.*|\.[a-z]+)?$', json_404),
+    re_path(r'^(?:generations|types)(?:\.[a-z]+)?$', json_404),
 ]
 
 # Include app-specific urls
