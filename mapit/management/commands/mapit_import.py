@@ -118,7 +118,7 @@ class Command(LabelCommand):
     def get_area_type(self, area_type_code, commit):
         try:
             area_type = Type.objects.get(code=area_type_code)
-        except:
+        except Type.DoesNotExist:
             type_desc = input(
                 "Please give a description for area type code %s: " % area_type_code
             )
@@ -130,7 +130,7 @@ class Command(LabelCommand):
     def get_name_type(self, name_type_code, commit):
         try:
             name_type = NameType.objects.get(code=name_type_code)
-        except:
+        except NameType.DoesNotExist:
             name_desc = input(
                 "Please give a description for name type code %s: " % name_type_code
             )
@@ -142,7 +142,7 @@ class Command(LabelCommand):
     def get_country(self, country_code, commit):
         try:
             country = Country.objects.get(code=country_code)
-        except:
+        except Country.DoesNotExist:
             country_name = input(
                 "Please give the name for country code %s: " % country_code
             )
@@ -154,7 +154,7 @@ class Command(LabelCommand):
     def get_code_type(self, code_type_code, commit):
         try:
             code_type = CodeType.objects.get(code=code_type_code)
-        except:
+        except CodeType.DoesNotExist:
             code_desc = input(
                 "Please give a description for code type %s: " % code_type_code
             )

@@ -98,7 +98,7 @@ class Command(LabelCommand):
                             geometry = geometry | Geometry.objects.filter(**args)
                         else:
                             geometry = Geometry.objects.filter(**args)
-                    except:
+                    except (Area.DoesNotExist, Geometry.DoesNotExist):
                         raise Exception("Area or geometry with name %s was not found!" % name)
                     unionoutline = geometry.aggregate(Union('polygon'))['polygon__union']
 
