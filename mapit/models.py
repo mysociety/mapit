@@ -18,9 +18,8 @@ from mapit.middleware import ViewException
 
 
 def materialized():
-    version = connection.cursor().connection.server_version
     materialized = ''
-    if version >= 120000:
+    if connection.pg_version >= 120000:
         materialized = 'MATERIALIZED'
     return materialized
 
@@ -191,8 +190,8 @@ class AreaManager(models.Manager):
         params = [area.id, area.id, generation.id, generation.id]
 
         if types:
-            params.append(tuple(types))
-            query_area_type = ' AND mapit_area.type_id IN (SELECT id FROM mapit_type WHERE code IN %s) '
+            params.append(list(types))
+            query_area_type = ' AND mapit_area.type_id IN (SELECT id FROM mapit_type WHERE code = ANY(%s)) '
         else:
             query_area_type = ''
 
@@ -452,7 +451,7 @@ class PostcodeQuerySet(models.QuerySet):
             WHERE area_id = %s'''
         query = '''
 WITH target AS %s ( %s )
-SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"::bytea
+SELECT "mapit_postcode"."id", "mapit_postcode"."postcode", "mapit_postcode"."location"
   FROM mapit_postcode, target
  WHERE ST_CoveredBy(location, target.division)
  %s

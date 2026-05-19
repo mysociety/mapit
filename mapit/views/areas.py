@@ -1,5 +1,5 @@
 import re
-from psycopg2 import InternalError
+from django.db import InternalError
 from django.db.utils import DatabaseError
 
 from django.utils.translation import gettext as _
