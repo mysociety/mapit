@@ -1,0 +1,6 @@
+[
+    { "model": "mapit.type", "fields": { "code": "PDG", "description": "Police force" } },
+    { "model": "mapit.codetype", "fields": { "code": "police_id", "description": "data.gov.uk force boundary KMLs" } },
+    { "model": "mapit.nametype", "fields": { "code": "P", "description": "Police API" } }
+
+]
