@@ -1,42 +1,27 @@
-# This script adds GSS codes to existing CED areas
-# based on a mapping from ONS e.g.
-# https://geoportal.statistics.gov.uk/documents/ons::county-electoral-division-to-county-may-2021-lookup-for-england/about
-# The XLSX file should be converted to CSV before being used with this script.
+# This command is used to add GSS codes to existing CED areas in the DB, using
+# data an ONS CED boundary file, e.g. the GeoPackage from
+# https://geoportal.statistics.gov.uk/datasets/county-electoral-division-may-2026-boundaries-en-bgc
+#
+# Boundary-Line CED areasd don't include a GSS code for some reason, so we
+# compare polygons in the ONS GPKG with those in our DB for the best spatial
+# match, and assign the GSS code accordingly.
 
+import re
+
+from django.conf import settings
+from django.contrib.gis.gdal import DataSource
 from django.core.management.base import LabelCommand, CommandError
 from django.db import transaction
-from csv import DictReader
 
 from mapit.models import Area, Generation, CodeType
 
-# Some names are slightly different in Boundary-Line vs the ONS CSV,
-# so fix those up here for the DB lookup
-NAME_FIXES = {
-    # name in ONS CSV : name of area already in DB (from BL)
-    "Mendip Hiils ED": "Mendip Hills ED",
-    "Hollington & Wishing Tree ED": "Hollington &Wishing Tree ED",
-    "Maze Hill & West St. Leonards ED": "Maze Hill &West St. Leonards ED",
-    "Uckfield South with Framfield ED": "Uckfield South With Framfield ED",
-    "Grove & Wantage ED": "Grove and Wantage ED",
-    "Hendreds &Harwell ED": "Hendreds and Harwell ED",
-    "Sutton Courtenay & Marcham ED": "Sutton Courtenay and Marcham ED",
-    "Bishops Stortford East ED": "Bishop's Stortford East ED",
-    "Bishops Stortford Rural ED": "Bishop's Stortford Rural ED",
-    "Bishops Stortford West ED": "Bishop's Stortford West ED",
-}
-
-# Some areas don't exist in MapIt at all, so should be ignored
-IGNORED_NAMES = {
-    "Thorpe St. Andrew ED (DET)",
-    "Lightwater, West End and Bisley ED (DET)",
-}
+# How much spatial overlap is required (0-1) before we accept it as a match.
+MIN_OVERLAP = 0.9
 
 
 class Command(LabelCommand):
-    help = "Adds GSS codes to CED areas in the active generation"
-    label = "<CSV file>"
-
-    commit = False
+    help = "Adds GSS codes to CED areas from an ONS CED boundary geopackage"
+    label = "<ONS CED boundary .gpkg>"
 
     def add_arguments(self, parser):
         super().add_arguments(parser)
@@ -44,75 +29,70 @@ class Command(LabelCommand):
             "--commit",
             action="store_true",
             dest="commit",
-            default=self.commit,
             help="Commit changes to database",
         )
         parser.add_argument(
             "--generation",
             dest="generation",
             type=int,
-            help=f"Generation to search for CED areas in (default {Generation.objects.current().id})",
-            default=Generation.objects.current().id,
+            help="Generation to search for CED areas in (default: current)",
         )
-        parser.add_argument(
-            "--code-field",
-            dest="code_field",
-            type=str,
-            required=True,
-            help="CSV field to get GSS codes from",
-        )
-        parser.add_argument(
-            "--parent-code-field",
-            dest="parent_code_field",
-            type=str,
-            required=True,
-            help="CSV field to get parent GSS codes from",
-        )
-        parser.add_argument(
-            "--name-field",
-            dest="name_field",
-            type=str,
-            required=True,
-            help="CSV field to get area names from",
-        )
-
-    def handle_label(self, filename, **options):
-        self.commit = options["commit"]
-
-        with open(filename) as f:
-            self.handle_rows(
-                DictReader(f),
-                options["code_field"],
-                options["name_field"],
-                options["parent_code_field"],
-                options["generation"],
-            )
 
     @transaction.atomic
-    def handle_rows(self, csv, code_field, name_field, parent_code_field, generation):
+    def handle_label(self, filename, **options):
+        generation = options["generation"] or Generation.objects.current()
+        if not generation:
+            raise CommandError("No active generation, and no --generation given")
         gss = CodeType.objects.get(code="gss")
 
-        for row in csv:
-            name = NAME_FIXES.get(row[name_field], row[name_field])
+        layer = DataSource(filename)[0]
+        code_field, name_field = self._get_ons_fields(layer)
 
-            if name in IGNORED_NAMES:
-                continue
+        matched = {}
+        for feat in layer:
+            geometry = feat.geom.geos
+            if geometry.srid != settings.MAPIT_AREA_SRID:
+                geometry.transform(settings.MAPIT_AREA_SRID)
+            ons_code, ons_name = feat[code_field].value, feat[name_field].value
 
-            params = dict(
-                type__code="CED",
-                names__type__code="O",
-                names__name=name,
-                parent_area__codes__code=row[parent_code_field],
-                generation_low__lte=generation,
-                generation_high__gte=generation,
-            )
-            try:
-                area = Area.objects.get(**params)
-            except Area.DoesNotExist:
-                raise CommandError(f"Couldn't find existing CED area '{name}'")
+            area = self._best_match(geometry, generation)
+            if area is None:
+                raise CommandError(f"No CED Area overlaps {ons_name} ({ons_code}) by at least {MIN_OVERLAP:.0%}")
+            if area.id in matched:  # we've already found a match for this CED Area, bail out
+                raise CommandError(f"{area.name} matches both {matched[area.id]} and {ons_code}")
+            matched[area.id] = ons_code
 
-            area.codes.get_or_create(type=gss, code=row[code_field])
-            print(f"{name}: {row[code_field]}")
+            area.codes.update_or_create(type=gss, defaults={"code": ons_code})
+            self.stdout.write(f"{area.name}: {ons_code}")
 
-        if not self.commit:
+        for area in self._get_ced_areas(generation).exclude(id__in=matched.keys()):
+            self.stderr.write(f"Warning: no ONS CED matched {area.name} [{area.id}]")
+
+        if not options["commit"]:
             transaction.set_rollback(True)
+
+    def _get_ons_fields(self, layer):
+        codes = [f for f in layer.fields if re.match(r"CED\d\dCD$", f)]
+        names = [f for f in layer.fields if re.match(r"CED\d\dNM$", f)]
+        if len(codes) != 1 or len(names) != 1:
+            raise CommandError(f"CEDyyCD and CEDyyNM fields not found in {layer.fields}")
+        return codes[0], names[0]
+
+    def _get_ced_areas(self, generation):
+        return Area.objects.filter(
+            type__code="CED",
+            generation_low__lte=generation,
+            generation_high__gte=generation,
+        )
+
+    def _best_match(self, geometry, generation):
+        """Return the existing CED Area whose polygons overlap geometry the most, or None if MIN_OVERLAP isn't met."""
+        candidates = self._get_ced_areas(generation).filter(polygons__polygon__intersects=geometry).distinct()
+        best, best_overlap = None, 0
+        for area in candidates:
+            overlap = sum(p.polygon.intersection(geometry).area for p in area.polygons.all())
+            if overlap > best_overlap:
+                best, best_overlap = area, overlap
+        if best_overlap < MIN_OVERLAP * geometry.area:
+            return None
+        return best
