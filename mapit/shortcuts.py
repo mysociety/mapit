@@ -101,6 +101,10 @@ def json_500(request):
     return output_json({'error': "Sorry, something's gone wrong."}, code=500)
 
 
+def json_404(request, *args, **kwargs):
+    return output_json({'error': "Not found."}, code=404)
+
+
 def set_timeout(format):
     cursor = connection.cursor()
     timeout = 10000 if format == 'html' else 10000
