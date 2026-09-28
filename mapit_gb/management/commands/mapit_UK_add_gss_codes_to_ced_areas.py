@@ -74,9 +74,13 @@ class Command(LabelCommand):
             else:
                 try:
                     area.codes.get_or_create(type=gss, code=ons_code)
-                except IntegrityError:  # There's already a GSS code for this area and we've tried to add a different one
+                except IntegrityError:
+                    # There's already a GSS code for this area and we've tried to add a different one
                     old_code = area.codes.get(type=gss).code
-                    self.stderr.write(f"{area.name} (ID {area.id}) has changed code? Old: {old_code} New: {ons_code}. Overlap: {overlap:.2f}%")
+                    self.stderr.write(
+                        f"{area.name} (ID {area.id}) has changed code? "
+                        f"Old: {old_code} New: {ons_code}. Overlap: {overlap:.2f}%"
+                    )
                     if options["commit"]:
                         raise
                     else:  # on a dry-run let it proceed so we can evaluate all errors

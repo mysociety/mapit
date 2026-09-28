@@ -1,7 +1,21 @@
+from django.contrib.admin import utils as admin_utils
+from django.contrib.admin.utils import NestedObjects
 from django.contrib.gis import admin
 from django.utils.html import format_html
 
 from mapit.models import Area, Code, Name, Generation, Geometry, Postcode, Type, NameType, CodeType, Country
+
+
+# Listing an area's related objects can list thousands of objects and crash the
+# server, reporting just the area is enough.
+class AreaNestedObjects(NestedObjects):
+    def related_objects(self, related_model, related_fields, objs):
+        if any(field.related_model is Area for field in related_fields):
+            return related_model._base_manager.none()
+        return super().related_objects(related_model, related_fields, objs)
+
+
+admin_utils.NestedObjects = AreaNestedObjects
 
 
 class NameInline(admin.TabularInline):
